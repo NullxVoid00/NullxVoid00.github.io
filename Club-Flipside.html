@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Flipside - Zero Gravity Experience</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Animated Starry Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(45deg, rgba(255,0,0,0.1), rgba(0,0,255,0.1));
+            border-bottom: 2px solid #333;
+        }
+        
+        .logo {
+            max-width: 400px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.5));
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            color: #ff6b6b;
+            opacity: 0.8;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            position: relative;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .feature-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-front {
+            border-color: #0066ff;
+            background: linear-gradient(135deg, rgba(0,102,255,0.2), rgba(0,0,0,0.8));
+            box-shadow: 0 0 30px rgba(0,102,255,0.3);
+        }
+        
+        .card-back {
+            transform: rotateY(180deg);
+            border-color: #ff0066;
+            background: linear-gradient(135deg, rgba(255,0,102,0.2), rgba(0,0,0,0.8));
+            box-shadow: 0 0 30px rgba(255,0,102,0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-front .feature-icon {
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0,255,255,0.8);
+        }
+        
+        .card-back .feature-icon {
+            color: #ff6b6b;
+            text-shadow: 0 0 15px rgba(255,107,107,0.8);
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .card-front .feature-title {
+            color: #00ffff;
+        }
+        
+        .card-back .feature-title {
+            color: #ff6b6b;
+        }
+        
+        .feature-description {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+        
+        .click-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            opacity: 0.6;
+            font-style: italic;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(45deg, rgba(255,0,0,0.1), rgba(0,0,255,0.1));
+            border-radius: 20px;
+            margin: 3rem 0;
+            border: 2px solid #333;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #000;
+            background: linear-gradient(45deg, #00ffff, #ff6b6b);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 30px rgba(0,255,255,0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0,255,255,0.5);
+            filter: brightness(1.2);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid #333;
+            background: rgba(0,0,0,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Stars -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Header -->
+    <div class="header">
+        <img src="Art Folder/FlipsideLogo.png" alt="Club Flipside Logo" class="logo">
+        <div class="tagline">The Ultimate Zero-Gravity Nightclub for Hosting and Hangouts</div>
+        <div class="subtitle">Located Deep Within a Barren Asteroid in the Far Reaches of Space</div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <!-- World Menu & Controls -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">⚙️</div>
+                        <div class="feature-title">World Menu</div>
+                        <div class="feature-description">Comprehensive world menu system for customization and control of club features.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">🎛️</div>
+                        <div class="feature-title">Host Controls</div>
+                        <div class="feature-description">Easy-to-use interface for managing lighting, music, gravity, and other club settings.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video Entertainment -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">📺</div>
+                        <div class="feature-title">Video Players</div>
+                        <div class="feature-description">Multiple video players with YouTube search integration for custom entertainment.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">🎬</div>
+                        <div class="feature-title">YouTube Search</div>
+                        <div class="feature-description">Built-in YouTube search lets you play any video content directly in the club.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AudioLink Integration -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">🎵</div>
+                        <div class="feature-title">AudioLink</div>
+                        <div class="feature-description">Full AudioLink integration for reactive lighting and visual effects synced to music.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">🌈</div>
+                        <div class="feature-title">Reactive Visuals</div>
+                        <div class="feature-description">Club lighting and effects automatically respond to audio frequencies and beats.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gravity Controls -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">🌀</div>
+                        <div class="feature-title">Gravity Controls</div>
+                        <div class="feature-description">Experience different gravity settings throughout the club using Bobystar's Planetary Movement System.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-title">Zero-G Experience</div>
+                        <div class="feature-description">Move freely in three dimensions as you explore the curved walls and central walkways.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dual Bars -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">🍸</div>
+                        <div class="feature-title">Dual Bars</div>
+                        <div class="feature-description">Two full working bars available for hosting events and serving refreshments.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">🥂</div>
+                        <div class="feature-title">Bar Systems</div>
+                        <div class="feature-description">Complete bar setups ready for hosts to organize their own service and events.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hangout Areas -->
+            <div class="feature-card" onclick="flipCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="feature-icon">🛋️</div>
+                        <div class="feature-title">Hangout Areas</div>
+                        <div class="feature-description">Multiple comfortable spaces designed for relaxing, socializing, and enjoying the atmosphere.</div>
+                        <div class="click-hint">Click to flip</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="feature-icon">🌟</div>
+                        <div class="feature-title">Social Spaces</div>
+                        <div class="feature-description">Various areas throughout the club perfect for conversation and taking in new perspectives.</div>
+                        <div class="click-hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <div class="cta-title">Ready to Experience Club Flipside?</div>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
+                Host your own events, hang out with friends, and explore curved walls and central walkways 
+                in this customizable zero-gravity nightclub space.
+            </p>
+            <a href="https://vrchat.com/home/launch?worldId=wrld_11bd7dc3-7768-4d32-9603-6a7a466bd71f" class="cta-button">Enter Club Flipside</a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Club Flipside. All rights reserved. | Located in Asteroid Belt Sector 7-G</p>
+        <p style="opacity: 0.7; font-size: 0.8rem; margin-top: 0.5rem;">
+            Powered by Bobystar's Planetary Movement System
+        </p>
+    </div>
+    
+    <script>
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Card flip functionality
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+        
+        // Initialize stars when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+        });
+        
+        // Add some extra sparkle effects
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.98) {
+                createSparkle(e.clientX, e.clientY);
+            }
+        });
+        
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.style.width = '4px';
+            sparkle.style.height = '4px';
+            sparkle.style.background = Math.random() > 0.5 ? '#00ffff' : '#ff6b6b';
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '1000';
+            sparkle.style.animation = 'twinkle 0.8s ease-out forwards';
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 800);
+        }
+    </script>
+</body>
+</html>
