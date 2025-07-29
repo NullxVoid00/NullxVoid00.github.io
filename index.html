@@ -171,11 +171,19 @@
             padding: 4rem 2rem 2rem;
         }
 
-        .hub-header h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+        /* Logo Animation */
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hub-logo {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
             margin-bottom: 1rem;
-            letter-spacing: 0.3em;
-            text-shadow: var(--text-shadow);
+            animation: floatLogo 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(220,20,60,0.3);
         }
 
         .hub-header p {
@@ -400,8 +408,8 @@
                 padding: 0 1rem;
             }
 
-            .hub-header h1 {
-                font-size: 3rem;
+            .hub-logo {
+                max-width: 250px;
             }
 
             .social-links {
@@ -450,7 +458,7 @@
         <!-- Hub Home -->
         <div id="hubHome">
             <div class="hub-header">
-                <h1>ABYSSAL LIGHT</h1>
+                <img src="images/logo.png" alt="Abyssal Light Logo" class="hub-logo" onerror="this.style.display='none'">
                 <p>Games & Digital Experiences</p>
             </div>
 
@@ -511,10 +519,10 @@
             </div>
 
             <div class="social-links">
-                <a href="#" class="https://x.com/Skell20XX">Twitter</a>
-                <a href="#" class="https://discord.gg/tAkXbESacu">Discord</a>
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">Discord</a>
                 <a href="#" class="social-link">YouTube</a>
-                <a href="#" class="https://github.com/NullxVoid00/NullxVoid00.github.io">GitHub</a>
+                <a href="#" class="social-link">GitHub</a>
                 <!-- Add more social links as needed -->
             </div>
         </div>
@@ -588,9 +596,16 @@
                 setTimeout(() => {
                     passwordScreen.style.display = 'none';
                     mainHub.classList.add('active');
-                    // Start hub audio
+                    // Fade in hub audio
+                    hubAudio.volume = 0;
                     hubAudio.play();
-                    hubAudio.volume = volumeSlider.value;
+                    let fadeIn = setInterval(() => {
+                        if (hubAudio.volume < volumeSlider.value) {
+                            hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
+                        } else {
+                            clearInterval(fadeIn);
+                        }
+                    }, 50);
                 }, 500);
             } else {
                 errorMessage.classList.add('show');
@@ -619,7 +634,14 @@
         // Auto-focus password input and start password audio
         window.onload = function() {
             passwordInput.focus();
-            passwordAudio.play();
+            passwordAudio.play().catch(error => {
+                console.log('Autoplay prevented:', error);
+                // Fallback: Play audio on first user interaction
+                document.addEventListener('click', function playAudioOnce() {
+                    passwordAudio.play();
+                    document.removeEventListener('click', playAudioOnce);
+                });
+            });
         };
     </script>
 </body>
