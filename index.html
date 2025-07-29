@@ -327,6 +327,7 @@
             position: relative;
             padding: 2rem;
             perspective: 1200px;
+            min-height: 600px;
         }
 
         .carousel {
@@ -335,6 +336,8 @@
             height: 500px;
             position: relative;
             transform-style: preserve-3d;
+            width: 100%;
+            max-width: 1400px;
         }
 
         /* Project Cards */
@@ -349,6 +352,9 @@
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             transform-origin: center;
+            will-change: transform, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         .project-card img {
@@ -415,6 +421,9 @@
             cursor: pointer;
             transform-origin: center;
             padding: 1rem;
+            will-change: transform, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         .gallery-card img {
@@ -591,6 +600,16 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            /* Prevent horizontal scroll on mobile */
+            body {
+                overflow-x: hidden;
+            }
+
+            .section-view {
+                overflow-x: hidden;
+                overflow-y: hidden;
+            }
+
             .nav-grid {
                 grid-template-columns: 1fr;
                 padding: 0 1rem;
@@ -619,21 +638,56 @@
                 width: 80px;
             }
 
+            /* Simplified carousel for mobile */
+            .carousel-container {
+                perspective: none;
+                padding: 1rem;
+                min-height: 500px;
+            }
+
             .carousel {
-                height: 400px;
+                height: 420px;
+                transform-style: flat;
             }
 
             .project-card {
-                width: 250px;
-                height: 350px;
+                width: 280px;
+                height: 380px;
             }
 
             .gallery-card {
-                width: 280px;
+                width: 300px;
             }
 
             .gallery-card img {
-                height: 300px;
+                height: 320px;
+            }
+
+            .project-card img {
+                height: 180px;
+            }
+
+            /* Simpler navigation arrows on mobile */
+            .carousel-nav {
+                padding: 0.8rem;
+                font-size: 1.2rem;
+            }
+
+            .carousel-nav.prev {
+                left: 0.5rem;
+            }
+
+            .carousel-nav.next {
+                right: 0.5rem;
+            }
+
+            /* Section headers on mobile */
+            .section-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -929,20 +983,62 @@
             gallery: { currentIndex: 0 }
         };
 
+        // Touch support for mobile carousel
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(e, type) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe(type);
+        }
+
+        function handleSwipe(type) {
+            if (touchEndX < touchStartX - 50) {
+                moveCarousel(type, 1); // Swipe left, move right
+            }
+            if (touchEndX > touchStartX + 50) {
+                moveCarousel(type, -1); // Swipe right, move left
+            }
+        }
+
         // Initialize carousels
         function initializeCarousels() {
             initializeCarousel('games', projectData.games);
             initializeCarousel('vrchat', projectData.vrchat);
             initializeCarousel('gallery', projectData.gallery, true);
+            
+            // Add touch listeners after carousels are created
+            ['games', 'vrchat', 'gallery'].forEach(type => {
+                const carousel = document.getElementById(`${type}Carousel`);
+                if (carousel) {
+                    carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+                    carousel.addEventListener('touchend', (e) => handleTouchEnd(e, type), { passive: true });
+                }
+            });
         }
 
         function initializeCarousel(type, data, isGallery = false) {
             const carousel = document.getElementById(`${type}Carousel`);
             carousel.innerHTML = '';
             
+            // Set carousel positioning context
+            carousel.style.position = 'relative';
+            carousel.style.width = '100%';
+            carousel.style.height = '100%';
+            
             data.forEach((project, index) => {
                 const card = document.createElement('div');
                 card.className = isGallery ? 'gallery-card' : 'project-card';
+                
+                // Center cards in container
+                card.style.left = '50%';
+                card.style.top = '50%';
+                card.style.marginLeft = isGallery ? '-175px' : '-150px';
+                card.style.marginTop = isGallery ? '-250px' : '-225px';
                 
                 if (isGallery) {
                     card.innerHTML = `
@@ -975,28 +1071,47 @@
             const cards = carousel.querySelectorAll('.project-card, .gallery-card');
             const { currentIndex } = carouselStates[type];
             const isGallery = type === 'gallery';
+            const isMobile = window.innerWidth <= 768;
             
             cards.forEach((card, index) => {
                 const offset = index - currentIndex;
                 const absOffset = Math.abs(offset);
                 const sign = offset < 0 ? -1 : 1;
                 
-                // Position calculations (wider spacing for gallery)
-                const spacing = isGallery ? 380 : 320;
-                const translateX = offset * spacing; // Base spacing
-                const translateZ = -absOffset * 100; // Depth
-                const rotateY = sign * Math.min(absOffset * 15, 45); // Rotation
-                const scale = 1 - Math.min(absOffset * 0.2, 0.6); // Scale
-                const opacity = 1 - Math.min(absOffset * 0.3, 0.7); // Opacity
-                
-                card.style.transform = `
-                    translateX(${translateX}px) 
-                    translateZ(${translateZ}px) 
-                    rotateY(${rotateY}deg) 
-                    scale(${scale})
-                `;
-                card.style.opacity = opacity;
-                card.style.zIndex = 10 - absOffset;
+                if (isMobile) {
+                    // Simplified mobile positioning with proper centering
+                    const cardWidth = isGallery ? 300 : 280;
+                    const translateX = offset * (cardWidth + 20);
+                    const scale = absOffset === 0 ? 1 : 0.85;
+                    const opacity = absOffset === 0 ? 1 : 0.3;
+                    
+                    // Adjust margins for mobile centering
+                    card.style.marginLeft = `-${cardWidth / 2}px`;
+                    card.style.marginTop = isGallery ? '-210px' : '-190px';
+                    
+                    card.style.transform = `translateX(${translateX}px) scale(${scale})`;
+                    card.style.opacity = opacity;
+                    card.style.zIndex = absOffset === 0 ? 10 : 1;
+                    card.style.transition = 'all 0.4s ease-out';
+                } else {
+                    // Desktop 3D carousel
+                    const spacing = isGallery ? 380 : 320;
+                    const translateX = offset * spacing;
+                    const translateZ = -absOffset * 100;
+                    const rotateY = sign * Math.min(absOffset * 15, 45);
+                    const scale = 1 - Math.min(absOffset * 0.2, 0.6);
+                    const opacity = 1 - Math.min(absOffset * 0.3, 0.7);
+                    
+                    card.style.transform = `
+                        translateX(${translateX}px) 
+                        translateZ(${translateZ}px) 
+                        rotateY(${rotateY}deg) 
+                        scale(${scale})
+                    `;
+                    card.style.opacity = opacity;
+                    card.style.zIndex = 10 - absOffset;
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                }
                 
                 // Enable/disable interaction
                 card.style.pointerEvents = absOffset === 0 ? 'auto' : 'none';
@@ -1056,6 +1171,19 @@
                 });
             });
         };
+
+        // Update carousel positions on window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                ['games', 'vrchat', 'gallery'].forEach(type => {
+                    if (document.getElementById(`${type}Section`).classList.contains('active')) {
+                        updateCarouselPositions(type);
+                    }
+                });
+            }, 250);
+        });
     </script>
 </body>
 </html>
