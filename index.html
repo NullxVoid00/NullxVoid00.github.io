@@ -1,4 +1,4 @@
-intake this:<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,427 +11,633 @@ intake this:<!DOCTYPE html>
             box-sizing: border-box;
         }
 
-    :root {
-        --primary-black: #0a0a0a;
-        --primary-white: #f0f0f0;
-        --accent-red: #dc143c;
-        --accent-blue: #4169e1;
-        --accent-pink: #ff69b4;
-        --accent-green: #32cd32;
-        --accent-purple: #9370db;
-        --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    }
-
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: var(--primary-black);
-        color: var(--primary-white);
-        line-height: 1.6;
-        overflow-x: hidden;
-        min-height: 100vh;
-    }
-
-    /* Glitch effect */
-    @keyframes glitch {
-        0%, 100% { 
-            text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
-            transform: translate(0);
+        :root {
+            --primary-black: #0a0a0a;
+            --primary-white: #f0f0f0;
+            --accent-red: #dc143c;
+            --accent-blue: #4169e1;
+            --accent-pink: #ff69b4;
+            --accent-green: #32cd32;
+            --accent-purple: #9370db;
+            --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
-        20% { 
-            text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
-            transform: translate(-2px, 2px);
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--primary-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
-        40% { 
-            text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
-            transform: translate(-2px, -2px);
+
+        /* Static Noise Background Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255,255,255,0.03) 0px,
+                    transparent 1px,
+                    transparent 2px,
+                    rgba(255,255,255,0.03) 3px
+                );
+            pointer-events: none;
+            z-index: 1;
+            animation: staticNoise 8s steps(10) infinite;
         }
-        60% { 
-            text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
-            transform: translate(2px, 2px);
+
+        @keyframes staticNoise {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-1%, -1%); }
+            20% { transform: translate(1%, 1%); }
+            30% { transform: translate(-1%, 1%); }
+            40% { transform: translate(1%, -1%); }
+            50% { transform: translate(-1%, 0); }
+            60% { transform: translate(1%, 0); }
+            70% { transform: translate(0, -1%); }
+            80% { transform: translate(0, 1%); }
+            90% { transform: translate(1%, 1%); }
         }
-        80% { 
-            text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
-            transform: translate(2px, -2px);
+
+        /* Glitch effect */
+        @keyframes glitch {
+            0%, 100% { 
+                text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
+                transform: translate(0);
+            }
+            20% { 
+                text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
+                transform: translate(-2px, 2px);
+            }
+            40% { 
+                text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
+                transform: translate(-2px, -2px);
+            }
+            60% { 
+                text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
+                transform: translate(2px, 2px);
+            }
+            80% { 
+                text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
+                transform: translate(2px, -2px);
+            }
         }
-    }
 
-    /* Password Screen */
-    .password-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
+        /* Password Screen */
+        .password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
 
-    .password-screen.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
+        .password-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-    .password-container {
-        text-align: center;
-        padding: 2rem;
-    }
+        .password-container {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
 
-    .password-wrapper {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-        max-width: 300px;
-    }
+        .password-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+        }
 
-    .password-container h1 {
-        font-size: clamp(2rem, 5vw, 3rem);
-        margin-bottom: 2rem;
-        letter-spacing: 0.2em;
-        animation: glitch 2s infinite;
-    }
+        .password-container h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            letter-spacing: 0.2em;
+            animation: glitch 2s infinite;
+        }
 
-    .password-input {
-        background: rgba(255,255,255,0.05);
-        border: 2px solid rgba(255,255,255,0.2);
-        color: var(--primary-white);
-        padding: 1rem 3rem 1rem 2rem;
-        font-size: 1.2rem;
-        text-align: center;
-        border-radius: 5px;
-        outline: none;
-        transition: all 0.3s ease;
-        letter-spacing: 0.1em;
-        width: 100%;
-    }
+        .password-input {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: var(--primary-white);
+            padding: 1rem 3rem 1rem 2rem;
+            font-size: 1.2rem;
+            text-align: center;
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1em;
+            width: 100%;
+        }
 
-    .password-toggle {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: var(--primary-white);
-        cursor: pointer;
-        padding: 5px;
-        font-size: 1rem;
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
-    }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-white);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
 
-    .password-toggle:hover {
-        opacity: 1;
-    }
+        .password-toggle:hover {
+            opacity: 1;
+        }
 
-    .password-input:focus {
-        border-color: var(--accent-red);
-        box-shadow: 0 0 20px rgba(220,20,60,0.3);
-    }
+        .password-input:focus {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 20px rgba(220,20,60,0.3);
+        }
 
-    /* Typing effect */
-    @keyframes typing-glow {
-        0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-        50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
-        100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-    }
+        /* Typing effect */
+        @keyframes typing-glow {
+            0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+            50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
+            100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+        }
 
-    .password-input.typing {
-        animation: typing-glow 0.5s ease;
-    }
+        .password-input.typing {
+            animation: typing-glow 0.5s ease;
+        }
 
-    .error-message {
-        color: var(--accent-red);
-        margin-top: 1rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
+        .error-message {
+            color: var(--accent-red);
+            margin-top: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-    .error-message.show {
-        opacity: 1;
-    }
+        .error-message.show {
+            opacity: 1;
+        }
 
-    /* Main Hub */
-    .main-hub {
-        display: none;
-        min-height: 100vh;
-        background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
-    }
+        /* Main Hub */
+        .main-hub {
+            display: none;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+            position: relative;
+            z-index: 2;
+        }
 
-    .main-hub.active {
-        display: block;
-    }
+        .main-hub.active {
+            display: block;
+        }
 
-    /* Header */
-    .hub-header {
-        text-align: center;
-        padding: 4rem 2rem 2rem;
-    }
+        /* Header */
+        .hub-header {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
 
-    /* Logo Animation */
-    @keyframes floatLogo {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-
-    .hub-logo {
-        max-width: 400px;
-        width: 100%;
-        height: auto;
-        margin-bottom: 1rem;
-        animation: floatLogo 3s ease-in-out infinite;
-        box-shadow: 0 0 20px rgba(220,20,60,0.3);
-    }
-
-    .hub-header p {
-        font-size: 1.2rem;
-        opacity: 0.8;
-    }
-
-    /* Navigation Grid */
-    .nav-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 4rem auto;
-        padding: 0 2rem;
-    }
-
-    .nav-section {
-        background: rgba(255,255,255,0.05);
-        border: 2px solid rgba(255,255,255,0.1);
-        border-radius: 10px;
-        padding: 2rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .nav-section:hover {
-        transform: translateY(-5px);
-        border-color: var(--accent-red);
-        box-shadow: 0 10px 30px rgba(220,20,60,0.3);
-    }
-
-    .nav-section h2 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-        color: var(--accent-red);
-        letter-spacing: 0.1em;
-    }
-
-    .nav-section p {
-        opacity: 0.8;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Project Links */
-    .project-links {
-        display: none;
-        margin-top: 1rem;
-    }
-
-    .nav-section.expanded .project-links {
-        display: block;
-    }
-
-    .project-link {
-        display: block;
-        padding: 0.8rem;
-        margin: 0.5rem 0;
-        background: rgba(255,255,255,0.05);
-        border-left: 3px solid var(--accent-red);
-        text-decoration: none;
-        color: var(--primary-white);
-        transition: all 0.3s ease;
-    }
-
-    .project-link:hover {
-        background: rgba(255,255,255,0.1);
-        padding-left: 1.5rem;
-        animation: glitch 0.3s;
-    }
-
-    /* About Section */
-    .about-section {
-        max-width: 800px;
-        margin: 4rem auto;
-        padding: 0 2rem;
-        text-align: center;
-    }
-
-    .about-section.hidden {
-        display: none;
-    }
-
-    .profile-header {
-        margin-bottom: 2rem;
-    }
-
-    .profile-pic {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        border: 3px solid var(--accent-red);
-        margin-bottom: 2rem;
-        object-fit: cover;
-    }
-
-    .bio-text p {
-        margin-bottom: 1rem;
-    }
-
-    .bio-text p:last-child {
-        margin-bottom: 0;
-    }
-
-    .social-links {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .social-link {
-        display: inline-block;
-        padding: 0.8rem 1.5rem;
-        background: rgba(255,255,255,0.05);
-        border: 2px solid rgba(255,255,255,0.2);
-        border-radius: 5px;
-        text-decoration: none;
-        color: var(--primary-white);
-        transition: all 0.3s ease;
-    }
-
-    .social-link:hover {
-        border-color: var(--accent-red);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(220,20,60,0.3);
-    }
-
-    /* Red Shard Animation */
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-    }
-
-    .red-shard {
-        width: 80px;
-        height: 80px;
-        background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
-        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-        margin: 2rem auto;
-        animation: float 3s ease-in-out infinite;
-        box-shadow: 0 0 50px var(--accent-red);
-    }
-
-    /* Back Button */
-    .back-button {
-        position: fixed;
-        top: 2rem;
-        left: 2rem;
-        padding: 0.8rem 1.5rem;
-        background: rgba(255,255,255,0.05);
-        border: 2px solid rgba(255,255,255,0.2);
-        color: var(--primary-white);
-        cursor: pointer;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        z-index: 100;
-    }
-
-    .back-button:hover {
-        border-color: var(--accent-red);
-        animation: glitch 0.3s;
-    }
-
-    .back-button.hidden {
-        display: none;
-    }
-
-    /* Volume Control */
-    .volume-control {
-        position: fixed;
-        bottom: 1rem;
-        right: 1rem;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .volume-control label {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-
-    .volume-slider {
-        -webkit-appearance: none;
-        width: 100px;
-        height: 5px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 5px;
-        outline: none;
-        transition: background 0.3s ease;
-    }
-
-    .volume-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 15px;
-        height: 15px;
-        background: var(--accent-red);
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 0 10px rgba(220,20,60,0.5);
-    }
-
-    .volume-slider::-moz-range-thumb {
-        width: 15px;
-        height: 15px;
-        background: var(--accent-red);
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 0 10px rgba(220,20,60,0.5);
-    }
-
-    .volume-slider:hover {
-        background: rgba(255,255,255,0.3);
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .nav-grid {
-            grid-template-columns: 1fr;
-            padding: 0 1rem;
+        /* Logo Animation with Glow */
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .hub-logo {
-            max-width: 250px;
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+            animation: floatLogo 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(220,20,60,0.5)) 
+                    drop-shadow(0 0 40px rgba(220,20,60,0.3));
+            position: relative;
+            z-index: 2;
         }
 
-        .social-links {
+        .hub-header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        /* Navigation Grid */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-section {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-section:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+            box-shadow: 0 10px 30px rgba(220,20,60,0.3);
+        }
+
+        .nav-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--accent-red);
+            letter-spacing: 0.1em;
+        }
+
+        .nav-section p {
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Section View Container */
+        .section-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .section-view.active {
+            display: flex;
             flex-direction: column;
+            animation: expandIn 0.5s ease-out;
+        }
+
+        @keyframes expandIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Section Header */
+        .section-header {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+            animation: glitch 3s infinite;
+        }
+
+        /* 3D Carousel Container */
+        .carousel-container {
+            flex: 1;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+            perspective: 1200px;
+        }
+
+        .carousel {
+            display: flex;
+            align-items: center;
+            height: 500px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* Project Cards */
+        .project-card {
+            position: absolute;
+            width: 300px;
+            height: 450px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            transform-origin: center;
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .project-card-content {
+            padding: 1.5rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.5rem;
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+        }
+
+        .project-card p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Carousel Navigation */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: var(--primary-white);
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(220,20,60,0.2);
+            border-color: var(--accent-red);
+        }
+
+        .carousel-nav.prev {
+            left: 2rem;
+        }
+
+        .carousel-nav.next {
+            right: 2rem;
+        }
+
+        /* Gallery Cards - Simpler design */
+        .gallery-card {
+            position: absolute;
+            width: 350px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            transform-origin: center;
+            padding: 1rem;
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-red);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-card p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* About Section */
+        .about-section {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-section.hidden {
+            display: none;
+        }
+
+        .profile-header {
+            margin-bottom: 2rem;
         }
 
         .profile-pic {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-red);
+            margin-bottom: 2rem;
+            object-fit: cover;
+            filter: drop-shadow(0 0 20px rgba(220,20,60,0.3));
         }
 
+        .bio-text p {
+            margin-bottom: 1rem;
+        }
+
+        .bio-text p:last-child {
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--primary-white);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,20,60,0.3);
+        }
+
+        /* Red Shard Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .red-shard {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            margin: 2rem auto;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 0 50px var(--accent-red);
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: var(--primary-white);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            border-color: var(--accent-red);
+            animation: glitch 0.3s;
+        }
+
+        .back-button.hidden {
+            display: none;
+        }
+
+        /* Volume Control */
         .volume-control {
-            bottom: 0.5rem;
-            right: 0.5rem;
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .volume-control label {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
         .volume-slider {
-            width: 80px;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.3s ease;
         }
-    }
-</style></head>
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(220,20,60,0.5);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(220,20,60,0.5);
+        }
+
+        .volume-slider:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .hub-logo {
+                max-width: 250px;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-pic {
+                width: 150px;
+                height: 150px;
+            }
+
+            .volume-control {
+                bottom: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .volume-slider {
+                width: 80px;
+            }
+
+            .carousel {
+                height: 400px;
+            }
+
+            .project-card {
+                width: 250px;
+                height: 350px;
+            }
+
+            .gallery-card {
+                width: 280px;
+            }
+
+            .gallery-card img {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
 <body>
     <!-- Password Screen -->
     <div class="password-screen" id="passwordScreen">
@@ -444,204 +650,412 @@ intake this:<!DOCTYPE html>
                        id="passwordInput" 
                        placeholder="Enter Password"
                        autocomplete="off">
-                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()"></button>
+                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()">👁</button>
             </div>
             <div class="error-message" id="errorMessage">Access Denied</div>
         </div>
     </div>
 
-<!-- Main Hub -->
-<div class="main-hub" id="mainHub">
-    <button class="back-button hidden" id="backButton" onclick="showHub()">← BACK TO HUB</button>
-    
-    <!-- Hub Home -->
-    <div id="hubHome">
-        <div class="hub-header">
-            <img src="Art Folder/logo0.png" alt="Abyssal Light Logo" class="hub-logo" onerror="this.style.display='none'">
-            <p>Games & Digital Experiences</p>
-        </div>
-
-        <div class="nav-grid">
-            <!-- Games Section -->
-            <div class="nav-section" id="gamesSection" onclick="toggleSection(this)">
-                <h2>GAMES</h2>
-                <p>Interactive experiences exploring the human psyche</p>
-                <div class="project-links">
-                    <a href="ego-dive.html" class="project-link">EGO/DIVE - Full Experience</a>
-                    <a href="ego-trip.html" class="project-link">EGO/TRIP - The Prelude, deep within the Furthest Reaches</a>
-                    <!-- Add more game links here -->
-                </div>
-            </div><!-- VRChat Worlds Section -->
-<div class="nav-section" id="vrchatSection" onclick="toggleSection(this)">
-    <h2>VRCHAT WORLDS</h2>
-    <p>Immersive virtual reality environments</p>
-    <div class="project-links">
-        <a href="end-with-you.html" class="project-link">End with You - Final Moments Experience</a>
-        <a href="Club-Flipside.html" class="project-link">Club Flipside - Zero Gravity Experience</a>
-        <a href="SM64W.html" class="project-link">Super Mario 64 Warfare - Chaos in the Mushroom Kingdom</a>
-        <span class="project-link">Coming Soon...</span>
-    </div>
-</div>
-
-            <!-- Art Gallery Section -->
-            <div class="nav-section" id="artSection" onclick="toggleSection(this)">
-                <h2>ART GALLERY</h2>
-                <p>Visual explorations and concept work</p>
-                <div class="project-links">
-                    <!-- Add art gallery links here -->
-                    <span class="project-link">Coming Soon...</span>
-                </div>
+    <!-- Main Hub -->
+    <div class="main-hub" id="mainHub">
+        <button class="back-button hidden" id="backButton" onclick="showHub()">← BACK TO HUB</button>
+        
+        <!-- Hub Home -->
+        <div id="hubHome">
+            <div class="hub-header">
+                <img src="Art Folder/logo0.png" alt="Abyssal Light Logo" class="hub-logo">
+                <p>Games & Digital Experiences</p>
             </div>
 
-            <!-- About Section -->
-            <div class="nav-section" onclick="showAbout()">
-                <h2>ABOUT</h2>
-                <p>Learn more about the creator</p>
+            <div class="nav-grid">
+                <!-- Games Section -->
+                <div class="nav-section" onclick="showSection('games')">
+                    <h2>GAMES</h2>
+                    <p>Interactive experiences exploring the human psyche</p>
+                </div>
+
+                <!-- VRChat Worlds Section -->
+                <div class="nav-section" onclick="showSection('vrchat')">
+                    <h2>VRCHAT WORLDS</h2>
+                    <p>Immersive virtual reality environments</p>
+                </div>
+
+                <!-- Art Gallery Section -->
+                <div class="nav-section" onclick="showSection('gallery')">
+                    <h2>ART GALLERY</h2>
+                    <p>Visual explorations and concept work</p>
+                </div>
+
+                <!-- About Section -->
+                <div class="nav-section" onclick="showAbout()">
+                    <h2>ABOUT</h2>
+                    <p>Learn more about the creator</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div class="about-section hidden" id="aboutSection">
+            <div class="profile-header">
+                <img src="Art Folder/profile-pic.jpg" alt="Profile" class="profile-pic">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">NULLXVOID</h2>
+            </div>
+
+            <div class="bio-text">
+                <p>
+                    I'm NullxVoid — or just "Null" — And I'm an amateur game designer and VRChat world and avatar creator. I specialize in crafting emotionally driven, psychologically rich experiences that blend surrealism with interactive storytelling.
+                </p>
+                <p>
+                    My work often explores identity, perception, and the uncanny, using genre fusion as a tool to challenge expectations. As a creator, I aspire to build immersive spaces that resonate deeply, provoke thought, and leave a lasting impression beyond the screen.
+                </p>
+            </div>
+
+            <div class="social-links">
+                <a href="https://x.com/Skell20XX" class="social-link">Twitter</a>
+                <a href="https://discord.gg/tAkXbESacu" class="social-link">Discord</a>
+                <a href="https://www.youtube.com/@null7198" class="social-link">YouTube</a>
+                <a href="https://github.com/NullxVoid00" class="social-link">GitHub</a>
             </div>
         </div>
     </div>
 
-    <!-- About Page -->
-    <div class="about-section hidden" id="aboutSection">
-        <div class="profile-header">
-            <img src="Art Folder/profile-pic.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
-            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">NULLXVOID</h2>
+    <!-- Games Section View -->
+    <div class="section-view" id="gamesSection">
+        <div class="section-header">
+            <h2>GAMES</h2>
+            <p>Interactive experiences exploring the human psyche</p>
         </div>
-
-        <div class="bio-text">
-            <p>
-                I'm NullxVoid — or just "Null" — And I'm an amateur game designer and VRChat world and avatar creator. I specialize in crafting emotionally driven, psychologically rich experiences that blend surrealism with interactive storytelling.
-            </p>
-            <p>
-                My work often explores identity, perception, and the uncanny, using genre fusion as a tool to challenge expectations. As a creator, I aspire to build immersive spaces that resonate deeply, provoke thought, and leave a lasting impression beyond the screen.
-            </p>
+        <div class="carousel-container">
+            <button class="carousel-nav prev" onclick="moveCarousel('games', -1)">‹</button>
+            <div class="carousel" id="gamesCarousel"></div>
+            <button class="carousel-nav next" onclick="moveCarousel('games', 1)">›</button>
         </div>
-
-        <div class="social-links">
-            <a href="#" class="https://x.com/Skell20XX">Twitter</a>
-            <a href="#" class="https://discord.gg/tAkXbESacu">Discord</a>
-            <a href="#" class="https://www.youtube.com/@null7198">YouTube</a>
-            <a href="#" class="https://github.com/NullxVoid00">GitHub</a>
-            <!-- Add more social links as needed -->
-        </div>
+        <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
-</div>
 
-<!-- Audio Elements -->
-<audio id="passwordAudio" loop>
-    <source src="audio/password-bg.mp3" type="audio/mpeg">
-</audio>
-<audio id="hubAudio" loop>
-    <source src="audio/hub-bg.mp3" type="audio/mpeg">
-</audio>
+    <!-- VRChat Section View -->
+    <div class="section-view" id="vrchatSection">
+        <div class="section-header">
+            <h2>VRCHAT WORLDS</h2>
+            <p>Immersive virtual reality environments</p>
+        </div>
+        <div class="carousel-container">
+            <button class="carousel-nav prev" onclick="moveCarousel('vrchat', -1)">‹</button>
+            <div class="carousel" id="vrchatCarousel"></div>
+            <button class="carousel-nav next" onclick="moveCarousel('vrchat', 1)">›</button>
+        </div>
+        <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
+    </div>
 
-<!-- Volume Control -->
-<div class="volume-control">
-    <label for="volumeSlider">Volume</label>
-    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
-</div>
+    <!-- Art Gallery Section View -->
+    <div class="section-view" id="gallerySection">
+        <div class="section-header">
+            <h2>ART GALLERY</h2>
+            <p>Visual explorations and concept work</p>
+        </div>
+        <div class="carousel-container">
+            <button class="carousel-nav prev" onclick="moveCarousel('gallery', -1)">‹</button>
+            <div class="carousel" id="galleryCarousel"></div>
+            <button class="carousel-nav next" onclick="moveCarousel('gallery', 1)">›</button>
+        </div>
+        <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
+    </div>
 
-<script>
-    // Audio functionality
-    const passwordAudio = document.getElementById('passwordAudio');
-    const hubAudio = document.getElementById('hubAudio');
-    const volumeSlider = document.getElementById('volumeSlider');
+    <!-- Audio Elements -->
+    <audio id="passwordAudio" loop>
+        <source src="audio/password-bg.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hubAudio" loop>
+        <source src="audio/hub-bg.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickAudio">
+        <source src="audio/Click.mp3" type="audio/mpeg">
+    </audio>
 
-    // Set initial volume
-    passwordAudio.volume = volumeSlider.value;
-    hubAudio.volume = volumeSlider.value;
+    <!-- Volume Control -->
+    <div class="volume-control">
+        <label for="volumeSlider">Volume</label>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    </div>
 
-    // Volume control
-    volumeSlider.addEventListener('input', function() {
-        passwordAudio.volume = this.value;
-        hubAudio.volume = this.value;
-    });
+    <script>
+        // Audio functionality
+        const passwordAudio = document.getElementById('passwordAudio');
+        const hubAudio = document.getElementById('hubAudio');
+        const clickAudio = document.getElementById('clickAudio');
+        const volumeSlider = document.getElementById('volumeSlider');
 
-    // Password functionality
-    const passwordInput = document.getElementById('passwordInput');
-    const passwordScreen = document.getElementById('passwordScreen');
-    const mainHub = document.getElementById('mainHub');
-    const errorMessage = document.getElementById('errorMessage');
+        // Set initial volume
+        passwordAudio.volume = volumeSlider.value;
+        hubAudio.volume = volumeSlider.value;
+        clickAudio.volume = volumeSlider.value;
 
-    function togglePassword() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        document.getElementById('passwordToggle').textContent = type === 'password' ? '' : '‍';
-    }
+        // Volume control
+        volumeSlider.addEventListener('input', function() {
+            passwordAudio.volume = this.value;
+            hubAudio.volume = this.value;
+            clickAudio.volume = this.value;
+        });
 
-    passwordInput.addEventListener('input', function() {
-        this.classList.add('typing');
-        setTimeout(() => this.classList.remove('typing'), 500);
-    });
-
-    passwordInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            checkPassword();
+        // Click sound function
+        function playClickSound() {
+            clickAudio.currentTime = 0;
+            clickAudio.play().catch(e => console.log('Click sound error:', e));
         }
-    });
 
-    function checkPassword() {
-        if (passwordInput.value === 'Neurorine') {
-            passwordScreen.classList.add('hidden');
-            // Fade out password audio
-            let fadeOut = setInterval(() => {
-                if (passwordAudio.volume > 0.01) {
-                    passwordAudio.volume -= 0.01;
-                } else {
-                    passwordAudio.pause();
-                    clearInterval(fadeOut);
-                }
-            }, 50);
-            setTimeout(() => {
-                passwordScreen.style.display = 'none';
-                mainHub.classList.add('active');
-                // Fade in hub audio
-                hubAudio.volume = 0;
-                hubAudio.play();
-                let fadeIn = setInterval(() => {
-                    if (hubAudio.volume < volumeSlider.value) {
-                        hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
+        // Add click sound to all interactive elements
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.nav-section, .project-card, .gallery-card, button, .social-link, .carousel-nav')) {
+                playClickSound();
+            }
+        });
+
+        // Password functionality
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordScreen = document.getElementById('passwordScreen');
+        const mainHub = document.getElementById('mainHub');
+        const errorMessage = document.getElementById('errorMessage');
+
+        function togglePassword() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            document.getElementById('passwordToggle').textContent = type === 'password' ? '👁' : '👁‍🗨';
+        }
+
+        passwordInput.addEventListener('input', function() {
+            this.classList.add('typing');
+            setTimeout(() => this.classList.remove('typing'), 500);
+        });
+
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function checkPassword() {
+            if (passwordInput.value === 'Neurorine') {
+                passwordScreen.classList.add('hidden');
+                // Fade out password audio
+                let fadeOut = setInterval(() => {
+                    if (passwordAudio.volume > 0.01) {
+                        passwordAudio.volume -= 0.01;
                     } else {
-                        clearInterval(fadeIn);
+                        passwordAudio.pause();
+                        clearInterval(fadeOut);
                     }
                 }, 50);
-            }, 500);
-        } else {
-            errorMessage.classList.add('show');
-            passwordInput.value = '';
-            setTimeout(() => errorMessage.classList.remove('show'), 2000);
+                setTimeout(() => {
+                    passwordScreen.style.display = 'none';
+                    mainHub.classList.add('active');
+                    // Fade in hub audio
+                    hubAudio.volume = 0;
+                    hubAudio.play();
+                    let fadeIn = setInterval(() => {
+                        if (hubAudio.volume < volumeSlider.value) {
+                            hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
+                        } else {
+                            clearInterval(fadeIn);
+                        }
+                    }, 50);
+                }, 500);
+            } else {
+                errorMessage.classList.add('show');
+                passwordInput.value = '';
+                setTimeout(() => errorMessage.classList.remove('show'), 2000);
+            }
         }
-    }
 
-    // Navigation functionality
-    function toggleSection(section) {
-        section.classList.toggle('expanded');
-    }
+        // Project data
+        const projectData = {
+            games: [
+                {
+                    title: "EGO/DIVE",
+                    description: "Full experience - A deep psychological exploration into the depths of consciousness and identity.",
+                    image: "Art Folder/GameProject1.jpg",
+                    link: "ego-dive.html"
+                },
+                {
+                    title: "EGO/TRIP",
+                    description: "The Prelude - Journey deep within the Furthest Reaches of the mind's labyrinth.",
+                    image: "Art Folder/GameProject2.jpg",
+                    link: "ego-trip.html"
+                }
+            ],
+            vrchat: [
+                {
+                    title: "End with You",
+                    description: "Final Moments Experience - Share the last moments in a world on the brink of collapse.",
+                    image: "Art Folder/VRCProject1.jpg",
+                    link: "end-with-you.html"
+                },
+                {
+                    title: "Club Flipside",
+                    description: "Zero Gravity Experience - Dance in a club where physics are just a suggestion.",
+                    image: "Art Folder/VRCProject2.jpg",
+                    link: "Club-Flipside.html"
+                },
+                {
+                    title: "Super Mario 64 Warfare",
+                    description: "Chaos in the Mushroom Kingdom - When worlds collide in unexpected ways.",
+                    image: "Art Folder/VRCProject3.jpg",
+                    link: "SM64W.html"
+                },
+                {
+                    title: "Coming Soon",
+                    description: "New worlds are being crafted in the depths of the abyss...",
+                    image: "Art Folder/VRCProject4.jpg",
+                    link: "#"
+                }
+            ],
+            gallery: [
+                { title: "Abyssal Fragment #1", description: "Digital exploration of consciousness", image: "Art Folder/GalleryProject1.jpg" },
+                { title: "Void Echo", description: "Reflections in the digital abyss", image: "Art Folder/GalleryProject2.jpg" },
+                { title: "Neural Cascade", description: "Synaptic connections visualized", image: "Art Folder/GalleryProject3.jpg" },
+                { title: "Red Shift", description: "Reality bending at the edges", image: "Art Folder/GalleryProject4.jpg" },
+                { title: "Data Stream", description: "Information flowing through the void", image: "Art Folder/GalleryProject5.jpg" },
+                { title: "Glitch Matrix", description: "When systems break down beautifully", image: "Art Folder/GalleryProject6.jpg" },
+                { title: "Digital Decay", description: "Entropy in the virtual realm", image: "Art Folder/GalleryProject7.jpg" },
+                { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Folder/GalleryProject8.jpg" },
+                { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Folder/GalleryProject9.jpg" },
+                { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Folder/GalleryProject10.jpg" }
+            ]
+        };
 
-    function showAbout() {
-        document.getElementById('hubHome').style.display = 'none';
-        document.getElementById('aboutSection').classList.remove('hidden');
-        document.getElementById('backButton').classList.remove('hidden');
-    }
+        // Carousel state
+        let carouselStates = {
+            games: { currentIndex: 0 },
+            vrchat: { currentIndex: 0 },
+            gallery: { currentIndex: 0 }
+        };
 
-    function showHub() {
-        document.getElementById('hubHome').style.display = 'block';
-        document.getElementById('aboutSection').classList.add('hidden');
-        document.getElementById('backButton').classList.add('hidden');
-    }
+        // Initialize carousels
+        function initializeCarousels() {
+            initializeCarousel('games', projectData.games);
+            initializeCarousel('vrchat', projectData.vrchat);
+            initializeCarousel('gallery', projectData.gallery, true);
+        }
 
-    // Auto-focus password input and start password audio
-    window.onload = function() {
-        passwordInput.focus();
-        passwordAudio.play().catch(error => {
-            console.log('Autoplay prevented:', error);
-            // Fallback: Play audio on first user interaction
-            document.addEventListener('click', function playAudioOnce() {
-                passwordAudio.play();
-                document.removeEventListener('click', playAudioOnce);
+        function initializeCarousel(type, data, isGallery = false) {
+            const carousel = document.getElementById(`${type}Carousel`);
+            carousel.innerHTML = '';
+            
+            data.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = isGallery ? 'gallery-card' : 'project-card';
+                
+                if (isGallery) {
+                    card.innerHTML = `
+                        <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                        <h3>${project.title}</h3>
+                        <p>${project.description}</p>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                        <div class="project-card-content">
+                            <h3>${project.title}</h3>
+                            <p>${project.description}</p>
+                        </div>
+                    `;
+                    
+                    if (project.link && project.link !== '#') {
+                        card.onclick = () => window.location.href = project.link;
+                    }
+                }
+                
+                carousel.appendChild(card);
             });
-        });
-    };
-</script></body>
-</html>
+            
+            updateCarouselPositions(type);
+        }
 
+        function updateCarouselPositions(type) {
+            const carousel = document.getElementById(`${type}Carousel`);
+            const cards = carousel.querySelectorAll('.project-card, .gallery-card');
+            const { currentIndex } = carouselStates[type];
+            const isGallery = type === 'gallery';
+            
+            cards.forEach((card, index) => {
+                const offset = index - currentIndex;
+                const absOffset = Math.abs(offset);
+                const sign = offset < 0 ? -1 : 1;
+                
+                // Position calculations (wider spacing for gallery)
+                const spacing = isGallery ? 380 : 320;
+                const translateX = offset * spacing; // Base spacing
+                const translateZ = -absOffset * 100; // Depth
+                const rotateY = sign * Math.min(absOffset * 15, 45); // Rotation
+                const scale = 1 - Math.min(absOffset * 0.2, 0.6); // Scale
+                const opacity = 1 - Math.min(absOffset * 0.3, 0.7); // Opacity
+                
+                card.style.transform = `
+                    translateX(${translateX}px) 
+                    translateZ(${translateZ}px) 
+                    rotateY(${rotateY}deg) 
+                    scale(${scale})
+                `;
+                card.style.opacity = opacity;
+                card.style.zIndex = 10 - absOffset;
+                
+                // Enable/disable interaction
+                card.style.pointerEvents = absOffset === 0 ? 'auto' : 'none';
+            });
+        }
+
+        function moveCarousel(type, direction) {
+            const data = projectData[type];
+            const state = carouselStates[type];
+            
+            state.currentIndex = Math.max(0, Math.min(data.length - 1, state.currentIndex + direction));
+            updateCarouselPositions(type);
+        }
+
+        // Section navigation
+        function showSection(sectionType) {
+            // Hide main hub
+            document.getElementById('mainHub').style.display = 'none';
+            
+            const section = document.getElementById(`${sectionType}Section`);
+            section.classList.add('active');
+        }
+
+        function closeSection() {
+            document.querySelectorAll('.section-view').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show main hub again
+            document.getElementById('mainHub').style.display = 'block';
+        }
+
+        function showAbout() {
+            document.getElementById('hubHome').style.display = 'none';
+            document.getElementById('aboutSection').classList.remove('hidden');
+            document.getElementById('backButton').classList.remove('hidden');
+        }
+
+        function showHub() {
+            document.getElementById('hubHome').style.display = 'block';
+            document.getElementById('aboutSection').classList.add('hidden');
+            document.getElementById('backButton').classList.add('hidden');
+        }
+
+        // Initialize
+        window.onload = function() {
+            passwordInput.focus();
+            initializeCarousels();
+            
+            // Try to autoplay password audio
+            passwordAudio.play().catch(error => {
+                console.log('Autoplay prevented:', error);
+                // Fallback: Play audio on first user interaction
+                document.addEventListener('click', function playAudioOnce() {
+                    passwordAudio.play();
+                    document.removeEventListener('click', playAudioOnce);
+                });
+            });
+        };
+    </script>
+</body>
+</html>
