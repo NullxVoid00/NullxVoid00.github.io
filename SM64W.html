@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Mario 64 Warfare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background-color: #f5f5f5;
+      color: #222;
+      overflow-x: hidden;
+    }
+    header {
+      background: linear-gradient(to right, #ff0000, #ffd700);
+      text-align: center;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header img {
+      max-width: 300px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      background: #222;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.8em;
+    }
+    nav a:hover {
+      color: #ffd700;
+    }
+    section {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      color: #ff0000;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border: 2px solid #222;
+      padding: 20px;
+      width: 280px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    audio {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 999;
+    }
+    .dark-toggle {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.7em;
+      z-index: 1001;
+    }
+    .dark-mode {
+      background-color: #222;
+      color: #f5f5f5;
+    }
+    .dark-mode .card {
+      background-color: #333;
+      border-color: #999;
+    }
+    .dark-mode nav {
+      background: #000;
+    }
+    .dark-mode h2 {
+      color: #ffd700;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8em;
+      padding: 20px;
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <button class="dark-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <header>
+    <img src="Art Folder/Logo.png" alt="Super Mario 64 Warfare Logo" />
+    <p>A Chaotic Mario-Themed PVP Arena Shooter!</p>
+  </header>  <nav>
+    <a href="#about">About</a>
+    <a href="#characters">Characters</a>
+    <a href="#factions">Factions</a>
+    <a href="#weapons">Weapons</a>
+    <a href="#modes">Game Modes</a>
+    <a href="#hangout">Hangout</a>
+  </nav>  <section id="about">
+    <h2>About the Game</h2>
+    <p>Welcome to Super Mario 64 Warfare! Dive into an epic PVP shooter set in iconic levels from the classic game. Battle it out with Mario-themed guns, explore dynamic stages, hang out in fun areas like Luigi's Casino, and experience remixed classic tunes. Customize your playstyle and let the chaos begin!</p>
+  </section>  <section id="characters">
+    <h2>Characters</h2>
+    <div class="grid">
+      <div class="card"><img src="Art Folder/MCharacters1.png" alt="Mario" /><p>Mario</p></div>
+      <div class="card"><img src="Art Folder/MCharacters2.png" alt="Luigi" /><p>Luigi</p></div>
+      <div class="card"><img src="Art Folder/MCharacters3.png" alt="Wario" /><p>Wario</p></div>
+      <div class="card"><img src="Art Folder/MCharacters4.png" alt="Waluigi" /><p>Waluigi</p></div>
+      <div class="card"><img src="Art Folder/MCharacters5.png" alt="Yoshi" /><p>Yoshi</p></div>
+      <div class="card"><img src="Art Folder/MCharacters6.png" alt="Peach" /><p>Peach</p></div>
+    </div>
+  </section>  <section id="factions">
+    <h2>Factions</h2>
+    <p>Choose from unique factions including Team Mario, Team Koopa, Team Wario, Team Shyguy, and the mysterious Team Black Hat. Each group has its own style and strategy in the fight for Mushroom Kingdom domination.</p>
+  </section>  <section id="weapons">
+    <h2>Weapons</h2>
+    <div class="grid">
+      <div class="card"><img src="Art Folder/MWeapons1.png" alt="Pellet Gun" /><p>Piranha Plant Pellet Gun<br/>Ammo: 30 | Damage: 35</p></div>
+      <div class="card"><img src="Art Folder/MWeapons2.png" alt="Sniper" /><p>Piranha Plant Pellet Sniper<br/>Ammo: 1 | Damage: 200–700</p></div>
+      <div class="card"><img src="Art Folder/MWeapons3.png" alt="Spark Pistol" /><p>Spark Pistol<br/>Ammo: 6 | Damage: 70</p></div>
+      <div class="card"><img src="Art Folder/MWeapons4.png" alt="Bob-Omb Launcher" /><p>Bob-Omb Launcher<br/>Ammo: 3 | Damage: 100</p></div>
+      <div class="card"><img src="Art Folder/MWeapons5.png" alt="Bill Blammer" /><p>Bill Blammer<br/>Ammo: 1 | Damage: 200</p></div>
+      <div class="card"><img src="Art Folder/MWeapons6.png" alt="L.L.U.D" /><p>L.L.U.D<br/>Ammo: 100 | Damage: 15</p></div>
+      <div class="card"><img src="Art Folder/MWeapons7.png" alt="POW Hammer" /><p>POW Hammer<br/>Ammo: X | Damage: 70</p></div>
+      <div class="card"><img src="Art Folder/MWeapons8.png" alt="Wonder Brush" /><p>Wonder Brush<br/>Various Effects</p></div>
+    </div>
+  </section>  <section id="modes">
+    <h2>Game Modes</h2>
+    <div class="grid">
+      <div class="card"><img src="Art Folder/MGameModes1.png" alt="Game Mode 1" /><p>Modes TBA</p></div>
+    </div>
+  </section>  <section id="hangout">
+    <h2>Hangout & Special Areas</h2>
+    <p>Relax in the colorful hangout hub, listen to music, and explore hidden places like Luigi’s Casino. More secret spots and interactable elements await those who explore!</p>
+    <div class="grid">
+      <div class="card"><img src="Art Folder/MStages1.png" alt="Luigi's Casino" /><p>Luigi's Casino</p></div>
+    </div>
+  </section>  <audio controls autoplay loop>
+    <source src="audio/Mario.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>  <footer>
+    Created by Null | Super Mario 64 Warfare | Fan Project
+  </footer>  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script></body>
+</html>
+

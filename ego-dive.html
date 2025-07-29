@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EGO/DIVE - A Journey Through Fractured Minds</title>
+    <title>EGO/DIVE - Journey Through Absentia</title>
     <style>
         * {
             margin: 0;
@@ -15,11 +15,13 @@
             --primary-black: #0a0a0a;
             --primary-white: #f0f0f0;
             --accent-red: #dc143c;
+            --accent-red-dark: #8b0000;
             --accent-blue: #4169e1;
             --accent-pink: #ff69b4;
             --accent-green: #32cd32;
             --accent-purple: #9370db;
             --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            --glow-shadow: 0 0 20px rgba(220,20,60,0.5);
         }
 
         body {
@@ -28,6 +30,33 @@
             color: var(--primary-white);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Blood Rain Effect */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .blood-drop {
+            position: absolute;
+            width: 2px;
+            height: 15px;
+            background: linear-gradient(to bottom, transparent, rgba(220,20,60,0.6));
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
         }
 
         /* Glitch effect */
@@ -56,13 +85,14 @@
 
         /* Navigation */
         nav {
-            background: linear-gradient(180deg, rgba(10,10,10,1) 0%, rgba(10,10,10,0.8) 100%);
+            background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.8) 100%);
             padding: 1rem;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(220,20,60,0.3);
         }
 
         nav ul {
@@ -82,6 +112,7 @@
             transition: all 0.3s ease;
             position: relative;
             font-family: inherit;
+            padding: 0.5rem 1rem;
         }
 
         nav button:hover, nav button.active {
@@ -89,11 +120,24 @@
             animation: glitch 0.3s infinite;
         }
 
+        nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-red);
+            box-shadow: var(--glow-shadow);
+        }
+
         /* Content Sections */
         .content-section {
             display: none;
             min-height: 100vh;
             padding-top: 80px;
+            position: relative;
+            z-index: 2;
         }
 
         .content-section.active {
@@ -113,16 +157,18 @@
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(4rem, 10vw, 8rem);
             margin-bottom: 1rem;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.3em;
             text-shadow: var(--text-shadow);
+            animation: glitch 3s infinite;
         }
 
         .hero .subtitle {
-            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(1.2rem, 3vw, 2rem);
             opacity: 0.8;
             margin-bottom: 2rem;
+            letter-spacing: 0.1em;
         }
 
         /* Section Styling */
@@ -133,11 +179,12 @@
         }
 
         .section-title {
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: clamp(2.5rem, 6vw, 4rem);
             text-align: center;
             margin-bottom: 3rem;
             position: relative;
             padding-bottom: 1rem;
+            letter-spacing: 0.1em;
         }
 
         .section-title::after {
@@ -146,50 +193,56 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
+            width: 150px;
             height: 3px;
             background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            box-shadow: var(--glow-shadow);
         }
 
-        /* Game Cards */
-        .game-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .game-card {
+        /* Info Cards */
+        .info-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 10px;
             padding: 2rem;
+            margin: 2rem 0;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .game-card:hover {
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220,20,60,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .info-card:hover::before {
+            left: 100%;
+        }
+
+        .info-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(220,20,60,0.3);
             border-color: var(--accent-red);
         }
 
-        .game-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: var(--accent-red);
-        }
-
         /* Character Grid with Flip Cards */
         .character-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
             margin-bottom: 3rem;
         }
 
         .character-card {
-            height: 250px;
+            height: 300px;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -215,35 +268,31 @@
             backface-visibility: hidden;
             background: rgba(255,255,255,0.05);
             border: 2px solid transparent;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .character-card:hover .character-card-front,
         .character-card:hover .character-card-back {
             border-color: var(--accent-color, var(--accent-red));
+            box-shadow: 0 0 20px var(--accent-color, var(--accent-red));
         }
 
         .character-card-back {
             transform: rotateY(180deg);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
         }
 
         .character-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .character-card h4 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            border-radius: 8px;
         }
 
         /* Color coding for characters */
@@ -254,29 +303,31 @@
         .neuro { --accent-color: #dc143c; }
         .cicero { --accent-color: #191970; }
 
-        /* Boss Section */
-        .boss-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        /* Layer Cards */
+        .layer-grid {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        .boss-item {
-            background: rgba(255,255,255,0.05);
-            padding: 1.5rem;
-            border-left: 4px solid var(--accent-red);
+        .layer-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 2rem;
             transition: all 0.3s ease;
         }
 
-        .boss-item:hover {
-            background: rgba(255,255,255,0.1);
-            padding-left: 2rem;
+        .layer-card:hover {
+            transform: translateX(10px);
+            border-color: var(--accent-red);
+            box-shadow: -5px 5px 20px rgba(220,20,60,0.3);
         }
 
-        /* Features List */
+        /* Features Grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -285,208 +336,266 @@
             display: flex;
             align-items: start;
             gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255,255,255,0.07);
+            transform: translateY(-3px);
         }
 
         .feature-icon {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background: var(--accent-red);
-            border-radius: 50%;
+            border-radius: 10px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-        }
-
-        /* Story Themes */
-        .theme-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .theme-card {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            padding: 2rem;
-            flex: 1;
-            min-width: 250px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .theme-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-red);
-            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+            font-size: 1.5rem;
+            box-shadow: 0 0 15px rgba(220,20,60,0.5);
         }
 
         /* Red Shard Animation */
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
         }
 
         .red-shard {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            margin: 2rem auto;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 0 50px var(--accent-red);
+            margin: 3rem auto;
+            animation: float 4s ease-in-out infinite;
+            box-shadow: 0 0 60px var(--accent-red);
         }
 
-        /* Gameplay Sections */
-        .gameplay-info {
+        /* Spoiler Section */
+        .spoiler-lock {
             background: rgba(255,255,255,0.05);
+            border: 2px solid var(--accent-red);
             border-radius: 10px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .gameplay-info h4 {
-            color: var(--accent-red);
-            margin-bottom: 1rem;
-        }
-
-        /* Room Type Grid */
-        .room-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .room-type {
+            padding: 3rem;
             text-align: center;
-            padding: 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            border: 2px solid var(--room-color);
+            margin: 3rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        /* Art Gallery Slideshow */
-        .slideshow-container {
-            position: relative;
-            max-width: 1000px;
-            margin: 2rem auto;
-            height: 600px;
-            overflow: hidden;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        .spoiler-lock:hover {
+            background: rgba(220,20,60,0.1);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(220,20,60,0.5);
         }
 
-        .slide {
+        .spoiler-content {
             display: none;
-            position: absolute;
+        }
+
+        .spoiler-content.unlocked {
+            display: block;
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-button {
+            background: none;
+            border: none;
+            color: var(--primary-white);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .audio-button:hover {
+            color: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-red);
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(220,20,60,0.8);
+        }
+
+        /* Modal for Password */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            align-items: center;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
             justify-content: center;
+            align-items: center;
         }
 
-        .slide.active {
+        .modal.active {
             display: flex;
         }
 
-        .slide img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        /* Diagonal slide animation */
-        @keyframes slideInDiagonal {
-            from {
-                transform: translate(100%, -100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutDiagonal {
-            from {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-            to {
-                transform: translate(-100%, 100%);
-                opacity: 0;
-            }
-        }
-
-        .slide.sliding-in {
-            animation: slideInDiagonal 0.5s ease-out forwards;
-        }
-
-        .slide.sliding-out {
-            animation: slideOutDiagonal 0.5s ease-out forwards;
-        }
-
-        /* Diagonal Arrow Buttons */
-        .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: 60px;
-            height: 60px;
-            margin-top: -30px;
-            background: rgba(220,20,60,0.7);
-            color: white;
-            font-weight: bold;
-            font-size: 24px;
-            border: none;
-            transform: rotate(45deg);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .prev span, .next span {
-            transform: rotate(-45deg);
-        }
-
-        .prev {
-            left: 20px;
-        }
-
-        .next {
-            right: 20px;
-        }
-
-        .prev:hover, .next:hover {
-            background: var(--accent-red);
-            transform: rotate(45deg) scale(1.1);
-            box-shadow: 0 0 20px rgba(220,20,60,0.8);
-        }
-
-        /* Slide Counter */
-        .slide-counter {
+        .modal-content {
+            background: rgba(10,10,10,0.95);
+            border: 2px solid var(--accent-red);
+            border-radius: 10px;
+            padding: 3rem;
             text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
             color: var(--primary-white);
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            opacity: 0.8;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-red);
+            transform: rotate(90deg);
+        }
+
+        /* Combat Grid Visual */
+        .combat-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .grid-cell.party {
+            background: rgba(65,105,225,0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .grid-cell.enemy {
+            background: rgba(220,20,60,0.3);
+            border-color: var(--accent-red);
+        }
+
+        /* Side Character Cards */
+        .side-character-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .side-character-card {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-height: 200px;
+        }
+
+        .side-character-card:hover {
+            border-color: var(--accent-red);
+            box-shadow: 0 5px 20px rgba(220,20,60,0.3);
+            transform: translateX(5px);
+        }
+
+        .side-character-info {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .side-character-info h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-red);
+        }
+
+        .side-character-info p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .side-character-image-container {
+            width: 250px;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .side-character-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
             nav ul {
-                gap: 1rem;
+                gap: 0.5rem;
                 font-size: 0.9rem;
             }
 
             nav button {
+                padding: 0.3rem 0.5rem;
                 font-size: 0.9rem;
             }
 
@@ -494,30 +603,51 @@
                 padding: 2rem 1rem;
             }
 
-            .game-container {
-                grid-template-columns: 1fr;
-            }
-
             .character-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .theme-card {
-                min-width: 100%;
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audio-controls {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .side-character-card {
+                flex-direction: column;
+            }
+
+            .side-character-image-container {
+                width: 100%;
+                height: 200px;
+                border-left: none;
+                border-top: 2px solid rgba(255,255,255,0.1);
+                order: -1;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Blood Rain Effect -->
+    <div class="rain-container" id="rainContainer"></div>
+
     <!-- Navigation -->
     <nav>
         <ul>
             <li><button onclick="showSection('home')" class="active">HOME</button></li>
-            <li><button onclick="showSection('ego-trip')">EGO/TRIP</button></li>
-            <li><button onclick="showSection('ego-dive')">EGO/DIVE</button></li>
-            <li><button onclick="showSection('characters')">CHARACTERS</button></li>
-            <li><button onclick="showSection('story')">STORY & WORLD</button></li>
-            <li><button onclick="showSection('art')">ART</button></li>
+            <li><button onclick="showSection('world')">WORLD</button></li>
+            <li><button onclick="showSection('fragments')">FRAGMENTS</button></li>
+            <li><button onclick="showSection('mechanics')">MECHANICS</button></li>
+            <li><button onclick="showSection('journey')">JOURNEY</button></li>
+            <li><button onclick="showSection('spoilers')">SECRETS</button></li>
         </ul>
     </nav>
 
@@ -525,180 +655,407 @@
     <div id="home" class="content-section active">
         <div class="hero">
             <h1>EGO/DIVE</h1>
-            <p class="subtitle">A Journey Through the Fractured Psyche</p>
+            <p class="subtitle">Journey Through the Fractured Psyche</p>
             <div class="red-shard"></div>
-            <p>Two games. One shattered mind. Infinite possibilities.</p>
+            <p style="font-size: 1.2rem; opacity: 0.8; max-width: 800px;">
+                When trauma shatters the mind, the pieces don't disappear. They take form, build worlds, and struggle with purpose. 
+                As Null, the hollow core of what once was whole, you must navigate Absentia and decide the fate of your scattered self.
+            </p>
         </div>
         
         <div class="section-content">
-            <h2 class="section-title">ENTER THE MIND</h2>
-            <div class="game-container">
-                <div class="game-card">
-                    <h3>EGO/TRIP</h3>
-                    <p><strong>Platform:</strong> VRChat</p>
-                    <p><strong>Genre:</strong> Multiplayer VR Roguelite</p>
-                    <p><strong>Players:</strong> 1-4 Co-op</p>
-                    <p style="margin-top: 1rem;">A VRChat roguelite RPG serving as a prelude to Ego/Dive. Control Null and echo fragments through randomized dungeons within the mysterious Red Shard. Features permanent Remnant upgrades, multiple endings based on party composition, and a hub area called Mender's Bar.</p>
-                </div>
-                
-                <div class="game-card">
-                    <h3>EGO/DIVE</h3>
-                    <p><strong>Platform:</strong> PC (More TBA)</p>
-                    <p><strong>Genre:</strong> Psychological Adventure RPG</p>
-                    <p><strong>Players:</strong> Single-player</p>
-                    <p style="margin-top: 1rem;">After an incident leaves their host comatose, personality fragments split into the subconscious world of Absentia. As Null, dive through seven distinct layers, choosing to help, ignore, or forcefully absorb the fragments. Features fusion mechanics, strategic grid combat, and three major story routes.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ego/Trip Section -->
-    <div id="ego-trip" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">EGO/TRIP</h2>
-            <p style="text-align: center; margin-bottom: 2rem; opacity: 0.8;">
-                "This space, contained within a crimson crystal called the Red Shard, serves as a sort of waiting room between consciousness and deeper unconsciousness."
-            </p>
+            <h2 class="section-title">WHAT IS EGO/DIVE?</h2>
             
-            <div class="gameplay-info">
-                <h4>Core Gameplay Loop</h4>
-                <p>Start each run at Mender's Bar, select your character and Remnant loadout, then venture into procedurally generated dungeons. Fight enemies, collect items, defeat bosses, and unlock permanent upgrades. Runs increase in length as you progress: 20→40→60→80→100 rooms.</p>
+            <div class="info-card">
+                <h3 style="color: var(--accent-red); margin-bottom: 1rem;">A Psychological Journey</h3>
+                <p>After an incident leaves their host in a comatose state, the main fragments of their personality split off into a subconscious world named "Absentia." Each Fragment has built their own layer, developed their own personality, and struggles with their own demons. As Null, you must dive through seven distinct layers, choosing to help and understand the fragments, ignore their plights and remain a husk, or forcefully absorb them - with each path leading to vastly different outcomes.</p>
             </div>
 
-            <h3 style="color: var(--accent-red); margin: 2rem 0 1rem;">Room Types</h3>
-            <div class="room-types">
-                <div class="room-type" style="--room-color: #dc143c;">
-                    <strong>Red Rooms</strong>
-                    <p>Combat challenges</p>
-                </div>
-                <div class="room-type" style="--room-color: #32cd32;">
-                    <strong>Green Rooms</strong>
-                    <p>Story encounters</p>
-                </div>
-                <div class="room-type" style="--room-color: #4169e1;">
-                    <strong>Blue Rooms</strong>
-                    <p>Rest areas</p>
-                </div>
-                <div class="room-type" style="--room-color: #ffd700;">
-                    <strong>Yellow Rooms</strong>
-                    <p>Shops</p>
-                </div>
-                <div class="room-type" style="--room-color: #9370db;">
-                    <strong>Purple Rooms</strong>
-                    <p>Boss battles</p>
-                </div>
-                <div class="room-type" style="--room-color: #ffffff;">
-                    <strong>White Rooms</strong>
-                    <p>Return to lobby</p>
-                </div>
-            </div>
-
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">Game Systems</h3>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">⚔️</div>
-                    <div>
-                        <strong>Risk/Reward Leveling</strong>
-                        <p>Gain XP by defeating enemies, but lose it when hit. Max level 5 per run with enhanced abilities at each level.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">💎</div>
-                    <div>
-                        <strong>Remnant System</strong>
-                        <p>Collect emotional remnants for permanent upgrades. Low, Mid, and High grade remnants provide different benefits.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🎯</div>
-                    <div>
-                        <strong>Quest System</strong>
-                        <p>Mender offers 3 optional objectives per run, providing extra rewards and story context.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📦</div>
-                    <div>
-                        <strong>Inventory Management</strong>
-                        <p>Limited slots (4-8 items) during runs. Store up to 30 items permanently at Mender's Bar.</p>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">The Labyrinth's Corrupted</h3>
-            <div class="boss-list">
-                <div class="boss-item">
-                    <h4>The Serpent</h4>
-                    <p>A giant snake coiled in the sky. Players walk along its back destroying weak points while avoiding spikes and flying enemies. The sky swirls red with intense music.</p>
-                </div>
-                <div class="boss-item">
-                    <h4>The Queen</h4>
-                    <p>A headless Victorian woman with rotating arms as platforms. Her decapitated head flies around attacking while players scale the hands to reach weak points.</p>
-                </div>
-                <div class="boss-item">
-                    <h4>The Charade</h4>
-                    <p>A suited entity with 3 floating masks. Break them in order: Sadness→Anger→Happiness. Each mask changes the battlefield differently.</p>
-                </div>
-                <div class="boss-item">
-                    <h4>The Moon</h4>
-                    <p>Controls an endless ocean below while shifting phases. Eventually lowers to player level, holding itself with water hands for attack opportunities.</p>
-                </div>
-                <div class="boss-item">
-                    <h4>The Self (N_)</h4>
-                    <p>A white hooded figure with a Hulking Shadow. Mimics fragment abilities while the Shadow assists with projectiles and swipes.</p>
-                </div>
-                <div class="boss-item">
-                    <h4>Mender (Secret Boss)</h4>
-                    <p>The bartender himself. Quick, agile, with area attacks and the ability to separate players for one-on-one combat.</p>
-                </div>
-            </div>
-
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">Multiple Endings</h3>
-            <div class="gameplay-info">
-                <p>Your ending depends on party composition and notes collected:</p>
-                <ul>
-                    <li><strong>Husk Ending:</strong> Null Solo - Return to repeat the labyrinth indefinitely</li>
-                    <li><strong>Obsession Ending:</strong> Null + L_ - Stay in pursuit of meaning never found</li>
-                    <li><strong>Narcissist Ending:</strong> Null + M_ - Remain to collect riches forever</li>
-                    <li><strong>Coward Ending:</strong> Null + D_ - Freeze in terror, never leave again</li>
-                    <li><strong>Missing Ending:</strong> All fragments - Attempt breakthrough for eternity</li>
-                    <li><strong>True Ending:</strong> All fragments + All notes - Shatter the Red Shard and begin the true journey</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ego/Dive Section -->
-    <div id="ego-dive" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">EGO/DIVE</h2>
-            <p style="text-align: center; margin-bottom: 2rem; opacity: 0.8;">
-                "The main fragments of their personality split off into a subconscious world named Absentia."
-            </p>
-
-            <h3 style="color: var(--accent-red); margin-bottom: 1rem;">The World of Absentia</h3>
-            <div class="gameplay-info">
-                <p>A layered space where fragments exist after traumatic splitting. Shaped like an egg with segments stacking top to bottom. Each fragment has a domain reflecting their personality and inner state. The environment can be altered by fragments with sufficient willpower.</p>
-                
-                <h4 style="margin-top: 2rem;">The Seven Layers:</h4>
-                <ol>
-                    <li><strong>Null's Layer:</strong> Bleak minimalist realm with black, white, and gray. Weak creatures populate the empty landscape.</li>
-                    <li><strong>Dolor's Layer:</strong> Geometric fortress prison with calming sanctuary interior. Fragile creatures and dangerous Mares outside.</li>
-                    <li><strong>Midas' Layer (Ambrosia):</strong> Bustling green-hued city of eternal night. Insomnia tower casts shadows over hedonistic pleasures.</li>
-                    <li><strong>Limerence's Layer:</strong> Pitch black with a solitary theater. Backstage reflects isolation while shadowy audiences fill the seats.</li>
-                    <li><strong>Neuro's Layer:</strong> Graveyard raining discarded memories from crimson skies. Bodies constantly arise as Neuro tries to keep them buried.</li>
-                    <li><strong>Subconscious Layer:</strong> Wild abstract architecture with no ruling fragment. Hostile and ever-changing.</li>
-                    <li><strong>The Lighthouse:</strong> Purple ocean with red sunset sky. The lighthouse floats alone, its interior changing based on your journey.</li>
-                </ol>
-            </div>
-
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">Core Mechanics</h3>
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon">🎭</div>
                     <div>
-                        <strong>Fusion System</strong>
-                        <p>Two fragments combine into new beings with blended traits. Each fusion has unique personality, abilities, and appearance.</p>
+                        <strong>Fragment System</strong>
+                        <p>Six main personality fragments, each with unique abilities, weapons, and emotional cores</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌀</div>
+                    <div>
+                        <strong>Fusion Mechanics</strong>
+                        <p>Combine fragments into powerful new forms with blended personalities and abilities</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚔️</div>
+                    <div>
+                        <strong>Strategic Combat</strong>
+                        <p>Position-based grid battles requiring tactical thinking and timing</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <div>
+                        <strong>Time Loop System</strong>
+                        <p>Certain events trigger resets, but some beings remember...</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💭</div>
+                    <div>
+                        <strong>Reality Manipulation</strong>
+                        <p>Fragments can alter Absentia through willpower and emotion</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌈</div>
+                    <div>
+                        <strong>Three Paths</strong>
+                        <p>Self-Acceptance, Repeat Pain, or Self-Destruction - your choice shapes everything</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- World Section -->
+    <div id="world" class="content-section">
+        <div class="section-content">
+            <h2 class="section-title">THE WORLD OF ABSENTIA</h2>
+            <p style="text-align: center; margin-bottom: 3rem; opacity: 0.8;">
+                A layered space where fragments exist after traumatic splitting, shaped like an egg with segments stacking from top to bottom.
+            </p>
+
+            <div class="layer-grid">
+                <div class="layer-card">
+                    <h3 style="color: #ffffff;">Layer 1: Null's Domain</h3>
+                    <p>A bleak, minimalist realm painted in black, white, and shades of gray. Weak, harmless creatures populate this empty landscape where Null first awakens. The starting point of all journeys, representative of the hollow state left behind after fracturing.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: var(--accent-blue);">Layer 2: Dolor's Prison Fortress</h3>
+                    <p>Geometric shapes float around an imposing prison exterior, remnants of Dolor's power experiments. Inside, a calming sanctuary contradicts the fortress appearance. Fragile creatures wander outside while dangerous Mares lurk in shadows. Dolor hides within, protected by the loyal knight Bolster.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: var(--accent-green);">Layer 3: Midas' Ambrosia</h3>
+                    <p>A bustling, green-hued city of eternal night where hedonistic pleasures mask darker truths. The towering Insomnia club casts both literal and figurative shadows. Once Midas' paradise, now corrupted and controlled by the Demi-Mare pop idol Flourish.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: var(--accent-pink);">Layer 4: Limerence's Theater</h3>
+                    <p>Pitch black realm with a solitary theater providing the only light. Traditional stage filled with shadowy audience silhouettes. Backstage reflects isolation while the virtual forest Aldora hides deeper horrors - endless battles with dark copies of Limerence himself.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: var(--accent-red);">Layer 5: Neuro's Graveyard</h3>
+                    <p>A bleak domain where discarded memories rain from crimson skies as static bodies. Neuro constantly tries to bury the rising dead, representing Null's rejected traumas. Unlike others, Neuro remembers between resets, using this knowledge to test visitors harshly.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: var(--accent-purple);">Layer 6: Subconscious Chaos</h3>
+                    <p>Wild, abstract architecture with no ruling fragment. A hostile environment where the rules of reality bend and break. The only layer without a direct creator, representing the untamed depths of the psyche. Navigation requires all fragments working together.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h3 style="color: #ffd700;">Layer 7: The Lighthouse</h3>
+                    <p>A purple ocean beneath red sunset skies. The lighthouse floats alone on a small island, always active. Its interior transforms based on your journey - the final destination where all paths converge and ultimate truths await.</p>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 3rem;">
+                <h3 style="color: var(--accent-red);">Key Concepts</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                    <div>
+                        <h4>Red Shards & Pools</h4>
+                        <p>Connection points between spaces. Serve as checkpoints and save points. Shatter into pools when activated.</p>
+                    </div>
+                    <div>
+                        <h4>Mares & Demi-Mares</h4>
+                        <p>Corrupted beings born from negative emotions. Mares are mindless, while Demi-Mares retain partial control.</p>
+                    </div>
+                    <div>
+                        <h4>Cicero's Elevator</h4>
+                        <p>Non-euclidean transport between layers. Reach extends with more fragments present.</p>
+                    </div>
+                    <div>
+                        <h4>Drowning Events</h4>
+                        <p>Extreme despair causes tears to flood entire spaces, triggering world resets.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fragments Section -->
+    <div id="fragments" class="content-section">
+        <div class="section-content">
+            <h2 class="section-title">FRAGMENTS OF THE SELF</h2>
+            
+            <h3 style="text-align: center; margin-bottom: 2rem;">Main Fragments</h3>
+            <div class="character-grid">
+                <div class="character-card null" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>NULL</h4>
+                            <p><strong>The Hollow Core</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Knuckle Knives</p>
+                            <p style="font-size: 0.85rem;">Ability: Aleph Null (Rage)</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Empty vessel seeking wholeness, adaptable but lacking identity</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="null-dive-image.jpg" alt="Null" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-card dolor" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>DOLOR</h4>
+                            <p><strong>The Sensitive Soul</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Force Field Ripples</p>
+                            <p style="font-size: 0.85rem;">Forms: Ire (Red), Voluptus (Yellow)</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Depression and hidden rage, creator of fragile sanctuary</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="dolor-image.jpg" alt="Dolor" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-card midas" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>MIDAS</h4>
+                            <p><strong>The Hedonist</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Shotgun Bat</p>
+                            <p style="font-size: 0.85rem;">Ability: Enhanced When Drunk</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Creator of Ambrosia, now masked vigilante seeking redemption</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="midas-image.jpg" alt="Midas" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-card limerence" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>LIMERENCE</h4>
+                            <p><strong>The Obsessive</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Scythe-Halberd</p>
+                            <p style="font-size: 0.85rem;">Ability: Hooks & Wires</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Charismatic showman hiding destructive love patterns</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="limerence-image.jpg" alt="Limerence" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-card neuro" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>NEURO</h4>
+                            <p><strong>The Rejected</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Serrated Shovel</p>
+                            <p style="font-size: 0.85rem;">Ability: Memory Retention</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Discarded trauma, remembers resets, tests others harshly</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="neuro-image.jpg" alt="Neuro" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="character-card cicero" onclick="flipCard(this)">
+                    <div class="character-card-inner">
+                        <div class="character-card-front">
+                            <h4>CICERO</h4>
+                            <p><strong>The Guide</strong></p>
+                            <p style="font-size: 0.85rem;">Weapon: Knowledge Book</p>
+                            <p style="font-size: 0.85rem;">Ability: Mindset Fusion</p>
+                            <p style="font-size: 0.75rem; margin-top: 1rem;">Dog-faced keeper of memories, guides from elevator sanctuary</p>
+                        </div>
+                        <div class="character-card-back">
+                            <img class="character-image" src="cicero-image.jpg" alt="Cicero" onerror="this.style.display='none'">
+                            <p>Click to flip back</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 3rem 0 2rem;">Fusion Forms</h3>
+            <div class="info-card">
+                <p style="text-align: center; margin-bottom: 2rem;">When two fragments combine, they create entirely new beings with blended traits:</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <strong style="color: #6495ed;">Detox (Dolor + Midas)</strong>
+                        <p>Seeks balance between indulgence and restraint</p>
+                    </div>
+                    <div>
+                        <strong style="color: #9370db;">Forlorn (Dolor + Limerence)</strong>
+                        <p>Paralyzed by self-doubt and dark fantasies</p>
+                    </div>
+                    <div>
+                        <strong style="color: #ff1493;">Heyday (Limerence + Midas)</strong>
+                        <p>Unrestrained enthusiasm for life's pleasures</p>
+                    </div>
+                    <div>
+                        <strong style="color: #8b0000;">Manic (Neuro + Limerence)</strong>
+                        <p>Wild mood swings and shocking extremes</p>
+                    </div>
+                    <div>
+                        <strong style="color: #2f4f4f;">Usurper (Neuro + Midas)</strong>
+                        <p>Ruthless ambition with charismatic facade</p>
+                    </div>
+                    <div>
+                        <strong style="color: #483d8b;">Marionette (Neuro + Dolor)</strong>
+                        <p>Lethargic puppet controlling invisible strings</p>
+                    </div>
+                    <div>
+                        <strong style="color: #b22222;">Apollyon (Neuro + Ire)</strong>
+                        <p>Most powerful fusion, unstable rage incarnate</p>
+                    </div>
+                    <div>
+                        <strong style="color: #696969;">Accord (Null + Neuro)</strong>
+                        <p>Consensual fusion guided by harsh reason</p>
+                    </div>
+                    <div>
+                        <strong style="color: #000000;">Collapse (3+ Fragments)</strong>
+                        <p>Completely unstable, rapidly deteriorating</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 3rem 0 2rem;">Supporting Cast</h3>
+            <div class="side-character-grid">
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>VOID</h4>
+                        <p>The most loyal companion in all of Absentia, Void manifested as a Figment - an embodiment of the host's beloved pet and their sole source of true vulnerable connection. Unlike the Fragments, Void maintains an almost dog-like demeanor, reflecting his origins.</p>
+                        <p>Armed with a knife he carries in his mouth, Void provides crucial emotional support and moral grounding for Null's journey. His unwavering compassion and innocence represent the host's lost capacity for trust and connection - qualities essential for becoming whole.</p>
+                        <p>As a Figment rather than Fragment, Void uniquely cannot be corrupted by Neuro's base abilities, though he remains susceptible to becoming a Mare. His inquisitive nature often helps uncover things others would miss.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="void-image.jpg" alt="Void" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>IDALIA</h4>
+                        <p>A powerful Figment and guardian of Absentia, Idalia appears as a red-haired, porcelain-skinned figure with mannequin-like joints and no facial features. She alone controls the resets of Absentia and retains memories between loops - a burden that has cost her sanity over countless cycles.</p>
+                        <p>Once living near Absentia's center with Limerence, she made the painful choice to leave him, understanding that staying would perpetuate their illusory existence. She gave him Aldora as both a gift of self-discovery and a replacement for their shared fantasy.</p>
+                        <p>Now aligned with Neuro in his harsh methods, Idalia believes that sometimes the cruelest truths are necessary for growth. Despite her lost faith in the fragments' ability to save themselves, she remains highly empathetic and intelligent, serving as arbiter of this fractured world.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="idalia-image.jpg" alt="Idalia" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>BOLSTER</h4>
+                        <p>A bird-like knight in blue armor, Bolster is Dolor's most devoted protector and closest friend. Created in Dolor's moment of desperate need when his tears threatened to drown him, Bolster embodies unwavering loyalty despite his quirky, clumsy nature.</p>
+                        <p>Taking himself extremely seriously, Bolster vows to protect not just Dolor but everyone in their layer from outsiders. A prominent scar marks his face - a reminder of when Dolor's Ire form struck him in an overwhelmed state. This incident led Dolor to lock Bolster out of the prison for his own safety.</p>
+                        <p>Bolster views Dolor as both a parental figure and a child needing protection. Despite his knightly duties, he secretly wishes he could join Skim and Parlor's podcast crew, revealing a more playful side beneath his serious exterior.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="bolster-image.jpg" alt="Bolster" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>FLOURISH</h4>
+                        <p>A Demi-Mare with green skin and pink hair, Flourish wears a white horned theater mask - now half-cracked after her confrontation with Midas. Once a poor street child in Ambrosia, she witnessed her mother's descent into Mare corruption during the city's fall.</p>
+                        <p>Forced to kill her own transformed mother in self-defense, this trauma triggered Flourish's partial Mare transformation. Retaining her sanity but gaining immense power, she leveraged her new abilities to dominate the entertainment industry as a hypnotic pop idol.</p>
+                        <p>Now controlling Insomnia tower through mind-controlled victims and strategic cunning, Flourish harbors deep resentment toward Midas for neglecting the city's vulnerable during his hedonistic reign. Her motivations blend justified anger, past trauma, and the corruption of her Demi-Mare nature.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="flourish-image.jpg" alt="Flourish" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>SKIM & PARLOR</h4>
+                        <p>The dynamic podcasting duo of Ambrosia, these super fans turned journalists chronicle their city's stories from their trusty van. Skim appears as a green germ-like fellow wearing a red hoodie that covers his lower face and a barret, while Parlor is a short purple cat with red eyes and a green hoodie who serves as the show's main host.</p>
+                        <p>Both idolize Midas and have followed his career since his glory days. Now they unknowingly track the masked vigilante cleaning up the streets - never realizing it's their fallen idol himself. Their genuine love for their city and its people drives their reporting.</p>
+                        <p>While they can seem naive to some, their dedication to uncovering truth and spreading information makes them valuable allies. They view the fragments as Midas' extended family, referring to them as his "brothers" in their coverage.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="skim-parlor-image.jpg" alt="Skim & Parlor" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="side-character-card">
+                    <div class="side-character-info">
+                        <h4>MIMI</h4>
+                        <p>A young girl appearing only as a black silhouette, Mimi clutches a worn teddy bear given to her by Limerence. As one of the few truly aware occupants of Limerence's theater, she remains trapped within its walls, more conscious than her fellow audience members.</p>
+                        <p>Once a devoted fan of both Limerence and Idalia's performances, Mimi was devastated when their shows suddenly stopped. Now she waits in lonely confusion, unable to understand why Limerence abandoned the theater or her place in this strange world.</p>
+                        <p>Her interactions with others reveal a child seeking connection and understanding. She views Limerence as a father figure and star, supporting him despite not comprehending his actions. Her presence serves as a reminder of those affected by the fragments' choices.</p>
+                    </div>
+                    <div class="side-character-image-container">
+                        <img class="side-character-image" src="mimi-image.jpg" alt="Mimi" onerror="this.style.display='none'">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mechanics Section -->
+    <div id="mechanics" class="content-section">
+        <div class="section-content">
+            <h2 class="section-title">GAMEPLAY MECHANICS</h2>
+
+            <h3 style="color: var(--accent-red); margin-bottom: 2rem;">Combat System</h3>
+            <div class="info-card">
+                <p>Strategic turn-based battles take place on a 6x3 grid:</p>
+                <div class="combat-grid">
+                    <div class="grid-cell party">P1</div>
+                    <div class="grid-cell party">P2</div>
+                    <div class="grid-cell party">P3</div>
+                    <div class="grid-cell enemy">E1</div>
+                    <div class="grid-cell enemy">E2</div>
+                    <div class="grid-cell enemy">E3</div>
+                    <div class="grid-cell party">Back</div>
+                    <div class="grid-cell party">Row</div>
+                    <div class="grid-cell party">Safe</div>
+                    <div class="grid-cell enemy">Front</div>
+                    <div class="grid-cell enemy">Row</div>
+                    <div class="grid-cell enemy">Danger</div>
+                    <div class="grid-cell party">Move</div>
+                    <div class="grid-cell party">Zone</div>
+                    <div class="grid-cell party">Party</div>
+                    <div class="grid-cell enemy">Enemy</div>
+                    <div class="grid-cell enemy">Attack</div>
+                    <div class="grid-cell enemy">Zone</div>
+                </div>
+                <ul style="margin-top: 1rem;">
+                    <li>Position affects damage dealt and received</li>
+                    <li>Timed button presses for attack effectiveness</li>
+                    <li>Paper Mario-style guard system</li>
+                    <li>Adjacent allies can perform combo moves</li>
+                    <li>ATB meter enables Fusion moves when full</li>
+                    <li>Environmental objects provide tactical options</li>
+                </ul>
+            </div>
+
+            <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Core Systems</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">💎</div>
+                    <div>
+                        <strong>Remnant System</strong>
+                        <p>Emotional fragments that modify abilities. Come in Low, Mid, and High grades with increasing power and complexity.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -709,24 +1066,24 @@
                     </div>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">⚡</div>
-                    <div>
-                        <strong>Grid Combat</strong>
-                        <p>3x3 grid battles with position-based strategy. Front row deals/takes more damage, abilities vary by position.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
                     <div class="feature-icon">🔄</div>
                     <div>
-                        <strong>Reset System</strong>
-                        <p>Time loops occur under certain conditions. Most inhabitants lose memories, environments reconstruct.</p>
+                        <strong>Reset Mechanics</strong>
+                        <p>Time loops occur under certain conditions. Most lose memories, but some remember...</p>
                     </div>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">💧</div>
                     <div>
                         <strong>Drowning Events</strong>
-                        <p>Extreme despair causes tears to flood spaces. All beings dissolve and reform, triggering resets.</p>
+                        <p>Extreme despair causes tears to flood spaces. All beings dissolve and reform.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎭</div>
+                    <div>
+                        <strong>Fusion System</strong>
+                        <p>Two fragments combine into new beings. Requires emotional sync or strong connections.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -738,471 +1095,328 @@
                 </div>
             </div>
 
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">Key Concepts</h3>
-            <div class="gameplay-info">
-                <h4>Mares & Demi-Mares</h4>
-                <p>Creatures created through negative emotions or corruption. Mares are deformed and vicious, while Demi-Mares retain some control and enhanced abilities despite mental fracturing.</p>
-                
-                <h4>Red Shards & Pools</h4>
-                <p>Connection points between spaces serving as checkpoints/teleports. Can capture moments in time for saving. Shards shatter into pools when activated.</p>
-                
-                <h4>Cicero's Elevator</h4>
-                <p>Non-euclidean space moving throughout Absentia. Reach extends with more fragments present, appearing in impossible locations.</p>
-                
-                <h4>Fragment Weapons</h4>
-                <ul>
-                    <li><strong>Null:</strong> Knuckle knives held backwards for slashing</li>
-                    <li><strong>Dolor:</strong> Force field ripples as boxing gloves/shields</li>
-                    <li><strong>Midas:</strong> Baseball bat that doubles as a shotgun</li>
-                    <li><strong>Limerence:</strong> Scythe-halberd hybrid with heart design</li>
-                    <li><strong>Neuro:</strong> Serrated trench shovel for killing and burying</li>
-                    <li><strong>Cicero:</strong> Book containing knowledge and imaginary concepts</li>
-                </ul>
-            </div>
-
-            <h3 style="color: var(--accent-red); margin: 3rem 0 1rem;">Combat System</h3>
-            <div class="gameplay-info">
-                <p>Strategic turn-based battles on a 6x3 grid:</p>
-                <ul>
-                    <li>Back 3x3 for party, front 3x3 for enemies</li>
-                    <li>Position affects damage dealt/received</li>
-                    <li>Timed button presses for attack effectiveness</li>
-                    <li>Paper Mario-style guard system</li>
-                    <li>Adjacent allies can perform combo moves</li>
-                    <li>ATB meter enables Fusion moves when full</li>
-                    <li>Environmental objects provide tactical options</li>
-                </ul>
+            <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Fragment Abilities</h3>
+            <div class="info-card">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                    <div>
+                        <h4 style="color: #ffffff;">Null</h4>
+                        <ul>
+                            <li>Store fragments inside or absorb through violence</li>
+                            <li>Rage Mode: Increased agility and power</li>
+                            <li>Can use one fragment ability at a time</li>
+                            <li>Immunity to true death - world resets if killed</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-blue);">Dolor</h4>
+                        <ul>
+                            <li>Force field shields and "boxing gloves"</li>
+                            <li>Healing abilities for faster regeneration</li>
+                            <li>Transforms into Ire (rage) or Voluptus (joy)</li>
+                            <li>Fragile but protective of others</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-green);">Midas</h4>
+                        <ul>
+                            <li>Clever and perceptive in combat</li>
+                            <li>Fights better when intoxicated</li>
+                            <li>Motorcycle for traversal in his city</li>
+                            <li>Master of improvisation</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-pink);">Limerence</h4>
+                        <ul>
+                            <li>Non-euclidean hooks and wires</li>
+                            <li>Mood-based strength variations</li>
+                            <li>High pain tolerance from Aldora</li>
+                            <li>Rides hooks instead of walking</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-red);">Neuro</h4>
+                        <ul>
+                            <li>Overwhelming speed and power</li>
+                            <li>Chains for restraint and pulling</li>
+                            <li>Mental manipulation abilities</li>
+                            <li>Remembers between resets</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #191970;">Cicero</h4>
+                        <ul>
+                            <li>Book grants magical-like abilities</li>
+                            <li>Knowledge of future events</li>
+                            <li>Specialized mindset fusion</li>
+                            <li>Agile but physically weak</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Characters Section -->
-    <div id="characters" class="content-section">
+    <!-- Journey Section -->
+    <div id="journey" class="content-section">
         <div class="section-content">
-            <h2 class="section-title">THE FRAGMENTS & THEIR ECHOES</h2>
+            <h2 class="section-title">YOUR JOURNEY AWAITS</h2>
             
-            <h3 style="text-align: center; margin-bottom: 2rem;">Echo Fragments - EGO/TRIP</h3>
-            <div class="character-grid">
-                <div class="character-card null" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>NULL</h4>
-                            <p><strong>The Empty Vessel</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Knuckle Knives</p>
-                            <p style="font-size: 0.9rem;">Ability: Feverdream</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/null-image.jpg" alt="Null" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card dolor" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_D</h4>
-                            <p><strong>Echo of Defense</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Hand Bubbles</p>
-                            <p style="font-size: 0.9rem;">Ability: Dissonance</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/d-image.jpg" alt="_D" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card midas" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_M</h4>
-                            <p><strong>Echo of Confidence</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Shotgun Bat</p>
-                            <p style="font-size: 0.9rem;">Ability: Midas Touch</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/m-image.jpg" alt="_M" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card limerence" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_L</h4>
-                            <p><strong>Echo of Passion</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Halberd-Scythe</p>
-                            <p style="font-size: 0.9rem;">Ability: Lovesick</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/l-image.jpg" alt="_L" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <div class="red-shard"></div>
+                <p style="font-size: 1.3rem; opacity: 0.8;">Three paths lie before you. Each leads to a different truth.</p>
             </div>
 
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">Main Fragments - EGO/DIVE</h3>
-            <div class="character-grid">
-                <div class="character-card null" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>NULL</h4>
-                            <p><strong>The Hollow Core</strong></p>
-                            <p style="font-size: 0.85rem;">Empty embodiment seeking wholeness. Analytical, adaptable, but struggles with identity.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/null-dive-image.jpg" alt="Null" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card dolor" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>DOLOR</h4>
-                            <p><strong>The Sensitive Soul</strong></p>
-                            <p style="font-size: 0.85rem;">Embodies depression and hidden rage. Transforms into red Ire or yellow Voluptus forms.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/dolor-image.jpg" alt="Dolor" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card midas" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>MIDAS</h4>
-                            <p><strong>The Hedonist</strong></p>
-                            <p style="font-size: 0.85rem;">Created city Ambrosia for pleasure. Now fights as masked vigilante seeking redemption.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/midas-image.jpg" alt="Midas" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card limerence" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>LIMERENCE</h4>
-                            <p><strong>The Obsessive</strong></p>
-                            <p style="font-size: 0.85rem;">Charismatic showman hiding destructive obsession. Trapped in cycles within the virtual world Aldora.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/limerence-image.jpg" alt="Limerence" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card neuro" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>NEURO</h4>
-                            <p><strong>The Rejected</strong></p>
-                            <p style="font-size: 0.85rem;">Discarded trauma given form. Remembers between resets, tests others harshly.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/neuro-image.jpg" alt="Neuro" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card cicero" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>CICERO</h4>
-                            <p><strong>The Guide</strong></p>
-                            <p style="font-size: 0.85rem;">Living embodiment of lost knowledge. Dog-faced mentor from his elevator sanctuary.</p>
-                        </div>
-                        <div class="character-card-back">
-                            <!-- Add image source here -->
-                            <img class="character-image" src="Art Folder/cicero-image.jpg" alt="Cicero" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">Supporting Cast</h3>
             <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #666;">🐕</div>
-                    <div>
-                        <strong>Void</strong>
-                        <p>Loyal dog-like companion. A Figment rather than Fragment, embodying the host's beloved pet.</p>
-                    </div>
+                <div class="info-card">
+                    <h3 style="color: var(--accent-green);">Path of Self-Acceptance</h3>
+                    <p>Help and understand each fragment. Face their traumas together, build genuine connections, and work toward true healing. This path requires empathy, patience, and the courage to confront painful truths. Unite the fragments and awaken with growth and self-love.</p>
+                    <p style="margin-top: 1rem;"><strong>Final Boss:</strong> Shiva - A floating distorted figure with multiple phases</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #8b0000;">👤</div>
-                    <div>
-                        <strong>Idalia</strong>
-                        <p>Powerful figment who controls resets. Red-haired, porcelain-skinned with mannequin joints. Left Limerence to align with Neuro.</p>
-                    </div>
+                
+                <div class="info-card">
+                    <h3 style="color: #ffa500;">Path of Repeat Pain</h3>
+                    <p>Avoid confrontation and maintain distance. Neither heal nor destroy, leaving all unchanged. The easiest path in the moment, but one that ensures the cycle continues. Reunite fundamentally unchanged, doomed to repeat old patterns.</p>
+                    <p style="margin-top: 1rem;"><strong>Final Boss:</strong> Vishnu - Multi-armed figure wreathed in black mist</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #4169e1;">⚔️</div>
-                    <div>
-                        <strong>Bolster</strong>
-                        <p>Bird-knight protector of Dolor. Clumsy but devoted, bears a scar from Dolor's Ire form.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #ff1493;">🎤</div>
-                    <div>
-                        <strong>Flourish</strong>
-                        <p>Demi-Mare pop idol who seized Insomnia. Green skin, pink hair, cracked theater mask. Resents Midas.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #32cd32;">🎙️</div>
-                    <div>
-                        <strong>Skim & Parlor</strong>
-                        <p>Podcaster duo following Midas. Skim: green germ in red hoodie. Parlor: purple cat host.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #ff69b4;">🧸</div>
-                    <div>
-                        <strong>Mimi</strong>
-                        <p>Silhouetted girl in Limerence's theater. Holds teddy bear, awaits his return.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #800020;">🍷</div>
-                    <div>
-                        <strong>Mender</strong>
-                        <p>Mysterious bartender of the hub. Charismatic father-figure helping lost souls move forward.</p>
-                    </div>
+                
+                <div class="info-card">
+                    <h3 style="color: var(--accent-red);">Path of Self-Destruction</h3>
+                    <p>Forcefully absorb fragments through violence. The Veil grows with each kill, granting immense power at the cost of self. Each absorbed fragment adds their color to your flowing cape. Destroy any chance at reunification.</p>
+                    <p style="margin-top: 1rem;"><strong>Final Boss:</strong> Brahma - A rainbow heart that dims as you fight</p>
                 </div>
             </div>
 
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">Fusion Forms</h3>
-            <div class="gameplay-info">
-                <p style="text-align: center; margin-bottom: 2rem;">When two fragments combine, they create powerful new beings:</p>
-                <ul>
-                    <li><strong>Detox (Dolor + Midas):</strong> Seeks balance between indulgence and restraint</li>
-                    <li><strong>Forlorn (Dolor + Limerence):</strong> Paralyzed by self-doubt and dark fantasies</li>
-                    <li><strong>Heyday (Limerence + Midas):</strong> Unrestrained enthusiasm for life's pleasures</li>
-                    <li><strong>Manic (Neuro + Limerence):</strong> Wild mood swings and shocking extremes</li>
-                    <li><strong>Usurper (Neuro + Midas):</strong> Ruthless ambition with charismatic facade</li>
-                    <li><strong>Marionette (Neuro + Dolor):</strong> Lethargic puppet controlling others with invisible strings</li>
-                    <li><strong>Apollyon (Neuro + Ire):</strong> Potentially most powerful fusion, unstable rage</li>
-                    <li><strong>Accord (Null + Neuro):</strong> Consensual fusion guided by reason</li>
-                    <li><strong>Descension (Null + Neuro):</strong> Forced fusion filled with hatred</li>
-                    <li><strong>Collapse (3+ Fragments):</strong> Completely unstable, constantly deteriorating</li>
-                </ul>
+            <h3 style="text-align: center; margin: 3rem 0 2rem;">Major Encounters</h3>
+            <div class="layer-grid">
+                <div class="layer-card">
+                    <h4>Bolster - The Devoted Knight</h4>
+                    <p>Bird-knight protector of Dolor. First encountered outside the prison, later transforms into a Demi-Mare when desperate to protect his charge. Only Dolor's pleas can bring him back.</p>
+                </div>
+                
+                <div class="layer-card">
+                    <h4>Flourish - The Corrupted Idol</h4>
+                    <p>Once a street child who lost her mother to Mare corruption, now a Demi-Mare pop star controlling Insomnia. Her hypnotic songs control minds while her cracked mask hides her pain.</p>
+                </div>
+                
+                <div class="layer-card">
+                    <h4>The False Idalia</h4>
+                    <p>Within Aldora's glass dome, a reflection of Limerence's lost love. Dancing with her allows Limerence to finally let go of his obsession and accept the truth of their separation.</p>
+                </div>
+                
+                <div class="layer-card">
+                    <h4>The Amalgamation</h4>
+                    <p>A towering fusion of Limerence's dark copies, attacking while he confronts the False Idalia. Null and companions must hold it off during the emotional climax.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Story Section -->
-    <div id="story" class="content-section">
+    <!-- Spoilers Section -->
+    <div id="spoilers" class="content-section">
         <div class="section-content">
-            <h2 class="section-title">THE WORLD & ITS MYSTERIES</h2>
+            <h2 class="section-title">FORBIDDEN KNOWLEDGE</h2>
             
-            <div class="gameplay-info">
-                <h4>The Fracturing</h4>
-                <p>When trauma shatters a mind beyond repair, the pieces don't simply disappear. In the world of Ego/Dive, they manifest as living beings within Absentia - a layered subconscious realm where each fragment builds their own domain, develops their own will, and struggles with their purpose.</p>
+            <div class="spoiler-lock" onclick="showSpoilerModal()">
+                <h3 style="color: var(--accent-red); margin-bottom: 1rem;">🔒 LOCKED SECRETS</h3>
+                <p>This section contains major story spoilers including the truth about the host, character backstories, and ending details.</p>
+                <p style="margin-top: 1rem; opacity: 0.8;">Click to enter password</p>
             </div>
 
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">Key Concepts</h3>
-            <div class="theme-container">
-                <div class="theme-card">
-                    <h4 style="color: var(--accent-red);">Fragments</h4>
-                    <p>Main personality aspects given form. Each represents different emotions and traits, with their own abilities, weapons, and domains in Absentia.</p>
+            <div class="spoiler-content" id="spoilerContent">
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Truth of the Fracturing</h3>
+                <div class="info-card">
+                    <h4>The Host's Story</h4>
+                    <p>A young boy, battered by an abusive upbringing, did his best to protect his younger sister from their father's drunken rages. On a rain-drenched night, he arrived home to find his father striking his sister. Lunging to intervene, the boy was cast aside as his sister fled into the downpour.</p>
+                    <p style="margin-top: 1rem;">Chasing after her desperately onto the slick streets, his vision blurred by rain and tears. The headlights came too fast. The impact shattered his psyche entirely as he fell into a coma, mind adrift in Absentia.</p>
                 </div>
-                <div class="theme-card">
-                    <h4 style="color: var(--accent-blue);">Figments</h4>
-                    <p>Beings created by Fragments. Have varying autonomy and contain remnants of their creators' emotions. Can become Mares if corrupted.</p>
-                </div>
-                <div class="theme-card">
-                    <h4 style="color: var(--accent-pink);">Remnants</h4>
-                    <p>Emotional fragments that modify abilities. Come in Low, Mid, and High grades. Both a story element and gameplay mechanic.</p>
-                </div>
-            </div>
 
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">The Fragments' Stories</h3>
-            <div class="gameplay-info">
-                <h4>Dolor - The Fortress of Tears</h4>
-                <p>Awakening alone and afraid, Dolor's uncontrolled abilities nearly drowned him in his own tears before creating Bolster for protection. He built a geometric fortress but chose to protect rather than strengthen his fragile creatures. His forms shift between sadness (blue), rage (red Ire), and rare joy (yellow Voluptus).</p>
-                
-                <h4>Midas - The Fallen King</h4>
-                <p>Resentful of restrictions, Midas built the city of Ambrosia devoted to hedonistic dreams. When unchecked vice corrupted his citizens, he donned a disguise and abandoned his tower Insomnia. Now he fights as a masked vigilante to save his people from Flourish, the Demi-Mare who seized control.</p>
-                
-                <h4>Limerence - The Eternal Performance</h4>
-                <p>Once close to Idalia, Limerence's obsession became all-consuming. Given the virtual world Aldora to find self-love, he instead descended into endless battles with copies of himself, dying countless times. His theatrical nature masks deep loneliness and destructive patterns.</p>
-                
-                <h4>Cicero - The Knowledge Keeper</h4>
-                <p>Manifesting with Null's memories in his book, Cicero repeatedly tried to unite the fragments only to face endless resets. His elevator serves as sanctuary and transport between layers. Despite failures eroding his memories, he remains determined to guide Null differently each cycle.</p>
-            </div>
-
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">Three Paths to Resolution</h3>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: var(--accent-green);">🌟</div>
-                    <div>
-                        <strong>Self-Acceptance</strong>
-                        <p>Help and understand each fragment. Face their traumas, build connections, and work toward true healing. The path of empathy and growth.</p>
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Fragments' Origins</h3>
+                <div class="layer-grid">
+                    <div class="layer-card">
+                        <h4>Dolor's Creation</h4>
+                        <p>Awakening alone and afraid, Dolor's uncontrolled abilities nearly drowned him in his own tears. In desperation, he subconsciously created Bolster to save himself. His fortress represents the boy's desire for safety from abuse, while his fragile creatures embody vulnerability he couldn't show.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Midas' Fall</h4>
+                        <p>Resentful of Null for restricting their expression in real life, Midas built Ambrosia as ultimate freedom. When unchecked hedonism corrupted his citizens into violence, he felt the weight of responsibility. His vigilante persona represents the boy's desire to fix mistakes and protect others.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Limerence's Obsession</h4>
+                        <p>His destructive love for Idalia mirrors the boy's desperate need for affection never received at home. Aldora's endless deaths represent self-punishment for perceived inadequacy. The dance with False Idalia is accepting that some love must be let go to grow.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Neuro's Rejection</h4>
+                        <p>Originally vulnerable and concerned, Neuro was rejected as Null tried to bury trauma. Awakening in the graveyard of discarded memories, surrounded by attacking corpses of past pain. His appearance distorted by rage, he killed Null repeatedly before Idalia granted him memory between resets. Now he tests others, believing harsh truth creates growth.</p>
                     </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: #ffa500;">⏸️</div>
-                    <div>
-                        <strong>Repeat Pain</strong>
-                        <p>Avoid confrontation and maintain distance. Neither heal nor destroy, leaving all unchanged. The path of stagnation.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon" style="background: var(--accent-red);">💀</div>
-                    <div>
-                        <strong>Self-Destruction</strong>
-                        <p>Forcefully absorb fragments through violence. The Veil grows with each kill, granting power at the cost of self.</p>
-                    </div>
-                </div>
-            </div>
 
-            <h3 style="text-align: center; margin: 3rem 0 2rem;">The Lighthouse Mystery</h3>
-            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <div class="red-shard" style="width: 150px; height: 150px;"></div>
-                <p style="font-size: 1.2rem;">
-                    At Absentia's deepest point lies the Lighthouse - a structure whose interior transforms based on your journey. What awaits within depends entirely on the path you've walked and the choices you've made.
-                </p>
-                <p style="opacity: 0.8; margin-top: 2rem;">
-                    Will you unite the fragments and face the truth together?<br>
-                    Or will you forge ahead alone, whatever the cost?
-                </p>
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Lighthouse Truth</h3>
+                <div class="info-card">
+                    <p>The Lighthouse interior transforms based on your journey:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li><strong>Self-Acceptance:</strong> A warm, healing space where fragments unite willingly. The host awakens changed but whole, ready to face life with support.</li>
+                        <li><strong>Repeat Pain:</strong> A cold, sterile hospital room. The host awakens unchanged, mentally detached, doomed to repeat cycles.</li>
+                        <li><strong>Self-Destruction:</strong> A shattered mirror realm. Killing the host's representation potentially ends their actual life.</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Hidden Connections</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">🐕</div>
+                        <div>
+                            <strong>Void's Nature</strong>
+                            <p>The only being the boy truly trusted - his deceased pet. As a Figment rather than Fragment, Void represents pure, uncomplicated love.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">👁️</div>
+                        <div>
+                            <strong>Idalia's Purpose</strong>
+                            <p>Created by Limerence but gained independence. Her control over resets represents the psyche's attempt at self-preservation through repetition.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📖</div>
+                        <div>
+                            <strong>Cicero's Knowledge</strong>
+                            <p>Contains all memories of the original boy. His repeated failures mirror real-life inability to prevent trauma despite foreknowledge.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🌈</div>
+                        <div>
+                            <strong>The Veil's Meaning</strong>
+                            <p>Each absorbed fragment's color represents destroying part of oneself for power - the ultimate self-harm metaphor.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Art Section -->
-    <div id="art" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">CONCEPT ART & VISUALS</h2>
-            <p style="text-align: center; margin-bottom: 2rem; opacity: 0.8;">
-                Explore the visual journey through the fractured psyche
-            </p>
-            
-            <div class="slideshow-container">
-                <!-- Slides will be dynamically added here -->
-                <div class="slide active">
-                    <img src="Art Folder/Art1.jpg" alt="Concept Art 1" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="slide">
-                    <img src="Art Folder/Art2.jpg" alt="Concept Art 2" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="slide">
-                    <img src="Art Folder/Art3.jpg" alt="Concept Art 3" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="slide">
-                    <img src="Art Folder/Art4.jpg" alt="Concept Art 4" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="slide">
-                    <img src="Art Folder/Art5.jpg" alt="Concept Art 5" onerror="this.src='placeholder.jpg'">
-                </div>
-                <!-- Add more slides by following the pattern: Art6.jpg, Art7.jpg, etc -->
-                
-                <button class="prev" onclick="changeSlide(-1)"><span>❮</span></button>
-                <button class="next" onclick="changeSlide(1)"><span>❯</span></button>
-            </div>
-            
-            <div class="slide-counter">
-                <span id="slideNumber">1</span> / <span id="totalSlides">5</span>
-            </div>
+    <!-- Spoiler Password Modal -->
+    <div class="modal" id="spoilerModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeSpoilerModal()">×</button>
+            <h3 style="margin-bottom: 1rem;">Enter Password</h3>
+            <p style="opacity: 0.8; margin-bottom: 2rem;">This section contains major spoilers</p>
+            <input type="password" id="spoilerPassword" class="password-input" style="margin-bottom: 1rem;" placeholder="Password">
+            <button onclick="checkSpoilerPassword()" style="padding: 0.8rem 2rem; background: var(--accent-red); border: none; color: white; cursor: pointer; border-radius: 5px;">UNLOCK</button>
+            <p id="spoilerError" style="color: var(--accent-red); margin-top: 1rem; opacity: 0;">Incorrect Password</p>
         </div>
     </div>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button class="audio-button" id="muteButton" onclick="toggleMute()">🔊</button>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="ego-theme.mp3" type="audio/mpeg">
+        <source src="ego-theme.ogg" type="audio/ogg">
+    </audio>
 
     <script>
-        let currentSlide = 1;
-        let isAnimating = false;
+        // Blood Rain Effect
+        function createRain() {
+            const container = document.getElementById('rainContainer');
+            const dropCount = 50;
+            
+            for (let i = 0; i < dropCount; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'blood-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                drop.style.animationDelay = Math.random() * 2 + 's';
+                drop.style.opacity = Math.random() * 0.5 + 0.1;
+                container.appendChild(drop);
+            }
+        }
 
+        // Navigation
         function showSection(sectionId) {
-            // Hide all sections
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => section.classList.remove('active'));
             
-            // Remove active class from all nav buttons
             const buttons = document.querySelectorAll('nav button');
             buttons.forEach(button => button.classList.remove('active'));
             
-            // Show the selected section
             document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to the clicked button
             event.target.classList.add('active');
             
-            // Scroll to top
             window.scrollTo(0, 0);
         }
 
+        // Character Card Flip
         function flipCard(card) {
             card.classList.toggle('flipped');
         }
 
-        function showSlide(n) {
-            if (isAnimating) return;
-            
-            const slides = document.getElementsByClassName('slide');
-            const totalSlides = slides.length;
-            
-            if (n > totalSlides) { currentSlide = 1; }
-            if (n < 1) { currentSlide = totalSlides; }
-            
-            isAnimating = true;
-            
-            // Hide all slides
-            for (let i = 0; i < slides.length; i++) {
-                if (slides[i].classList.contains('active')) {
-                    slides[i].classList.add('sliding-out');
-                    slides[i].classList.remove('active');
-                }
-            }
-            
-            // Show current slide after animation
-            setTimeout(() => {
-                for (let i = 0; i < slides.length; i++) {
-                    slides[i].classList.remove('sliding-out', 'sliding-in');
-                }
-                
-                slides[currentSlide - 1].classList.add('active', 'sliding-in');
-                
-                // Update counter
-                document.getElementById('slideNumber').textContent = currentSlide;
-                document.getElementById('totalSlides').textContent = totalSlides;
-                
+        // Spoiler System
+        function showSpoilerModal() {
+            document.getElementById('spoilerModal').classList.add('active');
+            document.getElementById('spoilerPassword').focus();
+        }
+
+        function closeSpoilerModal() {
+            document.getElementById('spoilerModal').classList.remove('active');
+            document.getElementById('spoilerPassword').value = '';
+            document.getElementById('spoilerError').style.opacity = '0';
+        }
+
+        function checkSpoilerPassword() {
+            const password = document.getElementById('spoilerPassword').value;
+            if (password === 'Retribution01') {
+                document.getElementById('spoilerContent').classList.add('unlocked');
+                document.querySelector('.spoiler-lock').style.display = 'none';
+                closeSpoilerModal();
+            } else {
+                document.getElementById('spoilerError').style.opacity = '1';
+                document.getElementById('spoilerPassword').value = '';
                 setTimeout(() => {
-                    isAnimating = false;
-                }, 500);
-            }, 500);
+                    document.getElementById('spoilerError').style.opacity = '0';
+                }, 2000);
+            }
         }
 
-        function changeSlide(n) {
-            currentSlide += n;
-            showSlide(currentSlide);
+        // Audio Controls
+        const audio = document.getElementById('backgroundMusic');
+        const muteButton = document.getElementById('muteButton');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false;
+                muteButton.textContent = '🔊';
+            } else {
+                audio.muted = true;
+                muteButton.textContent = '🔇';
+            }
         }
 
-        // Initialize slide counter on page load
+        function changeVolume(value) {
+            audio.volume = value / 100;
+        }
+
+        // Initialize
         window.onload = function() {
-            const totalSlides = document.getElementsByClassName('slide').length;
-            document.getElementById('totalSlides').textContent = totalSlides;
+            createRain();
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log('Audio autoplay prevented'));
+            
+            // Enter key for spoiler password
+            document.getElementById('spoilerPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkSpoilerPassword();
+                }
+            });
         };
     </script>
 </body>
