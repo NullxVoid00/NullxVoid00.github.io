@@ -344,6 +344,55 @@
             display: none;
         }
 
+        /* Volume Control */
+        .volume-control {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .volume-control label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(220,20,60,0.5);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(220,20,60,0.5);
+        }
+
+        .volume-slider:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-grid {
@@ -363,6 +412,15 @@
             .profile-pic {
                 width: 150px;
                 height: 150px;
+            }
+
+            .volume-control {
+                bottom: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .volume-slider {
+                width: 80px;
             }
         }
     </style>
@@ -462,7 +520,36 @@
         </div>
     </div>
 
+    <!-- Audio Elements -->
+    <audio id="passwordAudio" loop>
+        <source src="audio/password-bg.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hubAudio" loop>
+        <source src="audio/hub-bg.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Volume Control -->
+    <div class="volume-control">
+        <label for="volumeSlider">Volume</label>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
     <script>
+        // Audio functionality
+        const passwordAudio = document.getElementById('passwordAudio');
+        const hubAudio = document.getElementById('hubAudio');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        // Set initial volume
+        passwordAudio.volume = volumeSlider.value;
+        hubAudio.volume = volumeSlider.value;
+
+        // Volume control
+        volumeSlider.addEventListener('input', function() {
+            passwordAudio.volume = this.value;
+            hubAudio.volume = this.value;
+        });
+
         // Password functionality
         const passwordInput = document.getElementById('passwordInput');
         const passwordScreen = document.getElementById('passwordScreen');
@@ -489,9 +576,21 @@
         function checkPassword() {
             if (passwordInput.value === 'Neurorine') {
                 passwordScreen.classList.add('hidden');
+                // Fade out password audio
+                let fadeOut = setInterval(() => {
+                    if (passwordAudio.volume > 0.01) {
+                        passwordAudio.volume -= 0.01;
+                    } else {
+                        passwordAudio.pause();
+                        clearInterval(fadeOut);
+                    }
+                }, 50);
                 setTimeout(() => {
                     passwordScreen.style.display = 'none';
                     mainHub.classList.add('active');
+                    // Start hub audio
+                    hubAudio.play();
+                    hubAudio.volume = volumeSlider.value;
                 }, 500);
             } else {
                 errorMessage.classList.add('show');
@@ -517,9 +616,10 @@
             document.getElementById('backButton').classList.add('hidden');
         }
 
-        // Auto-focus password input
+        // Auto-focus password input and start password audio
         window.onload = function() {
             passwordInput.focus();
+            passwordAudio.play();
         };
     </script>
 </body>
