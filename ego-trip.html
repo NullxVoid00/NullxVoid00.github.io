@@ -361,6 +361,30 @@
             object-fit: cover;
         }
 
+        /* Skip Video Button */
+        .skip-video-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--neon-pink);
+            color: var(--primary-white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
+            z-index: 1600;
+        }
+
+        .skip-video-btn:hover {
+            opacity: 1;
+            background: rgba(255, 0, 127, 0.3);
+            transform: scale(1.1);
+        }
+
         /* Section Styling */
         .section-content {
             padding: 4rem 1rem;
@@ -921,6 +945,7 @@
                     <source src="Art Folder/crystal-video.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
+                <button class="skip-video-btn" id="skipVideoBtn">Skip Video</button>
             </div>
             <p style="font-size: 1.2rem; opacity: 0.9; max-width: 800px; line-height: 1.6;">
                 Within the crimson crystal lies a space between consciousness and dream. As Null awakens alongside shadowy echo-fragments, 
@@ -1540,6 +1565,7 @@
             const crystal = document.getElementById('floatingCrystal');
             const videoPlayer = document.getElementById('videoPlayer');
             const video = document.getElementById('crystalVideo');
+            const skipButton = document.getElementById('skipVideoBtn');
 
             // Fade out the crystal
             crystal.classList.add('hidden');
@@ -1550,13 +1576,21 @@
                 video.play();
             }, 500); // Match the transition duration in CSS
 
-            // When video ends, fade out video and fade in crystal
-            video.onended = () => {
+            // Function to end video and reset
+            function endVideo() {
+                video.pause();
+                video.currentTime = 0; // Reset video to start
                 videoPlayer.classList.remove('active');
                 setTimeout(() => {
                     crystal.classList.remove('hidden');
                 }, 500); // Match the transition duration in CSS
-            };
+            }
+
+            // When video ends naturally
+            video.onended = endVideo;
+
+            // When skip button is clicked
+            skipButton.onclick = endVideo;
         }
 
         // Initialize
