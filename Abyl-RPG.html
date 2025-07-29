@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abyl RPG System - Turn-Based RPG for VRChat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.8;
+            cursor: crosshair;
+        }
+        
+        /* Custom cursor styles for different elements */
+        a, button, .nav-item, .download-btn, .mute-btn, input[type="range"] {
+            cursor: pointer;
+        }
+        
+        /* Sidebar Navigation */
+        #sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: linear-gradient(to bottom, #1a0000, #0a0000);
+            border-right: 3px solid #ff0000;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        #sidebar.active {
+            left: 0;
+        }
+        
+        #sidebar-toggle {
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            background: #ff0000;
+            border: 2px solid #ffffff;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 10px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        #sidebar-toggle:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+        }
+        
+        #sidebar.active ~ #sidebar-toggle {
+            left: 260px;
+        }
+        
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #ff0000;
+        }
+        
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .nav-item {
+            display: block;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-bottom: 1px solid #330000;
+            font-size: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background: #ff0000;
+            padding-left: 30px;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-left: 80px;
+        }
+        
+        #sidebar.active ~ .container {
+            margin-left: 250px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(45deg, #1a0000, #330000);
+            border: 3px solid #ff0000;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 32px;
+            color: #ff0000;
+            text-shadow: 3px 3px 0px #000000;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 12px;
+            line-height: 2;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #ff0000;
+            color: #ffffff;
+            text-decoration: none;
+            border: 3px solid #ffffff;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background: #ffffff;
+            color: #ff0000;
+            transform: scale(1.05);
+        }
+        
+        .section {
+            background: rgba(26, 0, 0, 0.8);
+            border: 2px solid #ff0000;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #ff0000;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px #000000;
+        }
+        
+        .section h3 {
+            color: #ff6666;
+            font-size: 14px;
+            margin: 20px 0 10px 0;
+        }
+        
+        .section p, .section li {
+            font-size: 10px;
+            line-height: 2;
+            margin-bottom: 15px;
+        }
+        
+        .section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .section li:before {
+            content: "▶ ";
+            color: #ff0000;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .feature-text {
+            padding: 20px;
+        }
+        
+        .feature-image {
+            background: #330000;
+            border: 2px solid #ff0000;
+            padding: 10px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feature-image img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .screenshot {
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: auto;
+        }
+        
+        /* Stats Table */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .stats-table th, .stats-table td {
+            border: 1px solid #ff0000;
+            padding: 10px;
+            text-align: left;
+            font-size: 10px;
+        }
+        
+        .stats-table th {
+            background: #330000;
+            color: #ff0000;
+        }
+        
+        .stats-table tr:nth-child(even) {
+            background: rgba(51, 0, 0, 0.3);
+        }
+        
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            padding: 15px;
+            z-index: 999;
+        }
+        
+        .volume-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .volume-slider {
+            writing-mode: bt-lr; /* IE */
+            -webkit-appearance: slider-vertical; /* WebKit */
+            width: 30px;
+            height: 100px;
+            background: #330000;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .mute-btn {
+            background: #ff0000;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .mute-btn:hover {
+            background: #cc0000;
+        }
+        
+        .mute-btn.muted {
+            background: #666666;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding-left: 60px;
+            }
+            
+            #sidebar.active ~ .container {
+                margin-left: 0;
+            }
+        }
+        
+        /* Pixel Border Effect */
+        .pixel-border {
+            position: relative;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            box-shadow: 
+                0 0 0 2px #1a0000,
+                0 0 0 4px #ff0000,
+                0 0 0 6px #1a0000,
+                0 0 0 8px #ff0000;
+        }
+        
+        /* Loading Animation */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+        <div class="logo-container">
+            <img src="Art Folder/AbylRPGLogo.png" alt="Abyl RPG System Logo">
+        </div>
+        <a href="#overview" class="nav-item">Overview</a>
+        <a href="#screenshots" class="nav-item">Screenshots</a>
+        <a href="#classes" class="nav-item">Class System</a>
+        <a href="#combat" class="nav-item">Combat Mechanics</a>
+        <a href="#progression" class="nav-item">Character Progression</a>
+        <a href="#multiplayer" class="nav-item">Multiplayer Features</a>
+        <a href="#customization" class="nav-item">Make It Yours</a>
+        <a href="#enemies" class="nav-item">Enemies & AI</a>
+        <a href="#world" class="nav-item">World & NPCs</a>
+        <a href="#targeting" class="nav-item">Targeting System</a>
+        <a href="#status" class="nav-item">Status Effects</a>
+        <a href="#download" class="nav-item">Get The Framework</a>
+    </nav>
+    
+    <button id="sidebar-toggle">☰ MENU</button>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero pixel-border">
+            <h1>ABYL RPG SYSTEM</h1>
+            <p style="font-size: 16px; margin-bottom: 10px;">⚔️ TURN-BASED COMBAT ⚔️ MULTIPLAYER PARTIES ⚔️ CHARACTER PROGRESSION ⚔️</p>
+            <p>Transform VRChat into YOUR epic RPG adventure!</p>
+            <p style="margin-top: 20px;">Remember the magic of your first RPG? The thrill of leveling up? The triumph of victory?</p>
+            <p style="font-size: 14px; color: #ff6666;">NOW CREATE YOUR OWN - IN VR - WITH FRIENDS!</p>
+            <a href="#download" class="download-btn">🎮 GET READY TO PLAY 🎮</a>
+        </section>
+        
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <h2>SYSTEM OVERVIEW</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <p>Remember the first time you played your favorite RPG? That sense of adventure, the thrill of leveling up, the satisfaction of defeating a tough boss with your friends? The Abyl RPG System brings ALL of that into VRChat - and gives you the tools to create YOUR dream RPG!</p>
+                    
+                    <p>We've created the "RPG Maker of VRChat" - a complete framework that transforms any world into a living, breathing RPG adventure. Start with our battle-tested foundation and customize everything to match your vision. No more static avatars just standing around talking. Now you and your friends can embark on the exact adventures YOU design!</p>
+                    
+                    <h3>Why Abyl RPG Changes Everything:</h3>
+                    <ul>
+                        <li><strong>True Multiplayer Adventures</strong> - Form a party of up to 4 players and tackle challenges together. Watch your friend's back in battle, coordinate strategies, and celebrate victories as a team!</li>
+                        <li><strong>Your Game, Your Rules</strong> - Every system is customizable! Use our pre-built classes or create entirely new ones. Design unique abilities that fit YOUR world!</li>
+                        <li><strong>Meaningful Progression</strong> - Your character grows stronger with every battle. That level 1 newbie you start as? They'll become a legendary hero through YOUR choices and playstyle!</li>
+                        <li><strong>Strategic Combat That Matters</strong> - This isn't button mashing! Time your defends, choose targets wisely, and combine your party's abilities for devastating combos!</li>
+                        <li><strong>Build on a Solid Foundation</strong> - We've handled all the complex networking, UI, and VRChat integration. You focus on making it uniquely yours!</li>
+                        <li><strong>Endless Possibilities</strong> - From high fantasy to sci-fi, from serious to silly - the system adapts to any theme you can imagine!</li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage1.png" alt="System Overview">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Screenshots Section -->
+        <section id="screenshots" class="section">
+            <h2>SEE IT IN ACTION</h2>
+            <p style="text-align: center; margin-bottom: 30px;">Words can't capture the excitement of your first critical hit or the tension of a boss battle at low HP. See for yourself!</p>
+            <div class="screenshot-grid">
+                <div class="screenshot">
+                    <img src="Art Folder/ARPGimage2.png" alt="Combat Screenshot">
+                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Epic battles with dynamic effects!</p>
+                </div>
+                <div class="screenshot">
+                    <img src="Art Folder/ARPGimage3.png" alt="Menu Screenshot">
+                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Intuitive VR-friendly interfaces!</p>
+                </div>
+                <div class="screenshot">
+                    <img src="Art Folder/ARPGimage4.png" alt="World Screenshot">
+                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Explore vibrant RPG worlds!</p>
+                </div>
+                <div class="screenshot">
+                    <img src="Art Folder/ARPGimage5.png" alt="Party Screenshot">
+                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Team up for multiplayer adventures!</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Class System Section -->
+        <section id="classes" class="section">
+            <h2>CLASS SYSTEM</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <p>This isn't just picking a preset - it's choosing your starting point! Our four example classes showcase what's possible, but they're just the beginning. Every value, every skill, every stat progression can be tweaked to your vision!</p>
+                    
+                    <h3>Start With Our Battle-Tested Templates:</h3>
+                    
+                    <p><strong>🗡️ WARRIOR</strong> - Love being in the thick of battle? Warriors are your front-line heroes with massive HP pools and devastating physical attacks. Tank hits for your squishier friends and unleash powerful skills like Cleave to demolish groups of enemies! <em>Or reimagine them as Paladins, Berserkers, or Knights!</em></p>
+                    
+                    <p><strong>🔮 MAGE</strong> - Why hit things when you can obliterate them with magic? Mages trade defense for incredible INT-based damage. Rain down Meteors, freeze enemies with Ice Shards, or show off with spectacular spell effects that'll make everyone go "WHOA!" <em>Transform them into Elementalists, Necromancers, or Time Wizards!</em></p>
+                    
+                    <p><strong>🗡️ ROGUE</strong> - Speed kills, and you're the fastest! Rogues strike first, strike hard, and use cunning abilities like Poison Strike and Shadow Step. Perfect for players who love seeing big damage numbers and outmaneuvering enemies! <em>Evolve them into Assassins, Rangers, or Ninjas!</em></p>
+                    
+                    <p><strong>✨ CLERIC</strong> - The MVP of every party! Keep your friends alive with powerful heals, remove nasty status effects, and even bring the fallen back to life. Plus, you're no pushover - Holy Light packs a punch against evil! <em>Customize into Druids, Battle Priests, or Divine Scholars!</em></p>
+                    
+                    <table class="stats-table">
+                        <tr>
+                            <th>Class</th>
+                            <th>HP</th>
+                            <th>MP</th>
+                            <th>ATK</th>
+                            <th>DEF</th>
+                            <th>SPD</th>
+                            <th>INT</th>
+                        </tr>
+                        <tr>
+                            <td>WARRIOR</td>
+                            <td>120</td>
+                            <td>30</td>
+                            <td>12</td>
+                            <td>10</td>
+                            <td>6</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>MAGE</td>
+                            <td>80</td>
+                            <td>80</td>
+                            <td>5</td>
+                            <td>4</td>
+                            <td>7</td>
+                            <td>14</td>
+                        </tr>
+                        <tr>
+                            <td>ROGUE</td>
+                            <td>90</td>
+                            <td>50</td>
+                            <td>10</td>
+                            <td>6</td>
+                            <td>12</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>CLERIC</td>
+                            <td>100</td>
+                            <td>70</td>
+                            <td>7</td>
+                            <td>8</td>
+                            <td>5</td>
+                            <td>10</td>
+                        </tr>
+                    </table>
+                    
+                    <p style="text-align: center; font-size: 9px; margin-top: 10px;"><em>These are just starting examples - customize every stat to create YOUR perfect classes!</em></p>
+                    
+                    <h3>Design Your Own Abilities:</h3>
+                    <p>Our example skills give you a complete game out of the box, but they're just templates! Every ability can be customized or replaced entirely:</p>
+                    <ul>
+                        <li><strong>Warriors</strong> start with basic Slash but eventually unleash Berserk mode - or whatever ultimate ability YOU create!</li>
+                        <li><strong>Mages</strong> begin throwing Fireballs but could graduate to summoning creatures, manipulating time, or wielding YOUR unique magic system!</li>
+                        <li><strong>Rogues</strong> evolve from simple Backstabs - maybe yours throw shurikens, set traps, or use gadgets you design!</li>
+                        <li><strong>Clerics</strong> progress from basic healing - but could channel nature magic, dark arts, or divine powers you imagine!</li>
+                    </ul>
+                    <p>The skill system is completely open! Change damage formulas, add new target types, create combo systems, or invent entirely new mechanics. Every parameter is exposed and documented. Your imagination is the only limit!</p>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage6.png" alt="Classes">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Combat Mechanics Section -->
+        <section id="combat" class="section">
+            <h2>COMBAT MECHANICS</h2>
+            <div class="feature-grid">
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage7.png" alt="Combat">
+                </div>
+                <div class="feature-text">
+                    <h3>Combat That Keeps You Thinking:</h3>
+                    <p>Forget mindless button mashing! Every turn is a tactical decision that could mean victory or defeat. Do you go all-out attack? Play it safe with defend? Use that precious MP for a game-changing spell? The choice is yours!</p>
+                    
+                    <ul>
+                        <li><strong>Phase-Based Strategy</strong> - Players act together, then enemies retaliate. Coordinate with your party to focus fire on dangerous foes or spread damage strategically!</li>
+                        <li><strong>Speed Matters</strong> - Faster characters act first in each phase. Build a speedy Rogue to always get the jump on enemies, or accept the Warrior's slower speed for their incredible durability!</li>
+                        <li><strong>Risk vs Reward</strong> - Defending cuts damage in half but costs your turn. Time it right to survive devastating boss attacks!</li>
+                        <li><strong>Critical Hits</strong> - That satisfying moment when you land a critical strike! Boost your Luck stat to see those beautiful damage multipliers more often!</li>
+                        <li><strong>MP Management</strong> - Powerful abilities drain your MP. Spam them early and you'll be stuck with basic attacks when you need them most!</li>
+                    </ul>
+                    
+                    <h3>The Flow of Battle:</h3>
+                    <p>When danger strikes, you're instantly transported to the battle arena! No loading screens, no waiting - just pure adrenaline as you and your party face off against fearsome foes. The action menu appears right where you need it in VR, letting you make split-second decisions. Watch your attacks connect with satisfying visual effects, see damage numbers pop up, and feel the rush when "VICTORY!" flashes across your screen!</p>
+                    
+                    <p>Every battle ends with rewards - experience to grow stronger and gold to... well, that's for YOU to decide! Add shops, crafting, or any reward system you imagine! The real reward? The stories you'll tell about that time your custom Necromancer class saved everyone by summoning an undead army!</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Character Progression Section -->
+        <section id="progression" class="section">
+            <h2>CHARACTER PROGRESSION</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <h3>Your Character, Your Build:</h3>
+                    <p>Every battle makes you stronger! Watch those experience points roll in as you defeat enemies, and feel the rush when you hear that magical level-up sound! But here's where it gets REALLY interesting...</p>
+                    
+                    <h3>Customize Your Hero:</h3>
+                    <p>Leveling up isn't just watching numbers go up - YOU decide how your character grows! Each level grants skill points to spend however you want:</p>
+                    
+                    <ul>
+                        <li><strong>Pump ATK</strong> to become a damage-dealing monster. Watch enemies' health bars melt!</li>
+                        <li><strong>Boost DEF</strong> to laugh off attacks that would flatten others. Become the immovable object!</li>
+                        <li><strong>Increase SPD</strong> to always act first. Strike before enemies even know what hit them!</li>
+                        <li><strong>Raise INT</strong> for devastating magical damage. Make your spells the stuff of legends!</li>
+                        <li><strong>Invest in LUCK</strong> for those clutch critical hits when you need them most!</li>
+                    </ul>
+                    
+                    <p>Want a glass cannon Mage with maxed INT but paper-thin defense? Do it! Prefer a speedy Warrior who breaks the mold? That's your choice! Create entirely new stats, add skill trees, or design unique progression systems. There's no "wrong" way to build - only YOUR way!</p>
+                    
+                    <h3>Persistent Progress:</h3>
+                    <p>Your character's growth carries over between sessions. Log out as a level 5 adventurer, log back in as a level 5 adventurer! Your stats, your skills, your journey - it's all saved and waiting for your next adventure. This isn't just another VRChat activity - it's YOUR ongoing saga!</p>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage8.png" alt="Progression">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Multiplayer Features Section -->
+        <section id="multiplayer" class="section">
+            <h2>MULTIPLAYER FEATURES</h2>
+            <div class="feature-grid">
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage9.png" alt="Multiplayer">
+                </div>
+                <div class="feature-text">
+                    <h3>Adventures Are Better With Friends:</h3>
+                    <p>Sure, you COULD adventure alone... but why would you want to? The Abyl RPG System is built from the ground up for cooperative play! Grab up to 3 friends and form the ultimate party!</p>
+                    
+                    <h3>True Cooperative Gameplay:</h3>
+                    <ul>
+                        <li><strong>Real Teamwork</strong> - This isn't just fighting alongside each other - it's fighting TOGETHER! Coordinate attacks, cover each other's weaknesses, and create devastating combos!</li>
+                        <li><strong>Shared Triumphs</strong> - When the party wins, EVERYONE wins! Experience is shared fairly, ensuring no one gets left behind. Your success is the party's success!</li>
+                        <li><strong>Individual Identity</strong> - Even in a party, YOU control YOUR character. Your build, your choices, your moment to shine when you land that perfect critical hit!</li>
+                        <li><strong>Strategic Diversity</strong> - Mix and match classes for different strategies. All Warriors for maximum tanking? Four Mages for magical mayhem? The classic balanced party? Every combination tells a different story!</li>
+                        <li><strong>Social Bonds</strong> - Nothing brings VRChat friends together like surviving a tough battle by the skin of your teeth. These shared adventures create memories that last!</li>
+                    </ul>
+                    
+                    <h3>Built for VRChat, Optimized for Fun:</h3>
+                    <ul>
+                        <li><strong>Seamless Integration</strong> - Works perfectly with VRChat's systems. Your username appears in combat, your avatar is your hero!</li>
+                        <li><strong>VR-First Design</strong> - Every UI element is positioned for maximum comfort in VR. No neck strain, no awkward reaching - just smooth, intuitive gameplay!</li>
+                        <li><strong>Synchronized Action</strong> - What you do, everyone sees! Watch your friends' epic moves in real-time!</li>
+                        <li><strong>Station Combat</strong> - Teleport to battle positions that give everyone the best view of the action. Feel like heroes in a classic RPG battle scene!</li>
+                        <li><strong>Performance Optimized</strong> - Smooth gameplay even with full parties and intense battles. Because lag is the real enemy!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Customization Section -->
+        <section id="customization" class="section">
+            <h2>MAKE IT YOUR GAME</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <h3>Built to Be Modified:</h3>
+                    <p>The Abyl RPG System isn't a rigid game - it's a powerful framework waiting for YOUR creative vision! Every system is designed to be customized, expanded, and reimagined.</p>
+                    
+                    <h3>What You Can Customize:</h3>
+                    <ul>
+                        <li><strong>Create New Classes</strong> - Our four classes are just examples! Design space marines, pirates, vampires, or anything you imagine. Mix and match abilities to create unique playstyles!</li>
+                        <li><strong>Design Original Skills</strong> - Every skill parameter is exposed. Change damage formulas, create new effect types, add cooldowns, resource costs, or combo systems!</li>
+                        <li><strong>Build Enemy Variety</strong> - From cute slimes to terrifying dragons, create enemies that fit YOUR world. Set their AI patterns, special abilities, and rewards!</li>
+                        <li><strong>Tune the Balance</strong> - Every formula is accessible. Adjust experience curves, stat growth, damage calculations - make it as casual or hardcore as you want!</li>
+                        <li><strong>Theme Everything</strong> - Fantasy? Sci-fi? Modern? Silly? The system works with any theme. Just change the names, effects, and visuals!</li>
+                    </ul>
+                    
+                    <h3>Easy to Modify:</h3>
+                    <p>We've documented every parameter and made customization straightforward. No diving through complex code - just change values in the Unity inspector and see results immediately! The hard parts (networking, VRChat integration, combat flow) are handled. You focus on making it uniquely yours!</p>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage14.png" alt="Customization">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Enemies & AI Section -->
+        <section id="enemies" class="section">
+            <h2>ENEMIES & AI</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <h3>Create Your Own Bestiary:</h3>
+                    <p>What's an RPG without monsters to fight? The Abyl RPG System includes example enemies to get you started, but they're just templates for your imagination! Every stat, behavior, and ability can be customized!</p>
+                    
+                    <h3>Enemy Framework Lets You Build Anything:</h3>
+                    <ul>
+                        <li><strong>Normal Enemies</strong> - Your bread-and-butter foes. Perfect for grinding experience and learning new strategies. Make them goblins, robots, spirits - whatever fits YOUR world!</li>
+                        <li><strong>Elite Enemies</strong> - Tougher, smarter, and way more rewarding! These mini-bosses will test your party's coordination. Design unique elites with special mechanics!</li>
+                        <li><strong>Boss Enemies</strong> - The ultimate test! Bosses hit harder, take more punishment, and use devastating special abilities. Create memorable boss fights with multiple phases!</li>
+                    </ul>
+                    
+                    <h3>AI That You Control:</h3>
+                    <p>Our smart AI system is fully configurable - enemies aren't just damage sponges!</p>
+                    <ul>
+                        <li><strong>Behavior Patterns</strong> - Set attack/defend/special percentages to create unique enemy personalities. Aggressive berserkers? Defensive turtles? Tricky spellcasters? You decide!</li>
+                        <li><strong>Custom Abilities</strong> - Every enemy can have unique skills. Give your dragons fire breath, your zombies life drain, or create completely original mechanics!</li>
+                        <li><strong>Group Dynamics</strong> - Design enemy formations that work together. Healers supporting tanks, damage dealers protected by defenders - create real challenges!</li>
+                        <li><strong>Scaling Systems</strong> - Our level scaling ensures balanced gameplay, but every formula is customizable. Make enemies that grow with players or create fixed challenges!</li>
+                    </ul>
+                    
+                    <h3>Encounter System You Control:</h3>
+                    <p>Random battles are exciting, but YOUR game needs YOUR pacing:</p>
+                    <ul>
+                        <li><strong>Adjustable Frequency</strong> - Set encounter rates from rare to frequent. Building a chill social RPG? Make battles rare. Want constant action? Crank it up!</li>
+                        <li><strong>Zone-Based Encounters</strong> - Different areas spawn different enemy groups. Create level-appropriate zones or throw in surprise challenges!</li>
+                        <li><strong>Scripted Battles</strong> - Boss encounters, story battles, or tutorial fights - trigger specific encounters exactly when YOU want them!</li>
+                        <li><strong>Custom Rewards</strong> - Set experience, gold, and item drops for every encounter. Create rare spawns with bonus rewards!</li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage10.png" alt="Enemies">
+                </div>
+            </div>
+        </section>
+        
+        <!-- World & NPCs Section -->
+        <section id="world" class="section">
+            <h2>WORLD & NPCS</h2>
+            <div class="feature-grid">
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage11.png" alt="World">
+                </div>
+                <div class="feature-text">
+                    <h3>A Living, Breathing World:</h3>
+                    <p>This isn't just a combat system dropped into VRChat - it's a complete RPG experience! The world feels alive with wandering NPCs, dynamic encounters, and endless possibilities!</p>
+                    
+                    <h3>NPCs That Feel Real:</h3>
+                    <ul>
+                        <li><strong>Natural Movement</strong> - NPCs don't just stand there like statues! They wander around using intelligent pathfinding, creating a living world!</li>
+                        <li><strong>Interactive Conversations</strong> - Approach an NPC and they'll turn to face you, ready to chat! The dialogue system lets you have meaningful interactions!</li>
+                        <li><strong>Context-Aware Behavior</strong> - NPCs react to players nearby with animations and behaviors. They might wave, talk to themselves, or show surprise!</li>
+                        <li><strong>Future Quest Givers</strong> - The dialogue system is ready for quest NPCs, merchants, trainers - whatever YOUR game needs! The foundation is built for endless expansion!</li>
+                        <li><strong>Personality Through Animation</strong> - Different talking animations and behaviors give each NPC their own personality!</li>
+                    </ul>
+                    
+                    <h3>Seamless World Design:</h3>
+                    <ul>
+                        <li><strong>Smooth Transitions</strong> - Walk around freely until WHAM - battle time! The transition to combat is instant and exciting!</li>
+                        <li><strong>Arena Teleportation</strong> - Combat happens in dedicated arenas, keeping battles epic while preserving the exploration world!</li>
+                        <li><strong>Environmental Atmosphere</strong> - Dynamic skyboxes and lighting set the mood. That boss arena feels appropriately intimidating!</li>
+                        <li><strong>Immersive Audio</strong> - Background music shifts between exploration and combat, pulling you deeper into the experience!</li>
+                        <li><strong>Zone-Based Design</strong> - Different areas can have different enemy types, difficulty levels, and atmospheric elements!</li>
+                    </ul>
+                    
+                    <p>The world isn't just a backdrop - it's part of the adventure! Every corner could hide a powerful enemy, every NPC might have valuable information, and every step forward is progress in your journey!</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Targeting System Section -->
+        <section id="targeting" class="section">
+            <h2>TARGETING SYSTEM</h2>
+            <div class="feature-grid">
+                <div class="feature-text">
+                    <h3>Intuitive Targeting That Just Works:</h3>
+                    <p>In the heat of battle, the last thing you want is fumbling with confusing controls! Our targeting system is designed to be instantly understandable while offering deep tactical options!</p>
+                    
+                    <h3>Every Action Has Its Target:</h3>
+                    <ul>
+                        <li><strong>Single Enemy</strong> - Pick your victim! Perfect for focusing down the biggest threat or finishing off weakened foes!</li>
+                        <li><strong>All Enemies</strong> - Why choose? Unleash devastating AoE attacks that hit everything! Watch the entire enemy party's HP bars drop!</li>
+                        <li><strong>Single Ally</strong> - Be the hero your party needs! Target specific allies for healing, buffs, or revival!</li>
+                        <li><strong>All Allies</strong> - Spread the love! Party-wide heals and buffs can turn the tide of battle!</li>
+                        <li><strong>Self Target</strong> - Sometimes you need to help yourself first. Self-buffs and healing keep you in the fight!</li>
+                        <li><strong>Random Target</strong> - Let fate decide! Some abilities pick targets randomly for that extra bit of chaos!</li>
+                    </ul>
+                    
+                    <h3>Visual Clarity in VR:</h3>
+                    <p>We know VR can be disorienting, so we made targeting crystal clear:</p>
+                    <ul>
+                        <li><strong>Glowing Indicators</strong> - Valid targets light up with clear visual markers. No guessing who you can hit!</li>
+                        <li><strong>Color Coding</strong> - Different colors for different target types. Red for enemies, green for allies - simple and effective!</li>
+                        <li><strong>Preview Effects</strong> - See exactly what your AoE spell will hit BEFORE you cast it. No wasteful misses!</li>
+                        <li><strong>Audio Feedback</strong> - Satisfying sounds confirm your selection. You'll KNOW when you've locked onto your target!</li>
+                        <li><strong>Smart Auto-Targeting</strong> - For AoE and self-targeted abilities, the system handles targeting automatically. Just choose the skill and watch it work!</li>
+                    </ul>
+                    
+                    <p>The best interface is invisible - and that's what we've achieved! Targeting feels so natural, you'll forget it's even there. Just point, click, and unleash devastation!</p>
+                </div>
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage12.png" alt="Targeting">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Status Effects Section -->
+        <section id="status" class="section">
+            <h2>STATUS EFFECTS</h2>
+            <div class="feature-grid">
+                <div class="feature-image">
+                    <img src="Art Folder/ARPGimage13.png" alt="Status Effects">
+                </div>
+                <div class="feature-text">
+                    <h3>Status Effects Add Strategic Depth:</h3>
+                    <p>Combat isn't just about damage numbers - it's about controlling the battlefield! Status effects transform simple battles into chess matches where every move matters!</p>
+                    
+                    <h3>Afflictions That Change Everything:</h3>
+                    <ul>
+                        <li><strong>💀 Poison</strong> - Watch enemies slowly wither away! That tough boss becomes manageable when it's losing HP every turn!</li>
+                        <li><strong>⚡ Stun</strong> - The ultimate shutdown! Stunned enemies skip their turn entirely. Time it right to prevent devastating attacks!</li>
+                        <li><strong>😴 Sleep</strong> - Peaceful but deadly! Sleeping foes skip turns until damaged. Perfect for divide-and-conquer strategies!</li>
+                        <li><strong>👁️ Blind</strong> - Can't hit what you can't see! Blinded enemies miss more often, neutralizing physical powerhouses!</li>
+                        <li><strong>🤐 Silence</strong> - Shut down those pesky spellcasters! No magic means no problems!</li>
+                        <li><strong>⚡ Paralysis</strong> - The gambler's curse! Paralyzed enemies MIGHT act, or might waste their turn. Keep them guessing!</li>
+                        <li><strong>⬆️ Stat Buffs</strong> - Temporary power boosts! Turn your Warrior into an unstoppable force or your Mage into a nuclear bomb!</li>
+                        <li><strong>⬇️ Stat Debuffs</strong> - Weaken foes before the killing blow! Lower their defense, then strike for massive damage!</li>
+                        <li><strong>🎨 Your Effects</strong> - Create custom status effects! Time stops, gravity reversal, charm, fear - if you can imagine it, you can build it!</li>
+                    </ul>
+                    
+                    <h3>Strategic Status Gameplay:</h3>
+                    <ul>
+                        <li><strong>Duration Management</strong> - Effects last multiple turns, so timing is crucial. Apply poison early for maximum damage over time!</li>
+                        <li><strong>Visual Indicators</strong> - Can't miss who's affected! Clear icons show active effects at a glance!</li>
+                        <li><strong>Stacking Strategies</strong> - Some effects stack for increased power! Multiple poisons mean multiple damage ticks!</li>
+                        <li><strong>Cleanse and Counter</strong> - Clerics can remove negative effects, making them invaluable against status-heavy enemies!</li>
+                        <li><strong>Resistance Systems</strong> - Higher stats provide natural resistance. That high-INT Mage might shrug off silence!</li>
+                    </ul>
+                    
+                    <p>Master the status effect system and you'll find battles have layers of strategy you never imagined. That impossible boss? Maybe it just needs a good stunning! Better yet - create your own unique status effects that change how YOUR game plays!</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Download Section -->
+        <section id="download" class="section pixel-border">
+            <h2>GET THE COMPLETE FRAMEWORK</h2>
+            <div style="text-align: center; padding: 40px;">
+                <p>The Abyl RPG System is almost ready to help YOU create the RPG of your dreams in VRChat!</p>
+                <p>We're putting the finishing touches on the most comprehensive RPG framework ever created for social VR.</p>
+                
+                <h3 style="margin: 30px 0;">What You'll Get:</h3>
+                <ul style="list-style: none; margin: 20px 0;">
+                    <li>✅ Complete RPG framework ready to customize and drop into any VRChat world</li>
+                    <li>✅ All scripts, prefabs, and systems fully documented and modifiable</li>
+                    <li>✅ Example classes, enemies, and skills to use or build upon</li>
+                    <li>✅ Customization guides showing how to create YOUR unique RPG</li>
+                    <li>✅ Active community sharing custom content and ideas</li>
+                    <li>✅ Regular updates with new features and systems</li>
+                </ul>
+                
+                <a href="#" class="download-btn">🎮 DOWNLOAD COMING SOON 🎮</a>
+                
+                <p style="margin-top: 30px;">Want to be notified the moment it releases?</p>
+                <p>Join our Discord to get early access, connect with other creators, and share your RPG adventures!</p>
+                
+                <p style="margin-top: 40px; font-size: 10px;">
+                    <span class="blink">▶</span> Your unique RPG adventure starts with Abyl! <span class="blink">◀</span>
+                </p>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <div class="volume-container">
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" orient="vertical">
+            <button class="mute-btn" id="muteBtn">♪</button>
+        </div>
+    </div>
+    
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="Art Folder/rpg-background-music.mp3" type="audio/mpeg">
+        <source src="Art Folder/rpg-background-music.ogg" type="audio/ogg">
+    </audio>
+    
+    <script>
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close sidebar on mobile after clicking
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+        });
+        
+        // Audio Controls
+        const bgMusic = document.getElementById('bgMusic');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const muteBtn = document.getElementById('muteBtn');
+        
+        // Set initial volume
+        bgMusic.volume = 0.5;
+        
+        // Start playing music when page loads (with user interaction)
+        document.addEventListener('click', function initAudio() {
+            bgMusic.play().catch(e => console.log('Audio autoplay prevented'));
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+        
+        // Volume Control
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            bgMusic.volume = volume;
+            
+            if (volume === 0) {
+                muteBtn.classList.add('muted');
+                muteBtn.textContent = '✖';
+            } else {
+                muteBtn.classList.remove('muted');
+                muteBtn.textContent = '♪';
+            }
+        });
+        
+        // Mute Button
+        muteBtn.addEventListener('click', () => {
+            if (bgMusic.muted) {
+                bgMusic.muted = false;
+                muteBtn.classList.remove('muted');
+                muteBtn.textContent = '♪';
+                volumeSlider.value = bgMusic.volume * 100;
+            } else {
+                bgMusic.muted = true;
+                muteBtn.classList.add('muted');
+                muteBtn.textContent = '✖';
+            }
+        });
+        
+        // Parallax Effect on Hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+        
+        // Add some retro loading effect
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
