@@ -292,6 +292,12 @@
                 0 0 60px rgba(255,0,127,0.8),
                 inset 0 0 60px rgba(0,255,255,0.3);
             position: relative;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+
+        .floating-crystal.hidden {
+            opacity: 0;
         }
 
         .floating-crystal::before {
@@ -329,6 +335,30 @@
         @keyframes crystal-inner {
             from { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
             to { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Video Player */
+        .video-player {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1500;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-player.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .video-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Section Styling */
@@ -885,7 +915,13 @@
             <img src="Art Folder/EgoTrip.png" alt="EGO/TRIP Logo" class="hero-logo" onerror="this.style.display='none'">
             <h1 style="display: none;">EGO/TRIP</h1>
             <p class="subtitle">VRChat Roguelite Journey Through the Red Shard</p>
-            <div class="floating-crystal"></div>
+            <div class="floating-crystal" id="floatingCrystal"></div>
+            <div class="video-player" id="videoPlayer">
+                <video id="crystalVideo" playsinline>
+                    <source src="Art Folder/crystal-video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
             <p style="font-size: 1.2rem; opacity: 0.9; max-width: 800px; line-height: 1.6;">
                 Within the crimson crystal lies a space between consciousness and dream. As Null awakens alongside shadowy echo-fragments, 
                 they must venture through an endless labyrinth where lost souls have built their own twisted domains. 
@@ -1499,6 +1535,30 @@
             }
         }
 
+        // Video Playback for Floating Crystal
+        function playCrystalVideo() {
+            const crystal = document.getElementById('floatingCrystal');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const video = document.getElementById('crystalVideo');
+
+            // Fade out the crystal
+            crystal.classList.add('hidden');
+
+            // Wait for fade-out to complete, then show and play video
+            setTimeout(() => {
+                videoPlayer.classList.add('active');
+                video.play();
+            }, 500); // Match the transition duration in CSS
+
+            // When video ends, fade out video and fade in crystal
+            video.onended = () => {
+                videoPlayer.classList.remove('active');
+                setTimeout(() => {
+                    crystal.classList.remove('hidden');
+                }, 500); // Match the transition duration in CSS
+            };
+        }
+
         // Initialize
         window.onload = function() {
             createLavaLamp();
@@ -1509,6 +1569,9 @@
                     checkSpoilerPassword();
                 }
             });
+
+            // Add click event to floating crystal
+            document.getElementById('floatingCrystal').addEventListener('click', playCrystalVideo);
 
             // Add more lava blobs periodically for extra psychedelic effect
             setInterval(() => {
