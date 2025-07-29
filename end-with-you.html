@@ -21,6 +21,66 @@
             position: relative;
         }
 
+        .cloud-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: moveCloud linear infinite;
+        }
+
+        .cloud:nth-child(1) {
+            width: 200px;
+            height: 60px;
+            top: 10%;
+            left: -200px;
+            animation-duration: 50s;
+        }
+
+        .cloud:nth-child(2) {
+            width: 150px;
+            height: 45px;
+            top: 30%;
+            left: -150px;
+            animation-duration: 70s;
+        }
+
+        .cloud:nth-child(3) {
+            width: 180px;
+            height: 50px;
+            top: 20%;
+            left: -180px;
+            animation-duration: 60s;
+        }
+
+        .cloud:nth-child(4) {
+            width: 220px;
+            height: 65px;
+            top: 15%;
+            left: -220px;
+            animation-duration: 55s;
+        }
+
+        @keyframes moveCloud {
+            from {
+                transform: translateX(-200px);
+            }
+            to {
+                transform: translateX(calc(100vw + 200px));
+            }
+        }
+
         .town-silhouette {
             position: fixed;
             bottom: 0;
@@ -31,22 +91,19 @@
             background-size: stretch;
             background-position: center bottom;
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
             overflow: hidden;
-        }
-
-        .container {
-            padding-bottom: 25vh; /* Add space for town silhouette */
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            padding-bottom: 25vh; /* Add space for town silhouette */
+            padding-bottom: 25vh;
+            position: relative;
+            z-index: 3;
         }
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -88,6 +145,10 @@
             .audio-controls {
                 bottom: calc(25vh + 10px);
                 right: 10px;
+            }
+
+            .cloud {
+                transform: scale(0.7);
             }
         }
 
@@ -311,6 +372,13 @@
         Your browser does not support the audio element.
     </audio>
 
+    <div class="cloud-container">
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+    </div>
+
     <div class="countdown" id="countdown">Time Remaining: 10:00</div>
 
     <div class="audio-controls">
@@ -329,7 +397,7 @@
         <section id="story">
             <h2>The Story</h2>
             <div class="story-text">
-                <p>You return to your hometown of Last Haven with devastating news - the world has 30 minutes left. As chaos begins to unfold around you, you're faced with an impossible choice: how do you spend humanity's final moments?</p>
+                <p>After a long trip, You return to your hometown of Last Haven when faced with devastating news - the world has 30 minutes left. As chaos begins to unfold around you, you're faced with an impossible choice: how do you spend humanity's final moments?</p>
                 
                 <p>Last Haven is a small, intimate town where everyone knows each other. Each resident is processing the end in their own way - some in denial, others finding peace, many seeking connection. You wander the familiar streets, visiting neighbors, friends, and strangers, witnessing their final acts and perhaps helping them find closure.</p>
                 
@@ -444,7 +512,6 @@
         </section>
     </div>
 
-    <!-- Town Silhouette -->
     <div class="town-silhouette"></div>
 
     <script>
@@ -472,6 +539,14 @@
             
             document.body.style.background = `linear-gradient(135deg, rgb(${r},${g},${b}), rgb(${Math.max(r-30, 0)},${Math.max(g-30, 0)},${Math.max(b-30, 0)}))`;
             
+            // Cloud color transition from white to dark gray
+            let cloudR = Math.floor(255 - 200 * progress); // 255 to 55
+            let cloudG = Math.floor(255 - 200 * progress); // 255 to 55
+            let cloudB = Math.floor(255 - 200 * progress); // 255 to 55
+            document.querySelectorAll('.cloud').forEach(cloud => {
+                cloud.style.background = `rgba(${cloudR},${cloudG},${cloudB},0.8)`;
+            });
+            
             // Add danger effects as time progresses
             if (progress > 0.5) {
                 document.getElementById('countdown').classList.add('warning-pulse');
@@ -497,6 +572,7 @@
                 // Final apocalypse effect - pure white background and hide town
                 document.body.style.background = '#ffffff';
                 document.querySelector('.town-silhouette').style.display = 'none';
+                document.querySelector('.cloud-container').style.display = 'none';
             }
         }
         
