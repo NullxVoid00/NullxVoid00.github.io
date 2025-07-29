@@ -31,7 +31,6 @@
             min-height: 100vh;
         }
 
-        /* Static Noise Background Effect */
         body::before {
             content: '';
             position: fixed;
@@ -65,7 +64,6 @@
             90% { transform: translate(1%, 1%); }
         }
 
-        /* Glitch effect */
         @keyframes glitch {
             0%, 100% { 
                 text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
@@ -89,7 +87,6 @@
             }
         }
 
-        /* Password Screen */
         .password-screen {
             position: fixed;
             top: 0;
@@ -168,7 +165,6 @@
             box-shadow: 0 0 20px rgba(220,20,60,0.3);
         }
 
-        /* Typing effect */
         @keyframes typing-glow {
             0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
             50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
@@ -190,7 +186,6 @@
             opacity: 1;
         }
 
-        /* Main Hub */
         .main-hub {
             display: none;
             min-height: 100vh;
@@ -203,7 +198,6 @@
             display: block;
         }
 
-        /* Header */
         .hub-header {
             text-align: center;
             padding: 4rem 2rem 2rem;
@@ -211,7 +205,6 @@
             z-index: 2;
         }
 
-        /* Logo Animation with Glow */
         @keyframes floatLogo {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -234,7 +227,6 @@
             opacity: 0.8;
         }
 
-        /* Navigation Grid */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -273,7 +265,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Section View Container */
         .section-view {
             position: fixed;
             top: 0;
@@ -303,7 +294,6 @@
             }
         }
 
-        /* Section Header */
         .section-header {
             text-align: center;
             padding: 2rem;
@@ -318,7 +308,6 @@
             animation: glitch 3s infinite;
         }
 
-        /* 3D Carousel Container */
         .carousel-container {
             flex: 1;
             display: flex;
@@ -340,7 +329,6 @@
             max-width: 1400px;
         }
 
-        /* Project Cards */
         .project-card {
             position: absolute;
             width: 300px;
@@ -380,7 +368,6 @@
             line-height: 1.4;
         }
 
-        /* Carousel Navigation */
         .carousel-nav {
             position: absolute;
             top: 50%;
@@ -409,7 +396,6 @@
             right: 2rem;
         }
 
-        /* Gallery Cards - Simpler design */
         .gallery-card {
             position: absolute;
             width: 350px;
@@ -447,7 +433,6 @@
             text-align: center;
         }
 
-        /* About Section */
         .about-section {
             max-width: 800px;
             margin: 4rem auto;
@@ -507,7 +492,6 @@
             box-shadow: 0 5px 15px rgba(220,20,60,0.3);
         }
 
-        /* Red Shard Animation */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
@@ -523,7 +507,6 @@
             box-shadow: 0 0 50px var(--accent-red);
         }
 
-        /* Back Button */
         .back-button {
             position: fixed;
             top: 2rem;
@@ -547,7 +530,6 @@
             display: none;
         }
 
-        /* Volume Control */
         .volume-control {
             position: fixed;
             bottom: 1rem;
@@ -598,9 +580,7 @@
             background: rgba(255,255,255,0.3);
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            /* Prevent horizontal scroll on mobile */
             body {
                 overflow-x: hidden;
             }
@@ -638,7 +618,6 @@
                 width: 80px;
             }
 
-            /* Simplified carousel for mobile */
             .carousel-container {
                 perspective: none;
                 padding: 1rem;
@@ -667,7 +646,6 @@
                 height: 180px;
             }
 
-            /* Simpler navigation arrows on mobile */
             .carousel-nav {
                 padding: 0.8rem;
                 font-size: 1.2rem;
@@ -681,7 +659,6 @@
                 right: 0.5rem;
             }
 
-            /* Section headers on mobile */
             .section-header {
                 padding: 1.5rem 1rem;
             }
@@ -693,7 +670,6 @@
     </style>
 </head>
 <body>
-    <!-- Password Screen -->
     <div class="password-screen" id="passwordScreen">
         <div class="password-container">
             <h1>ENTER THE ABYSS</h1>
@@ -710,11 +686,9 @@
         </div>
     </div>
 
-    <!-- Main Hub -->
     <div class="main-hub" id="mainHub">
         <button class="back-button hidden" id="backButton" onclick="showHub()">← BACK TO HUB</button>
         
-        <!-- Hub Home -->
         <div id="hubHome">
             <div class="hub-header">
                 <img src="Art Folder/logo0.png" alt="Abyssal Light Logo" class="hub-logo">
@@ -722,25 +696,18 @@
             </div>
 
             <div class="nav-grid">
-                <!-- Games Section -->
                 <div class="nav-section" onclick="showSection('games')">
                     <h2>GAMES</h2>
                     <p>Interactive experiences exploring the human psyche</p>
                 </div>
-
-                <!-- VRChat Worlds Section -->
                 <div class="nav-section" onclick="showSection('vrchat')">
                     <h2>VRCHAT WORLDS</h2>
                     <p>Immersive virtual reality environments</p>
                 </div>
-
-                <!-- Art Gallery Section -->
                 <div class="nav-section" onclick="showSection('gallery')">
                     <h2>ART GALLERY</h2>
                     <p>Visual explorations and concept work</p>
                 </div>
-
-                <!-- About Section -->
                 <div class="nav-section" onclick="showAbout()">
                     <h2>ABOUT</h2>
                     <p>Learn more about the creator</p>
@@ -748,7 +715,6 @@
             </div>
         </div>
 
-        <!-- About Page -->
         <div class="about-section hidden" id="aboutSection">
             <div class="profile-header">
                 <img src="Art Folder/profile-pic.jpg" alt="Profile" class="profile-pic">
@@ -773,7 +739,6 @@
         </div>
     </div>
 
-    <!-- Games Section View -->
     <div class="section-view" id="gamesSection">
         <div class="section-header">
             <h2>GAMES</h2>
@@ -787,7 +752,6 @@
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
-    <!-- VRChat Section View -->
     <div class="section-view" id="vrchatSection">
         <div class="section-header">
             <h2>VRCHAT WORLDS</h2>
@@ -801,7 +765,6 @@
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
-    <!-- Art Gallery Section View -->
     <div class="section-view" id="gallerySection">
         <div class="section-header">
             <h2>ART GALLERY</h2>
@@ -815,7 +778,6 @@
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
-    <!-- Audio Elements -->
     <audio id="passwordAudio" loop>
         <source src="audio/password-bg.mp3" type="audio/mpeg">
     </audio>
@@ -826,7 +788,6 @@
         <source src="audio/Click.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Volume Control -->
     <div class="volume-control">
         <label for="volumeSlider">Volume</label>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
@@ -839,32 +800,27 @@
         const clickAudio = document.getElementById('clickAudio');
         const volumeSlider = document.getElementById('volumeSlider');
 
-        // Set initial volume
         passwordAudio.volume = volumeSlider.value;
         hubAudio.volume = volumeSlider.value;
         clickAudio.volume = volumeSlider.value;
 
-        // Volume control
         volumeSlider.addEventListener('input', function() {
             passwordAudio.volume = this.value;
             hubAudio.volume = this.value;
             clickAudio.volume = this.value;
         });
 
-        // Click sound function
         function playClickSound() {
             clickAudio.currentTime = 0;
             clickAudio.play().catch(e => console.log('Click sound error:', e));
         }
 
-        // Add click sound to all interactive elements
         document.addEventListener('click', function(e) {
             if (e.target.matches('.nav-section, .project-card, .gallery-card, button, .social-link, .carousel-nav')) {
                 playClickSound();
             }
         });
 
-        // Password functionality
         const passwordInput = document.getElementById('passwordInput');
         const passwordScreen = document.getElementById('passwordScreen');
         const mainHub = document.getElementById('mainHub');
@@ -890,7 +846,6 @@
         function checkPassword() {
             if (passwordInput.value === 'Neurorine') {
                 passwordScreen.classList.add('hidden');
-                // Fade out password audio
                 let fadeOut = setInterval(() => {
                     if (passwordAudio.volume > 0.01) {
                         passwordAudio.volume -= 0.01;
@@ -902,7 +857,6 @@
                 setTimeout(() => {
                     passwordScreen.style.display = 'none';
                     mainHub.classList.add('active');
-                    // Fade in hub audio
                     hubAudio.volume = 0;
                     hubAudio.play();
                     let fadeIn = setInterval(() => {
@@ -920,7 +874,6 @@
             }
         }
 
-        // Project data
         const projectData = {
             games: [
                 {
@@ -934,7 +887,7 @@
                     description: "The Prelude - Journey deep within the Furthest Reaches of the mind's labyrinth.",
                     image: "Art Folder/GameProject2.jpg",
                     link: "ego-trip.html"
-                }
+                },
                 {
                     title: "Go! Ko! Go! Kart Racer DX",
                     description: "A thrilling kart racing murder mystery - race, investigate, survive.",
@@ -982,14 +935,12 @@
             ]
         };
 
-        // Carousel state
         let carouselStates = {
             games: { currentIndex: 0 },
             vrchat: { currentIndex: 0 },
             gallery: { currentIndex: 0 }
         };
 
-        // Touch support for mobile carousel
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -1004,20 +955,18 @@
 
         function handleSwipe(type) {
             if (touchEndX < touchStartX - 50) {
-                moveCarousel(type, 1); // Swipe left, move right
+                moveCarousel(type, 1);
             }
             if (touchEndX > touchStartX + 50) {
-                moveCarousel(type, -1); // Swipe right, move left
+                moveCarousel(type, -1);
             }
         }
 
-        // Initialize carousels
         function initializeCarousels() {
             initializeCarousel('games', projectData.games);
             initializeCarousel('vrchat', projectData.vrchat);
             initializeCarousel('gallery', projectData.gallery, true);
             
-            // Add touch listeners after carousels are created
             ['games', 'vrchat', 'gallery'].forEach(type => {
                 const carousel = document.getElementById(`${type}Carousel`);
                 if (carousel) {
@@ -1031,7 +980,6 @@
             const carousel = document.getElementById(`${type}Carousel`);
             carousel.innerHTML = '';
             
-            // Set carousel positioning context
             carousel.style.position = 'relative';
             carousel.style.width = '100%';
             carousel.style.height = '100%';
@@ -1040,7 +988,6 @@
                 const card = document.createElement('div');
                 card.className = isGallery ? 'gallery-card' : 'project-card';
                 
-                // Center cards in container
                 card.style.left = '50%';
                 card.style.top = '50%';
                 card.style.marginLeft = isGallery ? '-175px' : '-150px';
@@ -1085,13 +1032,11 @@
                 const sign = offset < 0 ? -1 : 1;
                 
                 if (isMobile) {
-                    // Simplified mobile positioning with proper centering
                     const cardWidth = isGallery ? 300 : 280;
                     const translateX = offset * (cardWidth + 20);
                     const scale = absOffset === 0 ? 1 : 0.85;
                     const opacity = absOffset === 0 ? 1 : 0.3;
                     
-                    // Adjust margins for mobile centering
                     card.style.marginLeft = `-${cardWidth / 2}px`;
                     card.style.marginTop = isGallery ? '-210px' : '-190px';
                     
@@ -1100,7 +1045,6 @@
                     card.style.zIndex = absOffset === 0 ? 10 : 1;
                     card.style.transition = 'all 0.4s ease-out';
                 } else {
-                    // Desktop 3D carousel
                     const spacing = isGallery ? 380 : 320;
                     const translateX = offset * spacing;
                     const translateZ = -absOffset * 100;
@@ -1119,7 +1063,6 @@
                     card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
                 }
                 
-                // Enable/disable interaction
                 card.style.pointerEvents = absOffset === 0 ? 'auto' : 'none';
             });
         }
@@ -1132,9 +1075,7 @@
             updateCarouselPositions(type);
         }
 
-        // Section navigation
         function showSection(sectionType) {
-            // Hide main hub
             document.getElementById('mainHub').style.display = 'none';
             
             const section = document.getElementById(`${sectionType}Section`);
@@ -1146,7 +1087,6 @@
                 section.classList.remove('active');
             });
             
-            // Show main hub again
             document.getElementById('mainHub').style.display = 'block';
         }
 
@@ -1162,15 +1102,12 @@
             document.getElementById('backButton').classList.add('hidden');
         }
 
-        // Initialize
         window.onload = function() {
             passwordInput.focus();
             initializeCarousels();
             
-            // Try to autoplay password audio
             passwordAudio.play().catch(error => {
                 console.log('Autoplay prevented:', error);
-                // Fallback: Play audio on first user interaction
                 document.addEventListener('click', function playAudioOnce() {
                     passwordAudio.play();
                     document.removeEventListener('click', playAudioOnce);
@@ -1178,7 +1115,6 @@
             });
         };
 
-        // Update carousel positions on window resize
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
