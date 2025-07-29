@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go! Ko! Go! Kart Racer DX</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Racing+Sans+One&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0507 25%, #2d0913 50%, #1a0726 75%, #0f0f0f 100%);
+            background-attachment: fixed;
+            color: #cccccc;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.05;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 6s;
+        }
+        
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+            animation-duration: 8s;
+        }
+        
+        .shape:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+            animation-duration: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .header {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 15px #cc1100);
+        }
+        
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 15px #cc1100); }
+            100% { filter: drop-shadow(0 0 25px #cc1100) drop-shadow(0 0 35px #660000); }
+        }
+        
+        .tagline {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            color: #cc1100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+            animation: neonFlicker 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes neonFlicker {
+            0% { text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 8px #cc1100; }
+            100% { text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px #cc1100, 0 0 25px #660000; }
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(45deg, #cc1100, #660000);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: #cccccc;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(204, 17, 0, 0.3);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(204, 17, 0, 0.5);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(45deg, #8a2be2, #4b0082);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+        
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section h2 {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #8a2be2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .concept-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid rgba(204, 17, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .concept-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(204, 17, 0, 0.7);
+            box-shadow: 0 15px 35px rgba(204, 17, 0, 0.2);
+        }
+        
+        .concept-card h3 {
+            color: #cc1100;
+            margin-bottom: 1rem;
+            font-family: 'Racing Sans One', cursive;
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .character-card {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid rgba(138, 43, 226, 0.4);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .character-card:hover {
+            transform: scale(1.05) rotateY(5deg);
+            border-color: rgba(138, 43, 226, 0.8);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+        }
+        
+        .character-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #cc1100, #8a2be2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .character-info {
+            padding: 1.5rem;
+        }
+        
+        .character-name {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 1.5rem;
+            color: #8a2be2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #aaaaaa;
+        }
+        
+        .racing-stripe {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #cc1100, transparent);
+            animation: racing 2s linear infinite;
+            animation-play-state: paused;
+        }
+        
+        .character-card:hover .racing-stripe {
+            animation-play-state: running;
+        }
+        
+        @keyframes racing {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .story-content {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            border: 2px solid rgba(204, 17, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .story-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #cc1100, #8a2be2, #660000, #cc1100);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                gap: 1rem;
+            }
+            
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .section {
+                padding: 2rem 1rem;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                max-width: 300px;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+        }
+        
+        .speed-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .speed-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #cc1100, transparent);
+            animation: speedLine 1.5s linear infinite;
+        }
+        
+        .speed-line:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .speed-line:nth-child(2) { top: 40%; animation-delay: 0.3s; }
+        .speed-line:nth-child(3) { top: 60%; animation-delay: 0.6s; }
+        .speed-line:nth-child(4) { top: 80%; animation-delay: 0.9s; }
+        
+        @keyframes speedLine {
+            0% {
+                left: -200px;
+                width: 200px;
+            }
+            100% {
+                left: 100%;
+                width: 200px;
+            }
+        }
+        
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 15px;
+            padding: 15px;
+            border: 2px solid rgba(204, 17, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .record-player {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #1a1a1a 30%, #cc1100 31%, #cc1100 35%, #000 36%);
+            border-radius: 50%;
+            position: relative;
+            animation: spin 3s linear infinite;
+            animation-play-state: paused;
+        }
+        
+        .record-player::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+        }
+        
+        .record-player.playing {
+            animation-play-state: running;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .volume-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            outline: none;
+            appearance: none; /* Fix: Added for compatibility (line 419) */
+            -webkit-appearance: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #cc1100;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #cc1100;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .play-pause-btn {
+            background: linear-gradient(45deg, #cc1100, #660000);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .play-pause-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(204, 17, 0, 0.5);
+        }
+        
+        .volume-label {
+            color: #8a2be2;
+            font-size: 10px;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape">🏁</div>
+        <div class="shape">⚡</div>
+        <div class="shape">🏎️</div>
+    </div>
+    
+    <div class="speed-lines">
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+    </div>
+
+    <header class="header">
+        <img src="Art Folder/logo.png" alt="Go! Ko! Go! Kart Racer DX Logo" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div style="display: none; font-family: 'Racing Sans One', cursive; font-size: 3rem; color: #cc1100; text-shadow: 2px 2px 4px rgba(0,0,0,0.9);">GO! KO! GO!</div>
+        <p class="tagline">Kart Racing • Murder Mystery • Visual Novel</p>
+        <div class="racing-stripe"></div>
+    </header>
+
+    <nav class="nav">
+        <button class="nav-btn active" onclick="showSection('concept')">🏁 Concept</button>
+        <button class="nav-btn" onclick="showSection('characters')">👥 Racers</button>
+        <button class="nav-btn" onclick="showSection('story')">📖 Story</button>
+        <button class="nav-btn" onclick="showSection('gameplay')">🎮 Gameplay</button>
+    </nav>
+
+    <section id="concept" class="section active">
+        <h2>🏁 The Ultimate Racing Experience</h2>
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h3>🏎️ High-Speed Racing</h3>
+                <p>Experience Mario Kart-style racing with power-ups, obstacles, and shortcuts. But beware - not every racer will cross the finish line...</p>
+            </div>
+            <div class="concept-card">
+                <h3>🔍 Real-Time Investigation</h3>
+                <p>Gather clues while racing! Bump into rivals, explore secret paths, and collect evidence as racers mysteriously disappear from the track.</p>
+            </div>
+            <div class="concept-card">
+                <h3>💬 Visual Novel Mysteries</h3>
+                <p>Between races, interrogate suspects, explore locations, and piece together the truth in Danganronpa-style investigation sequences.</p>
+            </div>
+            <div class="concept-card">
+                <h3>😱 Horror & Suspense</h3>
+                <p>As bodies pile up and the killer closes in, every race becomes a fight for survival. Can you solve the mystery before you become the next victim?</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="music-player">
+        <div class="record-player" id="recordPlayer"></div>
+        <button class="play-pause-btn" id="playPauseBtn">▶</button>
+        <div class="volume-control">
+            <span class="volume-label">Volume</span>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        <audio id="bgMusic" loop>
+            <source src="Art Folder/background_music.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <section id="characters" class="section">
+        <h2>🏁 Meet the Racers</h2>
+        <div class="characters-grid">
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage1.png" alt="Ko" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #8a2be2; font-size: 1.5rem;\\\">Ko<br>🏎️👹</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Ko</h3>
+                    <p class="character-description">A smart-mouthed demon girl seeking to revive her deceased mentor. Level-headed but crude, she becomes the unlikely detective trying to solve the disappearances while protecting her fellow racers.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage2.png" alt="Trousle" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Trousle<br>💀🏁</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Trousle</h3>
+                    <p class="character-description">An anxious skeleton racer who's fierce in competition but struggles socially. The murders shake him to his core, nearly causing him to quit until Ko convinces him to stay.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage3.png" alt="Meggy-Meggy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Meggy-Meggy<br>🧜‍♀️💎</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Meggy-Meggy</h3>
+                    <p class="character-description">A pompous mermaid who relies on expensive racing equipment. She sees other racers' disappearances as beneficial to her chances at the grand prize, caring little for their wellbeing.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage4.png" alt="Geronimo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Geronimo<br>🦔⚔️</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Geronimo</h3>
+                    <p class="character-description">A tough armadillo with quick wit who keeps weapons at all times. Values fair competition above all else, taking greater offense to the killer breaking racing rules than the murders themselves.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage5.png" alt="Ziya" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Ziya<br>🦜🇫🇷</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Ziya</h3>
+                    <p class="character-description">A talkative French parrot who seems clumsy but holds her own on the track. Mortified by losing her teammates, she vows to use the prize to help victims' families if she wins.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage6.png" alt="Geno_sys" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Geno_sys<br>🤖⚡</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Geno_sys</h3>
+                    <p class="character-description">A robot with shifting personalities - calm, bubbly, or rageful. Built to win and save their creator's failing health. Their unpredictable nature makes them dangerous on track and seemingly unafraid of the killer.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage7.png" alt="Reggex" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Reggex<br>🦕🔥</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Reggex</h3>
+                    <p class="character-description">A fiery red dinosaur who races for pure joy and to prove he's the fastest. Doesn't care about the prize and plans to give it to second place. Fearlessly wants to thrash the killer personally.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage8.png" alt="Wylle" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Wylle<br>👁️‍🗨️🏁</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Wylle</h3>
+                    <p class="character-description">A wise blind mole rat who surprises everyone with special racing equipment and skills. Acts as peacemaker, hoping to start a fund for underprivileged racers if victorious.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage9.png" alt="Quincy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Quincy<br>🎭❓</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Quincy</h3>
+                    <p class="character-description">A mysterious masked racer who takes particular interest in the murders. Rarely speaks but shares knowledge and clues with Ko. Their goals and identity remain shrouded in mystery.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+            <div class="character-card">
+                <div class="character-img">
+                    <img src="Art Folder/GGimage10.png" alt="Junanaji" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Junanaji<br>🦾🏆</div>'">
+                </div>
+                <div class="character-info">
+                    <h3 class="character-name">Junanaji</h3>
+                    <p class="character-description">A cocky racer with cybernetic enhancements and previous GGGP winner. Uses underhanded tactics and likes picking on other racers, keeping their prize desires and past winnings secret.</p>
+                </div>
+                <div class="racing-stripe"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="story" class="section">
+        <h2>📖 The Dark Tale</h2>
+        <div class="story-content">
+            <h3 style="color: #8a2be2; margin-bottom: 1rem;">The GO! GO! Grand Prix</h3>
+            <p>When Ko, a demon girl kart racer, enters the world-renowned "GO! GO! Grand Prix," she's seeking more than just victory. With her mentor Gi recently deceased, she hopes the mysterious grand prize can bring him back to life.</p>
+            
+            <p style="margin-top: 1rem;">But this competition harbors dark secrets. Under the eccentric host Fuelle Von Wheel's twisted entertainment, racers begin disappearing mid-race. What starts as mysterious vanishings soon escalates to brutal murders, leaving contestants terrified and confused.</p>
+            
+            <p style="margin-top: 1rem;">As Ko investigates the disappearances, she uncovers a web of supernatural horror, past betrayals, and deadly wishes. The killer seems to take special interest in her investigation, making every race a potential death trap.</p>
+            
+            <h3 style="color: #cc1100; margin: 2rem 0 1rem;">The Mystery Deepens</h3>
+            <p>With each race, the stakes grow higher. Bodies appear, alliances form and shatter, and Ko must balance her detective work with staying alive on the track. The other racers each harbor their own secrets and motivations, making everyone a potential suspect... or victim.</p>
+            
+            <p style="margin-top: 1rem;">As the field narrows and the killer grows bolder, Ko faces an impossible choice: pursue her personal goal of reviving her mentor, or save the lives of her fellow racers. In the end, true victory may require the ultimate sacrifice.</p>
+        </div>
+    </section>
+
+    <section id="gameplay" class="section">
+        <h2>🎮 Racing Meets Mystery</h2>
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h3>🏁 Dynamic Racing</h3>
+                <p><strong>Core Racing:</strong> Mario Kart-style gameplay with power-ups, shortcuts, and obstacles.</p>
+                <p><strong>Narrative Events:</strong> Racers disappear mid-race, tracks change dynamically, killer chase sequences.</p>
+                <p><strong>Investigation Integration:</strong> Bump rivals for clues, find evidence pickups, explore secret investigation areas.</p>
+            </div>
+            
+            <div class="concept-card">
+                <h3>🔍 Detective Work</h3>
+                <p><strong>Visual Novel Segments:</strong> Explore locations, interrogate suspects, review evidence between races.</p>
+                <p><strong>Clue Gathering:</strong> Racing performance unlocks new investigation options and story progression.</p>
+                <p><strong>Character Relationships:</strong> Build trust and gather information from fellow racers.</p>
+            </div>
+            
+            <div class="concept-card">
+                <h3>⚡ Escalating Stakes</h3>
+                <p><strong>Early Game:</strong> Optional bonus objectives for gathering clues during races.</p>
+                <p><strong>Mid Game:</strong> Investigation becomes integrated with racing success.</p>
+                <p><strong>Late Game:</strong> Forensic objectives become critical mission requirements for survival.</p>
+            </div>
+            
+            <div class="concept-card">
+                <h3>🏆 Multiple Modes</h3>
+                <p><strong>Story Campaign:</strong> Experience the full murder mystery racing adventure.</p>
+                <p><strong>Free Racing:</strong> Traditional kart racing without narrative pressure.</p>
+                <p><strong>Multiplayer:</strong> Race with friends using unlocked characters and tracks, plus combat racing modes.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Music Player functionality
+        const bgMusic = document.getElementById('bgMusic');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const recordPlayer = document.getElementById('recordPlayer');
+        
+        let isPlaying = false;
+        
+        bgMusic.volume = 0.5;
+        
+        playPauseBtn.addEventListener('click', function() {
+            if (isPlaying) {
+                bgMusic.pause();
+                playPauseBtn.textContent = '▶';
+                recordPlayer.classList.remove('playing');
+                isPlaying = false;
+            } else {
+                bgMusic.play().catch(e => {
+                    console.log('Audio play failed:', e);
+                });
+                playPauseBtn.textContent = '⏸';
+                recordPlayer.classList.add('playing');
+                isPlaying = true;
+            }
+        });
+        
+        volumeSlider.addEventListener('input', function() {
+            bgMusic.volume = this.value;
+        });
+        
+        bgMusic.addEventListener('play', function() {
+            recordPlayer.classList.add('playing');
+            playPauseBtn.textContent = '⏸';
+            isPlaying = true;
+        });
+        
+        bgMusic.addEventListener('pause', function() {
+            recordPlayer.classList.remove('playing');
+            playPauseBtn.textContent = '▶';
+            isPlaying = false;
+        });
+        
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.querySelector('.racing-stripe').style.animationPlayState = 'running';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.querySelector('.racing-stripe').style.animationPlayState = 'paused';
+            });
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            const sections = ['concept', 'characters', 'story', 'gameplay'];
+            const currentActive = document.querySelector('.section.active').id;
+            const currentIndex = sections.indexOf(currentActive);
+            
+            if (e.key === 'ArrowRight' || e.key === 'd') {
+                const nextIndex = (currentIndex + 1) % sections.length;
+                document.querySelector(`[onclick="showSection('${sections[nextIndex]}')"]`).click();
+            } else if (e.key === 'ArrowLeft' || e.key === 'a') {
+                const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
+                document.querySelector(`[onclick="showSection('${sections[prevIndex]}')"]`).click();
+            }
+        });
+    </script>
+</body>
+</html>
