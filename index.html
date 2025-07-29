@@ -196,9 +196,20 @@
             height: auto;
             margin-bottom: 1rem;
             animation: floatLogo 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px var(--accent-red));
-            -webkit-mask-image: url('Art Folder/logo0.png');
-            mask-image: url('Art Folder/logo0.png');
+            position: relative;
+        }
+
+        .hub-logo::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Art Folder/logo0.png') no-repeat center/contain;
+            filter: blur(10px) brightness(1.2) drop-shadow(0 0 15px var(--accent-red));
+            z-index: -1;
+            opacity: 0.8;
         }
 
         .hub-header p {
@@ -245,22 +256,25 @@
         /* Section Content (Carousel) */
         .section-content {
             display: none;
-            padding: 4rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
             position: relative;
             perspective: 1000px;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
         }
 
         .section-content.active {
-            display: block;
+            display: flex;
         }
 
         .carousel {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -276,7 +290,7 @@
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.2);
             border-radius: 10px;
-            width: 300px;
+            width: 350px;
             margin: 0 1rem;
             transition: all 0.5s ease;
             cursor: pointer;
@@ -287,7 +301,7 @@
 
         .project-card img {
             width: 100%;
-            height: 200px;
+            height: 300px;
             object-fit: cover;
             border-radius: 10px 10px 0 0;
         }
@@ -329,6 +343,47 @@
 
         .carousel-arrow.right {
             right: 1rem;
+        }
+
+        /* Art Gallery Page */
+        .gallery-page {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            width: 350px;
+            margin: 0 1rem;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            text-align: center;
+            position: absolute;
+            transform-origin: center;
+            padding: 1rem;
+        }
+
+        .gallery-page h3 {
+            font-size: 1.5rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--accent-red);
+        }
+
+        .gallery-page p {
+            font-size: 1rem;
+            padding: 0 1rem 1rem;
+            opacity: 0.8;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
         }
 
         /* About Section */
@@ -445,6 +500,7 @@
         }
 
         .volume-slider {
+            appearance: none;
             -webkit-appearance: none;
             width: 100px;
             height: 5px;
@@ -507,12 +563,20 @@
                 width: 80px;
             }
 
-            .project-card {
-                width: 250px;
+            .project-card, .gallery-page {
+                width: 300px;
             }
 
             .carousel {
-                height: 350px;
+                height: 450px;
+            }
+
+            .project-card img, .gallery-image {
+                height: 250px;
+            }
+
+            .gallery-image {
+                height: 80px;
             }
         }
     </style>
@@ -583,12 +647,12 @@
                 <button class="carousel-arrow left" onclick="moveCarousel('gamesCarousel', -1)">←</button>
                 <div class="carousel-inner">
                     <a href="ego-dive.html" class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/project1.jpg" alt="EGO/DIVE" onerror="this.style.display='none'">
+                        <img src="Art Folder/GameProject1.jpg" alt="EGO/DIVE" onerror="this.style.display='none'">
                         <h3>EGO/DIVE</h3>
                         <p>Full Experience - Dive into the depths of the psyche</p>
                     </a>
                     <a href="ego-trip.html" class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/project2.jpg" alt="EGO/TRIP" onerror="this.style.display='none'">
+                        <img src="Art Folder/GameProject2.jpg" alt="EGO/TRIP" onerror="this.style.display='none'">
                         <h3>EGO/TRIP</h3>
                         <p>The Prelude, deep within the Furthest Reaches</p>
                     </a>
@@ -603,22 +667,22 @@
                 <button class="carousel-arrow left" onclick="moveCarousel('vrchatCarousel', -1)">←</button>
                 <div class="carousel-inner">
                     <a href="end-with-you.html" class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/project3.jpg" alt="End with You" onerror="this.style.display='none'">
+                        <img src="Art Folder/VRCProject1.jpg" alt="End with You" onerror="this.style.display='none'">
                         <h3>End with You</h3>
                         <p>Final Moments Experience</p>
                     </a>
                     <a href="Club-Flipside.html" class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/project4.jpg" alt="Club Flipside" onerror="this.style.display='none'">
+                        <img src="Art Folder/VRCProject2.jpg" alt="Club Flipside" onerror="this.style.display='none'">
                         <h3>Club Flipside</h3>
                         <p>Zero Gravity Experience</p>
                     </a>
                     <a href="SM64W.html" class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/project5.jpg" alt="Super Mario 64 Warfare" onerror="this.style.display='none'">
+                        <img src="Art Folder/VRCProject3.jpg" alt="Super Mario 64 Warfare" onerror="this.style.display='none'">
                         <h3>Super Mario 64 Warfare</h3>
                         <p>Chaos in the Mushroom Kingdom</p>
                     </a>
                     <div class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/placeholder.jpg" alt="Coming Soon" onerror="this.style.display='none'">
+                        <img src="Art Folder/VRCProject4.jpg" alt="Coming Soon" onerror="this.style.display='none'">
                         <h3>Coming Soon</h3>
                         <p>More worlds on the way...</p>
                     </div>
@@ -632,10 +696,85 @@
             <div class="carousel" id="artCarousel">
                 <button class="carousel-arrow left" onclick="moveCarousel('artCarousel', -1)">←</button>
                 <div class="carousel-inner">
-                    <div class="project-card" onclick="playClickSound()">
-                        <img src="Art Folder/placeholder.jpg" alt="Coming Soon" onerror="this.style.display='none'">
-                        <h3>Coming Soon</h3>
-                        <p>Art gallery coming soon...</p>
+                    <div class="gallery-page" onclick="playClickSound()">
+                        <h3>Gallery Page 1</h3>
+                        <p>Concept Art Collection</p>
+                        <div class="gallery-grid">
+                            <img src="Art Folder/GalleryProject1.jpg" alt="Art 1" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject2.jpg" alt="Art 2" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject3.jpg" alt="Art 3" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject4.jpg" alt="Art 4" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject5.jpg" alt="Art 5" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject6.jpg" alt="Art 6" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject7.jpg" alt="Art 7" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject8.jpg" alt="Art 8" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject9.jpg" alt="Art 9" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject10.jpg" alt="Art 10" class="gallery-image" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="gallery-page" onclick="playClickSound()">
+                        <h3>Gallery Page 2</h3>
+                        <p>Concept Art Collection</p>
+                        <div class="gallery-grid">
+                            <img src="Art Folder/GalleryProject11.jpg" alt="Art 11" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject12.jpg" alt="Art 12" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject13.jpg" alt="Art 13" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject14.jpg" alt="Art 14" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject15.jpg" alt="Art 15" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject16.jpg" alt="Art 16" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject17.jpg" alt="Art 17" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject18.jpg" alt="Art 18" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject19.jpg" alt="Art 19" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject20.jpg" alt="Art 20" class="gallery-image" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="gallery-page" onclick="playClickSound()">
+                        <h3>Gallery Page 3</h3>
+                        <p>Concept Art Collection</p>
+                        <div class="gallery-grid">
+                            <img src="Art Folder/GalleryProject21.jpg" alt="Art 21" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject22.jpg" alt="Art 22" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject23.jpg" alt="Art 23" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject24.jpg" alt="Art 24" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject25.jpg" alt="Art 25" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject26.jpg" alt="Art 26" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject27.jpg" alt="Art 27" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject28.jpg" alt="Art 28" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject29.jpg" alt="Art 29" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject30.jpg" alt="Art 30" class="gallery-image" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="gallery-page" onclick="playClickSound()">
+                        <h3>Gallery Page 4</h3>
+                        <p>Concept Art Collection</p>
+                        <div class="gallery-grid">
+                            <img src="Art Folder/GalleryProject31.jpg" alt="Art 31" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject32.jpg" alt="Art 32" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject33.jpg" alt="Art 33" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject34.jpg" alt="Art 34" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject35.jpg" alt="Art 35" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject36.jpg" alt="Art 36" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject37.jpg" alt="Art 37" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject38.jpg" alt="Art 38" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject39.jpg" alt="Art 39" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject40.jpg" alt="Art 40" class="gallery-image" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="gallery-page" onclick="playClickSound()">
+                        <h3>Gallery Page 5</h3>
+                        <p>Concept Art Collection</p>
+                        <div class="gallery-grid">
+                            <img src="Art Folder/GalleryProject41.jpg" alt="Art 41" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject42.jpg" alt="Art 42" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject43.jpg" alt="Art 43" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject44.jpg" alt="Art 44" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject45.jpg" alt="Art 45" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject46.jpg" alt="Art 46" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject47.jpg" alt="Art 47" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject48.jpg" alt="Art 48" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject49.jpg" alt="Art 49" class="gallery-image" onerror="this.style.display='none'">
+                            <img src="Art Folder/GalleryProject50.jpg" alt="Art 50" class="gallery-image" onerror="this.style.display='none'">
+                        </div>
                     </div>
                 </div>
                 <button class="carousel-arrow right" onclick="moveCarousel('artCarousel', 1)">→</button>
@@ -643,7 +782,7 @@
         </div>
 
         <!-- About Section -->
-        <div class="section-content about-section hidden" id="aboutSection">
+        <div class="section-content about-section" id="aboutSection">
             <button class="back-button" onclick="showHub()">← BACK TO HUB</button>
             <div class="profile-header">
                 <img src="Art Folder/profile-pic.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
@@ -804,7 +943,7 @@
             playClickSound();
             const sectionId = Object.keys(sections).find(key => sections[key].carouselId === carouselId);
             const carousel = document.getElementById(carouselId);
-            const cards = carousel.querySelectorAll('.project-card');
+            const cards = carousel.querySelectorAll('.project-card, .gallery-page');
             sections[sectionId].index = (sections[sectionId].index + direction + cards.length) % cards.length;
             updateCarousel(carouselId);
         }
@@ -812,7 +951,7 @@
         function updateCarousel(carouselId) {
             const sectionId = Object.keys(sections).find(key => sections[key].carouselId === carouselId);
             const carousel = document.getElementById(carouselId);
-            const cards = carousel.querySelectorAll('.project-card');
+            const cards = carousel.querySelectorAll('.project-card, .gallery-page');
             const index = sections[sectionId].index;
             const total = cards.length;
 
@@ -820,7 +959,7 @@
                 const offset = (i - index + total) % total;
                 const centerOffset = offset - Math.floor(total / 2);
                 const scale = Math.max(0.6, 1 - Math.abs(centerOffset) * 0.2);
-                const translateX = centerOffset * 320;
+                const translateX = centerOffset * 370;
                 const zIndex = total - Math.abs(centerOffset);
                 card.style.transform = `translateX(${translateX}px) scale(${scale})`;
                 card.style.zIndex = zIndex;
