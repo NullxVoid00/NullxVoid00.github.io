@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FACADE - Creative Hub</title>
+    <title>Abyssal Light Games</title>
     <style>
         * {
             margin: 0;
@@ -80,6 +80,13 @@
             padding: 2rem;
         }
 
+        .password-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+        }
+
         .password-container h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 2rem;
@@ -91,13 +98,33 @@
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.2);
             color: var(--primary-white);
-            padding: 1rem 2rem;
+            padding: 1rem 3rem 1rem 2rem;
             font-size: 1.2rem;
             text-align: center;
             border-radius: 5px;
             outline: none;
             transition: all 0.3s ease;
             letter-spacing: 0.1em;
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-white);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            opacity: 1;
         }
 
         .password-input:focus {
@@ -245,13 +272,12 @@
             object-fit: cover;
         }
 
-        .bio-text {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: left;
-            line-height: 1.8;
+        .bio-text p {
+            margin-bottom: 1rem;
+        }
+
+        .bio-text p:last-child {
+            margin-bottom: 0;
         }
 
         .social-links {
@@ -345,13 +371,16 @@
     <!-- Password Screen -->
     <div class="password-screen" id="passwordScreen">
         <div class="password-container">
-            <h1>ENTER FACADE</h1>
+            <h1>ENTER THE ABYSS</h1>
             <div class="red-shard"></div>
-            <input type="password" 
-                   class="password-input" 
-                   id="passwordInput" 
-                   placeholder="Enter Password"
-                   autocomplete="off">
+            <div class="password-wrapper">
+                <input type="password" 
+                       class="password-input" 
+                       id="passwordInput" 
+                       placeholder="Enter Password"
+                       autocomplete="off">
+                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()">👁️</button>
+            </div>
             <div class="error-message" id="errorMessage">Access Denied</div>
         </div>
     </div>
@@ -363,8 +392,8 @@
         <!-- Hub Home -->
         <div id="hubHome">
             <div class="hub-header">
-                <h1>FACADE</h1>
-                <p>Creative Works & Digital Experiences</p>
+                <h1>ABYSSAL LIGHT</h1>
+                <p>Games & Digital Experiences</p>
             </div>
 
             <div class="nav-grid">
@@ -411,13 +440,14 @@
         <div class="about-section hidden" id="aboutSection">
             <div class="profile-header">
                 <img src="profile-pic.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">ABOUT THE CREATOR</h2>
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">NULLXVOID</h2>
             </div>
 
             <div class="bio-text">
                 <p>
-                    <!-- Add your bio text here -->
-                   I’m NullxVoid — or just "Null" — And I'm an amateur game designer and VRChat world and avatar creator. I specialize in crafting emotionally driven, psychologically rich experiences that blend surrealism with interactive storytelling.
+                    I'm NullxVoid — or just "Null" — And I'm an amateur game designer and VRChat world and avatar creator. I specialize in crafting emotionally driven, psychologically rich experiences that blend surrealism with interactive storytelling.
+                </p>
+                <p>
                     My work often explores identity, perception, and the uncanny, using genre fusion as a tool to challenge expectations. As a creator, I aspire to build immersive spaces that resonate deeply, provoke thought, and leave a lasting impression beyond the screen.
                 </p>
             </div>
@@ -439,6 +469,12 @@
         const mainHub = document.getElementById('mainHub');
         const errorMessage = document.getElementById('errorMessage');
 
+        function togglePassword() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            document.getElementById('passwordToggle').textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        }
+
         passwordInput.addEventListener('input', function() {
             this.classList.add('typing');
             setTimeout(() => this.classList.remove('typing'), 500);
@@ -451,7 +487,7 @@
         });
 
         function checkPassword() {
-            if (passwordInput.value === 'Facade0') {
+            if (passwordInput.value === 'Neurorine') {
                 passwordScreen.classList.add('hidden');
                 setTimeout(() => {
                     passwordScreen.style.display = 'none';
