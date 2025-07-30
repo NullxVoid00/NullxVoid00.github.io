@@ -429,41 +429,73 @@
             right: 2rem;
         }
 
-        .gallery-card {
-            position: absolute;
-            width: 350px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
+        /* Mind Map Container for Art Gallery */
+        .mind-map-container {
+            position: relative;
+            width: 3000px;
+            height: 2000px;
             overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            transform-origin: center;
-            padding: 1rem;
-            will-change: transform, opacity;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+            margin: 2rem auto;
+            cursor: grab;
+            user-select: none;
+            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
         }
 
-        .gallery-card img {
+        .section-view#gallerySection {
+            overflow: auto;
+            height: 100vh;
             width: 100%;
-            height: 400px;
+            position: relative;
+        }
+
+        .art-item {
+            position: absolute;
+            width: 250px;
+            height: 350px;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .art-item img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
         }
 
-        .gallery-card h3 {
-            font-size: 1.2rem;
-            color: var(--accent-red);
-            text-align: center;
-            margin-bottom: 0.5rem;
+        .art-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(220,20,60,0.5);
+            z-index: 10;
         }
 
-        .gallery-card p {
-            opacity: 0.8;
-            font-size: 0.9rem;
+        .art-item:hover img {
+            border-color: var(--accent-red);
+        }
+
+        .art-title {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
             text-align: center;
+            color: var(--primary-white);
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(0,0,0,0.5);
+            padding: 0.5rem;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .art-item:hover .art-title {
+            opacity: 1;
+        }
+
+        .mind-map-container.dragging {
+            cursor: grabbing;
         }
 
         .about-section {
@@ -673,14 +705,6 @@
                 height: 380px;
             }
 
-            .gallery-card {
-                width: 300px;
-            }
-
-            .gallery-card img {
-                height: 320px;
-            }
-
             .project-card img {
                 height: 180px;
             }
@@ -707,6 +731,20 @@
 
             .section-header h2 {
                 font-size: 2rem;
+            }
+
+            .mind-map-container {
+                width: 2000px;
+                height: 1500px;
+            }
+
+            .art-item {
+                width: 200px;
+                height: 280px;
+            }
+
+            .art-title {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -818,12 +856,10 @@
     <div class="section-view" id="gallerySection">
         <div class="section-header">
             <h2>ART GALLERY</h2>
-            <p>Visual explorations and concept work</p>
+            <p>Visual explorations scattered across the digital void</p>
         </div>
-        <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('gallery', -1)">‹</button>
-            <div class="carousel" id="galleryCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('gallery', 1)">›</button>
+        <div class="mind-map-container" id="galleryMindMap">
+            <!-- Images will be dynamically inserted here -->
         </div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
@@ -879,7 +915,7 @@
         }
 
         document.addEventListener('click', function(e) {
-            if (e.target.matches('.nav-section, .project-card, .gallery-card, button, .social-link, .carousel-nav')) {
+            if (e.target.matches('.nav-section, .project-card, .art-item, button, .social-link, .carousel-nav')) {
                 playClickSound();
             }
         });
@@ -1083,16 +1119,16 @@
                 }
             ],
             gallery: [
-                { title: "Abyssal Fragment #1", description: "Digital exploration of consciousness", image: "Art Folder/GalleryProject1.jpg", progress: "Concept" },
-                { title: "Void Echo", description: "Reflections in the digital abyss", image: "Art Folder/GalleryProject2.jpg", progress: "Concept" },
-                { title: "Neural Cascade", description: "Synaptic connections visualized", image: "Art Folder/GalleryProject3.jpg", progress: "Concept" },
-                { title: "Red Shift", description: "Reality bending at the edges", image: "Art Folder/GalleryProject4.jpg", progress: "Concept" },
-                { title: "Data Stream", description: "Information flowing through the void", image: "Art Folder/GalleryProject5.jpg", progress: "Concept" },
-                { title: "Glitch Matrix", description: "When systems break down beautifully", image: "Art Folder/GalleryProject6.jpg", progress: "Concept" },
-                { title: "Digital Decay", description: "Entropy in the virtual realm", image: "Art Folder/GalleryProject7.jpg", progress: "Concept" },
-                { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Folder/GalleryProject8.jpg", progress: "Concept" },
-                { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Folder/GalleryProject9.jpg", progress: "Concept" },
-                { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Folder/GalleryProject10.jpg", progress: "Concept" }
+                { title: "Abyssal Fragment #1", description: "Digital exploration of consciousness", image: "Art Gallery/GalleryProject1.jpg", progress: "Concept" },
+                { title: "Void Echo", description: "Reflections in the digital abyss", image: "Art Gallery/GalleryProject2.jpg", progress: "Concept" },
+                { title: "Neural Cascade", description: "Synaptic connections visualized", image: "Art Gallery/GalleryProject3.jpg", progress: "Concept" },
+                { title: "Red Shift", description: "Reality bending at the edges", image: "Art Gallery/GalleryProject4.jpg", progress: "Concept" },
+                { title: "Data Stream", description: "Information flowing through the void", image: "Art Gallery/GalleryProject5.jpg", progress: "Concept" },
+                { title: "Glitch Matrix", description: "When systems break down beautifully", image: "Art Gallery/GalleryProject6.jpg", progress: "Concept" },
+                { title: "Digital Decay", description: "Entropy in the virtual realm", image: "Art Gallery/GalleryProject7.jpg", progress: "Concept" },
+                { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Gallery/GalleryProject8.jpg", progress: "Concept" },
+                { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Gallery/GalleryProject9.jpg", progress: "Concept" },
+                { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Gallery/GalleryProject10.jpg", progress: "Concept" }
             ],
             other: [
                 {
@@ -1178,7 +1214,6 @@
         let carouselStates = {
             games: { currentIndex: 0 },
             vrchat: { currentIndex: 0 },
-            gallery: { currentIndex: 0 },
             other: { currentIndex: 0 }
         };
 
@@ -1206,10 +1241,10 @@
         function initializeCarousels() {
             initializeCarousel('games', projectData.games);
             initializeCarousel('vrchat', projectData.vrchat);
-            initializeCarousel('gallery', projectData.gallery, true);
+            initializeGalleryMindMap();
             initializeCarousel('other', projectData.other);
             
-            ['games', 'vrchat', 'gallery', 'other'].forEach(type => {
+            ['games', 'vrchat', 'other'].forEach(type => {
                 const carousel = document.getElementById(`${type}Carousel`);
                 if (carousel) {
                     carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -1218,7 +1253,7 @@
             });
         }
 
-        function initializeCarousel(type, data, isGallery = false) {
+        function initializeCarousel(type, data) {
             const carousel = document.getElementById(`${type}Carousel`);
             carousel.innerHTML = '';
             
@@ -1228,12 +1263,12 @@
             
             data.forEach((project, index) => {
                 const card = document.createElement('div');
-                card.className = isGallery ? 'gallery-card' : 'project-card';
+                card.className = 'project-card';
                 
                 card.style.left = '50%';
                 card.style.top = '50%';
-                card.style.marginLeft = isGallery ? '-175px' : '-150px';
-                card.style.marginTop = isGallery ? '-250px' : '-225px';
+                card.style.marginLeft = '-150px';
+                card.style.marginTop = '-225px';
                 
                 let progressHTML = '';
                 if (project.progress === "Completed") {
@@ -1259,26 +1294,17 @@
                     `;
                 }
 
-                if (isGallery) {
-                    card.innerHTML = `
-                        <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                card.innerHTML = `
+                    <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                    <div class="project-card-content">
                         <h3>${project.title}</h3>
                         <p>${project.description}</p>
                         ${progressHTML}
-                    `;
-                } else {
-                    card.innerHTML = `
-                        <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
-                        <div class="project-card-content">
-                            <h3>${project.title}</h3>
-                            <p>${project.description}</p>
-                            ${progressHTML}
-                        </div>
-                    `;
-                    
-                    if (project.link && project.link !== '#') {
-                        card.onclick = () => window.location.href = project.link;
-                    }
+                    </div>
+                `;
+                
+                if (project.link && project.link !== '#') {
+                    card.onclick = () => window.location.href = project.link;
                 }
                 
                 carousel.appendChild(card);
@@ -1287,11 +1313,92 @@
             updateCarouselPositions(type);
         }
 
+        function initializeGalleryMindMap() {
+            const galleryContainer = document.getElementById('galleryMindMap');
+            const data = projectData.gallery;
+
+            galleryContainer.innerHTML = '';
+
+            data.forEach((project, index) => {
+                const artItem = document.createElement('div');
+                artItem.className = 'art-item';
+
+                const maxX = 2800;
+                const maxY = 1800;
+                const x = Math.random() * maxX;
+                const y = Math.random() * maxY;
+
+                artItem.style.left = `${x}px`;
+                artItem.style.top = `${y}px`;
+
+                const title = project.title;
+
+                artItem.innerHTML = `
+                    <img src="Art Gallery/${project.image.split('/').pop()}" alt="${title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                    <div class="art-title">"${title}"</div>
+                `;
+
+                galleryContainer.appendChild(artItem);
+            });
+
+            let isDragging = false;
+            let startX, startY, scrollLeft, scrollTop;
+
+            galleryContainer.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                galleryContainer.classList.add('dragging');
+                startX = e.pageX - galleryContainer.offsetLeft;
+                startY = e.pageY - galleryContainer.offsetTop;
+                scrollLeft = galleryContainer.parentElement.scrollLeft;
+                scrollTop = galleryContainer.parentElement.scrollTop;
+                playClickSound();
+            });
+
+            galleryContainer.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - galleryContainer.offsetLeft;
+                const y = e.pageY - galleryContainer.offsetTop;
+                const walkX = (x - startX) * 2;
+                const walkY = (y - startY) * 2;
+                galleryContainer.parentElement.scrollLeft = scrollLeft - walkX;
+                galleryContainer.parentElement.scrollTop = scrollTop - walkY;
+            });
+
+            galleryContainer.addEventListener('mouseup', () => {
+                isDragging = false;
+                galleryContainer.classList.remove('dragging');
+            });
+
+            galleryContainer.addEventListener('mouseleave', () => {
+                isDragging = false;
+                galleryContainer.classList.remove('dragging');
+            });
+
+            galleryContainer.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                startX = touch.pageX - galleryContainer.offsetLeft;
+                startY = touch.pageY - galleryContainer.offsetTop;
+                scrollLeft = galleryContainer.parentElement.scrollLeft;
+                scrollTop = galleryContainer.parentElement.scrollTop;
+                playClickSound();
+            }, { passive: true });
+
+            galleryContainer.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                const x = touch.pageX - galleryContainer.offsetLeft;
+                const y = touch.pageY - galleryContainer.offsetTop;
+                const walkX = (x - startX) * 2;
+                const walkY = (y - startY) * 2;
+                galleryContainer.parentElement.scrollLeft = scrollLeft - walkX;
+                galleryContainer.parentElement.scrollTop = scrollTop - walkY;
+            }, { passive: true });
+        }
+
         function updateCarouselPositions(type) {
             const carousel = document.getElementById(`${type}Carousel`);
-            const cards = carousel.querySelectorAll('.project-card, .gallery-card');
+            const cards = carousel.querySelectorAll('.project-card');
             const { currentIndex } = carouselStates[type];
-            const isGallery = type === 'gallery';
             const isMobile = window.innerWidth <= 768;
             
             cards.forEach((card, index) => {
@@ -1300,20 +1407,20 @@
                 const sign = offset < 0 ? -1 : 1;
                 
                 if (isMobile) {
-                    const cardWidth = isGallery ? 300 : 280;
+                    const cardWidth = 280;
                     const translateX = offset * (cardWidth + 20);
                     const scale = absOffset === 0 ? 1 : 0.85;
                     const opacity = absOffset === 0 ? 1 : 0.3;
                     
                     card.style.marginLeft = `-${cardWidth / 2}px`;
-                    card.style.marginTop = isGallery ? '-210px' : '-190px';
+                    card.style.marginTop = '-190px';
                     
                     card.style.transform = `translateX(${translateX}px) scale(${scale})`;
                     card.style.opacity = opacity;
                     card.style.zIndex = absOffset === 0 ? 10 : 1;
                     card.style.transition = 'all 0.4s ease-out';
                 } else {
-                    const spacing = isGallery ? 380 : 320;
+                    const spacing = 320;
                     const translateX = offset * spacing;
                     const translateZ = -absOffset * 100;
                     const rotateY = sign * Math.min(absOffset * 15, 45);
@@ -1387,7 +1494,7 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                ['games', 'vrchat', 'gallery', 'other'].forEach(type => {
+                ['games', 'vrchat', 'other'].forEach(type => {
                     if (document.getElementById(`${type}Section`).classList.contains('active')) {
                         updateCarouselPositions(type);
                     }
