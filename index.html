@@ -87,6 +87,14 @@
             }
         }
 
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
         .password-screen {
             position: fixed;
             top: 0;
@@ -375,12 +383,16 @@
             background: rgba(255,255,255,0.1);
             border: 2px solid rgba(255,255,255,0.2);
             color: var(--primary-white);
-            padding: 0.8rem;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            line-height: 40px;
             cursor: pointer;
             border-radius: 50%;
             font-size: 1.5rem;
             transition: all 0.3s ease;
             z-index: 10;
+            text-align: center;
         }
 
         .carousel-nav:hover {
@@ -505,6 +517,12 @@
             margin: 2rem auto;
             animation: float 3s ease-in-out infinite;
             box-shadow: 0 0 50px var(--accent-red);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .red-shard.shake {
+            animation: shake 0.3s ease;
         }
 
         .back-button {
@@ -647,7 +665,10 @@
             }
 
             .carousel-nav {
-                padding: 0.8rem;
+                width: 40px;
+                height: 40px;
+                padding: 0;
+                line-height: 40px;
                 font-size: 1.2rem;
             }
 
@@ -673,7 +694,7 @@
     <div class="password-screen" id="passwordScreen">
         <div class="password-container">
             <h1>ENTER THE ABYSS</h1>
-            <div class="red-shard"></div>
+            <div class="red-shard" id="redShard" onclick="checkPasswordViaShard()"></div>
             <div class="password-wrapper">
                 <input type="password" 
                        class="password-input" 
@@ -846,6 +867,7 @@
         const passwordScreen = document.getElementById('passwordScreen');
         const mainHub = document.getElementById('mainHub');
         const errorMessage = document.getElementById('errorMessage');
+        const redShard = document.getElementById('redShard');
 
         function togglePassword() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -893,6 +915,12 @@
                 passwordInput.value = '';
                 setTimeout(() => errorMessage.classList.remove('show'), 2000);
             }
+        }
+
+        function checkPasswordViaShard() {
+            redShard.classList.add('shake');
+            setTimeout(() => redShard.classList.remove('shake'), 300);
+            checkPassword();
         }
 
         const projectData = {
