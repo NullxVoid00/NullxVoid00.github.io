@@ -376,6 +376,27 @@
             line-height: 1.4;
         }
 
+        .progress-bar {
+            margin-top: 1rem;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-green);
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar-label {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: var(--primary-white);
+            opacity: 0.8;
+        }
+
         .carousel-nav {
             position: absolute;
             top: 50%;
@@ -929,13 +950,15 @@
                     title: "EGO/DIVE",
                     description: "Full experience - A deep psychological exploration into the depths of consciousness and identity.",
                     image: "Art Folder/GameProject1.jpg",
-                    link: "ego-dive.html"
+                    link: "ego-dive.html",
+                    progress: "Concept"
                 },
                 {
                     title: "Go! Ko! Go! Kart Racer DX",
                     description: "A thrilling kart racing murder mystery - race, investigate, survive.",
                     image: "Art Folder/GameProject3.jpg",
-                    link: "GO-KO-GO.html"
+                    link: "GO-KO-GO.html",
+                    progress: "Concept"
                 }
             ],
             vrchat: [
@@ -943,57 +966,64 @@
                     title: "EGO/TRIP",
                     description: "The Prelude - Journey deep within the Furthest Reaches of the mind's labyrinth.",
                     image: "Art Folder/GameProject2.jpg",
-                    link: "ego-trip.html"
+                    link: "ego-trip.html",
+                    progress: { status: "Unfinished", percentage: 10 }
                 },
                 {
                     title: "End with You",
                     description: "Final Moments Experience - Share the last moments in a world on the brink of collapse.",
                     image: "Art Folder/VRCProject1.jpg",
-                    link: "end-with-you.html"
+                    link: "end-with-you.html",
+                    progress: { status: "Unfinished", percentage: 5 }
                 },
                 {
                     title: "Club Flipside",
                     description: "Zero Gravity Experience - Dance in a club where physics are just a suggestion.",
                     image: "Art Folder/VRCProject2.jpg",
-                    link: "Club-Flipside.html"
+                    link: "Club-Flipside.html",
+                    progress: "Completed"
                 },
                 {
                     title: "Super Mario 64 Warfare",
                     description: "Chaos in the Mushroom Kingdom - When worlds collide in unexpected ways.",
                     image: "Art Folder/VRCProject3.jpg",
-                    link: "SM64W.html"
+                    link: "SM64W.html",
+                    progress: { status: "Unfinished", percentage: 40 }
                 },
                 {
                     title: "Sonic Adventure VR",
                     description: "A VRChat remake of the classic Sonic Adventure with rebuilt physics and multiplayer features.",
                     image: "Art Folder/SAMCover.png",
-                    link: "SAVR.html"
+                    link: "SAVR.html",
+                    progress: { status: "Unfinished", percentage: 20 }
                 },
                 {
                     title: "Coming Soon",
                     description: "New worlds are being crafted in the depths of the abyss...",
                     image: "Art Folder/VRCProject4.jpg",
-                    link: "#"
+                    link: "#",
+                    progress: "Concept"
                 }
             ],
             gallery: [
-                { title: "Abyssal Fragment #1", description: "Digital exploration of consciousness", image: "Art Folder/GalleryProject1.jpg" },
-                { title: "Void Echo", description: "Reflections in the digital abyss", image: "Art Folder/GalleryProject2.jpg" },
-                { title: "Neural Cascade", description: "Synaptic connections visualized", image: "Art Folder/GalleryProject3.jpg" },
-                { title: "Red Shift", description: "Reality bending at the edges", image: "Art Folder/GalleryProject4.jpg" },
-                { title: "Data Stream", description: "Information flowing through the void", image: "Art Folder/GalleryProject5.jpg" },
-                { title: "Glitch Matrix", description: "When systems break down beautifully", image: "Art Folder/GalleryProject6.jpg" },
-                { title: "Digital Decay", description: "Entropy in the virtual realm", image: "Art Folder/GalleryProject7.jpg" },
-                { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Folder/GalleryProject8.jpg" },
-                { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Folder/GalleryProject9.jpg" },
-                { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Folder/GalleryProject10.jpg" }
+                { title: "Abyssal Fragment #1", description: "Digital exploration of consciousness", image: "Art Folder/GalleryProject1.jpg", progress: "Concept" },
+                { title: "Void Echo", description: "Reflections in the digital abyss", image: "Art Folder/GalleryProject2.jpg", progress: "Concept" },
+                { title: "Neural Cascade", description: "Synaptic connections visualized", image: "Art Folder/GalleryProject3.jpg", progress: "Concept" },
+                { title: "Red Shift", description: "Reality bending at the edges", image: "Art Folder/GalleryProject4.jpg", progress: "Concept" },
+                { title: "Data Stream", description: "Information flowing through the void", image: "Art Folder/GalleryProject5.jpg", progress: "Concept" },
+                { title: "Glitch Matrix", description: "When systems break down beautifully", image: "Art Folder/GalleryProject6.jpg", progress: "Concept" },
+                { title: "Digital Decay", description: "Entropy in the virtual realm", image: "Art Folder/GalleryProject7.jpg", progress: "Concept" },
+                { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Folder/GalleryProject8.jpg", progress: "Concept" },
+                { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Folder/GalleryProject9.jpg", progress: "Concept" },
+                { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Folder/GalleryProject10.jpg", progress: "Concept" }
             ],
             other: [
                 {
                     title: "VStalker16",
                     description: "Digital Horror series set in an alternate world where a game called 'VTalkeR' is brought back online for a haunting internet hunt to solve a long since passed hacking incident",
                     image: "Art Folder/OtherProject1.jpg",
-                    link: "VS16.html"
+                    link: "VS16.html",
+                    progress: "Concept"
                 }
             ]
         };
@@ -1058,11 +1088,36 @@
                 card.style.marginLeft = isGallery ? '-175px' : '-150px';
                 card.style.marginTop = isGallery ? '-250px' : '-225px';
                 
+                let progressHTML = '';
+                if (project.progress === "Completed") {
+                    progressHTML = `
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                        </div>
+                        <div class="progress-bar-label">Progress: Completed</div>
+                    `;
+                } else if (project.progress === "Concept") {
+                    progressHTML = `
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-bar-label">Progress: Concept</div>
+                    `;
+                } else if (project.progress.status === "Unfinished") {
+                    progressHTML = `
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${project.progress.percentage}%;"></div>
+                        </div>
+                        <div class="progress-bar-label">Progress: Unfinished (${project.progress.percentage}%)</div>
+                    `;
+                }
+
                 if (isGallery) {
                     card.innerHTML = `
                         <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
                         <h3>${project.title}</h3>
                         <p>${project.description}</p>
+                        ${progressHTML}
                     `;
                 } else {
                     card.innerHTML = `
@@ -1070,6 +1125,7 @@
                         <div class="project-card-content">
                             <h3>${project.title}</h3>
                             <p>${project.description}</p>
+                            ${progressHTML}
                         </div>
                     `;
                     
