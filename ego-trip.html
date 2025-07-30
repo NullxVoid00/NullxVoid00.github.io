@@ -93,6 +93,68 @@
             }
         }
 
+        /* Music Visualizer Orb */
+        .music-visualizer {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(10, 10, 10, 0.8);
+            border: 3px solid var(--neon-pink);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            overflow: hidden;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 127, 0.6),
+                inset 0 0 20px rgba(255, 0, 127, 0.3);
+        }
+
+        .music-visualizer:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 40px rgba(255, 0, 127, 0.8),
+                inset 0 0 30px rgba(255, 0, 127, 0.5);
+        }
+
+        .music-visualizer.muted {
+            background: rgba(10, 10, 10, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.2),
+                inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-visualizer.muted:hover {
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.4),
+                inset 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #visualizerCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .music-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--primary-white);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .music-visualizer.muted .music-icon {
+            opacity: 0.7;
+        }
+
         /* Psychedelic Pulse Animation */
         @keyframes psychedelic-pulse {
             0%, 100% { 
@@ -914,10 +976,29 @@
                 width: 100px;
                 height: 100px;
             }
+
+            .music-visualizer {
+                width: 60px;
+                height: 60px;
+                bottom: 20px;
+                right: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Background Audio -->
+    <audio id="bgMusic" loop>
+        <source src="audio/ego-trip-bgm.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Music Visualizer Orb -->
+    <div class="music-visualizer" id="musicVisualizer">
+        <canvas id="visualizerCanvas"></canvas>
+        <span class="music-icon">🔇</span>
+    </div>
+
     <!-- Lava Lamp Background -->
     <div class="lava-background" id="lavaBackground"></div>
 
@@ -1480,6 +1561,123 @@
     </div>
 
     <script>
+        // Audio and Visualizer Variables
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let animationId;
+        let isPlaying = false;
+        const bgMusic = document.getElementById('bgMusic');
+        const musicVisualizer = document.getElementById('musicVisualizer');
+        const canvas = document.getElementById('visualizerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize Audio Context
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                
+                const source = audioContext.createMediaElementSource(bgMusic);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+        }
+
+        // Draw Visualizer
+        function drawVisualizer() {
+            animationId = requestAnimationFrame(drawVisualizer);
+            
+            if (!analyser) return;
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+            
+            const centerX = canvas.offsetWidth / 2;
+            const centerY = canvas.offsetHeight / 2;
+            const radius = Math.min(centerX, centerY) - 5;
+            
+            // Draw circular visualizer
+            const bars = 32;
+            const barWidth = (2 * Math.PI) / bars;
+            
+            for (let i = 0; i < bars; i++) {
+                const barHeight = dataArray[i] / 255 * radius * 0.8;
+                const angle = i * barWidth;
+                
+                const x1 = centerX + Math.cos(angle) * (radius * 0.3);
+                const y1 = centerY + Math.sin(angle) * (radius * 0.3);
+                const x2 = centerX + Math.cos(angle) * (radius * 0.3 + barHeight);
+                const y2 = centerY + Math.sin(angle) * (radius * 0.3 + barHeight);
+                
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                const hue = (i / bars) * 360;
+                gradient.addColorStop(0, `hsla(${hue}, 100%, 50%, 0.8)`);
+                gradient.addColorStop(1, `hsla(${hue}, 100%, 50%, 0.2)`);
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            // Draw center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.2, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(255, 0, 127, 0.3)';
+            ctx.fill();
+        }
+
+        // Toggle Music
+        function toggleMusic() {
+            if (!isPlaying) {
+                initAudioContext();
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicVisualizer.classList.remove('muted');
+                    drawVisualizer();
+                }).catch(err => {
+                    console.log('Audio play failed:', err);
+                });
+            } else {
+                bgMusic.pause();
+                isPlaying = false;
+                musicVisualizer.classList.add('muted');
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Music visualizer click event
+        musicVisualizer.addEventListener('click', toggleMusic);
+
+        // Auto-play music on first user interaction
+        document.addEventListener('click', function initMusic() {
+            if (!isPlaying && bgMusic.paused) {
+                toggleMusic();
+            }
+            document.removeEventListener('click', initMusic);
+        }, { once: true });
+
         // Create Lava Lamp Background
         function createLavaLamp() {
             const container = document.getElementById('lavaBackground');
@@ -1501,6 +1699,9 @@
 
         // Click Ripple Effect
         document.addEventListener('click', function(e) {
+            // Don't create ripple on music visualizer
+            if (e.target.closest('.music-visualizer')) return;
+            
             const ripple = document.createElement('div');
             ripple.className = 'ripple';
             ripple.style.left = (e.clientX - 150) + 'px';
