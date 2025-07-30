@@ -19,25 +19,6 @@
             height: 100vh;
         }
 
-        /* Animated cloud background */
-        .clouds {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50"><ellipse cx="25" cy="25" rx="20" ry="12" fill="rgba(255,255,255,0.6)"/><ellipse cx="45" cy="20" rx="15" ry="8" fill="rgba(255,255,255,0.4)"/><ellipse cx="70" cy="30" rx="18" ry="10" fill="rgba(255,255,255,0.5)"/></svg>') repeat;
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateX(0px) translateY(0px); }
-            33% { transform: translateX(-20px) translateY(-10px); }
-            66% { transform: translateX(10px) translateY(-5px); }
-        }
-
         /* Enter Screen */
         .enter-screen {
             position: fixed;
@@ -45,13 +26,25 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4a90e2 100%);
+            background: url('Art Folder/SABG.png') center center fixed;
+            background-size: cover;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             transition: opacity 0.5s ease-out;
+        }
+
+        .enter-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 60, 114, 0.3);
+            z-index: -1;
         }
 
         .enter-screen.hidden {
@@ -698,9 +691,6 @@
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="clouds"></div>
-
     <!-- Enter Screen -->
     <div class="enter-screen" id="enterScreen">
         <div class="logo-container">
@@ -737,7 +727,7 @@
         </audio>
 
         <div class="header content-section">
-            <img src="Art Folder/SAMtop.png" alt="Sonic Adventure VR" class="title-logo">
+            <img src="Art Folder/SAMTop.png" alt="Sonic Adventure VR" class="title-logo">
             <p class="subtitle">VRChat Remake Project</p>
         </div>
 
@@ -1011,19 +1001,16 @@
             playClickSound();
             
             // Add visual feedback for menu selection
-            const buttons = document.querySelectorAll('.menu-button');
-            buttons.forEach(btn => {
-                btn.style.transform = '';
-                btn.style.background = '';
-            });
-            
             if (buttonElement) {
-                buttonElement.style.transform = 'translateY(-5px) scale(1.05)';
-                buttonElement.style.background = 'linear-gradient(135deg, rgba(255,204,0,0.9), rgba(255,102,0,0.8))';
+                // Remove any existing animation classes
+                buttonElement.classList.remove('button-clicked');
                 
+                // Add animation class
+                buttonElement.classList.add('button-clicked');
+                
+                // Remove the class after animation
                 setTimeout(() => {
-                    buttonElement.style.transform = '';
-                    buttonElement.style.background = '';
+                    buttonElement.classList.remove('button-clicked');
                 }, 300);
             }
 

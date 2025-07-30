@@ -103,7 +103,7 @@
             border-radius: 50%;
             background: rgba(10, 10, 10, 0.8);
             border: 3px solid var(--neon-pink);
-            cursor: pointer;
+            cursor: ew-resize;
             transition: all 0.3s ease;
             z-index: 999;
             overflow: hidden;
@@ -197,8 +197,8 @@
         /* Volume Tooltip */
         .volume-tooltip {
             position: absolute;
-            bottom: 100px;
-            right: 20px;
+            bottom: 35px;
+            right: 100px;
             background: rgba(0, 0, 0, 0.9);
             color: var(--primary-white);
             padding: 5px 10px;
@@ -1042,6 +1042,12 @@
                 bottom: 20px;
                 right: 20px;
             }
+
+            .volume-tooltip {
+                bottom: 25px;
+                right: 80px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -1634,7 +1640,7 @@
         let animationId;
         let isPlaying = false;
         let isDragging = false;
-        let dragStartY = 0;
+        let dragStartX = 0;
         let dragStartVolume = 0.5;
         let wasPlayingBeforeVideo = false;
         
@@ -1761,7 +1767,7 @@
         function handleDragStart(e) {
             e.preventDefault();
             isDragging = true;
-            dragStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            dragStartX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
             dragStartVolume = bgMusic.volume;
             volumeTooltip.classList.add('visible');
             
@@ -1775,9 +1781,9 @@
             if (!isDragging) return;
             e.preventDefault();
             
-            const currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-            const deltaY = dragStartY - currentY; // Negative when dragging down, positive when up
-            const volumeChange = deltaY / 200; // Adjust sensitivity
+            const currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const deltaX = currentX - dragStartX; // Positive when dragging right, negative when left
+            const volumeChange = deltaX / 200; // Adjust sensitivity
             
             let newVolume = dragStartVolume + volumeChange;
             newVolume = Math.max(0, Math.min(1, newVolume)); // Clamp between 0 and 1
@@ -1792,8 +1798,8 @@
             volumeTooltip.classList.remove('visible');
             
             // If we haven't moved much, treat it as a click
-            const endY = e.type.includes('mouse') ? e.clientY : (e.changedTouches ? e.changedTouches[0].clientY : dragStartY);
-            const totalMovement = Math.abs(endY - dragStartY);
+            const endX = e.type.includes('mouse') ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : dragStartX);
+            const totalMovement = Math.abs(endX - dragStartX);
             
             if (totalMovement < 5) {
                 toggleMusic();
