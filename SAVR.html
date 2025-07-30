@@ -63,7 +63,6 @@
             height: auto;
             border-radius: 20px;
             border: 3px solid #ffffff;
-            /* Removed box-shadow, using only drop-shadow for PNG transparency */
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
         }
 
@@ -685,11 +684,11 @@
             z-index: 2000;
             opacity: 0;
             transition: opacity 0.3s ease;
-            pointer-events: none; /* Prevent interaction when hidden */
+            pointer-events: none;
         }
         #gameModal.active {
             opacity: 1;
-            pointer-events: auto; /* Allow interaction when visible */
+            pointer-events: auto;
         }
         .modal-overlay {
             width: 100%;
@@ -749,6 +748,34 @@
             font-size: 16px;
         }
 
+        /* New Play Now Button Styles */
+        .modal-play-now-button {
+            display: block;
+            background: linear-gradient(135deg, rgba(74,144,226,0.9), rgba(135,206,235,0.8));
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            margin: 20px auto 0;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .modal-play-now-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(74,144,226,0.6);
+            background: linear-gradient(135deg, rgba(255,204,0,0.9), rgba(255,102,0,0.8));
+        }
+
+        .modal-play-now-button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .title { font-size: 32px; }
@@ -757,6 +784,11 @@
             .character-orb { width: 60px; height: 60px; font-size: 10px; }
             .menu-button { font-size: 16px; padding: 20px 15px; }
             .features-section { padding: 20px; margin: 20px; }
+            .modal-play-now-button {
+                font-size: 16px;
+                padding: 12px 15px;
+                max-width: 180px;
+            }
         }
     </style>
 </head>
@@ -1100,7 +1132,7 @@
                     document.getElementById('featuresSection').scrollIntoView({ behavior: 'smooth' });
                     break;
                 case 'download':
-                    showModal('Play the Demo Now!', 'Ready to experience Sonic Adventure in VR?<br><br><strong>VRChat World:</strong> [WORLD NAME HERE]<br><br><strong>Current Status:</strong> DEMO<br>Contains Sonic\'s complete story<br><br><strong>Requirements:</strong><br>• VRChat (Free on Steam)<br>• VR Headset or Desktop<br>• Good internet connection<br><br><strong>What\'s Included:</strong><br>• All of Sonic\'s levels and story<br>• Rebuilt mechanics for VRChat<br>• Character-themed cutscene rooms<br>• Versus racing mode<br><br>Search for "Sonic Adventure VR" in VRChat worlds!');
+                    showModal('Play the Demo Now!', 'Ready to experience Sonic Adventure in VR?<br><br><strong>VRChat World:</strong> Sonic Adventure VR<br><br><strong>Current Status:</strong> DEMO<br>Contains Sonic\'s complete story<br><br><strong>Requirements:</strong><br>• VRChat (Free on Steam)<br>• VR Headset or Desktop<br>• Good internet connection<br><br><strong>What\'s Included:</strong><br>• All of Sonic\'s levels and story<br>• Rebuilt mechanics for VRChat<br>• Character-themed cutscene rooms<br>• Versus racing mode<br><br>Click below to join the world in VRChat!', true);
                     break;
                 case 'about':
                     showModal('About the Project', 'Sonic Adventure VR is a fan-made remake built entirely in VRChat using UdonSharp.<br><br><strong>Rebuilt Systems:</strong><br>• All physics and mechanics recreated from scratch<br>• Custom cutscene rooms for each character<br>• Enhanced for VRChat\'s multiplayer environment<br><br><strong>VRChat Exclusive Features:</strong><br>• Player location tracking<br>• Versus racing mode<br>• New secrets not in original game<br>• Character-themed environments<br><br><strong>Current Status:</strong><br>DEMO with full Sonic story<br>Full game coming soon!<br><br><strong>Development Team:</strong><br>Passionate fans recreating the classic for VR!');
@@ -1108,7 +1140,7 @@
             }
         }
 
-        function showModal(title, content) {
+        function showModal(title, content, showPlayNowButton = false) {
             // Create modal if it doesn't exist
             let modal = document.getElementById('gameModal');
             if (!modal) {
@@ -1138,8 +1170,22 @@
                 });
             }
 
+            // Set modal content
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = content;
+            
+            // Add Play Now button for download section if requested
+            if (showPlayNowButton) {
+                const playNowButton = document.createElement('a');
+                playNowButton.href = "https://vrchat.com/home/launch?worldId=wrld_8b6e89bd-e408-4e16-92c2-e1dd02f4e3df&instanceId=91887~hidden(usr_3ee6153f-12f9-4bcf-bb27-80f7c2d50be6)~region(us)~nonce(d69c479d-32e0-464f-838e-3e7646346e22)";
+                playNowButton.className = 'modal-play-now-button';
+                playNowButton.textContent = 'PLAY NOW';
+                playNowButton.target = '_blank'; // Open in new tab
+                playNowButton.addEventListener('click', playClickSound); // Play click sound
+                modalBody.appendChild(playNowButton);
+            }
+
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalBody').innerHTML = content;
             modal.classList.add('active');
         }
 
