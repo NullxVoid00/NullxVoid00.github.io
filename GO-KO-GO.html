@@ -193,8 +193,8 @@
         }
         
         .characters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -203,46 +203,178 @@
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            overflow: hidden;
             border: 3px solid rgba(138, 43, 226, 0.4);
             transition: all 0.4s ease;
             position: relative;
+            overflow: hidden;
+            display: flex;
+            min-height: 200px;
+            cursor: pointer;
         }
         
         .character-card:hover {
-            transform: scale(1.05) rotateY(5deg);
+            transform: scale(1.02);
             border-color: rgba(138, 43, 226, 0.8);
             box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
         }
         
-        .character-img {
+        .character-card.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) !important;
+            width: 90vw;
+            max-width: 800px;
+            height: 80vh;
+            z-index: 2000;
+            overflow-y: auto;
+            flex-direction: column;
+            cursor: default;
+        }
+        
+        .character-card.expanded:hover {
+            transform: translate(-50%, -50%) !important;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 250px;
-            object-fit: cover;
-            background: linear-gradient(45deg, #cc1100, #8a2be2);
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1999;
+            display: none;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        .character-card:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .character-card.expanded:nth-child(even) {
+            flex-direction: column;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #cc1100;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .character-card.expanded .close-btn {
+            display: flex;
+        }
+        
+        .expanded-content {
+            display: none;
+            padding: 2rem;
+            color: #cccccc;
+        }
+        
+        .character-card.expanded .expanded-content {
+            display: block;
+        }
+        
+        .character-card.expanded .character-img {
+            width: 100%;
+            height: 300px;
+            min-width: unset;
+        }
+        
+        .character-card.expanded .character-info {
+            padding: 1rem 2rem;
+        }
+        
+        .character-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-item {
+            background: rgba(204, 17, 0, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(204, 17, 0, 0.4);
+        }
+        
+        .stat-label {
+            font-family: 'Racing Sans One', cursive;
+            color: #cc1100;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .kart-info {
+            background: rgba(138, 43, 226, 0.2);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            margin: 1rem 0;
+        }
+        
+        .kart-name {
+            font-family: 'Racing Sans One', cursive;
+            color: #8a2be2;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-img {
+            width: 200px;
+            min-width: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: linear-gradient(45deg, #cc1100, #8a2be2);
             color: white;
             font-size: 1.2rem;
             text-align: center;
         }
         
+        .character-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         .character-info {
+            flex: 1;
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .character-name {
             font-family: 'Racing Sans One', cursive;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: #8a2be2;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
         }
         
         .character-description {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #aaaaaa;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #cccccc;
         }
         
         .racing-stripe {
@@ -310,8 +442,18 @@
                 font-size: 2rem;
             }
             
-            .characters-grid {
-                grid-template-columns: 1fr;
+            .character-card {
+                flex-direction: column !important;
+                text-align: center;
+            }
+            
+            .character-card:nth-child(even) {
+                flex-direction: column !important;
+            }
+            
+            .character-img {
+                width: 100%;
+                height: 200px;
             }
             
             .logo {
@@ -416,7 +558,7 @@
             background: #333;
             border-radius: 2px;
             outline: none;
-            appearance: none; /* Fix: Added for compatibility (line 419) */
+            appearance: none;
             -webkit-appearance: none;
         }
         
@@ -531,104 +673,360 @@
 
     <section id="characters" class="section">
         <h2>🏁 Meet the Racers</h2>
+        <div class="overlay" id="overlay"></div>
         <div class="characters-grid">
-            <div class="character-card">
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage1.png" alt="Ko" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #8a2be2; font-size: 1.5rem;\\\">Ko<br>🏎️👹</div>'">
+                    <img src="Art Folder/GGimage1.png" alt="Ko" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Ko<br>🏎️👹</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Ko</h3>
                     <p class="character-description">A smart-mouthed demon girl seeking to revive her deceased mentor. Level-headed but crude, she becomes the unlikely detective trying to solve the disappearances while protecting her fellow racers.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🏎️ Main Character Profile</h3>
+                    <p><strong>Origin:</strong> An orphaned demon girl born from unknown origins, Ko was adopted at a young age by Gi, a legendary ex-kart racer and previous GGGP winner. Raised to be a great racer when she showed natural interest and talent.</p>
+                    <p><strong>Motivation:</strong> Recently lost her mentor and guardian Gi, who acted as both her trainer and trusted confidant. She enters the GGGP hoping the mysterious grand prize can bring back the one person who ever truly cared for her.</p>
+                    <p><strong>Personality:</strong> Smart-mouthed and inquisitive with a crude but oddly level-headed personality. Despite her rough exterior, she develops a strong protective instinct for her fellow racers as the murders begin.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">👹 "Beelzes Wheelz"</div>
+                        <p>Ko's custom kart features a demonic face and horns on the front, with a back seat containing a locked chest - rumored to hold mementos of her mentor Gi. A perfect reflection of her demon heritage and determined spirit.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Balanced offense/defense with emphasis on investigation</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Special Ability</div>
+                            <div>Clue Detection - can spot evidence other racers miss</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Background</div>
+                            <div>Trained by GGGP legend, natural investigative instincts</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage2.png" alt="Trousle" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Trousle<br>💀🏁</div>'">
+                    <img src="Art Folder/GGimage2.png" alt="Trousle" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Trousle<br>💀🏁</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Trousle</h3>
                     <p class="character-description">An anxious skeleton racer who's fierce in competition but struggles socially. The murders shake him to his core, nearly causing him to quit until Ko convinces him to stay.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">💀 The Anxious Competitor</h3>
+                    <p><strong>Motivation:</strong> Came to the GGGP hoping to find a cure for his anxious nature and learn to be around people. Despite his social struggles, he transforms into a fierce competitor once the race begins.</p>
+                    <p><strong>Story Arc:</strong> The disappearances and murders shake him to his very core, causing him to nearly drop out of the competition. Only Ko's encouragement convinces him to stay and face his fears.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">💀 "Bone Rattler"</div>
+                        <p>A lightweight kart designed for speed and agility, matching Trousle's nervous energy with quick acceleration and responsive handling.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>High speed, nervous but skilled driving</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Weakness</div>
+                            <div>Easily shaken by unexpected events</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Strength</div>
+                            <div>Incredible speed when focused</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage3.png" alt="Meggy-Meggy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Meggy-Meggy<br>🧜‍♀️💎</div>'">
+                    <img src="Art Folder/GGimage3.png" alt="Meggy-Meggy" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Meggy-Meggy<br>🧜‍♀️💎</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Meggy-Meggy</h3>
                     <p class="character-description">A pompous mermaid who relies on expensive racing equipment. She sees other racers' disappearances as beneficial to her chances at the grand prize, caring little for their wellbeing.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🧜‍♀️ The Illustrious Mermaid</h3>
+                    <p><strong>Personality:</strong> Pompous and self-centered, she's an excellent racer but relies heavily on her expensive supped-up racing equipment. She cares little for the well-being of others.</p>
+                    <p><strong>Dark Outlook:</strong> Views players disappearing as beneficial to her chances at the grand prize. She has no curiosity about what the prize actually is, only that it's valuable and therefore she needs it.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🐠 "Super Bowl"</div>
+                        <p>An extravagant large fish bowl equipped with the most expensive racing mechanics money can buy. Keeps Meggy-Meggy in her aquatic element while dominating the track with pure technological superiority.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Technology-dependent, powerful but predictable</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Equipment</div>
+                            <div>Top-tier racing technology and modifications</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Motivation</div>
+                            <div>Wants valuable prize for personal gain</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage4.png" alt="Geronimo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Geronimo<br>🦔⚔️</div>'">
+                    <img src="Art Folder/GGimage4.png" alt="Geronimo" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Geronimo<br>🦔⚔️</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Geronimo</h3>
                     <p class="character-description">A tough armadillo with quick wit who keeps weapons at all times. Values fair competition above all else, taking greater offense to the killer breaking racing rules than the murders themselves.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🦔 The Armed Competitor</h3>
+                    <p><strong>Personality:</strong> Tough exterior with quick wit, keeps to themselves and carries weapons at all times. Surprisingly, they draw suspicion for their off-putting nature but don't mind it.</p>
+                    <p><strong>Values:</strong> Cares only for racing and fair competition. Takes greater exception to the killer breaking the rules and eliminating contestants than the deaths themselves - their sportsman-like heart would never allow unfair competition.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🔥 "Hot Wheel"</div>
+                        <p>Geronimo's unique approach to racing - he simply rolls into a ball and races on his own natural armadillo shell. No fancy kart needed, just pure determination and his tough exterior.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Defensive, fair play focused</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Equipment</div>
+                            <div>Always armed, armored kart</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Core Value</div>
+                            <div>Fair competition above all else</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage5.png" alt="Ziya" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Ziya<br>🦜🇫🇷</div>'">
+                    <img src="Art Folder/GGimage5.png" alt="Ziya" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Ziya<br>🦜🇫🇷</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Ziya</h3>
-                    <p class="character-description">A talkative French parrot who seems clumsy but holds her own on the track. Mortified by losing her teammates, she vows to use the prize to help victims' families if she wins.</p>
+                    <p class="character-description">A talkative French parrot who seems clumsy but holds his own on the track. Mortified by losing his teammates, he vows to use the prize to help victims' families if he wins.</p>
+                </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🦜 The Heart of the Competition</h3>
+                    <p><strong>Personality:</strong> Excitable and talkative French parrot with an optimistic outlook. Though seen as clumsy and out of her league, she consistently proves herself capable against other racers despite her amateurish skills.</p>
+                    <p><strong>Noble Goals:</strong> Mortified by the loss of those she sees as teammates. If she wins, she vows to use the prize to help the families of those lost in the race and protect the remaining competitors.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🇫🇷 "Liberté Volante"</div>
+                        <p>A colorful, agile kart that matches Ziya's spirited personality. Built for maneuverability rather than raw power, relying on skill over strength.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Skilled but amateurish, heart over technique</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Motivation</div>
+                            <div>Help families of victims, protect remaining racers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Strength</div>
+                            <div>Unwavering moral compass and determination</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage6.png" alt="Geno_sys" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Geno_sys<br>🤖⚡</div>'">
+                    <img src="Art Folder/GGimage6.png" alt="Geno_sys" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Geno_sys<br>🤖⚡</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Geno_sys</h3>
                     <p class="character-description">A robot with shifting personalities - calm, bubbly, or rageful. Built to win and save their creator's failing health. Their unpredictable nature makes them dangerous on track and seemingly unafraid of the killer.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🤖 The Unpredictable Machine</h3>
+                    <p><strong>Multiple Personalities:</strong> A robot with shifting personalities - sometimes calm and collected, sometimes happy and bubbly, sometimes rageful and competitive. This unpredictability makes them an oddball to most racers.</p>
+                    <p><strong>Desperate Mission:</strong> Built by their creator specifically to win the competition and restore their creator's failing health before it's too late. This urgent purpose drives their sometimes erratic behavior.</p>
+                    <p><strong>Fearless Nature:</strong> Seems the least threatened by the killer's presence, making them a furious danger on the race track who plays by their own rules.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🤖 "Override"</div>
+                        <p>A high-tech kart that adapts its performance based on Geno_sys's current personality mode. Unpredictable but potentially devastating in the right hands, with systems that interface directly with their robotic nature.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Unpredictable, adapts based on personality mode</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Motivation</div>
+                            <div>Save creator's failing health</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Unique Trait</div>
+                            <div>Seemingly unafraid of the killer</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage7.png" alt="Reggex" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Reggex<br>🦕🔥</div>'">
+                    <img src="Art Folder/GGimage7.png" alt="Reggex" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Reggex<br>🦕🔥</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Reggex</h3>
                     <p class="character-description">A fiery red dinosaur who races for pure joy and to prove he's the fastest. Doesn't care about the prize and plans to give it to second place. Fearlessly wants to thrash the killer personally.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🦕 The Purest Competitor</h3>
+                    <p><strong>Pure Motivation:</strong> Races for the sheer joy of it and to prove he's the fastest racer in the world. His boisterous personality isn't always reflective of his abilities, but he's no slouch on the race track.</p>
+                    <p><strong>Generous Spirit:</strong> Doesn't care about the prize at all - plans to give it to the second place winner as a reward for getting close to his level. His competition is about glory, not rewards.</p>
+                    <p><strong>Fearless Attitude:</strong> Doesn't fear the killer at all. Instead, he openly states his plan to thrash them personally and make them sorry for interrupting his race and hurting his competition.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🚛 "D.Crazy"</div>
+                        <p>A massive monster truck-like vehicle that towers over most other racers. Built for pure power and intimidation, perfectly matching Reggex's larger-than-life personality and aggressive racing style.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Pure aggression, speed-focused</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Motivation</div>
+                            <div>Racing glory and proving superiority</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Attitude</div>
+                            <div>Fearless, wants to fight the killer personally</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage8.png" alt="Wylle" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Wylle<br>👁️‍🗨️🏁</div>'">
+                    <img src="Art Folder/GGimage8.png" alt="Wylle" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Wylle<br>👁️‍🗨️🏁</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Wylle</h3>
                     <p class="character-description">A wise blind mole rat who surprises everyone with special racing equipment and skills. Acts as peacemaker, hoping to start a fund for underprivileged racers if victorious.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">👁️‍🗨️ The Wise Peacemaker</h3>
+                    <p><strong>Surprising Abilities:</strong> A blind mole rat with a wise nature and passion for racing. Uses special equipment to help them race and surprises everyone with abilities that far exceed expectations based on their low-profile, kindly demeanor.</p>
+                    <p><strong>Diplomatic Role:</strong> Often acts as a peacemaker in the competition, trying to prevent racers from turning on one another as tensions rise during the ongoing murders.</p>
+                    <p><strong>Noble Goals:</strong> If victorious, hopes to start a fund for other underprivileged racers to get a footing in the kart racing world, showing their desire to lift up the community.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🔮 "Wisdom Rider"</div>
+                        <p>Equipped with sophisticated sensory technology that compensates for Wylle's blindness, turning their perceived weakness into a unique racing advantage.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Technological assistance, surprisingly skilled</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Role</div>
+                            <div>Peacemaker, prevents infighting</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Goal</div>
+                            <div>Fund for underprivileged racers</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage9.png" alt="Quincy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Quincy<br>🎭❓</div>'">
+                    <img src="Art Folder/GGimage9.png" alt="Quincy" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Quincy<br>🎭❓</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Quincy</h3>
                     <p class="character-description">A mysterious masked racer who takes particular interest in the murders. Rarely speaks but shares knowledge and clues with Ko. Their goals and identity remain shrouded in mystery.</p>
                 </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🎭 The Enigmatic Ally</h3>
+                    <p><strong>Mysterious Nature:</strong> A quiet racer who covers their face with a mask and seems to take particular interest in the disappearances and murders. Their goals and true identity remain completely shrouded in mystery.</p>
+                    <p><strong>Ko's Informant:</strong> Rarely talks to other racers, but often converges with Ko to share knowledge and clues about events surrounding the murders. Seems to know more than they're letting on.</p>
+                    <p><strong>Hidden Agenda:</strong> Makes no explicit claim for why they joined the GGGP or what they want the prize for. Despite their standoffish nature, they seem to mean no harm and aren't unfriendly.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">🖤 "Phantom Rider"</div>
+                        <p>A sleek, black vehicle with high-speed capabilities and technologically advanced features. Perfect for someone who prefers to operate from the shadows with cutting-edge precision.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Stealthy, observational</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Role</div>
+                            <div>Information source for Ko</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Mystery Level</div>
+                            <div>Maximum - identity and goals unknown</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="racing-stripe"></div>
             </div>
-            <div class="character-card">
+            
+            <div class="character-card" onclick="expandCard(this)">
                 <div class="character-img">
-                    <img src="Art Folder/GGimage10.png" alt="Junanaji" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\\\"color: #ffaa00; font-size: 1.5rem;\\\">Junanaji<br>🦾🏆</div>'">
+                    <img src="Art Folder/GGimage10.png" alt="Junanaji" onerror="this.outerHTML='<div style=&quot;display: flex; align-items: center; justify-content: center; color: #8a2be2; font-size: 1.5rem; width: 100%; height: 100%;&quot;>Junanaji<br>🦾🏆</div>'">
                 </div>
                 <div class="character-info">
                     <h3 class="character-name">Junanaji</h3>
                     <p class="character-description">A cocky racer with cybernetic enhancements and previous GGGP winner. Uses underhanded tactics and likes picking on other racers, keeping their prize desires and past winnings secret.</p>
+                </div>
+                <button class="close-btn" onclick="closeCard(event)">&times;</button>
+                <div class="expanded-content">
+                    <h3 style="color: #8a2be2; margin-bottom: 1rem;">🦾 The Returning Champion</h3>
+                    <p><strong>Previous Winner:</strong> A confident racer with cybernetic enhancements who won the last GGGP competition. As a returning winner, they have a cocky demeanor and often like to pick on other racers.</p>
+                    <p><strong>Underhanded Tactics:</strong> Known to play dirty at times in their racing tactics, but overall seem to have more bark than bite. Despite their methods, they're a genuinely talented racer even without their cybernetic advantages.</p>
+                    <p><strong>Secretive Nature:</strong> Keeps both their desire for the current prize and their winnings from the former competition completely secret, adding an air of mystery to their motivations.</p>
+                    <div class="kart-info">
+                        <div class="kart-name">⚙️ "The Terminator"</div>
+                        <p>A unique one-wheel vehicle where Junanaji rides in the center, giving it an almost sawblade-like appearance. Enhanced with cybernetic technology and built with previous GGGP prize money for ultimate performance.</p>
+                    </div>
+                    <div class="character-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Racing Style</div>
+                            <div>Underhanded but skilled, cybernetically enhanced</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Status</div>
+                            <div>Previous GGGP winner</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Secrets</div>
+                            <div>Prize desire and past winnings unknown</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="racing-stripe"></div>
             </div>
@@ -639,16 +1037,21 @@
         <h2>📖 The Dark Tale</h2>
         <div class="story-content">
             <h3 style="color: #8a2be2; margin-bottom: 1rem;">The GO! GO! Grand Prix</h3>
-            <p>When Ko, a demon girl kart racer, enters the world-renowned "GO! GO! Grand Prix," she's seeking more than just victory. With her mentor Gi recently deceased, she hopes the mysterious grand prize can bring him back to life.</p>
+            <p>When Ko, a demon girl kart racer of unknown origins, enters the world-renowned "GO! GO! Grand Prix," she carries the weight of recent loss. Her mentor and guardian Gi, a legendary ex-kart racer and previous GGGP winner, has just passed away. With his final guidance echoing in her mind, Ko joins the competition seeking the mysterious grand prize - rumored to be "beyond the winner's wildest dreams" - hoping it holds the power to bring back the one person who ever truly cared for her.</p>
             
-            <p style="margin-top: 1rem;">But this competition harbors dark secrets. Under the eccentric host Fuelle Von Wheel's twisted entertainment, racers begin disappearing mid-race. What starts as mysterious vanishings soon escalates to brutal murders, leaving contestants terrified and confused.</p>
+            <p style="margin-top: 1rem;">The competition is hosted by the enigmatic <strong>Fuelle Von Wheel</strong>, an eccentric and bombastic figure whose true nature remains shrouded in mystery. Von Wheel promises that this year's prize will be sweeter than ever, and seems most concerned with creating the most entertaining spectacle possible. Racers from around the world have gathered, each harboring their own desperate wishes and hidden agendas.</p>
             
-            <p style="margin-top: 1rem;">As Ko investigates the disappearances, she uncovers a web of supernatural horror, past betrayals, and deadly wishes. The killer seems to take special interest in her investigation, making every race a potential death trap.</p>
+            <h3 style="color: #cc1100; margin: 2rem 0 1rem;">The Xecutioner Emerges</h3>
+            <p>What begins as thrilling competition quickly turns sinister when racers start vanishing during races - at first just mysterious disappearances that leave everyone bewildered. But soon, bodies begin appearing, revealing the presence of a merciless killer stalking the contestants. This shadowy figure, known only as <strong>The Xecutioner</strong>, hunts racers both on and off the track with brutal efficiency.</p>
             
-            <h3 style="color: #cc1100; margin: 2rem 0 1rem;">The Mystery Deepens</h3>
-            <p>With each race, the stakes grow higher. Bodies appear, alliances form and shatter, and Ko must balance her detective work with staying alive on the track. The other racers each harbor their own secrets and motivations, making everyone a potential suspect... or victim.</p>
+            <p style="margin-top: 1rem;">The Xecutioner operates from the shadows, rarely seen but always felt. They seem to take particular interest in Ko as she begins investigating the murders, leading to terrifying chase sequences where Ko must outrace death itself. Von Wheel's reaction to these developments is disturbing - rather than canceling the competition, he praises the killer for "spicing up the event" and even offers the prize to the Xecutioner if they eliminate all other contestants.</p>
             
-            <p style="margin-top: 1rem;">As the field narrows and the killer grows bolder, Ko faces an impossible choice: pursue her personal goal of reviving her mentor, or save the lives of her fellow racers. In the end, true victory may require the ultimate sacrifice.</p>
+            <h3 style="color: #8a2be2; margin: 2rem 0 1rem;">Racing Against Death</h3>
+            <p>As the body count rises, Ko finds herself torn between her personal mission and protecting her fellow racers. Each race becomes a deadly gamble where investigation and survival intertwine. She must gather clues by bumping into rivals' karts, exploring dangerous shortcuts, and collecting evidence scattered across shifting racetracks - all while maintaining racing performance and avoiding the killer's gaze.</p>
+            
+            <p style="margin-top: 1rem;">The other racers react differently to the mounting terror. Some, like the anxious Trousle, nearly quit in fear. Others, like the pompous Meggy-Meggy, see the disappearances as beneficial to their own chances. The fiery Reggex openly threatens to fight the killer, while the mysterious masked Quincy seems to know more than they're letting on. Trust becomes a luxury none can afford as paranoia spreads and everyone becomes a potential suspect.</p>
+            
+            <p style="margin-top: 1rem;">Ko races against time itself, knowing that each passing race brings the killer closer to completing their horrific goal. With her determination to honor Gi's memory and her growing bonds with the surviving racers, she must solve the mystery before she becomes the next victim - or worse, before there's no one left to save.</p>
         </div>
     </section>
 
@@ -656,31 +1059,31 @@
         <h2>🎮 Racing Meets Mystery</h2>
         <div class="concept-grid">
             <div class="concept-card">
-                <h3>🏁 Dynamic Racing</h3>
-                <p><strong>Core Racing:</strong> Mario Kart-style gameplay with power-ups, shortcuts, and obstacles.</p>
-                <p><strong>Narrative Events:</strong> Racers disappear mid-race, tracks change dynamically, killer chase sequences.</p>
-                <p><strong>Investigation Integration:</strong> Bump rivals for clues, find evidence pickups, explore secret investigation areas.</p>
+                <h3>🏁 Dynamic Racing Evolution</h3>
+                <p><strong>Classic Foundation:</strong> Experience Mario Kart-style gameplay with power-ups, shortcuts, and obstacles as your racing foundation.</p>
+                <p><strong>Narrative Integration:</strong> Tracks transform mid-race as the story unfolds - racers vanish from the starting line, mysterious shortcuts appear, and the Xecutioner may suddenly join the race as an AI opponent hunting you down.</p>
+                <p><strong>Evidence on the Track:</strong> Collect glowing evidence pickups scattered across courses, ram into specific rivals' karts to overhear conversations, and discover new routes that reveal crucial investigation areas.</p>
             </div>
             
             <div class="concept-card">
-                <h3>🔍 Detective Work</h3>
-                <p><strong>Visual Novel Segments:</strong> Explore locations, interrogate suspects, review evidence between races.</p>
-                <p><strong>Clue Gathering:</strong> Racing performance unlocks new investigation options and story progression.</p>
-                <p><strong>Character Relationships:</strong> Build trust and gather information from fellow racers.</p>
+                <h3>🔍 Seamless Investigation</h3>
+                <p><strong>Racing Clues:</strong> Your performance in races directly unlocks new investigation options - finish in the top 3 to access restricted areas, or use shortcuts to find evidence other racers missed.</p>
+                <p><strong>Visual Novel Depth:</strong> Between races, explore the GGGP facility in Danganronpa-style segments. Question suspects, analyze crime scenes, and piece together testimony from frightened racers.</p>
+                <p><strong>Mechanic Integration:</strong> Find kart upgrade parts during investigations to improve racing performance, creating a gameplay loop where mystery-solving enhances your competitive edge.</p>
             </div>
             
             <div class="concept-card">
-                <h3>⚡ Escalating Stakes</h3>
-                <p><strong>Early Game:</strong> Optional bonus objectives for gathering clues during races.</p>
-                <p><strong>Mid Game:</strong> Investigation becomes integrated with racing success.</p>
-                <p><strong>Late Game:</strong> Forensic objectives become critical mission requirements for survival.</p>
+                <h3>⚡ Escalating Tension System</h3>
+                <p><strong>Early Races:</strong> Optional bonus objectives let you gather clues for extra story content while focusing on traditional racing.</p>
+                <p><strong>Mid-Game Crisis:</strong> Investigation becomes mandatory as the killer grows bolder - you must collect specific evidence during races to progress the story.</p>
+                <p><strong>Final Races:</strong> Horror-driven chase sequences where the Xecutioner actively hunts you on the track, requiring both racing mastery and quick thinking to survive.</p>
             </div>
             
             <div class="concept-card">
-                <h3>🏆 Multiple Modes</h3>
-                <p><strong>Story Campaign:</strong> Experience the full murder mystery racing adventure.</p>
-                <p><strong>Free Racing:</strong> Traditional kart racing without narrative pressure.</p>
-                <p><strong>Multiplayer:</strong> Race with friends using unlocked characters and tracks, plus combat racing modes.</p>
+                <h3>🏆 Multiple Experience Modes</h3>
+                <p><strong>Story Campaign:</strong> Experience the full murder mystery with integrated racing challenges that adapt to your investigation progress.</p>
+                <p><strong>Classic Racing:</strong> Traditional kart racing on unlocked tracks without narrative pressure - perfect for honing skills.</p>
+                <p><strong>Multiplayer Mayhem:</strong> Race friends using unlocked characters and their signature karts, plus special modes like Ghost Racing (beat AI records) and Combat Arenas with GGGP-themed power-ups.</p>
             </div>
         </div>
     </section>
@@ -763,8 +1166,37 @@
             } else if (e.key === 'ArrowLeft' || e.key === 'a') {
                 const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
                 document.querySelector(`[onclick="showSection('${sections[prevIndex]}')"]`).click();
+            } else if (e.key === 'Escape') {
+                closeAllCards();
             }
         });
+        
+        function expandCard(card) {
+            // Close any other expanded cards first
+            closeAllCards();
+            
+            // Expand the clicked card
+            card.classList.add('expanded');
+            document.getElementById('overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeCard(event) {
+            event.stopPropagation();
+            closeAllCards();
+        }
+        
+        function closeAllCards() {
+            const expandedCards = document.querySelectorAll('.character-card.expanded');
+            expandedCards.forEach(card => {
+                card.classList.remove('expanded');
+            });
+            document.getElementById('overlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close cards when clicking the overlay
+        document.getElementById('overlay').addEventListener('click', closeAllCards);
     </script>
 </body>
 </html>
