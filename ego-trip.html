@@ -110,6 +110,7 @@
             box-shadow: 
                 0 0 30px rgba(255, 0, 127, 0.6),
                 inset 0 0 20px rgba(255, 0, 127, 0.3);
+            user-select: none;
         }
 
         .music-visualizer:hover {
@@ -133,6 +134,12 @@
                 inset 0 0 15px rgba(0, 0, 0, 0.5);
         }
 
+        .music-visualizer.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+        }
+
         #visualizerCanvas {
             width: 100%;
             height: 100%;
@@ -153,6 +160,58 @@
 
         .music-visualizer.muted .music-icon {
             opacity: 0.7;
+        }
+
+        /* Volume Ring */
+        .volume-ring {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .volume-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .volume-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 3;
+        }
+
+        .volume-ring-fill {
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s ease;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        /* Volume Tooltip */
+        .volume-tooltip {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--primary-white);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .volume-tooltip.visible {
+            opacity: 1;
         }
 
         /* Psychedelic Pulse Animation */
@@ -997,7 +1056,14 @@
     <div class="music-visualizer" id="musicVisualizer">
         <canvas id="visualizerCanvas"></canvas>
         <span class="music-icon">🔇</span>
+        <div class="volume-ring">
+            <svg viewBox="0 0 90 90">
+                <circle class="volume-ring-bg" cx="45" cy="45" r="42" />
+                <circle class="volume-ring-fill" cx="45" cy="45" r="42" />
+            </svg>
+        </div>
     </div>
+    <div class="volume-tooltip" id="volumeTooltip">Volume: <span id="volumePercent">50</span>%</div>
 
     <!-- Lava Lamp Background -->
     <div class="lava-background" id="lavaBackground"></div>
@@ -1567,10 +1633,22 @@
         let dataArray;
         let animationId;
         let isPlaying = false;
+        let isDragging = false;
+        let dragStartY = 0;
+        let dragStartVolume = 0.5;
+        let wasPlayingBeforeVideo = false;
+        
         const bgMusic = document.getElementById('bgMusic');
         const musicVisualizer = document.getElementById('musicVisualizer');
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
+        const volumeTooltip = document.getElementById('volumeTooltip');
+        const volumePercent = document.getElementById('volumePercent');
+        const volumeRingFill = document.querySelector('.volume-ring-fill');
+        
+        // Initialize volume
+        bgMusic.volume = 0.5;
+        updateVolumeRing(0.5);
 
         // Set canvas size
         function resizeCanvas() {
@@ -1594,6 +1672,15 @@
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
             }
+        }
+
+        // Update Volume Ring
+        function updateVolumeRing(volume) {
+            const circumference = 2 * Math.PI * 42; // radius = 42
+            const offset = circumference - (volume * circumference);
+            volumeRingFill.style.strokeDasharray = `${circumference} ${circumference}`;
+            volumeRingFill.style.strokeDashoffset = offset;
+            volumePercent.textContent = Math.round(volume * 100);
         }
 
         // Draw Visualizer
@@ -1667,8 +1754,56 @@
             }
         }
 
-        // Music visualizer click event
-        musicVisualizer.addEventListener('click', toggleMusic);
+        // Volume Control with Drag
+        musicVisualizer.addEventListener('mousedown', handleDragStart);
+        musicVisualizer.addEventListener('touchstart', handleDragStart, { passive: false });
+
+        function handleDragStart(e) {
+            e.preventDefault();
+            isDragging = true;
+            dragStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            dragStartVolume = bgMusic.volume;
+            volumeTooltip.classList.add('visible');
+            
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', handleDragEnd);
+            document.addEventListener('touchmove', handleDrag, { passive: false });
+            document.addEventListener('touchend', handleDragEnd);
+        }
+
+        function handleDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            const deltaY = dragStartY - currentY; // Negative when dragging down, positive when up
+            const volumeChange = deltaY / 200; // Adjust sensitivity
+            
+            let newVolume = dragStartVolume + volumeChange;
+            newVolume = Math.max(0, Math.min(1, newVolume)); // Clamp between 0 and 1
+            
+            bgMusic.volume = newVolume;
+            updateVolumeRing(newVolume);
+        }
+
+        function handleDragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            volumeTooltip.classList.remove('visible');
+            
+            // If we haven't moved much, treat it as a click
+            const endY = e.type.includes('mouse') ? e.clientY : (e.changedTouches ? e.changedTouches[0].clientY : dragStartY);
+            const totalMovement = Math.abs(endY - dragStartY);
+            
+            if (totalMovement < 5) {
+                toggleMusic();
+            }
+            
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mouseup', handleDragEnd);
+            document.removeEventListener('touchmove', handleDrag);
+            document.removeEventListener('touchend', handleDragEnd);
+        }
 
         // Auto-play music on first user interaction
         document.addEventListener('click', function initMusic() {
@@ -1768,6 +1903,19 @@
             const video = document.getElementById('crystalVideo');
             const skipButton = document.getElementById('skipVideoBtn');
 
+            // Store music state and pause if playing
+            wasPlayingBeforeVideo = isPlaying;
+            if (isPlaying) {
+                bgMusic.pause();
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Hide music visualizer
+            musicVisualizer.classList.add('hidden');
+
             // Fade out the crystal
             crystal.classList.add('hidden');
 
@@ -1784,6 +1932,15 @@
                 videoPlayer.classList.remove('active');
                 setTimeout(() => {
                     crystal.classList.remove('hidden');
+                    
+                    // Show music visualizer again
+                    musicVisualizer.classList.remove('hidden');
+                    
+                    // Resume music if it was playing before
+                    if (wasPlayingBeforeVideo) {
+                        bgMusic.play();
+                        drawVisualizer();
+                    }
                 }, 500); // Match the transition duration in CSS
             }
 
