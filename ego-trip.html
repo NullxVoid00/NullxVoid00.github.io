@@ -96,7 +96,7 @@
         /* Music Visualizer Orb */
         .music-visualizer {
             position: fixed;
-            bottom: 70px; /* Adjusted to make space for volume bar */
+            bottom: 30px;
             right: 30px;
             width: 80px;
             height: 80px;
@@ -192,26 +192,6 @@
             stroke-linecap: round;
             transition: stroke-dashoffset 0.1s ease;
             filter: drop-shadow(0 0 5px var(--neon-blue));
-        }
-
-        /* Volume Bar */
-        .volume-bar-container {
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            width: 100px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            z-index: 999;
-        }
-
-        .volume-bar-fill {
-            height: 100%;
-            background: var(--neon-blue);
-            border-radius: 5px;
-            transition: width 0.1s ease;
-            box-shadow: 0 0 10px var(--neon-blue);
         }
 
         /* Volume Tooltip */
@@ -412,7 +392,7 @@
         }
 
         .hero .subtitle {
-            font-size clamp(1.2rem, 3vw, 2rem);
+            font-size: clamp(1.2rem, 3vw, 2rem);
             opacity: 0.9;
             margin-bottom: 2rem;
             letter-spacing: 0.1em;
@@ -603,7 +583,7 @@
                 var(--neon-yellow), var(--neon-purple), var(--neon-orange));
             z-index: -1;
             border-radius: 15px;
-            opacity: 0.3; /* Reduced opacity for more transparent shine effect */
+            opacity: 0;
             transition: opacity 0.4s ease;
             animation: border-spin 3s linear infinite;
         }
@@ -614,7 +594,7 @@
         }
 
         .info-card:hover::before {
-            opacity: 0.5; /* Slightly more visible on hover but still transparent */
+            opacity: 1;
         }
 
         .info-card:hover {
@@ -682,16 +662,17 @@
             border-radius: 20px;
             opacity: 0;
             transition: opacity 0.4s ease;
+            animation: card-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes card-glow {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         .character-card:hover::before {
             opacity: 1;
-            animation: border-spin-once 1s linear forwards; /* Changed to single spin */
-        }
-
-        @keyframes border-spin-once {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            animation: border-spin 1s linear infinite;
         }
 
         .character-card:hover .character-card-front,
@@ -1058,14 +1039,8 @@
             .music-visualizer {
                 width: 60px;
                 height: 60px;
-                bottom: 50px; /* Adjusted for volume bar */
-                right: 20px;
-            }
-
-            .volume-bar-container {
                 bottom: 20px;
-                right: 10px;
-                width: 80px;
+                right: 20px;
             }
 
             .volume-tooltip {
@@ -1095,9 +1070,6 @@
         </div>
     </div>
     <div class="volume-tooltip" id="volumeTooltip">Volume: <span id="volumePercent">50</span>%</div>
-    <div class="volume-bar-container" id="volumeBarContainer">
-        <div class="volume-bar-fill" id="volumeBarFill"></div>
-    </div>
 
     <!-- Lava Lamp Background -->
     <div class="lava-background" id="lavaBackground"></div>
@@ -1358,7 +1330,7 @@
                     <h3>MENDER (Optional/Secret)</h3>
                     <p><strong>The Concerned Caretaker</strong></p>
                     <p style="margin-top: 1rem;">The beloved bartender himself becomes a formidable opponent when certain conditions are met. Quick and agile with high health, he uses area attacks, bullet patterns, and can separate players for one-on-one confrontations.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Straightforward direct combat, but with massive health and immunity to most status effects. Can incapacitate separated players. This battle tests if the fragments are truly ready to face deeper truths or if they're still running from reality.</Li>
+                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Straightforward direct combat, but with massive health and immunity to most status effects. Can incapacitate separated players. This battle tests if the fragments are truly ready to face deeper truths or if they're still running from reality.</p>
                     <p style="margin-top: 1rem; font-style: italic;">"Sometimes the kindest thing I can do is show you that you're stronger than you think."</p>
                 </div>
             </div>
@@ -1519,8 +1491,7 @@
 
                 <div class="note-character">
                     <h3>THE CHARADE'S NOTES</h3>
-                    <div class="n
-                    ote-item">
+                    <div class="note-item">
                         <strong>Note 1:</strong> "Walking, Walking, Walking... But nobody to talk to! I thought I'd find something interesting in here, but all I find are these uppity creatures and emotional garbage..."
                     </div>
                     <div class="note-item">
@@ -1568,82 +1539,6 @@
                             <strong>Note 6:</strong> "I feel them... They're finally Awake... You... for what you did... A thousand times... One Day Soon... *I'll kill you*..."
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spoilers Section -->
-    <div id="spoilers" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">HIDDEN TRUTHS</h2>
-            
-            <div class="spoiler-lock" onclick="showSpoilerModal()">
-                <h3 style="color: var(--neon-red); margin-bottom: 1rem;">🔒 LOCKED SECRETS</h3>
-                <p>This section contains major spoilers including the true nature of the Red Shard, N_'s complete story, and all seven possible endings.</p>
-                <p style="margin-top: 1rem; opacity: 0.8;">Click to enter password</p>
-            </div>
-
-            <div class="spoiler-content" id="spoilerContent">
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Red Shard's True Purpose</h3>
-                <div class="info-card">
-                    <h4>A Prison of Trauma</h4>
-                    <p>The Red Shard exists as a crystalline space between consciousness and dream, but its true purpose is far darker. It serves as a prison designed to contain N_ - the echo of Null's rejected fragment, Neuro. The labyrinth within was built specifically to keep N_ buried at the very bottom, ensuring their traumatic memories could never surface.</p>
-                    <p style="margin-top: 1rem;">Unlike the other echo-fragments who are mere impressions, N_ retained full personality and clear memories of what Null tried to bury. Their growing instability and rage at abandonment created The Shadow - a hulking mass of darkness that protects them and serves as the source of the labyrinth's corrupting influence.</p>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Seven Endings</h3>
-                <div class="ending-grid">
-                    <div class="ending-card">
-                        <h4>HUSK ENDING (Null Solo)</h4>
-                        <p>Null defeats The Self alone but, after glimpsing traumatic imagery in the Red Shard, loses all interest in it. They return to Mender's to repeat the labyrinth indefinitely, becoming an empty shell going through motions.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>OBSESSION ENDING (Null + _L)</h4>
-                        <p>Null and _L defeat The Self together, but Limerence convinces Null to stay and repeat the labyrinth in pursuit of meaning they'll never find. The search becomes more important than any destination.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>NARCISSIST ENDING (Null + _M)</h4>
-                        <p>Null and _M confront the Red Shard, but Midas shows Null all the treasures and remnants they've collected, convincing them to stay and gather riches until the end of time. Material accumulation becomes the only goal.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>COWARD ENDING (Null + _D)</h4>
-                        <p>Null and _D defeat The Self, but Dolor freezes in absolute terror at what lies ahead and begs Null to stay. They return to Mender's, never to leave again, paralyzed by fear of growth.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>MISSING ENDING (Null + All 3 Fragments)</h4>
-                        <p>With all fragments present, they attempt to break through the Red Shard together but fail. The group is left eternally trying to breakthrough, having the pieces but lacking the knowledge to proceed.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>DROWN ENDING (All Fragments, No Notes)</h4>
-                        <p>Without sufficient understanding from collected notes, the echo fragments turn on Null upon reaching the shard, grabbing them and forcing their body into the crystal. Null drowns in the red liquid, leading to a restart.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>TRUE ENDING (All Fragments + All Notes)</h4>
-                        <p>With complete knowledge, sense of self, and resilience built over the journey, the echoes celebrate and reintegrate with Null. Together they shatter the Red Shard and dive into the red pool created, ready to begin their true journey in Ego/Dive.</p>
-                    </div>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Connection to Ego/Dive</h3>
-                <div class="info-card">
-                    <h4>A Necessary Prelude</h4>
-                    <p>Ego/Trip serves as both power fantasy and preliminary journey - a consequence-free space for processing trauma in abstract, game-like manner. The Red Shard acts as a waiting room between consciousness and deeper unconsciousness, where Null can build strength before facing the weightier emotional confrontations awaiting in Absentia.</p>
-                    <p style="margin-top: 1rem;">Only by achieving the True Ending - gathering complete understanding through notes and working with all aspects of themselves - can Null break free from this crystalline refuge and dive into the layered world of Ego/Dive, where their real journey of healing or destruction begins.</p>
-                    <p style="margin-top: 1rem;">The echo-fragments serve as practice versions of the full personalities Null will encounter in Absentia. Mender's gentle guidance prepares them for the harsher tests ahead, while the corrupted bosses offer glimpses of what happens when trauma consumes completely.</p>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Labyrinth's Origin</h3>
-                <div class="info-card">
-                    <h4>A Prison Built from Denial</h4>
-                    <p>The endless, hostile labyrinth was constructed by Null's own psyche as a way to ensure N_ could never escape and bring their traumatic memories to the surface. Every creature, trap, and shifting room serves as another barrier designed to send N_ back to their starting point at the maze's bottom.</p>
-                    <p style="margin-top: 1rem;">The corruption affecting powerful beings who venture too deep emanates directly from N_'s Shadow and their building instability. As N_ grew more desperate and angry over countless failed escape attempts, their influence began twisting other lost souls into the bosses players encounter.</p>
-                    <p style="margin-top: 1rem;">When Null and the echo-fragments finally arrive, N_ senses their presence and waits - no longer trying to escape, but preparing for confrontation. Whether this leads to revenge, understanding, or integration depends entirely on the choices made throughout the journey.</p>
                 </div>
             </div>
         </div>
