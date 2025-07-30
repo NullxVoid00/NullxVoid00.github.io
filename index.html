@@ -446,6 +446,45 @@
         transition: transform 0.1s ease-out;
     }
 
+    .gallery-arrow {
+        position: absolute;
+        color: var(--accent-red);
+        font-size: 3rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        text-shadow: 0 0 20px rgba(220,20,60,0.8);
+        z-index: 10;
+    }
+
+    .gallery-arrow.active {
+        opacity: 0.8;
+    }
+
+    .gallery-arrow.top {
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .gallery-arrow.bottom {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+    }
+
+    .gallery-arrow.left {
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+    }
+
+    .gallery-arrow.right {
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg);
+    }
+
     .gallery-image {
         position: absolute;
         cursor: pointer;
@@ -748,6 +787,19 @@
             max-width: 200px;
             max-height: 200px;
         }
+
+        .gallery-arrow {
+            font-size: 2rem;
+        }
+
+        .gallery-image img {
+            max-width: 200px;
+            max-height: 200px;
+        }
+
+        .gallery-arrow {
+            font-size: 2rem;
+        }
     }
 </style></head>
 <body>
@@ -861,6 +913,10 @@
     </div>
     <div class="gallery-viewport" id="galleryViewport">
         <div class="gallery-canvas" id="galleryCanvas"></div>
+        <div class="gallery-arrow top" id="arrowTop">▲</div>
+        <div class="gallery-arrow bottom" id="arrowBottom">▲</div>
+        <div class="gallery-arrow left" id="arrowLeft">▲</div>
+        <div class="gallery-arrow right" id="arrowRight">▲</div>
     </div>
     <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
 </div>
@@ -1456,6 +1512,13 @@
         galleryState.canvasOffset.x -= galleryState.velocity.x;
         galleryState.canvasOffset.y -= galleryState.velocity.y;
         
+        // Update directional arrows based on velocity
+        const arrowThreshold = 1; // Minimum velocity to show arrows
+        document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
+        document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
+        document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
+        document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
+        
         // Wrap around logic (simplified)
         const wrapBuffer = 1000; // Keep some content loaded beyond edges
         if (galleryState.canvasOffset.x > wrapBuffer) {
@@ -1630,6 +1693,10 @@
                 cancelAnimationFrame(galleryState.animationId);
                 galleryState.animationId = null;
             }
+            // Hide all arrows
+            document.querySelectorAll('.gallery-arrow').forEach(arrow => {
+                arrow.classList.remove('active');
+            });
         }
         
         // Clear focused image when closing gallery
