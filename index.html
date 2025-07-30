@@ -712,6 +712,10 @@
                     <h2>ABYL RPG SYSTEM</h2>
                     <p>Turn-based RPG framework for VRChat</p>
                 </div>
+                <div class="nav-section" onclick="showSection('other')">
+                    <h2>OTHER PROJECTS</h2>
+                    <p>Additional creative endeavors and experiments</p>
+                </div>
                 <div class="nav-section" onclick="showAbout()">
                     <h2>ABOUT</h2>
                     <p>Learn more about the creator</p>
@@ -778,6 +782,19 @@
             <button class="carousel-nav prev" onclick="moveCarousel('gallery', -1)">‹</button>
             <div class="carousel" id="galleryCarousel"></div>
             <button class="carousel-nav next" onclick="moveCarousel('gallery', 1)">›</button>
+        </div>
+        <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
+    </div>
+
+    <div class="section-view" id="otherSection">
+        <div class="section-header">
+            <h2>OTHER PROJECTS</h2>
+            <p>Additional creative endeavors and experiments</p>
+        </div>
+        <div class="carousel-container">
+            <button class="carousel-nav prev" onclick="moveCarousel('other', -1)">‹</button>
+            <div class="carousel" id="otherCarousel"></div>
+            <button class="carousel-nav next" onclick="moveCarousel('other', 1)">›</button>
         </div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
@@ -942,13 +959,22 @@
                 { title: "Neon Dreams", description: "Cyberpunk visions of tomorrow", image: "Art Folder/GalleryProject8.jpg" },
                 { title: "Fractal Mind", description: "Infinite patterns of thought", image: "Art Folder/GalleryProject9.jpg" },
                 { title: "Chromatic Void", description: "Colors bleeding through darkness", image: "Art Folder/GalleryProject10.jpg" }
+            ],
+            other: [
+                {
+                    title: "VStalker16",
+                    description: "Digital Horror series set in an alternate world where a game called 'VTalkeR' is brought back online for a haunting internet hunt to solve a long since passed hacking incident",
+                    image: "Art Folder/OtherProject1.jpg",
+                    link: "VS16.html"
+                }
             ]
         };
 
         let carouselStates = {
             games: { currentIndex: 0 },
             vrchat: { currentIndex: 0 },
-            gallery: { currentIndex: 0 }
+            gallery: { currentIndex: 0 },
+            other: { currentIndex: 0 }
         };
 
         let touchStartX = 0;
@@ -976,8 +1002,9 @@
             initializeCarousel('games', projectData.games);
             initializeCarousel('vrchat', projectData.vrchat);
             initializeCarousel('gallery', projectData.gallery, true);
+            initializeCarousel('other', projectData.other);
             
-            ['games', 'vrchat', 'gallery'].forEach(type => {
+            ['games', 'vrchat', 'gallery', 'other'].forEach(type => {
                 const carousel = document.getElementById(`${type}Carousel`);
                 if (carousel) {
                     carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -1129,7 +1156,7 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                ['games', 'vrchat', 'gallery'].forEach(type => {
+                ['games', 'vrchat', 'gallery', 'other'].forEach(type => {
                     if (document.getElementById(`${type}Section`).classList.contains('active')) {
                         updateCarouselPositions(type);
                     }
