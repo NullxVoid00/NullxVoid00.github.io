@@ -1361,13 +1361,15 @@
         images: [],
         loadedImages: new Map(),
         canvasOffset: { x: 0, y: 0 },
-        isDragging: false,
-        mousePos: { x: 0, y: 0 },
+        velocity: { x: 0, y: 0 },
+        mousePos: { x: 0.5, y: 0.5 },
         worldSize: { width: 5000, height: 5000 },
-        focusedImage: null
+        focusedImage: null,
+        animationId: null,
+        isGalleryActive: false
     };
 
-    // Mock gallery images - in real implementation, these would come from the Art Gallery folder
+    // Replace these with your actual image filenames from the Art Gallery folder
     const galleryImages = [
         'GalleryProject1.jpg', 'GalleryProject2.jpg', 'GalleryProject3.jpg',
         'GalleryProject4.jpg', 'GalleryProject5.jpg', 'GalleryProject6.jpg',
@@ -1380,7 +1382,7 @@
         const viewport = document.getElementById('galleryViewport');
         const canvas = document.getElementById('galleryCanvas');
         
-        if (!viewport || !canvas) return;
+        if (!viewport || !canvas || galleryState.images.length > 0) return;
         
         // Scatter images across the world
         galleryImages.forEach((image, index) => {
@@ -1402,7 +1404,8 @@
         galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
         galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
         
-        updateGalleryView();
+        // Initial load of visible images
+        loadAllVisibleImages();
     }
 
     function handleGalleryMouseMove(e) {
@@ -1421,90 +1424,144 @@
     }
 
     function updateGalleryView() {
-        const viewport = document.getElementById('galleryViewport');
-        const canvas = document.getElementById('galleryCanvas');
-        
-        if (!viewport || !canvas || !document.getElementById('gallerySection').classList.contains('active')) {
+        if (!galleryState.isGalleryActive) {
             return;
         }
         
-        // Calculate pan based on mouse position
-        const panSpeed = 20;
-        const targetX = (galleryState.mousePos.x - 0.5) * panSpeed;
-        const targetY = (galleryState.mousePos.y - 0.5) * panSpeed;
+        const canvas = document.getElementById('galleryCanvas');
+        if (!canvas) return;
         
-        galleryState.canvasOffset.x -= targetX;
-        galleryState.canvasOffset.y -= targetY;
+        // Calculate velocity based on mouse position
+        const maxSpeed = 15;
+        const deadZone = 0.2; // 20% dead zone in center
         
-        // Wrap around logic
-        const viewportRect = viewport.getBoundingClientRect();
-        if (galleryState.canvasOffset.x > 0) {
+        // Calculate distance from center (0.5, 0.5)
+        const distX = galleryState.mousePos.x - 0.5;
+        const distY = galleryState.mousePos.y - 0.5;
+        
+        // Apply dead zone
+        const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
+        const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
+        
+        // Calculate target velocity
+        const targetVelX = effectiveDistX * maxSpeed * 2;
+        const targetVelY = effectiveDistY * maxSpeed * 2;
+        
+        // Smooth velocity changes
+        const smoothing = 0.1;
+        galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
+        galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
+        
+        // Update position
+        galleryState.canvasOffset.x -= galleryState.velocity.x;
+        galleryState.canvasOffset.y -= galleryState.velocity.y;
+        
+        // Wrap around logic (simplified)
+        const wrapBuffer = 1000; // Keep some content loaded beyond edges
+        if (galleryState.canvasOffset.x > wrapBuffer) {
             galleryState.canvasOffset.x -= galleryState.worldSize.width;
-        } else if (galleryState.canvasOffset.x < -galleryState.worldSize.width) {
+            repositionImages();
+        } else if (galleryState.canvasOffset.x < -galleryState.worldSize.width - wrapBuffer) {
             galleryState.canvasOffset.x += galleryState.worldSize.width;
+            repositionImages();
         }
         
-        if (galleryState.canvasOffset.y > 0) {
+        if (galleryState.canvasOffset.y > wrapBuffer) {
             galleryState.canvasOffset.y -= galleryState.worldSize.height;
-        } else if (galleryState.canvasOffset.y < -galleryState.worldSize.height) {
+            repositionImages();
+        } else if (galleryState.canvasOffset.y < -galleryState.worldSize.height - wrapBuffer) {
             galleryState.canvasOffset.y += galleryState.worldSize.height;
+            repositionImages();
         }
         
         // Update canvas transform
         canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
         
-        // Load/unload images based on visibility
-        updateVisibleImages(viewportRect);
+        // Only update visible images occasionally to prevent flickering
+        if (Math.abs(galleryState.velocity.x) > 0.5 || Math.abs(galleryState.velocity.y) > 0.5) {
+            updateVisibleImages();
+        }
         
-        requestAnimationFrame(updateGalleryView);
+        galleryState.animationId = requestAnimationFrame(updateGalleryView);
     }
 
-    function updateVisibleImages(viewportRect) {
-        const canvas = document.getElementById('galleryCanvas');
-        const buffer = 200; // Load images slightly outside viewport
+    let updateVisibleImagesTimeout = null;
+    function updateVisibleImages() {
+        // Debounce the visibility update to prevent constant loading/unloading
+        clearTimeout(updateVisibleImagesTimeout);
+        updateVisibleImagesTimeout = setTimeout(() => {
+            const viewport = document.getElementById('galleryViewport');
+            if (!viewport) return;
+            
+            const viewportRect = viewport.getBoundingClientRect();
+            const buffer = 400; // Larger buffer to prevent edge flickering
+            
+            galleryState.images.forEach(imgData => {
+                const worldX = imgData.x + galleryState.canvasOffset.x;
+                const worldY = imgData.y + galleryState.canvasOffset.y;
+                
+                // Simple visibility check without complex wrapping
+                const isVisible = (
+                    worldX > -buffer && 
+                    worldX < viewportRect.width + buffer &&
+                    worldY > -buffer && 
+                    worldY < viewportRect.height + buffer
+                );
+                
+                if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
+                    // Load image
+                    const imgElement = createGalleryImage(imgData);
+                    document.getElementById('galleryCanvas').appendChild(imgElement);
+                    galleryState.loadedImages.set(imgData.id, imgElement);
+                } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
+                    // Only unload if really far away
+                    const farBuffer = 800;
+                    if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
+                        worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
+                        const imgElement = galleryState.loadedImages.get(imgData.id);
+                        imgElement.remove();
+                        galleryState.loadedImages.delete(imgData.id);
+                    }
+                }
+            });
+        }, 100); // Debounce delay
+    }
+
+    function loadAllVisibleImages() {
+        const viewport = document.getElementById('galleryViewport');
+        if (!viewport) return;
+        
+        const viewportRect = viewport.getBoundingClientRect();
+        const buffer = 400;
         
         galleryState.images.forEach(imgData => {
             const worldX = imgData.x + galleryState.canvasOffset.x;
             const worldY = imgData.y + galleryState.canvasOffset.y;
             
-            // Check if image should be visible (with wrapping)
-            const isVisible = isImageVisible(worldX, worldY, viewportRect, buffer);
+            const isVisible = (
+                worldX > -buffer && 
+                worldX < viewportRect.width + buffer &&
+                worldY > -buffer && 
+                worldY < viewportRect.height + buffer
+            );
             
             if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
-                // Load image
                 const imgElement = createGalleryImage(imgData);
-                canvas.appendChild(imgElement);
+                document.getElementById('galleryCanvas').appendChild(imgElement);
                 galleryState.loadedImages.set(imgData.id, imgElement);
-            } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
-                // Unload image
-                const imgElement = galleryState.loadedImages.get(imgData.id);
-                imgElement.remove();
-                galleryState.loadedImages.delete(imgData.id);
             }
         });
     }
 
-    function isImageVisible(x, y, viewportRect, buffer) {
-        // Check main position
-        if (x > -buffer && x < viewportRect.width + buffer &&
-            y > -buffer && y < viewportRect.height + buffer) {
-            return true;
-        }
-        
-        // Check wrapped positions
-        const wrappedX = x + galleryState.worldSize.width;
-        const wrappedY = y + galleryState.worldSize.height;
-        
-        if ((wrappedX > -buffer && wrappedX < viewportRect.width + buffer && 
-             y > -buffer && y < viewportRect.height + buffer) ||
-            (x > -buffer && x < viewportRect.width + buffer && 
-             wrappedY > -buffer && wrappedY < viewportRect.height + buffer) ||
-            (wrappedX > -buffer && wrappedX < viewportRect.width + buffer && 
-             wrappedY > -buffer && wrappedY < viewportRect.height + buffer)) {
-            return true;
-        }
-        
-        return false;
+    function repositionImages() {
+        // When wrapping occurs, reposition all images to maintain continuity
+        galleryState.loadedImages.forEach((imgElement, id) => {
+            const imgData = galleryState.images.find(img => img.id === id);
+            if (imgData) {
+                imgElement.style.left = imgData.x + 'px';
+                imgElement.style.top = imgData.y + 'px';
+            }
+        });
     }
 
     function createGalleryImage(imgData) {
@@ -1550,10 +1607,14 @@
         
         // Initialize gallery when it's opened
         if (sectionType === 'gallery') {
+            galleryState.isGalleryActive = true;
             if (galleryState.images.length === 0) {
                 initializeGallery();
             }
-            updateGalleryView();
+            // Start the animation loop
+            if (!galleryState.animationId) {
+                updateGalleryView();
+            }
         }
     }
 
@@ -1561,6 +1622,15 @@
         document.querySelectorAll('.section-view').forEach(section => {
             section.classList.remove('active');
         });
+        
+        // Stop gallery animation when closing
+        if (galleryState.isGalleryActive) {
+            galleryState.isGalleryActive = false;
+            if (galleryState.animationId) {
+                cancelAnimationFrame(galleryState.animationId);
+                galleryState.animationId = null;
+            }
+        }
         
         // Clear focused image when closing gallery
         if (galleryState.focusedImage) {
