@@ -126,6 +126,8 @@
             display: inline-block;
             width: 100%;
             max-width: 300px;
+            background: rgba(10,10,10,0.5);
+            border-radius: 5px;
         }
 
         .password-container h1 {
@@ -136,28 +138,62 @@
         }
 
         .password-input {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.05) !important;
+            background-color: rgba(255,255,255,0.05) !important;
             border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
+            color: var(--primary-white) !important;
             padding: 1rem 3rem 1rem 2rem;
             font-size: 1.2rem;
             text-align: center;
             border-radius: 5px;
             outline: none;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
             letter-spacing: 0.1em;
             width: 100%;
-            -webkit-text-fill-color: var(--primary-white);
+            -webkit-text-fill-color: var(--primary-white) !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .password-input:focus {
+            background: rgba(255,255,255,0.05) !important;
             background-color: rgba(255,255,255,0.05) !important;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 20px rgba(220,20,60,0.3);
         }
         
         .password-input:-webkit-autofill,
         .password-input:-webkit-autofill:hover,
         .password-input:-webkit-autofill:focus,
         .password-input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 30px rgba(255,255,255,0.05) inset !important;
+            -webkit-box-shadow: 0 0 0 1000px #0a0a0a inset !important;
             -webkit-text-fill-color: var(--primary-white) !important;
-            background-color: rgba(255,255,255,0.05) !important;
+            background-color: transparent !important;
+            transition: background-color 5000s ease-in-out 0s;
+            caret-color: var(--primary-white) !important;
+            filter: brightness(0.9) !important;
+            color: #0a0a0a !important; /* Fallback to black text if white background appears */
+        }
+        
+        /* Firefox autofill fix */
+        .password-input:-moz-autofill,
+        .password-input:-moz-autofill-preview {
+            background-color: transparent !important;
+            color: var(--primary-white) !important;
+            filter: brightness(0.9) !important;
+        }
+        
+        /* Edge/IE autofill fix */
+        .password-input:-ms-input-placeholder {
+            color: rgba(255,255,255,0.5) !important;
+        }
+        
+        input:-internal-autofill-selected {
+            appearance: menulist-button;
+            background-color: transparent !important;
+            background-image: none !important;
+            color: var(--primary-white) !important;
         }
 
         .password-toggle {
@@ -895,7 +931,10 @@
                        class="password-input" 
                        id="passwordInput" 
                        placeholder="Enter Password"
-                       autocomplete="off">
+                       autocomplete="new-password"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       spellcheck="false">
                 <button class="password-toggle" id="passwordToggle" onclick="togglePassword()" type="button">👁</button>
             </div>
             <div class="error-message" id="errorMessage">Access Denied</div>
@@ -1705,16 +1744,23 @@
         ];
 
         function parseImageData(filename) {
+            // Extract title from parentheses
             const titleMatch = filename.match(/\(([^)]+)\)/);
+            // Extract description from square brackets
             const descriptionMatch = filename.match(/\[([^\]]+)\]/);
             
-            const title = titleMatch ? titleMatch[1] : filename.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            // Get base filename without description (but keep everything else)
+            let baseFilename = filename;
+            if (descriptionMatch) {
+                // Remove the description part to get the actual filename
+                baseFilename = filename.substring(0, filename.indexOf('[')) + 
+                               filename.substring(filename.indexOf(']') + 1);
+            }
+            
+            const title = titleMatch ? titleMatch[1] : baseFilename.replace(/\.(jpg|png|gif|jpeg)$/i, '');
             const description = descriptionMatch ? descriptionMatch[1] : null;
             
-            // Clean the filename for the actual image path
-            const cleanFilename = filename.replace(/\[[^\]]+\]/g, '');
-            
-            return { title, description, cleanFilename };
+            return { title, description, cleanFilename: baseFilename };
         }
 
         function initializeGallery() {
@@ -2100,7 +2146,10 @@
             img.src = `Art Gallery/${imageData.cleanFilename}`;
             img.alt = imageData.title;
             
-            img.onerror = function() { this.src = 'Art Folder/placeholder.jpg'; };
+            img.onerror = function() { 
+                console.log('Failed to load:', imageData.cleanFilename);
+                this.src = 'Art Folder/placeholder.jpg'; 
+            };
             
             const info = document.createElement('div');
             info.className = 'gallery-image-info';
@@ -2122,11 +2171,25 @@
             
             const isMobile = window.innerWidth <= 768;
             
-            container.addEventListener('click', (e) => {
+            // Function to handle the click/tap
+            const handleImageClick = (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 centerImage(container);
                 playClickSound();
-            });
+            };
+            
+            // Add both click and touch listeners for mobile compatibility
+            container.addEventListener('click', handleImageClick);
+            
+            if (isMobile) {
+                container.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    centerImage(container);
+                    playClickSound();
+                });
+            }
             
             setTimeout(() => container.classList.add('loaded'), 50);
             
