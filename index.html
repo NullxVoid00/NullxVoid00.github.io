@@ -585,22 +585,11 @@
 
         .gallery-image.centered {
             z-index: 201;
-            transition: none;
-        }
-
-        .gallery-image.centered.fixed {
-            position: fixed !important;
-            left: 50% !important;
-            top: 50% !important;
-            transform: translate(-50%, -50%) scale(2) !important;
             transition: transform 0.3s ease;
+            transform: scale(2);
         }
 
         .gallery-image.centered .gallery-image-info {
-            opacity: 1;
-        }
-
-        .gallery-image.centered.fixed .gallery-image-info {
             opacity: 1;
             bottom: -80px;
             background: rgba(0,0,0,0.95);
@@ -608,8 +597,7 @@
             max-width: 90vw;
         }
 
-        .gallery-image.centered .gallery-image-description,
-        .gallery-image.centered.fixed .gallery-image-description {
+        .gallery-image.centered .gallery-image-description {
             display: block;
         }
 
@@ -856,8 +844,8 @@
                 font-size: 2rem;
             }
 
-            .gallery-image.centered.fixed {
-                transform: translate(-50%, -50%) scale(1.5) !important;
+            .gallery-image.centered {
+                transform: scale(1.5) !important;
             }
 
             .gallery-image-info {
@@ -867,9 +855,6 @@
 
             .gallery-image.centered .gallery-image-info {
                 opacity: 1;
-            }
-
-            .gallery-image.centered.fixed .gallery-image-info {
                 bottom: -100px;
             }
         }
@@ -2015,38 +2000,79 @@
         function centerImage(container) {
             if (galleryState.focusedImage) {
                 galleryState.focusedImage.classList.remove('centered');
-                galleryState.focusedImage.classList.remove('fixed');
             }
             
-            // Show overlay
-            const overlay = document.getElementById('galleryOverlay');
-            overlay.classList.add('active');
+            // Get the image's current position relative to viewport
+            const imgData = galleryState.images.find(img => img.id === container.id);
+            if (!imgData) return;
             
-            // Add centered class to the image
-            container.classList.add('centered');
-            container.classList.add('show-description');
+            const viewport = document.getElementById('galleryViewport');
+            const viewportRect = viewport.getBoundingClientRect();
             
-            // After a frame, add fixed positioning
-            setTimeout(() => {
-                container.classList.add('fixed');
-            }, 0);
+            // Calculate target offset to center this image
+            const targetOffsetX = viewportRect.width / 2 - imgData.x - 150;
+            const targetOffsetY = viewportRect.height / 2 - imgData.y - 150;
             
-            galleryState.focusedImage = container;
+            // Stop any ongoing animation and set panning state
+            galleryState.isPanning = true;
+            if (galleryState.animationId) {
+                cancelAnimationFrame(galleryState.animationId);
+                galleryState.animationId = null;
+            }
             
-            overlay.onclick = closeCenteredImage;
+            // Animate the pan
+            const startOffsetX = galleryState.canvasOffset.x;
+            const startOffsetY = galleryState.canvasOffset.y;
+            const startTime = performance.now();
+            const duration = 600; // milliseconds
+            
+            function animatePan(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (ease-in-out)
+                const easeProgress = progress < 0.5 
+                    ? 2 * progress * progress 
+                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                
+                // Update canvas position
+                galleryState.canvasOffset.x = startOffsetX + (targetOffsetX - startOffsetX) * easeProgress;
+                galleryState.canvasOffset.y = startOffsetY + (targetOffsetY - startOffsetY) * easeProgress;
+                
+                const canvas = document.getElementById('galleryCanvas');
+                canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
+                
+                // Update visible images during pan
+                updateVisibleImages();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animatePan);
+                } else {
+                    // After pan completes, show overlay and scale the image
+                    galleryState.isPanning = false;
+                    const overlay = document.getElementById('galleryOverlay');
+                    overlay.classList.add('active');
+                    
+                    container.classList.add('centered');
+                    container.classList.add('show-description');
+                    
+                    galleryState.focusedImage = container;
+                    
+                    overlay.onclick = closeCenteredImage;
+                    
+                    // Resume gallery animation
+                    if (galleryState.isGalleryActive && !galleryState.animationId) {
+                        updateGalleryView();
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animatePan);
         }
 
         function closeCenteredImage() {
             if (galleryState.focusedImage) {
-                // Find the original image data to restore position
-                const imgData = galleryState.images.find(img => img.id === galleryState.focusedImage.id);
-                if (imgData) {
-                    galleryState.focusedImage.style.left = imgData.x + 'px';
-                    galleryState.focusedImage.style.top = imgData.y + 'px';
-                }
-                
                 galleryState.focusedImage.classList.remove('centered');
-                galleryState.focusedImage.classList.remove('fixed');
                 galleryState.focusedImage.classList.remove('show-description');
                 galleryState.focusedImage.classList.remove('show-title');
                 galleryState.focusedImage = null;
