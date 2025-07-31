@@ -21,7 +21,13 @@
             font-family: 'Press Start 2P', cursive;
             color: #fff;
             transition: filter 2s ease, background-color 2s ease;
+            position: relative;
             overflow-x: hidden;
+        }
+
+        body.frozen {
+            pointer-events: none;
+            overflow: hidden;
         }
 
         body.glitched {
@@ -39,6 +45,8 @@
             margin: 50px auto;
             padding: 20px;
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .title, .subtitle, .section-title, .section-content {
@@ -63,7 +71,14 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
-            transition: background 1s ease;
+            transition: background 1s ease, transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section.glitching {
+            animation: cardGlitch 0.3s infinite;
+            transform: translate(0, 0);
         }
 
         .section-title {
@@ -108,6 +123,15 @@
             100% { transform: translate(-3px, -2px) scale(1.05); }
         }
 
+        @keyframes cardGlitch {
+            0% { transform: translate(0, 0); opacity: 1; }
+            20% { transform: translate(-20px, 15px) rotate(5deg); opacity: 0.7; }
+            40% { transform: translate(30px, -10px) rotate(-3deg); opacity: 0.5; }
+            60% { transform: translate(-15px, 20px) rotate(7deg); opacity: 0.8; }
+            80% { transform: translate(25px, -15px) rotate(-5deg); opacity: 0.6; }
+            100% { transform: translate(0, 0); opacity: 1; }
+        }
+
         .play-button {
             display: inline-block;
             padding: 15px 30px;
@@ -119,6 +143,8 @@
             border-radius: 5px;
             margin-top: 40px;
             transition: background 0.3s ease, transform 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .glitched .play-button {
@@ -145,6 +171,7 @@
             gap: 10px;
             font-family: 'Press Start 2P', cursive;
             color: #fff;
+            z-index: 2;
         }
 
         .glitched .volume-control {
@@ -160,6 +187,35 @@
             width: 100px;
         }
 
+        .static-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('static_texture.png') repeat;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+
+        .glitched .static-overlay {
+            opacity: 0.3;
+            animation: staticFlicker 0.1s infinite;
+        }
+
+        .intense-glitch .static-overlay {
+            opacity: 0.6;
+            animation: staticFlicker 0.05s infinite;
+        }
+
+        @keyframes staticFlicker {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.5; }
+        }
+
         @media (max-width: 600px) {
             .title { font-size: 2rem; }
             .subtitle { font-size: 1.2rem; }
@@ -170,6 +226,7 @@
     </style>
 </head>
 <body>
+    <div class="static-overlay"></div>
     <div class="container">
         <h1 class="title">Dear Mario...</h1>
         <h2 class="subtitle">The Castle Has Changed</h2>
@@ -234,6 +291,8 @@
             const staticSfx = document.getElementById('static-sfx');
             const volumeControl = document.getElementById('volume');
             const twitchElements = document.querySelectorAll('.title, .subtitle, .section-title, .section-content');
+            const sections = document.querySelectorAll('.section');
+            const playButton = document.querySelector('.play-button');
 
             // Set initial volume
             normalBgm.volume = volumeControl.value;
@@ -252,29 +311,52 @@
 
             // Glitch effect after 7 seconds
             setTimeout(() => {
-                // Freeze effect
-                body.style.pointerEvents = 'none';
-                body.style.opacity = '0.8';
+                // Freeze effect for 4 seconds
+                body.classList.add('frozen');
                 staticSfx.play();
 
+                // Start chaotic card glitching
+                sections.forEach(section => {
+                    section.classList.add('glitching');
+                    // Randomize position, rotation, and opacity
+                    const glitchInterval = setInterval(() => {
+                        section.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) rotate(${Math.random() * 20 - 10}deg)`;
+                        section.style.opacity = Math.random() * 0.5 + 0.5;
+                    }, 100);
+                    
+                    // Stop chaotic glitching after 7 seconds (4s freeze + 3s intense glitch)
+                    setTimeout(() => {
+                        clearInterval(glitchInterval);
+                        section.classList.remove('glitching');
+                        section.style.transform = 'none';
+                        section.style.opacity = '1';
+                    }, 7000);
+                });
+
+                // Intense glitch effect for 3 seconds after 4-second freeze
                 setTimeout(() => {
-                    // Apply glitched state
+                    body.classList.add('glitched', 'intense-glitch');
+                    normalBgm.pause();
+                    creepyBgm.play();
+                }, 4000);
+
+                // Remove intense glitch and frozen state, apply final glitched state
+                setTimeout(() => {
+                    body.classList.remove('frozen', 'intense-glitch');
                     body.classList.add('glitched');
                     body.style.pointerEvents = 'auto';
                     body.style.opacity = '1';
-                    normalBgm.pause();
-                    creepyBgm.play();
 
                     // Add twitch effect to elements
                     twitchElements.forEach(el => {
                         el.classList.add('twitch');
-                        // Randomize twitch timing to avoid uniformity
+                        // Randomize twitch timing
                         setInterval(() => {
                             el.classList.remove('twitch');
                             setTimeout(() => el.classList.add('twitch'), Math.random() * 2000 + 1000);
                         }, Math.random() * 5000 + 3000);
                     });
-                }, 2000); // Freeze for 2 seconds
+                }, 7000); // 4s freeze + 3s intense glitch
             }, 7000);
 
             // Progressive corrosion effect
