@@ -32,10 +32,12 @@
 
         body.glitched {
             background-color: #111;
+            background-image: url('Art Folder/DMbg2.jpg');
         }
 
         body.corroded {
             background-color: #000;
+            background-image: url('Art Folder/DMbg2.jpg');
         }
 
         .grey-overlay {
@@ -251,6 +253,25 @@
             100% { opacity: 0.6; }
         }
 
+        .background-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('Art Folder/DMbg2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 0;
+        }
+
+        .glitched .background-transition {
+            opacity: 1;
+        }
+
         @media (max-width: 600px) {
             .title { font-size: 2rem; }
             .glitched .title { font-size: 2.2rem; }
@@ -265,6 +286,7 @@
     </style>
 </head>
 <body>
+    <div class="background-transition"></div>
     <div class="grey-overlay"></div>
     <div class="static-overlay"></div>
     <div class="container">
