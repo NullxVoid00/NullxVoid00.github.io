@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abyssal Light Games</title>
     <style>
-        /* All CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -1061,14 +1060,14 @@
                 },
                 {
                     title: "Milo's Quest",
-                    description: "Platformer: A boy escapes a monster while on the way to give a gift to his mother.",
+                    description: "Platformer: A boy escapes his monstrous father to honor his mother.",
                     image: "Art Folder/GameProject6.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Enclave 447",
-                    description: "Adventure Game: Friends reunite in a strange town after a tragedy occurs, uniting them again to watch a meteorological event.",
+                    description: "Adventure Game: Friends reunite in a strange town after a tragedy.",
                     image: "Art Folder/GameProject7.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1431,7 +1430,7 @@
             
             // Ensure at least 2 images in viewport by adjusting spawn density
             const viewportRect = viewport.getBoundingClientRect();
-            const imagesPerViewport = 2; // Minimum number of images
+            const imagesPerViewport = 2;
             const viewportArea = viewportRect.width * viewportRect.height;
             const imageArea = imageSize * imageSize;
             const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
@@ -1599,7 +1598,6 @@
             const buffer = 400;
             const minVisibleImages = 2;
             
-            // Count currently visible images
             let visibleCount = 0;
             const visibleImages = [];
             
@@ -1619,7 +1617,6 @@
                     visibleImages.push(imgData);
                 }
                 
-                // Load image if visible and not loaded
                 if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
                     const imgElement = createGalleryImage(imgData);
                     document.getElementById('galleryCanvas').appendChild(imgElement);
@@ -1635,7 +1632,6 @@
                 }
             });
             
-            // If fewer than 2 images are visible, spawn additional ones
             if (visibleCount < minVisibleImages) {
                 const imagesToAdd = minVisibleImages - visibleCount;
                 const imageSize = 300;
@@ -1646,7 +1642,6 @@
                     let position;
                     let attempts = 0;
                     
-                    // Try to place new image within viewport
                     do {
                         const viewportX = Math.random() * viewportRect.width;
                         const viewportY = Math.random() * viewportRect.height;
@@ -1679,7 +1674,6 @@
             const buffer = 400;
             const minVisibleImages = 2;
             
-            // Load initially visible images
             let visibleCount = 0;
             const visibleImages = [];
             
@@ -1705,7 +1699,6 @@
                 }
             });
             
-            // Ensure at least 2 images are loaded
             if (visibleCount < minVisibleImages) {
                 const imagesToAdd = minVisibleImages - visibleCount;
                 const imageSize = 300;
@@ -1760,11 +1753,16 @@
             const img = document.createElement('img');
             img.src = `Art Gallery/${imgData.image}`;
             img.alt = imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            
+            // Extract text within parentheses for the title, or fallback to filename without extension
+            const titleMatch = imgData.image.match(/\(.*?\)/);
+            const titleText = titleMatch ? titleMatch[0].slice(1, -1) : imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            
             img.onerror = function() { this.src = 'Art Folder/placeholder.jpg'; };
             
             const title = document.createElement('div');
             title.className = 'gallery-image-title';
-            title.textContent = `"${img.alt}"`;
+            title.textContent = `"${titleText}"`;
             
             container.appendChild(img);
             container.appendChild(title);
