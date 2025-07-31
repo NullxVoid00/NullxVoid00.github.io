@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dear Mario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url('Art Folder/DMbg1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Press Start 2P', cursive;
+            color: #fff;
+            transition: filter 2s ease, background-color 2s ease;
+            overflow-x: hidden;
+        }
+
+        body.glitched {
+            filter: grayscale(100%) brightness(0.7);
+            background-color: #111;
+        }
+
+        body.corroded {
+            filter: grayscale(100%) brightness(0.5) contrast(1.2);
+            background-color: #000;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .title, .subtitle, .section-title, .section-content {
+            transition: font-family 1s ease, transform 0.1s ease;
+        }
+
+        .title {
+            font-size: 3rem;
+            color: #ff4444;
+            text-shadow: 2px 2px #000;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            transition: background 1s ease;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #fff;
+        }
+
+        .glitched .title, .glitched .subtitle, .glitched .section-title, .glitched .section-content {
+            font-family: 'Creepster', cursive;
+            color: #ccc;
+            text-shadow: 1px 1px #f00;
+        }
+
+        .glitched .section {
+            background: rgba(20, 20, 20, 0.8);
+        }
+
+        .twitch {
+            animation: twitch 0.1s infinite alternate;
+        }
+
+        .twitch:hover {
+            animation: twitch-hover 0.2s infinite alternate;
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        @keyframes twitch {
+            0% { transform: translate(2px, 1px); }
+            100% { transform: translate(-2px, -1px); }
+        }
+
+        @keyframes twitch-hover {
+            0% { transform: translate(3px, 2px) scale(1.05); }
+            100% { transform: translate(-3px, -2px) scale(1.05); }
+        }
+
+        .play-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #ff4444;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 40px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .glitched .play-button {
+            font-family: 'Creepster', cursive;
+            background: #333;
+            color: #f00;
+        }
+
+        .play-button:hover {
+            background: #ffd700;
+            transform: scale(1.1);
+        }
+
+        .glitched .play-button:hover {
+            background: #600;
+        }
+
+        .volume-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Press Start 2P', cursive;
+            color: #fff;
+        }
+
+        .glitched .volume-control {
+            font-family: 'Creepster', cursive;
+            color: #ccc;
+        }
+
+        .volume-control label {
+            font-size: 0.9rem;
+        }
+
+        .volume-control input {
+            width: 100px;
+        }
+
+        @media (max-width: 600px) {
+            .title { font-size: 2rem; }
+            .subtitle { font-size: 1.2rem; }
+            .section-title { font-size: 1.4rem; }
+            .section-content { font-size: 0.9rem; }
+            .play-button { font-size: 1rem; padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Dear Mario...</h1>
+        <h2 class="subtitle">The Castle Has Changed</h2>
+        
+        <section class="section">
+            <h3 class="section-title">Welcome to the Castle</h3>
+            <p class="section-content">
+                Step into a warped version of Peach's Castle from Super Mario 64, now a haunting, monochrome nightmare. As "Mar," a distorted Mario, you must collect 5 Bleached Stars to uncover the castle's dark secrets. Traverse eerie halls, solve puzzles, and face twisted versions of familiar characters in this VRChat horror experience.
+            </p>
+        </section>
+
+        <section class="section">
+            <h3 class="section-title">Game Features</h3>
+            <p class="section-content">
+                <strong>Camera Gimmick:</strong> Use the VRChat camera to reveal hidden objects, events, and secrets, adding depth to exploration and puzzles.<br>
+                <strong>Light Platforming & Puzzles:</strong> Navigate with wall-jumping and running to collect Bleached Stars, combined with clever camera-based puzzles.<br>
+                <strong>Eldritch Atmosphere:</strong> A black-and-white world with fog, distorted architecture, unsettling paintings, and ambient whispers creates a liminal horror vibe.
+            </p>
+        </section>
+
+        <section class="section">
+            <h3 class="section-title">Characters</h3>
+            <p class="section-content">
+                <strong>Mar:</strong> A shadowed, gaunt Mario with glowing red eyes, determined to save the castle.<br>
+                <strong>Twisted Peach:</strong> A static-coated, distorted figure lurking in the camera's view.<br>
+                <strong>Last Lakitu Brother:</strong> An unseen guide leaving cryptic hints to aid your journey.<br>
+                <strong>Eyeboo:</strong> One-eyed Boos roaming the halls, blending eerie enemies into a new threat.<br>
+                <strong>Mystiq:</strong> A lost character from a corrupted mod, helping Mar through messages.
+            </p>
+        </section>
+
+        <section class="section">
+            <h3 class="section-title">The Corruption</h3>
+            <p class="section-content">
+                A modded Super Mario 64, intended as a full game conversion, was abandoned after file corruption. This unleashed a dark force, twisting the castle and its residents into a broken, eldritch world. Can you restore order, or will the castle claim you too?
+            </p>
+        </section>
+
+        <a href="play.html" class="play-button">Play Now</a>
+    </div>
+
+    <div class="volume-control">
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
+    <audio id="normal-bgm" loop>
+        <source src="normal_bgm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="creepy-bgm" loop>
+        <source src="creepy_bgm.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="static-sfx">
+        <source src="static_sfx.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const normalBgm = document.getElementById('normal-bgm');
+            const creepyBgm = document.getElementById('creepy-bgm');
+            const staticSfx = document.getElementById('static-sfx');
+            const volumeControl = document.getElementById('volume');
+            const twitchElements = document.querySelectorAll('.title, .subtitle, .section-title, .section-content');
+
+            // Set initial volume
+            normalBgm.volume = volumeControl.value;
+            creepyBgm.volume = volumeControl.value;
+            staticSfx.volume = volumeControl.value;
+
+            // Play normal background music
+            normalBgm.play();
+
+            // Volume control
+            volumeControl.addEventListener('input', () => {
+                normalBgm.volume = volumeControl.value;
+                creepyBgm.volume = volumeControl.value;
+                staticSfx.volume = volumeControl.value;
+            });
+
+            // Glitch effect after 7 seconds
+            setTimeout(() => {
+                // Freeze effect
+                body.style.pointerEvents = 'none';
+                body.style.opacity = '0.8';
+                staticSfx.play();
+
+                setTimeout(() => {
+                    // Apply glitched state
+                    body.classList.add('glitched');
+                    body.style.pointerEvents = 'auto';
+                    body.style.opacity = '1';
+                    normalBgm.pause();
+                    creepyBgm.play();
+
+                    // Add twitch effect to elements
+                    twitchElements.forEach(el => {
+                        el.classList.add('twitch');
+                        // Randomize twitch timing to avoid uniformity
+                        setInterval(() => {
+                            el.classList.remove('twitch');
+                            setTimeout(() => el.classList.add('twitch'), Math.random() * 2000 + 1000);
+                        }, Math.random() * 5000 + 3000);
+                    });
+                }, 2000); // Freeze for 2 seconds
+            }, 7000);
+
+            // Progressive corrosion effect
+            setTimeout(() => {
+                body.classList.add('corroded');
+                setInterval(() => {
+                    // Simulate bit-crushing by flickering opacity
+                    body.style.opacity = Math.random() * 0.2 + 0.8;
+                    setTimeout(() => body.style.opacity = '1', 100);
+                }, 5000); // Flicker every 5 seconds
+            }, 15000); // Start corrosion after 15 seconds
+
+            // Mouse interaction: subtle jitter on hover
+            twitchElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    el.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                });
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
