@@ -5,791 +5,841 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abyssal Light Games</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        :root {
-            --primary-black: #0a0a0a;
-            --primary-white: #f0f0f0;
-            --accent-red: #dc143c;
-            --accent-blue: #4169e1;
-            --accent-pink: #ff69b4;
-            --accent-green: #32cd32;
-            --accent-purple: #9370db;
-            --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
+    :root {
+        --primary-black: #0a0a0a;
+        --primary-white: #f0f0f0;
+        --accent-red: #dc143c;
+        --accent-blue: #4169e1;
+        --accent-pink: #ff69b4;
+        --accent-green: #32cd32;
+        --accent-purple: #9370db;
+        --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    }
 
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--primary-black);
+        color: var(--primary-white);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            repeating-linear-gradient(
+                0deg,
+                rgba(255,255,255,0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(255,255,255,0.03) 3px
+            );
+        pointer-events: none;
+        z-index: 1;
+        animation: staticNoise 8s steps(10) infinite;
+    }
+
+    @keyframes staticNoise {
+        0%, 100% { transform: translate(0, 0); }
+        10% { transform: translate(-1%, -1%); }
+        20% { transform: translate(1%, 1%); }
+        30% { transform: translate(-1%, 1%); }
+        40% { transform: translate(1%, -1%); }
+        50% { transform: translate(-1%, 0); }
+        60% { transform: translate(1%, 0); }
+        70% { transform: translate(0, -1%); }
+        80% { transform: translate(0, 1%); }
+        90% { transform: translate(1%, 1%); }
+    }
+
+    @keyframes glitch {
+        0%, 100% { 
+            text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
+            transform: translate(0);
+        }
+        20% { 
+            text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
+            transform: translate(-2px, 2px);
+        }
+        40% { 
+            text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
+            transform: translate(-2px, -2px);
+        }
+        60% { 
+            text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
+            transform: translate(2px, 2px);
+        }
+        80% { 
+            text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
+            transform: translate(2px, -2px);
+        }
+    }
+
+    @keyframes shake {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(-5px, 0); }
+        50% { transform: translate(5px, 0); }
+        75% { transform: translate(-5px, 0); }
+        100% { transform: translate(0, 0); }
+    }
+
+    .password-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .password-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .password-container {
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .password-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .password-container h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin-bottom: 2rem;
+        letter-spacing: 0.2em;
+        animation: glitch 2s infinite;
+    }
+
+    .password-input {
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.2);
+        color: var(--primary-white);
+        padding: 1rem 3rem 1rem 2rem;
+        font-size: 1.2rem;
+        text-align: center;
+        border-radius: 5px;
+        outline: none;
+        transition: all 0.3s ease;
+        letter-spacing: 0.1em;
+        width: 100%;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--primary-white);
+        cursor: pointer;
+        padding: 5px;
+        font-size: 1rem;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        opacity: 1;
+    }
+
+    .password-input:focus {
+        border-color: var(--accent-red);
+        box-shadow: 0 0 20px rgba(220,20,60,0.3);
+    }
+
+    @keyframes typing-glow {
+        0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+        50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
+        100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+    }
+
+    .password-input.typing {
+        animation: typing-glow 0.5s ease;
+    }
+
+    .error-message {
+        color: var(--accent-red);
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .error-message.show {
+        opacity: 1;
+    }
+
+    .main-hub {
+        display: none;
+        min-height: 100vh;
+        background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+        position: relative;
+        z-index: 2;
+    }
+
+    .main-hub.active {
+        display: block;
+    }
+
+    .hub-header {
+        text-align: center;
+        padding: 4rem 2rem 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes floatLogo {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .hub-logo {
+        max-width: 400px;
+        width: 100%;
+        height: auto;
+        margin-bottom: 1rem;
+        animation: floatLogo 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 20px rgba(220,20,60,0.5)) 
+                drop-shadow(0 0 40px rgba(220,20,60,0.3));
+        position: relative;
+        z-index: 2;
+    }
+
+    .hub-header p {
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+
+    .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .nav-section {
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .nav-section:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-red);
+        box-shadow: 0 10px 30px rgba(220,20,60,0.3);
+    }
+
+    .nav-section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: var(--accent-red);
+        letter-spacing: 0.1em;
+    }
+
+    .nav-section p {
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+        display: none;
+        z-index: 1000;
+        overflow: hidden;
+        transition: background 0.3s ease;
+    }
+
+    .section-view.active {
+        display: flex;
+        flex-direction: column;
+        animation: expandIn 0.5s ease-out;
+    }
+
+    .section-view.dimmed {
+        background: radial-gradient(circle at center, rgba(220,20,60,0.03) 0%, rgba(0,0,0,0.95) 100%);
+    }
+
+    @keyframes expandIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .section-header {
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .section-header h2 {
+        font-size: 3rem;
+        color: var(--accent-red);
+        margin-bottom: 1rem;
+        animation: glitch 3s infinite;
+    }
+
+    .carousel-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 2rem;
+        perspective: 1200px;
+        min-height: 600px;
+    }
+
+    .carousel {
+        display: flex;
+        align-items: center;
+        height: 500px;
+        position: relative;
+        transform-style: preserve-3d;
+        width: 100%;
+        max-width: 1400px;
+    }
+
+    .project-card {
+        position: absolute;
+        width: 300px;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        transform-origin: center;
+        will-change: transform, opacity, height;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .project-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+
+    .project-card-content {
+        padding: 1.5rem;
+    }
+
+    .project-card h3 {
+        font-size: 1.5rem;
+        color: var(--accent-red);
+        margin-bottom: 1rem;
+    }
+
+    .project-card p {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .progress-bar {
+        margin-top: 1rem;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: var(--accent-green);
+        transition: width 0.3s ease;
+    }
+
+    .progress-bar-label {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        color: var(--primary-white);
+        opacity: 0.8;
+    }
+
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        color: var(--primary-white);
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        line-height: 40px;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+        z-index: 10;
+        text-align: center;
+    }
+
+    .carousel-nav:hover {
+        background: rgba(220,20,60,0.2);
+        border-color: var(--accent-red);
+    }
+
+    .carousel-nav.prev {
+        left: 2rem;
+    }
+
+    .carousel-nav.next {
+        right: 2rem;
+    }
+
+    .gallery-viewport {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 120px);
+        overflow: hidden;
+        cursor: move;
+        user-select: none;
+    }
+
+    .gallery-canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform-origin: center center;
+        transition: transform 0.3s ease-out;
+    }
+
+    .gallery-arrow {
+        position: absolute;
+        color: var(--accent-red);
+        font-size: 3rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        text-shadow: 0 0 20px rgba(220,20,60,0.8);
+        z-index: 10;
+    }
+
+    .gallery-arrow.active {
+        opacity: 0.8;
+    }
+
+    .gallery-arrow.top {
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .gallery-arrow.bottom {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+    }
+
+    .gallery-arrow.left {
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+    }
+
+    .gallery-arrow.right {
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg);
+    }
+
+    .gallery-image {
+        position: absolute;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    .gallery-image.loaded {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .gallery-image img {
+        max-width: 300px;
+        max-height: 300px;
+        width: auto;
+        height: auto;
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        display: block;
+    }
+
+    .gallery-image:hover {
+        transform: scale(1.1);
+        z-index: 10;
+    }
+
+    .gallery-image:hover img {
+        box-shadow: 0 0 30px rgba(220,20,60,0.6);
+        border-color: var(--accent-red);
+    }
+
+    .gallery-image.focused {
+        transform: scale(1.5);
+        z-index: 1000;
+        pointer-events: none;
+    }
+
+    .gallery-image.focused img {
+        box-shadow: 0 0 50px rgba(220,20,60,0.8);
+        border-color: var(--accent-red);
+        max-width: 350px;
+        max-height: 350px;
+    }
+
+    .gallery-image-title {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        padding: 5px 15px;
+        border-radius: 5px;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .gallery-image:hover .gallery-image-title {
+        opacity: 1;
+    }
+
+    .gallery-image.focused .gallery-image-title {
+        opacity: 1;
+    }
+
+    .gallery-image-description {
+        position: absolute;
+        bottom: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        padding: 5px 15px;
+        border-radius: 5px;
+        color: var(--accent-red);
+        font-size: 0.8rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        max-width: 300px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .gallery-image.focused .gallery-image-description {
+        opacity: 1;
+    }
+
+    .about-section {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-section.hidden {
+        display: none;
+    }
+
+    .profile-header {
+        margin-bottom: 2rem;
+    }
+
+    .profile-pic {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 3px solid var(--accent-red);
+        margin-bottom: 2rem;
+        object-fit: cover;
+        filter: drop-shadow(0 0 20px rgba(220,20,60,0.3));
+    }
+
+    .bio-text p {
+        margin-bottom: 1rem;
+    }
+
+    .bio-text p:last-child {
+        margin-bottom: 2rem;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .social-link {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--primary-white);
+        transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+        border-color: var(--accent-red);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220,20,60,0.3);
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .red-shard {
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        margin: 2rem auto;
+        animation: float 3s ease-in-out infinite;
+        box-shadow: 0 0 50px var(--accent-red);
+        cursor: pointer;
+        transition: transform 0.1s ease;
+    }
+
+    .red-shard.shake {
+        animation: shake 0.3s ease;
+    }
+
+    .back-button {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        padding: 0.8rem 1.5rem;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.2);
+        color: var(--primary-white);
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        z-index: 100;
+    }
+
+    .back-button:hover {
+        border-color: var(--accent-red);
+        animation: glitch 0.3s;
+    }
+
+    .back-button.hidden {
+        display: none;
+    }
+
+    .volume-control {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .volume-control label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .volume-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100px;
+        height: 5px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 5px;
+        outline: none;
+        transition: background 0.3s ease;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        background: var(--accent-red);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(220,20,60,0.5);
+    }
+
+    .volume-slider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        background: var(--accent-red);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(220,20,60,0.5);
+    }
+
+    .volume-slider:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+    @media (max-width: 768px) {
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--primary-black);
-            color: var(--primary-white);
-            line-height: 1.6;
             overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(255,255,255,0.03) 0px,
-                    transparent 1px,
-                    transparent 2px,
-                    rgba(255,255,255,0.03) 3px
-                );
-            pointer-events: none;
-            z-index: 1;
-            animation: staticNoise 8s steps(10) infinite;
-        }
-
-        @keyframes staticNoise {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-1%, -1%); }
-            20% { transform: translate(1%, 1%); }
-            30% { transform: translate(-1%, 1%); }
-            40% { transform: translate(1%, -1%); }
-            50% { transform: translate(-1%, 0); }
-            60% { transform: translate(1%, 0); }
-            70% { transform: translate(0, -1%); }
-            80% { transform: translate(0, 1%); }
-            90% { transform: translate(1%, 1%); }
-        }
-
-        @keyframes glitch {
-            0%, 100% { 
-                text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
-                transform: translate(0);
-            }
-            20% { 
-                text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
-                transform: translate(-2px, 2px);
-            }
-            40% { 
-                text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
-                transform: translate(-2px, -2px);
-            }
-            60% { 
-                text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
-                transform: translate(2px, 2px);
-            }
-            80% { 
-                text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
-                transform: translate(2px, -2px);
-            }
-        }
-
-        @keyframes shake {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-            100% { transform: translate(0, 0); }
-        }
-
-        .password-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .password-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .password-container {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .password-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .password-container h1 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 2rem;
-            letter-spacing: 0.2em;
-            animation: glitch 2s infinite;
-        }
-
-        .password-input {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
-            padding: 1rem 3rem 1rem 2rem;
-            font-size: 1.2rem;
-            text-align: center;
-            border-radius: 5px;
-            outline: none;
-            transition: all 0.3s ease;
-            letter-spacing: 0.1em;
-            width: 100%;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--primary-white);
-            cursor: pointer;
-            padding: 5px;
-            font-size: 1rem;
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-        }
-
-        .password-toggle:hover {
-            opacity: 1;
-        }
-
-        .password-input:focus {
-            border-color: var(--accent-red);
-            box-shadow: 0 0 20px rgba(220,20,60,0.3);
-        }
-
-        @keyframes typing-glow {
-            0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-            50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
-            100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-        }
-
-        .password-input.typing {
-            animation: typing-glow 0.5s ease;
-        }
-
-        .error-message {
-            color: var(--accent-red);
-            margin-top: 1rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .error-message.show {
-            opacity: 1;
-        }
-
-        .main-hub {
-            display: none;
-            min-height: 100vh;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
-            position: relative;
-            z-index: 2;
-        }
-
-        .main-hub.active {
-            display: block;
-        }
-
-        .hub-header {
-            text-align: center;
-            padding: 4rem 2rem 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .hub-logo {
-            max-width: 400px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-            animation: floatLogo 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(220,20,60,0.5)) 
-                    drop-shadow(0 0 40px rgba(220,20,60,0.3));
-            position: relative;
-            z-index: 2;
-        }
-
-        .hub-header p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .nav-section {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-section:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-red);
-            box-shadow: 0 10px 30px rgba(220,20,60,0.3);
-        }
-
-        .nav-section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: var(--accent-red);
-            letter-spacing: 0.1em;
-        }
-
-        .nav-section p {
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
         }
 
         .section-view {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: hidden;
         }
 
-        .section-view.active {
-            display: flex;
+        .nav-grid {
+            grid-template-columns: 1fr;
+            padding: 0 1rem;
+        }
+
+        .hub-logo {
+            max-width: 250px;
+        }
+
+        .social-links {
             flex-direction: column;
-            animation: expandIn 0.5s ease-out;
+            align-items: center;
         }
 
-        @keyframes expandIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
         }
 
-        .section-header {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
+        .volume-control {
+            bottom: 0.5rem;
+            right: 0.5rem;
         }
 
-        .section-header h2 {
-            font-size: 3rem;
-            color: var(--accent-red);
-            margin-bottom: 1rem;
-            animation: glitch 3s infinite;
+        .volume-slider {
+            width: 80px;
         }
 
         .carousel-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 2rem;
-            perspective: 1200px;
-            min-height: 600px;
+            perspective: none;
+            padding: 1rem;
+            min-height: 500px;
         }
 
         .carousel {
-            display: flex;
-            align-items: center;
-            height: 500px;
-            position: relative;
-            transform-style: preserve-3d;
-            width: 100%;
-            max-width: 1400px;
+            height: 420px;
+            transform-style: flat;
         }
 
         .project-card {
-            position: absolute;
-            width: 300px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            transform-origin: center;
-            will-change: transform, opacity, height;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+            width: 280px;
         }
 
         .project-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .project-card-content {
-            padding: 1.5rem;
-        }
-
-        .project-card h3 {
-            font-size: 1.5rem;
-            color: var(--accent-red);
-            margin-bottom: 1rem;
-        }
-
-        .project-card p {
-            opacity: 0.8;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .progress-bar {
-            margin-top: 1rem;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--accent-green);
-            transition: width 0.3s ease;
-        }
-
-        .progress-bar-label {
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            color: var(--primary-white);
-            opacity: 0.8;
+            height: 180px;
         }
 
         .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
             width: 40px;
             height: 40px;
             padding: 0;
             line-height: 40px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-            text-align: center;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(220,20,60,0.2);
-            border-color: var(--accent-red);
+            font-size: 1.2rem;
         }
 
         .carousel-nav.prev {
-            left: 2rem;
+            left: 0.5rem;
         }
 
         .carousel-nav.next {
-            right: 2rem;
+            right: 0.5rem;
         }
 
-        .gallery-viewport {
-            position: relative;
-            width: 100%;
-            height: calc(100vh - 120px);
-            overflow: hidden;
-            cursor: move;
+        .section-header {
+            padding: 1.5rem 1rem;
         }
 
-        .gallery-canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-origin: center center;
-            transition: transform 0.1s ease-out;
-        }
-
-        .gallery-arrow {
-            position: absolute;
-            color: var(--accent-red);
-            font-size: 3rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            text-shadow: 0 0 20px rgba(220,20,60,0.8);
-            z-index: 10;
-        }
-
-        .gallery-arrow.active {
-            opacity: 0.8;
-        }
-
-        .gallery-arrow.top {
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .gallery-arrow.bottom {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) rotate(180deg);
-        }
-
-        .gallery-arrow.left {
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .gallery-arrow.right {
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%) rotate(90deg);
-        }
-
-        .gallery-image {
-            position: absolute;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        .gallery-image.loaded {
-            opacity: 1;
-            transform: scale(1);
+        .section-header h2 {
+            font-size: 2rem;
         }
 
         .gallery-image img {
-            max-width: 300px;
-            max-height: 300px;
-            width: auto;
-            height: auto;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            display: block;
-        }
-
-        .gallery-image:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-
-        .gallery-image:hover img {
-            box-shadow: 0 0 30px rgba(220,20,60,0.6);
-            border-color: var(--accent-red);
-        }
-
-        .gallery-image.focused {
-            transform: scale(1.3);
-            z-index: 100;
+            max-width: 200px;
+            max-height: 200px;
         }
 
         .gallery-image.focused img {
-            box-shadow: 0 0 50px rgba(220,20,60,0.8);
-            border-color: var(--accent-red);
+            max-width: 250px;
+            max-height: 250px;
+        }
+
+        .gallery-arrow {
+            font-size: 2rem;
         }
 
         .gallery-image-title {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            padding: 5px 15px;
-            border-radius: 5px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-size: 0.9rem;
-            pointer-events: none;
+            font-size: 0.8rem;
+            bottom: -25px;
         }
 
-        .gallery-image:hover .gallery-image-title,
-        .gallery-image.focused .gallery-image-title {
-            opacity: 1;
+        .gallery-image-description {
+            font-size: 0.7rem;
+            bottom: -50px;
+            max-width: 200px;
         }
-
-        .about-section {
-            max-width: 800px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .about-section.hidden {
-            display: none;
-        }
-
-        .profile-header {
-            margin-bottom: 2rem;
-        }
-
-        .profile-pic {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 3px solid var(--accent-red);
-            margin-bottom: 2rem;
-            object-fit: cover;
-            filter: drop-shadow(0 0 20px rgba(220,20,60,0.3));
-        }
-
-        .bio-text p {
-            margin-bottom: 1rem;
-        }
-
-        .bio-text p:last-child {
-            margin-bottom: 2rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .social-link {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 5px;
-            text-decoration: none;
-            color: var(--primary-white);
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            border-color: var(--accent-red);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220,20,60,0.3);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .red-shard {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            margin: 2rem auto;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 0 50px var(--accent-red);
-            cursor: pointer;
-            transition: transform 0.1s ease;
-        }
-
-        .red-shard.shake {
-            animation: shake 0.3s ease;
-        }
-
-        .back-button {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .back-button:hover {
-            border-color: var(--accent-red);
-            animation: glitch 0.3s;
-        }
-
-        .back-button.hidden {
-            display: none;
-        }
-
-        .volume-control {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .volume-control label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100px;
-            height: 5px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            outline: none;
-            transition: background 0.3s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 15px;
-            height: 15px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(220,20,60,0.5);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 15px;
-            height: 15px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(220,20,60,0.5);
-        }
-
-        .volume-slider:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden;
-            }
-
-            .section-view {
-                overflow-x: hidden;
-                overflow-y: hidden;
-            }
-
-            .nav-grid {
-                grid-template-columns: 1fr;
-                padding: 0 1rem;
-            }
-
-            .hub-logo {
-                max-width: 250px;
-            }
-
-            .social-links {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .profile-pic {
-                width: 150px;
-                height: 150px;
-            }
-
-            .volume-control {
-                bottom: 0.5rem;
-                right: 0.5rem;
-            }
-
-            .volume-slider {
-                width: 80px;
-            }
-
-            .carousel-container {
-                perspective: none;
-                padding: 1rem;
-                min-height: 500px;
-            }
-
-            .carousel {
-                height: 420px;
-                transform-style: flat;
-            }
-
-            .project-card {
-                width: 280px;
-            }
-
-            .project-card img {
-                height: 180px;
-            }
-
-            .carousel-nav {
-                width: 40px;
-                height: 40px;
-                padding: 0;
-                line-height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .carousel-nav.prev {
-                left: 0.5rem;
-            }
-
-            .carousel-nav.next {
-                right: 0.5rem;
-            }
-
-            .section-header {
-                padding: 1.5rem 1rem;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .gallery-image img {
-                max-width: 200px;
-                max-height: 200px;
-            }
-
-            .gallery-arrow {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="password-screen" id="passwordScreen">
@@ -1030,49 +1080,49 @@
             games: [
                 {
                     title: "Caine & Cin",
-                    description: "Indie RPG: A Boy Turned Demon and a Fallen Angel descend into The Afterlife to defeat the God who cursed their fates.",
+                    description: "Indie RPG following Caine, a boy cursed into a demon, and Cin, a fallen angel, as they descend into The Afterlife to confront the God who damned them.",
                     image: "Art Folder/GameProject2.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Ego/Dive",
-                    description: "Indie RPG: Fragments of a Comatose Person's Personality band together to fix their host's mind and Awaken them while traversing a subconscious world known as Absentia.",
+                    description: "Indie RPG where fragmented personalities of a comatose person unite in the surreal world of Absentia to mend their fractured mind.",
                     image: "Art Folder/GameProject1.jpg",
                     link: "ego-dive.html",
                     progress: "Concept"
                 },
                 {
                     title: "Axiom of Infinity",
-                    description: "JRPG-Fighting Game: Dimension Hoppers stop a reality-threatening Calamity.",
+                    description: "JRPG-Fighting Game hybrid where Cliff, Amber, and dimension-hopping allies battle to halt a universe-threatening Calamity.",
                     image: "Art Folder/GameProject4.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Phantom Echoes",
-                    description: "Horror Platformer: A Red Fox navigates a Nightmare Dreamscape for peace.",
+                    description: "Horror Platformer where Alex, a red fox, traverses a nightmarish dreamscape to find peace amidst haunting challenges.",
                     image: "Art Folder/GameProject5.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Milo's Quest",
-                    description: "Platformer: A boy escapes his monstrous father to honor his mother.",
+                    description: "Platformer following Milo, a boy escaping his monstrous father to deliver flowers to his mother’s grave in a perilous journey.",
                     image: "Art Folder/GameProject6.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Enclave 447",
-                    description: "Adventure Game: Friends reunite in a strange town after a tragedy.",
+                    description: "Adventure Game where Will and friends reunite after a tragedy in a strange town to witness a rare astrological event.",
                     image: "Art Folder/GameProject7.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Go! Ko! Go! Kart Racer DX",
-                    description: "Kart Racing Visual Novel Murder Mystery Horror Game: Demon girl racer Ko competes in the 'GO! GO! Grand Prix', but contestants keep disappearing during races. As bodies surface, Ko must balance racing while investigating the twisted killer potentially targeting her next.",
+                    description: "Kart Racing Visual Novel Horror where demon girl Ko competes in the Grand Prix while investigating a killer targeting racers.",
                     image: "Art Folder/GameProject3.jpg",
                     link: "GO-KO-GO.html",
                     progress: "Concept"
@@ -1081,84 +1131,84 @@
             vrchat: [
                 {
                     title: "Dear Mario",
-                    description: "Mario-themed VRChat Horror: Find Bleached Stars in a warped castle.",
+                    description: "VRChat Horror where Mario, distorted as 'Mar,' hunts for 5 Bleached Stars in a monochrome, twisted castle.",
                     image: "Art Folder/VRCProject5.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Escape Unit",
-                    description: "Asymmetric VRChat Horror: Navigate haunted sites against unique monsters.",
+                    description: "Asymmetric VRChat Horror where players navigate haunted locations against unique monsters, guided by control room allies.",
                     image: "Art Folder/VRCProject6.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Tales of VRtallis",
-                    description: "VR JRPG: Warriors host gods to fight corruption in turn-based combat.",
+                    description: "VR JRPG where four warriors, hosting gods, battle corruption through turn-based combat and exploration.",
                     image: "Art Folder/VRCProject7.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Maverick Force X",
-                    description: "Mega Man X-style VRChat: Battle viral androids and bosses.",
+                    description: "Mega Man X-style VRChat game where players battle viral androids, gain boss abilities, and uncover a shadowy conspiracy.",
                     image: "Art Folder/VRCProject8.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "The AIEOS Phenomenon",
-                    description: "VR Horror RPG: Survivors hunt a signal in a dystopian world.",
+                    description: "VR Horror RPG where survivors hunt a mysterious signal in a dystopian world, wielding AI-powered nano-tech.",
                     image: "Art Folder/VRCProject9.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Tsukiō Koromashi (Moon King: Roll it Up!)",
-                    description: "VR Katamari Game: Roll clutter to create planets for the Moon King.",
+                    description: "VR Katamari-inspired game where players roll clutter to form planets for the Moon King’s galactic empire.",
                     image: "Art Folder/VRCProject10.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "End with You",
-                    description: "VRChat Experience: Players have 30 minutes before an apocalypse to interact with NPCs in a doomed town, completing final requests or offering comfort, with a journal tracking routines across restarts.",
+                    description: "VRChat Experience where players have 30 minutes before an apocalypse to interact with NPCs, fulfill requests, or offer comfort, with a journal tracking routines.",
                     image: "Art Folder/VRCProject1.jpg",
                     link: "end-with-you.html",
                     progress: { status: "Unfinished", percentage: 5 }
                 },
                 {
                     title: "EGO/TRIP",
-                    description: "The Prelude - Journey deep within the Furthest Reaches of the mind's labyrinth.",
+                    description: "VRChat Experience guiding players through a surreal labyrinth of the mind, serving as a prelude to deeper narratives.",
                     image: "Art Folder/VRCProject0.jpg",
                     link: "ego-trip.html",
                     progress: { status: "Unfinished", percentage: 10 }
                 },
                 {
                     title: "Club Flipside",
-                    description: "Zero Gravity Experience - Dance in a club where physics are just a suggestion.",
+                    description: "VRChat Experience where players dance in a zero-gravity club with optional physics, creating a surreal social space.",
                     image: "Art Folder/VRCProject2.jpg",
                     link: "Club-Flipside.html",
                     progress: "Completed"
                 },
                 {
                     title: "Super Mario 64 Warfare",
-                    description: "Chaos in the Mushroom Kingdom - When worlds collide in unexpected ways.",
+                    description: "VRChat Experience where chaos unfolds in a colliding Mushroom Kingdom, blending nostalgia with mayhem.",
                     image: "Art Folder/VRCProject3.jpg",
                     link: "SM64W.html",
                     progress: { status: "Unfinished", percentage: 40 }
                 },
                 {
                     title: "Sonic Adventure VR",
-                    description: "A VRChat remake of the classic Sonic Adventure with rebuilt physics and multiplayer features.",
+                    description: "VRChat Remake of Sonic Adventure with rebuilt physics and multiplayer, reimagining the classic for VR.",
                     image: "Art Folder/SAMCover.png",
                     link: "SAVR.html",
                     progress: { status: "Unfinished", percentage: 20 }
                 },
                 {
                     title: "Coming Soon",
-                    description: "New worlds are being crafted in the depths of the abyss...",
+                    description: "New immersive worlds are being crafted in the depths of the abyss, awaiting exploration.",
                     image: "Art Folder/VRCProject11.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1167,77 +1217,77 @@
             other: [
                 {
                     title: "Red Threads",
-                    description: "Book/Audio Play: A Detective tracks a Serial Killer stitching bodies.",
+                    description: "Book/Audio Play where a detective hunts a serial killer stitching victims into grotesque displays, unraveling a chilling mystery.",
                     image: "Art Folder/OtherProject2.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Oracle's Burden",
-                    description: "Book: A Therapist is haunted by a patient's suicide.",
+                    description: "Book following a therapist haunted by a patient’s suicide, unraveling their cryptic influence from beyond the grave.",
                     image: "Art Folder/OtherProject3.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "M.E.G Notes 0017| Maggie",
-                    description: "Backrooms Story: A girl bonds with a Party-Pooper to survive.",
+                    description: "Backrooms Story where a young girl and a Party-Pooper entity form a bond to survive the Backrooms’ dangers.",
                     image: "Art Folder/OtherProject4.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Think Tank",
-                    description: "Book Idea: Soldiers and a hand survive a Vietnam War tank trap.",
+                    description: "Book Idea where soldiers and a sentient hand, trapped in a Vietnam War tank, descend into madness.",
                     image: "Art Folder/OtherProject5.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "The Place Unknown",
-                    description: "Short Story: Immortals face an abyss, one paralyzed by fear.",
+                    description: "Short Story where immortals confront an abyss, one paralyzed by fear, exploring existential dread.",
                     image: "Art Folder/OtherProject6.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "VStalkR16",
-                    description: "Analogue VR Horror Series: A Cryptic entity enlists players to investigate the hacker behind a traumatic hacking incident that killed thousands, rebuilding a decaying virtual world for a deadly hunt.",
+                    description: "VR Horror Series where players hunt a hacker in a decaying virtual world after a fatal incident.",
                     image: "Art Folder/OtherProject1.jpg",
                     link: "VS16.html",
                     progress: "Concept"
                 },
                 {
                     title: "Apex",
-                    description: "Action Horror Film: An assassin battles a supernatural killer.",
+                    description: "Action Horror Film where an assassin battles a supernatural killer to save his daughter in a gritty showdown.",
                     image: "Art Folder/OtherProject7.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Let's Hate Each Other",
-                    description: "Dark Comedy Horror: Two girls escalate a hatred contest.",
+                    description: "Dark Comedy Horror where two girls escalate a rivalry through heinous acts, blending humor and horror.",
                     image: "Art Folder/OtherProject8.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Reincarnate The Apex",
-                    description: "Isekai Concept: A fish reincarnates as a monster bonding with a mage.",
+                    description: "Isekai where a fish reincarnates as monster Gyo, bonding with mage Ekverdt in a fantastical world.",
                     image: "Art Folder/OtherProject9.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "Charlotte & Ben",
-                    description: "Romance War Story: A man and woman long for reunion during war.",
+                    description: "Romance War Story of a man and woman longing for reunion amidst a devastating war’s chaos.",
                     image: "Art Folder/OtherProject10.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "LimeLight",
-                    description: "Crime Thriller: A lawyer is blackmailed into a murder case.",
+                    description: "Crime Thriller where a lawyer, blackmailed by a client, navigates a dangerous murder case conspiracy.",
                     image: "Art Folder/OtherProject11.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1252,15 +1302,35 @@
         };
 
         let touchStartX = 0;
+        let touchStartY = 0;
         let touchEndX = 0;
+        let touchEndY = 0;
 
         function handleTouchStart(e) {
             touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }
+
+        function handleTouchMove(e) {
+            if (galleryState.isGalleryActive && window.innerWidth <= 768) {
+                e.preventDefault();
+                const touchX = e.changedTouches[0].screenX;
+                const touchY = e.changedTouches[0].screenY;
+                const deltaX = touchX - touchStartX;
+                const deltaY = touchY - touchStartY;
+                galleryState.canvasOffset.x += deltaX;
+                galleryState.canvasOffset.y += deltaY;
+                touchStartX = touchX;
+                touchStartY = touchY;
+                updateGalleryCanvas();
+            }
         }
 
         function handleTouchEnd(e, type) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe(type);
+            if (type !== 'gallery') {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe(type);
+            }
         }
 
         function handleSwipe(type) {
@@ -1280,10 +1350,16 @@
             ['games', 'vrchat', 'other'].forEach(type => {
                 const carousel = document.getElementById(`${type}Carousel`);
                 if (carousel) {
-                    carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
-                    carousel.addEventListener('touchend', (e) => handleTouchEnd(e, type), { passive: true });
+                    carousel.addEventListener('touchstart', handleTouchStart, { passive: false });
+                    carousel.addEventListener('touchend', (e) => handleTouchEnd(e, type), { passive: false });
                 }
             });
+
+            const galleryViewport = document.getElementById('galleryViewport');
+            if (galleryViewport) {
+                galleryViewport.addEventListener('touchstart', handleTouchStart, { passive: false });
+                galleryViewport.addEventListener('touchmove', handleTouchMove, { passive: false });
+            }
         }
 
         function initializeCarousel(type, data) {
@@ -1355,17 +1431,15 @@
                 const absOffset = Math.abs(offset);
                 const sign = offset < 0 ? -1 : 1;
                 
-                // Reset height to auto to measure content height for focused card
                 card.style.height = 'auto';
                 
-                // Calculate content height for focused card
-                let cardHeight = isMobile ? 380 : 450; // Default heights
+                let cardHeight = isMobile ? 380 : 450;
                 if (index === currentIndex) {
                     const content = card.querySelector('.project-card-content');
                     const img = card.querySelector('img');
                     const contentHeight = content.offsetHeight;
                     const imgHeight = isMobile ? 180 : 200;
-                    cardHeight = contentHeight + imgHeight + 4; // Include border
+                    cardHeight = contentHeight + imgHeight + 4;
                 }
                 
                 card.style.height = `${cardHeight}px`;
@@ -1427,481 +1501,690 @@
             worldSize: { width: 10000, height: 10000 },
             focusedImage: null,
             animationId: null,
-            isGalleryActive: false
+            isGalleryActive: false,
+            lastClickTime: 0,
+            clickCount: 0
         };
 
         const galleryImages = [
-            'GalleryProject1(Rudy the Rat).jpg', 'GalleryProject2(Dynne).jpg', 'GalleryProject3(Revera).jpg', 'GalleryProject4(Fancy Eel).jpg',
-            'GalleryProject5(Kalen the Demon Early).jpg', 'GalleryProject6(Kirby on a Cloud).jpg', 'GalleryProject7(You Make Me Smile).jpg', 'GalleryProject8(EgoDive Conflicting Interests).jpg',
-            'GalleryProject9(The Stranger)', 'GalleryProject10.jpg', 'GalleryProject11.jpg', 'GalleryProject12.jpg',
-            'GalleryProject13.jpg', 'GalleryProject14.jpg', 'GalleryProject15.jpg', 'GalleryProject16.jpg',
-            'GalleryProject17.jpg', 'GalleryProject18.jpg', 'GalleryProject19.jpg', 'GalleryProject20.jpg',
-            'GalleryProject21.jpg', 'GalleryProject22.jpg', 'GalleryProject23.jpg', 'GalleryProject24.jpg',
-            'GalleryProject25.jpg', 'GalleryProject26.jpg', 'GalleryProject27.jpg', 'GalleryProject28.jpg',
-            'GalleryProject29.jpg', 'GalleryProject30.jpg', 'GalleryProject31.jpg', 'GalleryProject32.jpg',
-            'GalleryProject33.jpg', 'GalleryProject34.jpg', 'GalleryProject35.jpg', 'GalleryProject36.jpg',
-            'GalleryProject37.jpg', 'GalleryProject38.jpg', 'GalleryProject39.jpg', 'GalleryProject40.jpg',
-            'GalleryProject41.jpg', 'GalleryProject42.jpg', 'GalleryProject43.jpg', 'GalleryProject44.jpg',
-            'GalleryProject45.jpg', 'GalleryProject46.jpg', 'GalleryProject47.jpg', 'GalleryProject48.jpg',
-            'GalleryProject49.jpg', 'GalleryProject50.jpg', 'GalleryProject51.jpg', 'GalleryProject52.jpg',
-            'GalleryProject53.jpg', 'GalleryProject54.jpg', 'GalleryProject55.jpg', 'GalleryProject56.jpg',
-            'GalleryProject57.jpg', 'GalleryProject58.jpg', 'GalleryProject59.jpg', 'GalleryProject60.jpg',
-            'GalleryProject61.jpg', 'GalleryProject62.jpg', 'GalleryProject63.jpg', 'GalleryProject64.jpg',
-            'GalleryProject65.jpg', 'GalleryProject66.jpg', 'GalleryProject67.jpg', 'GalleryProject68.jpg',
-            'GalleryProject69.jpg', 'GalleryProject70.jpg', 'GalleryProject71.jpg', 'GalleryProject72.jpg',
-            'GalleryProject73.jpg', 'GalleryProject74.jpg', 'GalleryProject75.jpg', 'GalleryProject76.jpg',
-            'GalleryProject77.jpg', 'GalleryProject78.jpg', 'GalleryProject79.jpg', 'GalleryProject80.jpg',
-            'GalleryProject81.jpg', 'GalleryProject82.jpg', 'GalleryProject83.jpg', 'GalleryProject84.jpg',
-            'GalleryProject85.jpg', 'GalleryProject86.jpg', 'GalleryProject87.jpg', 'GalleryProject88.jpg',
-            'GalleryProject89.jpg', 'GalleryProject90.jpg', 'GalleryProject91.jpg', 'GalleryProject92.jpg',
-            'GalleryProject93.jpg', 'GalleryProject94.jpg', 'GalleryProject95.jpg', 'GalleryProject96.jpg',
-            'GalleryProject97.jpg', 'GalleryProject98.jpg', 'GalleryProject99.jpg', 'GalleryProject100.jpg',
-            'GalleryProject101.jpg', 'GalleryProject102.jpg', 'GalleryProject103.jpg', 'GalleryProject104.jpg',
-            'GalleryProject105.jpg', 'GalleryProject106.jpg', 'GalleryProject107.jpg', 'GalleryProject108.jpg',
-            'GalleryProject109.jpg', 'GalleryProject110.jpg', 'GalleryProject111.jpg', 'GalleryProject112.jpg',
-            'GalleryProject113.jpg', 'GalleryProject114.jpg', 'GalleryProject115.jpg', 'GalleryProject116.jpg',
-            'GalleryProject117.jpg', 'GalleryProject118.jpg', 'GalleryProject119.jpg', 'GalleryProject120.jpg'
-        ];
+    "GalleryProject1(Rudy the Rat)'This is just a little guy I decided to draw, I think he's pretty cute and shifty looking lol'.jpg",
+    "GalleryProject2(Dynne)'A character design for a mysterious figure in a dystopian setting, with a sleek, cyberpunk vibe'.jpg",
+    "GalleryProject3(Revera)'An ethereal being from a fantasy world, glowing with inner light and intricate details'.jpg",
+    "GalleryProject4(Fancy Eel)'A whimsical take on an eel, dressed up in elegant, almost regal attire'.jpg",
+    "GalleryProject5(Kalen the Demon Early)'Early concept for Kalen, a brooding demon with a complex backstory'.jpg",
+    "GalleryProject6(Kirby on a Cloud)'A playful sketch of Kirby floating serenely on a fluffy cloud'.jpg",
+    "GalleryProject7(You Make Me Smile)'A heartfelt piece capturing a moment of joy between two characters'.jpg",
+    "GalleryProject8(EgoDive Conflicting Interests)'A surreal depiction of inner turmoil for the Ego/Dive project'.jpg",
+    "GalleryProject9(The Stranger)'A haunting portrait of an enigmatic figure shrouded in shadow'.jpg",
+    "GalleryProject10.jpg",
+    "GalleryProject11.jpg",
+    "GalleryProject12.jpg",
+    "GalleryProject13.jpg",
+    "GalleryProject14.jpg",
+    "GalleryProject15.jpg",
+    "GalleryProject16.jpg",
+    "GalleryProject17.jpg",
+    "GalleryProject18.jpg",
+    "GalleryProject19.jpg",
+    "GalleryProject20.jpg",
+    "GalleryProject21.jpg",
+    "GalleryProject22.jpg",
+    "GalleryProject23.jpg",
+    "GalleryProject24.jpg",
+    "GalleryProject25.jpg",
+    "GalleryProject26.jpg",
+    "GalleryProject27.jpg",
+    "GalleryProject28.jpg",
+    "GalleryProject29.jpg",
+    "GalleryProject30.jpg",
+    "GalleryProject31.jpg",
+    "GalleryProject32.jpg",
+    "GalleryProject33.jpg",
+    "GalleryProject34.jpg",
+    "GalleryProject35.jpg",
+    "GalleryProject36.jpg",
+    "GalleryProject37.jpg",
+    "GalleryProject38.jpg",
+    "GalleryProject39.jpg",
+    "GalleryProject40.jpg",
+    "GalleryProject41.jpg",
+    "GalleryProject42.jpg",
+    "GalleryProject43.jpg",
+    "GalleryProject44.jpg",
+    "GalleryProject45.jpg",
+    "GalleryProject46.jpg",
+    "GalleryProject47.jpg",
+    "GalleryProject48.jpg",
+    "GalleryProject49.jpg",
+    "GalleryProject50.jpg",
+    "GalleryProject51.jpg",
+    "GalleryProject52.jpg",
+    "GalleryProject53.jpg",
+    "GalleryProject54.jpg",
+    "GalleryProject55.jpg",
+    "GalleryProject56.jpg",
+    "GalleryProject57.jpg",
+    "GalleryProject58.jpg",
+    "GalleryProject59.jpg",
+    "GalleryProject60.jpg",
+    "GalleryProject61.jpg",
+    "GalleryProject62.jpg",
+    "GalleryProject63.jpg",
+    "GalleryProject64.jpg",
+    "GalleryProject65.jpg",
+    "GalleryProject66.jpg",
+    "GalleryProject67.jpg",
+    "GalleryProject68.jpg",
+    "GalleryProject69.jpg",
+    "GalleryProject70.jpg",
+    "GalleryProject71.jpg",
+    "GalleryProject72.jpg",
+    "GalleryProject73.jpg",
+    "GalleryProject74.jpg",
+    "GalleryProject75.jpg",
+    "GalleryProject76.jpg",
+    "GalleryProject77.jpg",
+    "GalleryProject78.jpg",
+    "GalleryProject79.jpg",
+    "GalleryProject80.jpg",
+    "GalleryProject81.jpg",
+    "GalleryProject82.jpg",
+    "GalleryProject83.jpg",
+    "GalleryProject84.jpg",
+    "GalleryProject85.jpg",
+    "GalleryProject86.jpg",
+    "GalleryProject87.jpg",
+    "GalleryProject88.jpg",
+    "GalleryProject89.jpg",
+    "GalleryProject90.jpg",
+    "GalleryProject91.jpg",
+    "GalleryProject92.jpg",
+    "GalleryProject93.jpg",
+    "GalleryProject94.jpg",
+    "GalleryProject95.jpg",
+    "GalleryProject96.jpg",
+    "GalleryProject97.jpg",
+    "GalleryProject98.jpg",
+    "GalleryProject99.jpg",
+    "GalleryProject100.jpg",
+    "GalleryProject101.jpg",
+    "GalleryProject102.jpg",
+    "GalleryProject103.jpg",
+    "GalleryProject104.jpg",
+    "GalleryProject105.jpg",
+    "GalleryProject106.jpg",
+    "GalleryProject107.jpg",
+    "GalleryProject108.jpg",
+    "GalleryProject109.jpg",
+    "GalleryProject110.jpg",
+    "GalleryProject111.jpg",
+    "GalleryProject112.jpg",
+    "GalleryProject113.jpg",
+    "GalleryProject114.jpg",
+    "GalleryProject115.jpg",
+    "GalleryProject116.jpg",
+    "GalleryProject117.jpg",
+    "GalleryProject118.jpg",
+    "GalleryProject119.jpg",
+    "GalleryProject120.jpg",
+];
 
-        function initializeGallery() {
-            const viewport = document.getElementById('galleryViewport');
-            const canvas = document.getElementById('galleryCanvas');
+function initializeGallery() {
+    const viewport = document.getElementById('galleryViewport');
+    const canvas = document.getElementById('galleryCanvas');
+    
+    if (!viewport || !canvas || galleryState.images.length > 0) return;
+    
+    const minSpacing = 350;
+    const maxAttempts = 100;
+    const imageSize = 300;
+    
+    const viewportRect = viewport.getBoundingClientRect();
+    const imagesPerViewport = 2;
+    const viewportArea = viewportRect.width * viewportRect.height;
+    const imageArea = imageSize * imageSize;
+    const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
+    
+    const imagesToUse = galleryImages.slice(0, totalImages);
+    if (totalImages > galleryImages.length) {
+        for (let i = galleryImages.length; i < totalImages; i++) {
+            imagesToUse.push(galleryImages[i % galleryImages.length]);
+        }
+    }
+    
+    imagesToUse.forEach((image, index) => {
+        let position;
+        let attempts = 0;
+        
+        const descMatch = image.match(/'([^']*)'/);
+        const description = descMatch ? descMatch[1] : '';
+        
+        do {
+            position = {
+                x: Math.random() * (galleryState.worldSize.width - imageSize),
+                y: Math.random() * (galleryState.worldSize.height - imageSize),
+                image: image,
+                description: description,
+                id: `gallery-img-${index}`,
+                velocityX: 0,
+                velocityY: 0
+            };
+            attempts++;
+        } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
+        
+        galleryState.images.push(position);
+    });
+    
+    viewport.addEventListener('mousemove', handleGalleryMouseMove);
+    viewport.addEventListener('mouseleave', handleGalleryMouseLeave);
+    
+    galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
+    galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
+    
+    loadAllVisibleImages();
+}
+
+function isOverlapping(newPos, existingImages, minSpacing) {
+    return existingImages.some(img => {
+        const dx = newPos.x - img.x;
+        const dy = newPos.y - img.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < minSpacing;
+    });
+}
+
+function handleGalleryMouseMove(e) {
+    if (galleryState.focusedImage) return;
+    const viewport = e.currentTarget;
+    const rect = viewport.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    galleryState.mousePos.x = x / rect.width;
+    galleryState.mousePos.y = y / rect.height;
+}
+
+function handleGalleryMouseLeave() {
+    if (galleryState.focusedImage) return;
+    galleryState.mousePos.x = 0.5;
+    galleryState.mousePos.y = 0.5;
+}
+
+function updateGalleryCanvas() {
+    const canvas = document.getElementById('galleryCanvas');
+    if (!canvas) return;
+    
+    canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
+    
+    galleryState.loadedImages.forEach((imgElement, id) => {
+        const imgData = galleryState.images.find(img => img.id === id);
+        if (imgData && !imgElement.classList.contains('focused')) {
+            imgElement.style.left = imgData.x + 'px';
+            imgElement.style.top = imgData.y + 'px';
+        }
+    });
+}
+
+function updateGalleryView() {
+    if (!galleryState.isGalleryActive) {
+        return;
+    }
+    
+    const canvas = document.getElementById('galleryCanvas');
+    if (!canvas) return;
+    
+    if (!galleryState.focusedImage) {
+        const maxSpeed = 15;
+        const deadZone = 0.2;
+        
+        const distX = galleryState.mousePos.x - 0.5;
+        const distY = galleryState.mousePos.y - 0.5;
+        
+        const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
+        const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
+        
+        const targetVelX = effectiveDistX * maxSpeed * 2;
+        const targetVelY = effectiveDistY * maxSpeed * 2;
+        
+        const smoothing = 0.1;
+        galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
+        galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
+        
+        galleryState.canvasOffset.x -= galleryState.velocity.x;
+        galleryState.canvasOffset.y -= galleryState.velocity.y;
+        
+        const arrowThreshold = 1;
+        document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
+        document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
+        document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
+        document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
+        
+        const repulsionStrength = 0.5;
+        const repulsionDistance = 350;
+        const damping = 0.9;
+        
+        galleryState.images.forEach((img1, i) => {
+            let forceX = 0;
+            let forceY = 0;
             
-            if (!viewport || !canvas || galleryState.images.length > 0) return;
+            galleryState.images.forEach((img2, j) => {
+                if (i !== j) {
+                    const dx = img1.x - img2.x;
+                    const dy = img1.y - img2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < repulsionDistance && distance > 0) {
+                        const force = (repulsionDistance - distance) * repulsionStrength / distance;
+                        forceX += dx * force;
+                        forceY += dy * force;
+                    }
+                }
+            });
             
-            const minSpacing = 350;
-            const maxAttempts = 100;
-            const imageSize = 300;
+            img1.velocityX = (img1.velocityX + forceX) * damping;
+            img1.velocityY = (img1.velocityY + forceY) * damping;
             
-            const viewportRect = viewport.getBoundingClientRect();
-            const imagesPerViewport = 2;
-            const viewportArea = viewportRect.width * viewportRect.height;
-            const imageArea = imageSize * imageSize;
-            const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
+            img1.x += img1.velocityX;
+            img1.y += img1.velocityY;
             
-            const imagesToUse = galleryImages.slice(0, totalImages);
-            if (totalImages > galleryImages.length) {
-                for (let i = galleryImages.length; i < totalImages; i++) {
-                    imagesToUse.push(galleryImages[i % galleryImages.length]);
+            img1.x = Math.max(0, Math.min(img1.x, galleryState.worldSize.width));
+            img1.y = Math.max(0, Math.min(img1.y, galleryState.worldSize.height));
+            
+            const imgElement = galleryState.loadedImages.get(img1.id);
+            if (imgElement && !imgElement.classList.contains('focused')) {
+                imgElement.style.left = img1.x + 'px';
+                imgElement.style.top = img1.y + 'px';
+            }
+        });
+        
+        const wrapBuffer = 1000;
+        if (galleryState.canvasOffset.x > wrapBuffer) {
+            galleryState.canvasOffset.x -= galleryState.worldSize.width;
+            repositionImages();
+        } else if (galleryState.canvasOffset.x < -galleryState.worldSize.width - wrapBuffer) {
+            galleryState.canvasOffset.x += galleryState.worldSize.width;
+            repositionImages();
+        }
+        
+        if (galleryState.canvasOffset.y > wrapBuffer) {
+            galleryState.canvasOffset.y -= galleryState.worldSize.height;
+            repositionImages();
+        } else if (galleryState.canvasOffset.y < -galleryState.worldSize.height - wrapBuffer) {
+            galleryState.canvasOffset.y += galleryState.worldSize.height;
+            repositionImages();
+        }
+        
+        updateGalleryCanvas();
+    }
+    
+    updateVisibleImages();
+    
+    galleryState.animationId = requestAnimationFrame(updateGalleryView);
+}
+
+function updateVisibleImages() {
+    const viewport = document.getElementById('galleryViewport');
+    if (!viewport) return;
+    
+    const viewportRect = viewport.getBoundingClientRect();
+    const buffer = 400;
+    const minVisibleImages = 2;
+    
+    let visibleCount = 0;
+    const visibleImages = [];
+    
+    galleryState.images.forEach(imgData => {
+        const worldX = imgData.x + galleryState.canvasOffset.x;
+        const worldY = imgData.y + galleryState.canvasOffset.y;
+        
+        const isVisible = (
+            worldX > -buffer && 
+            worldX < viewportRect.width + buffer &&
+            worldY > -buffer && 
+            worldY < viewportRect.height + buffer
+        );
+        
+        if (isVisible) {
+            visibleCount++;
+            visibleImages.push(imgData);
+        }
+        
+        if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
+            const imgElement = createGalleryImage(imgData);
+            document.getElementById('galleryCanvas').appendChild(imgElement);
+            galleryState.loadedImages.set(imgData.id, imgElement);
+        } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
+            const farBuffer = 800;
+            if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
+                worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
+                const imgElement = galleryState.loadedImages.get(imgData.id);
+                if (!imgElement.classList.contains('focused')) {
+                    imgElement.remove();
+                    galleryState.loadedImages.delete(imgData.id);
                 }
             }
+        }
+    });
+    
+    if (visibleCount < minVisibleImages) {
+        const imagesToAdd = minVisibleImages - visibleCount;
+        const imageSize = 300;
+        const minSpacing = 350;
+        const maxAttempts = 50;
+        
+        for (let i = 0; i < imagesToAdd; i++) {
+            let position;
+            let attempts = 0;
             
-            imagesToUse.forEach((image, index) => {
-                let position;
-                let attempts = 0;
-                
-                do {
-                    position = {
-                        x: Math.random() * (galleryState.worldSize.width - imageSize),
-                        y: Math.random() * (galleryState.worldSize.height - imageSize),
-                        image: image,
-                        id: `gallery-img-${index}`,
-                        velocityX: 0,
-                        velocityY: 0
-                    };
-                    attempts++;
-                } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
-                
+            do {
+                const viewportX = Math.random() * viewportRect.width;
+                const viewportY = Math.random() * viewportRect.height;
+                const randomImage = galleryImages[Math.floor(Math.random() * galleryImages.length)];
+                const descMatch = randomImage.match(/'([^']*)'/);
+                const description = descMatch ? descMatch[1] : '';
+                position = {
+                    x: viewportX - galleryState.canvasOffset.x,
+                    y: viewportY - galleryState.canvasOffset.y,
+                    image: randomImage,
+                    description: description,
+                    id: `gallery-img-${galleryState.images.length + i}`,
+                    velocityX: 0,
+                    velocityY: 0
+                };
+                attempts++;
+            } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
+            
+            if (attempts < maxAttempts) {
                 galleryState.images.push(position);
-            });
-            
-            viewport.addEventListener('mousemove', handleGalleryMouseMove);
-            viewport.addEventListener('mouseleave', handleGalleryMouseLeave);
-            
-            galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
-            galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
-            
-            loadAllVisibleImages();
-        }
-
-        function isOverlapping(newPos, existingImages, minSpacing) {
-            return existingImages.some(img => {
-                const dx = newPos.x - img.x;
-                const dy = newPos.y - img.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                return distance < minSpacing;
-            });
-        }
-
-        function handleGalleryMouseMove(e) {
-            const viewport = e.currentTarget;
-            const rect = viewport.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            galleryState.mousePos.x = x / rect.width;
-            galleryState.mousePos.y = y / rect.height;
-        }
-
-        function handleGalleryMouseLeave() {
-            galleryState.mousePos.x = 0.5;
-            galleryState.mousePos.y = 0.5;
-        }
-
-        function updateGalleryView() {
-            if (!galleryState.isGalleryActive) {
-                return;
-            }
-            
-            const canvas = document.getElementById('galleryCanvas');
-            if (!canvas) return;
-            
-            const maxSpeed = 15;
-            const deadZone = 0.2;
-            
-            const distX = galleryState.mousePos.x - 0.5;
-            const distY = galleryState.mousePos.y - 0.5;
-            
-            const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
-            const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
-            
-            const targetVelX = effectiveDistX * maxSpeed * 2;
-            const targetVelY = effectiveDistY * maxSpeed * 2;
-            
-            const smoothing = 0.1;
-            galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
-            galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
-            
-            galleryState.canvasOffset.x -= galleryState.velocity.x;
-            galleryState.canvasOffset.y -= galleryState.velocity.y;
-            
-            const arrowThreshold = 1;
-            document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
-            document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
-            document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
-            document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
-            
-            const repulsionStrength = 0.5;
-            const repulsionDistance = 350;
-            const damping = 0.9;
-            
-            galleryState.images.forEach((img1, i) => {
-                let forceX = 0;
-                let forceY = 0;
-                
-                galleryState.images.forEach((img2, j) => {
-                    if (i !== j) {
-                        const dx = img1.x - img2.x;
-                        const dy = img1.y - img2.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < repulsionDistance && distance > 0) {
-                            const force = (repulsionDistance - distance) * repulsionStrength / distance;
-                            forceX += dx * force;
-                            forceY += dy * force;
-                        }
-                    }
-                });
-                
-                img1.velocityX = (img1.velocityX + forceX) * damping;
-                img1.velocityY = (img1.velocityY + forceY) * damping;
-                
-                img1.x += img1.velocityX;
-                img1.y += img1.velocityY;
-                
-                img1.x = Math.max(0, Math.min(img1.x, galleryState.worldSize.width));
-                img1.y = Math.max(0, Math.min(img1.y, galleryState.worldSize.height));
-                
-                const imgElement = galleryState.loadedImages.get(img1.id);
-                if (imgElement) {
-                    imgElement.style.left = img1.x + 'px';
-                    imgElement.style.top = img1.y + 'px';
-                }
-            });
-            
-            const wrapBuffer = 1000;
-            if (galleryState.canvasOffset.x > wrapBuffer) {
-                galleryState.canvasOffset.x -= galleryState.worldSize.width;
-                repositionImages();
-            } else if (galleryState.canvasOffset.x < -galleryState.worldSize.width - wrapBuffer) {
-                galleryState.canvasOffset.x += galleryState.worldSize.width;
-                repositionImages();
-            }
-            
-            if (galleryState.canvasOffset.y > wrapBuffer) {
-                galleryState.canvasOffset.y -= galleryState.worldSize.height;
-                repositionImages();
-            } else if (galleryState.canvasOffset.y < -galleryState.worldSize.height - wrapBuffer) {
-                galleryState.canvasOffset.y += galleryState.worldSize.height;
-                repositionImages();
-            }
-            
-            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-            
-            updateVisibleImages();
-            
-            galleryState.animationId = requestAnimationFrame(updateGalleryView);
-        }
-
-        function updateVisibleImages() {
-            const viewport = document.getElementById('galleryViewport');
-            if (!viewport) return;
-            
-            const viewportRect = viewport.getBoundingClientRect();
-            const buffer = 400;
-            const minVisibleImages = 2;
-            
-            let visibleCount = 0;
-            const visibleImages = [];
-            
-            galleryState.images.forEach(imgData => {
-                const worldX = imgData.x + galleryState.canvasOffset.x;
-                const worldY = imgData.y + galleryState.canvasOffset.y;
-                
-                const isVisible = (
-                    worldX > -buffer && 
-                    worldX < viewportRect.width + buffer &&
-                    worldY > -buffer && 
-                    worldY < viewportRect.height + buffer
-                );
-                
-                if (isVisible) {
-                    visibleCount++;
-                    visibleImages.push(imgData);
-                }
-                
-                if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
-                    const imgElement = createGalleryImage(imgData);
-                    document.getElementById('galleryCanvas').appendChild(imgElement);
-                    galleryState.loadedImages.set(imgData.id, imgElement);
-                } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
-                    const farBuffer = 800;
-                    if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
-                        worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
-                        const imgElement = galleryState.loadedImages.get(imgData.id);
-                        imgElement.remove();
-                        galleryState.loadedImages.delete(imgData.id);
-                    }
-                }
-            });
-            
-            if (visibleCount < minVisibleImages) {
-                const imagesToAdd = minVisibleImages - visibleCount;
-                const imageSize = 300;
-                const minSpacing = 350;
-                const maxAttempts = 50;
-                
-                for (let i = 0; i < imagesToAdd; i++) {
-                    let position;
-                    let attempts = 0;
-                    
-                    do {
-                        const viewportX = Math.random() * viewportRect.width;
-                        const viewportY = Math.random() * viewportRect.height;
-                        position = {
-                            x: viewportX - galleryState.canvasOffset.x,
-                            y: viewportY - galleryState.canvasOffset.y,
-                            image: galleryImages[Math.floor(Math.random() * galleryImages.length)],
-                            id: `gallery-img-${galleryState.images.length + i}`,
-                            velocityX: 0,
-                            velocityY: 0
-                        };
-                        attempts++;
-                    } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
-                    
-                    if (attempts < maxAttempts) {
-                        galleryState.images.push(position);
-                        const imgElement = createGalleryImage(position);
-                        document.getElementById('galleryCanvas').appendChild(imgElement);
-                        galleryState.loadedImages.set(position.id, imgElement);
-                    }
-                }
+                const imgElement = createGalleryImage(position);
+                document.getElementById('galleryCanvas').appendChild(imgElement);
+                galleryState.loadedImages.set(position.id, imgElement);
             }
         }
+    }
+}
 
-        function loadAllVisibleImages() {
-            const viewport = document.getElementById('galleryViewport');
-            if (!viewport) return;
-            
-            const viewportRect = viewport.getBoundingClientRect();
-            const buffer = 400;
-            const minVisibleImages = 2;
-            
-            let visibleCount = 0;
-            const visibleImages = [];
-            
-            galleryState.images.forEach(imgData => {
-                const worldX = imgData.x + galleryState.canvasOffset.x;
-                const worldY = imgData.y + galleryState.canvasOffset.y;
-                
-                const isVisible = (
-                    worldX > -buffer && 
-                    worldX < viewportRect.width + buffer &&
-                    worldY > -buffer && 
-                    worldY < viewportRect.height + buffer
-                );
-                
-                if (isVisible) {
-                    visibleCount++;
-                    visibleImages.push(imgData);
-                    if (!galleryState.loadedImages.has(imgData.id)) {
-                        const imgElement = createGalleryImage(imgData);
-                        document.getElementById('galleryCanvas').appendChild(imgElement);
-                        galleryState.loadedImages.set(imgData.id, imgElement);
-                    }
-                }
-            });
-            
-            if (visibleCount < minVisibleImages) {
-                const imagesToAdd = minVisibleImages - visibleCount;
-                const imageSize = 300;
-                const minSpacing = 350;
-                const maxAttempts = 50;
-                
-                for (let i = 0; i < imagesToAdd; i++) {
-                    let position;
-                    let attempts = 0;
-                    
-                    do {
-                        const viewportX = Math.random() * viewportRect.width;
-                        const viewportY = Math.random() * viewportRect.height;
-                        position = {
-                            x: viewportX - galleryState.canvasOffset.x,
-                            y: viewportY - galleryState.canvasOffset.y,
-                            image: galleryImages[Math.floor(Math.random() * galleryImages.length)],
-                            id: `gallery-img-${galleryState.images.length + i}`,
-                            velocityX: 0,
-                            velocityY: 0
-                        };
-                        attempts++;
-                    } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
-                    
-                    if (attempts < maxAttempts) {
-                        galleryState.images.push(position);
-                        const imgElement = createGalleryImage(position);
-                        document.getElementById('galleryCanvas').appendChild(imgElement);
-                        galleryState.loadedImages.set(position.id, imgElement);
-                    }
-                }
+function loadAllVisibleImages() {
+    const viewport = document.getElementById('galleryViewport');
+    if (!viewport) return;
+    
+    const viewportRect = viewport.getBoundingClientRect();
+    const buffer = 400;
+    const minVisibleImages = 2;
+    
+    let visibleCount = 0;
+    const visibleImages = [];
+    
+    galleryState.images.forEach(imgData => {
+        const worldX = imgData.x + galleryState.canvasOffset.x;
+        const worldY = imgData.y + galleryState.canvasOffset.y;
+        
+        const isVisible = (
+            worldX > -buffer && 
+            worldX < viewportRect.width + buffer &&
+            worldY > -buffer && 
+            worldY < viewportRect.height + buffer
+        );
+        
+        if (isVisible) {
+            visibleCount++;
+            visibleImages.push(imgData);
+            if (!galleryState.loadedImages.has(imgData.id)) {
+                const imgElement = createGalleryImage(imgData);
+                document.getElementById('galleryCanvas').appendChild(imgElement);
+                galleryState.loadedImages.set(imgData.id, imgElement);
             }
         }
-
-        function repositionImages() {
-            galleryState.loadedImages.forEach((imgElement, id) => {
-                const imgData = galleryState.images.find(img => img.id === id);
-                if (imgData) {
-                    imgElement.style.left = imgData.x + 'px';
-                    imgElement.style.top = imgData.y + 'px';
-                }
-            });
+    });
+    
+    if (visibleCount < minVisibleImages) {
+        const imagesToAdd = minVisibleImages - visibleCount;
+        const imageSize = 300;
+        const minSpacing = 350;
+        const maxAttempts = 50;
+        
+        for (let i = 0; i < imagesToAdd; i++) {
+            let position;
+            let attempts = 0;
+            
+            do {
+                const viewportX = Math.random() * viewportRect.width;
+                const viewportY = Math.random() * viewportRect.height;
+                const randomImage = galleryImages[Math.floor(Math.random() * galleryImages.length)];
+                const descMatch = randomImage.match(/'([^']*)'/);
+                const description = descMatch ? descMatch[1] : '';
+                position = {
+                    x: viewportX - galleryState.canvasOffset.x,
+                    y: viewportY - galleryState.canvasOffset.y,
+                    image: randomImage,
+                    description: description,
+                    id: `gallery-img-${galleryState.images.length + i}`,
+                    velocityX: 0,
+                    velocityY: 0
+                };
+                attempts++;
+            } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
+            
+            if (attempts < maxAttempts) {
+                galleryState.images.push(position);
+                const imgElement = createGalleryImage(position);
+                document.getElementById('galleryCanvas').appendChild(imgElement);
+                galleryState.loadedImages.set(position.id, imgElement);
+            }
         }
+    }
+}
 
-        function createGalleryImage(imgData) {
-            const container = document.createElement('div');
-            container.className = 'gallery-image';
-            container.style.left = imgData.x + 'px';
-            container.style.top = imgData.y + 'px';
-            container.id = imgData.id;
-            
-            const img = document.createElement('img');
-            img.src = `Art Gallery/${imgData.image}`;
-            img.alt = imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
-            
-            const titleMatch = imgData.image.match(/\(.*?\)/);
-            const titleText = titleMatch ? titleMatch[0].slice(1, -1) : imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
-            
-            img.onerror = function() { this.src = 'Art Folder/placeholder.jpg'; };
-            
-            const title = document.createElement('div');
-            title.className = 'gallery-image-title';
-            title.textContent = `"${titleText}"`;
-            
-            container.appendChild(img);
-            container.appendChild(title);
-            
-            container.addEventListener('click', () => {
-                if (galleryState.focusedImage) {
+function centerFocusedImage(imgElement, imgData) {
+    const viewport = document.getElementById('galleryViewport');
+    const viewportRect = viewport.getBoundingClientRect();
+    const imgRect = imgElement.getBoundingClientRect();
+    
+    const viewportCenterX = viewportRect.width / 2;
+    const viewportCenterY = viewportRect.height / 2;
+    
+    const imgWorldX = imgData.x + galleryState.canvasOffset.x;
+    const imgWorldY = imgData.y + galleryState.canvasOffset.y;
+    
+    galleryState.canvasOffset.x = viewportCenterX - imgData.x - imgRect.width / 2;
+    galleryState.canvasOffset.y = viewportCenterY - imgData.y - imgRect.height / 2;
+    
+    updateGalleryCanvas();
+}
+
+function createGalleryImage(imgData) {
+    const container = document.createElement('div');
+    container.className = 'gallery-image';
+    container.style.left = imgData.x + 'px';
+    container.style.top = imgData.y + 'px';
+    container.id = imgData.id;
+    
+    const img = document.createElement('img');
+    const imageName = imgData.image.split("'")[0];
+    img.src = `Art Gallery/${imageName}.jpg`;
+    img.alt = imageName.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+    
+    const titleMatch = imgData.image.match(/\(.*?\)/);
+    const titleText = titleMatch ? titleMatch[0].slice(1, -1) : imageName.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+    
+    img.onerror = function() { this.src = 'Art Folder/placeholder.jpg'; };
+    
+    const title = document.createElement('div');
+    title.className = 'gallery-image-title';
+    title.textContent = `"${titleText}"`;
+    
+    const description = document.createElement('div');
+    description.className = 'gallery-image-description';
+    description.textContent = imgData.description || 'No description available';
+    
+    container.appendChild(img);
+    container.appendChild(title);
+    container.appendChild(description);
+    
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        container.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const currentTime = Date.now();
+            if (currentTime - galleryState.lastClickTime < 300 && galleryState.clickCount === 1) {
+                if (galleryState.focusedImage && galleryState.focusedImage !== container) {
                     galleryState.focusedImage.classList.remove('focused');
+                    document.getElementById('gallerySection').classList.remove('dimmed');
                 }
                 container.classList.add('focused');
                 galleryState.focusedImage = container;
-                playClickSound();
-            });
-            
-            setTimeout(() => container.classList.add('loaded'), 50);
-            
-            return container;
-        }
-
-        function showSection(sectionType) {
-            document.getElementById('mainHub').style.display = 'none';
-            
-            const section = document.getElementById(`${sectionType}Section`);
-            section.classList.add('active');
-            
-            if (sectionType === 'gallery') {
-                galleryState.isGalleryActive = true;
-                if (galleryState.images.length === 0) {
-                    initializeGallery();
-                }
-                if (!galleryState.animationId) {
-                    updateGalleryView();
-                }
+                document.getElementById('gallerySection').classList.add('dimmed');
+                centerFocusedImage(container, imgData);
+                galleryState.clickCount = 0;
             } else {
-                updateCarouselPositions(sectionType);
+                galleryState.clickCount = 1;
+                container.classList.add('hovered');
+                setTimeout(() => container.classList.remove('hovered'), 300);
             }
-        }
-
-        function closeSection() {
-            document.querySelectorAll('.section-view').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            if (galleryState.isGalleryActive) {
-                galleryState.isGalleryActive = false;
-                if (galleryState.animationId) {
-                    cancelAnimationFrame(galleryState.animationId);
-                    galleryState.animationId = null;
-                }
-                document.querySelectorAll('.gallery-arrow').forEach(arrow => {
-                    arrow.classList.remove('active');
-                });
-            }
-            
-            if (galleryState.focusedImage) {
-                galleryState.focusedImage.classList.remove('focused');
-                galleryState.focusedImage = null;
-            }
-            
-            document.getElementById('mainHub').style.display = 'block';
-        }
-
-        function showAbout() {
-            document.getElementById('hubHome').style.display = 'none';
-            document.getElementById('aboutSection').classList.remove('hidden');
-            document.getElementById('backButton').classList.remove('hidden');
-        }
-
-        function showHub() {
-            document.getElementById('hubHome').style.display = 'block';
-            document.getElementById('aboutSection').classList.add('hidden');
-            document.getElementById('backButton').classList.add('hidden');
-        }
-
-        window.onload = function() {
-            passwordInput.focus();
-            initializeCarousels();
-            
-            passwordAudio.play().catch(error => {
-                console.log('Autoplay prevented:', error);
-                document.addEventListener('click', function playAudioOnce() {
-                    passwordAudio.play();
-                    document.removeEventListener('click', playAudioOnce);
-                });
-            });
-        };
-
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                ['games', 'vrchat', 'other'].forEach(type => {
-                    if (document.getElementById(`${type}Section`).classList.contains('active')) {
-                        updateCarouselPositions(type);
-                    }
-                });
-            }, 250);
+            galleryState.lastClickTime = currentTime;
+            playClickSound();
         });
-    </script>
+    } else {
+        container.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (galleryState.focusedImage && galleryState.focusedImage !== container) {
+                galleryState.focusedImage.classList.remove('focused');
+                document.getElementById('gallerySection').classList.remove('dimmed');
+            }
+            container.classList.toggle('focused');
+            galleryState.focusedImage = container.classList.contains('focused') ? container : null;
+            document.getElementById('gallerySection').classList.toggle('dimmed', container.classList.contains('focused'));
+            if (container.classList.contains('focused')) {
+                centerFocusedImage(container, imgData);
+            }
+            playClickSound();
+        });
+    }
+    
+    setTimeout(() => container.classList.add('loaded'), 50);
+    
+    return container;
+}
+
+document.addEventListener('click', (e) => {
+    if (galleryState.focusedImage && !e.target.closest('.gallery-image')) {
+        galleryState.focusedImage.classList.remove('focused');
+        galleryState.focusedImage = null;
+        document.getElementById('gallerySection').classList.remove('dimmed');
+        playClickSound();
+    }
+});
+
+function repositionImages() {
+    galleryState.loadedImages.forEach((imgElement, id) => {
+        const imgData = galleryState.images.find(img => img.id === id);
+        if (imgData && !imgElement.classList.contains('focused')) {
+            imgElement.style.left = imgData.x + 'px';
+            imgElement.style.top = imgData.y + 'px';
+        }
+    });
+}
+
+function showSection(sectionType) {
+    document.getElementById('mainHub').style.display = 'none';
+    
+    const section = document.getElementById(`${sectionType}Section`);
+    section.classList.add('active');
+    document.getElementById('backButton').classList.remove('hidden');
+    
+    if (sectionType === 'gallery') {
+        galleryState.isGalleryActive = true;
+        initializeGallery();
+        updateGalleryView();
+    } else {
+        galleryState.isGalleryActive = false;
+        if (galleryState.animationId) {
+            cancelAnimationFrame(galleryState.animationId);
+            galleryState.animationId = null;
+        }
+    }
+    
+    playClickSound();
+}
+
+function showHub() {
+    document.getElementById('mainHub').style.display = 'block';
+    document.getElementById('backButton').classList.add('hidden');
+    
+    ['games', 'vrchat', 'gallery', 'other'].forEach(section => {
+        document.getElementById(`${section}Section`).classList.remove('active');
+    });
+    
+    document.getElementById('aboutSection').classList.add('hidden');
+    galleryState.isGalleryActive = false;
+    if (galleryState.animationId) {
+        cancelAnimationFrame(galleryState.animationId);
+        galleryState.animationId = null;
+    }
+    
+    playClickSound();
+}
+
+function showAbout() {
+    document.getElementById('mainHub').style.display = 'block';
+    document.getElementById('hubHome').classList.add('hidden');
+    document.getElementById('aboutSection').classList.remove('hidden');
+    document.getElementById('backButton').classList.remove('hidden');
+    
+    ['games', 'vrchat', 'gallery', 'other'].forEach(section => {
+        document.getElementById(`${section}Section`).classList.remove('active');
+    });
+    
+    galleryState.isGalleryActive = false;
+    if (galleryState.animationId) {
+        cancelAnimationFrame(galleryState.animationId);
+        galleryState.animationId = null;
+    }
+    
+    playClickSound();
+}
+
+function closeSection() {
+    ['games', 'vrchat', 'gallery', 'other'].forEach(section => {
+        document.getElementById(`${section}Section`).classList.remove('active');
+    });
+    
+    document.getElementById('mainHub').style.display = 'block';
+    document.getElementById('backButton').classList.add('hidden');
+    
+    galleryState.isGalleryActive = false;
+    if (galleryState.animationId) {
+        cancelAnimationFrame(galleryState.animationId);
+        galleryState.animationId = null;
+    }
+    
+    playClickSound();
+}
+
+window.addEventListener('resize', () => {
+    ['games', 'vrchat', 'other'].forEach(type => {
+        updateCarouselPositions(type);
+    });
+    
+    if (galleryState.isGalleryActive) {
+        updateGalleryCanvas();
+        updateVisibleImages();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    passwordAudio.play().catch(e => console.log('Password audio error:', e));
+    initializeCarousels();
+    
+    if (window.innerWidth <= 768) {
+        const galleryViewport = document.getElementById('galleryViewport');
+        if (galleryViewport) {
+            galleryViewport.addEventListener('touchstart', handleTouchStart, { passive: false });
+            galleryViewport.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
+    }
+});
+</script>
 </body>
 </html>
