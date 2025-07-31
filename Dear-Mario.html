@@ -87,6 +87,29 @@
             margin-bottom: 40px;
         }
 
+        .happy .subtitle {
+            display: none;
+        }
+
+        .happy-subtitle {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .happy .happy-subtitle {
+            display: block;
+        }
+
+        .glitched .happy-subtitle {
+            display: none;
+        }
+
+        .glitched .subtitle {
+            display: block;
+        }
+
         .section {
             margin: 40px 0;
             padding: 20px;
@@ -168,7 +191,7 @@
         }
 
         .twitch:hover {
-            animation: twitch-hover 0.2s infinite alternate;
+            animation: none;
             transform: scale(1.05);
             cursor: pointer;
         }
@@ -176,20 +199,6 @@
         @keyframes twitch {
             0% { transform: translate(2px, 1px); }
             100% { transform: translate(-2px, -1px); }
-        }
-
-        @keyframes twitch-hover {
-            0% { transform: translate(3px, 2px) scale(1.05); }
-            100% { transform: translate(-3px, -2px) scale(1.05); }
-        }
-
-        @keyframes cardGlitch {
-            0% { transform: translate(0, 0); opacity: 1; }
-            20% { transform: translate(-20px, 15px) rotate(5deg); opacity: 0.7; }
-            40% { transform: translate(30px, -10px) rotate(-3deg); opacity: 0.5; }
-            60% { transform: translate(-15px, 20px) rotate(7deg); opacity: 0.8; }
-            80% { transform: translate(25px, -15px) rotate(-5deg); opacity: 0.6; }
-            100% { transform: translate(0, 0); opacity: 1; }
         }
 
         .play-button {
@@ -299,7 +308,7 @@
         @media (max-width: 600px) {
             .title { font-size: 2rem; }
             .glitched .title { font-size: 2.2rem; }
-            .subtitle { font-size: 1.2rem; }
+            .subtitle, .happy-subtitle { font-size: 1.2rem; }
             .glitched .subtitle { font-size: 1.4rem; }
             .section-title { font-size: 1.4rem; }
             .glitched .section-title { font-size: 1.6rem; }
@@ -315,6 +324,7 @@
     <div class="static-overlay"></div>
     <div class="container">
         <h1 class="title">Dear Mario...</h1>
+        <h2 class="happy-subtitle">...I've backed a Cake for you!</h2>
         <h2 class="subtitle">The Castle Has Changed</h2>
         
         <section class="section">
@@ -375,7 +385,7 @@
         <source src="normal_bgm.mp3" type="audio/mpeg">
     </audio>
     <audio id="creepy-bgm" loop>
-        <source src="audio/creepy_bgm.mp3" type="audio/mpeg">
+        <source src="creepy_bgm.mp3" type="audio/mpeg">
     </audio>
     <audio id="static-sfx">
         <source src="static_sfx.mp3" type="audio/mpeg">
@@ -407,13 +417,39 @@
                 staticSfx.volume = volumeControl.value;
             });
 
-            // Progressive background darkening
+            // Progressive background darkening to 85%
             let overlayOpacity = 0;
-            const maxOpacity = 0.6;
+            const maxOpacity = 0.85;
             const darkeningInterval = setInterval(() => {
-                overlayOpacity = Math.min(overlayOpacity + 0.01, maxOpacity);
+                overlayOpacity = Math.min(overlayOpacity + 0.0142, maxOpacity);
                 body.style.setProperty('--overlay-opacity', overlayOpacity);
-            }, 1000); // Increase opacity every second, max after 60s
+            }, 1000); // Increase opacity every second, max 0.85 after ~60s
+
+            // Stop jittering on hover or click, resume on click elsewhere
+            twitchElements.forEach(el => {
+                // Stop twitch on hover
+                el.addEventListener('mouseenter', () => {
+                    el.classList.remove('twitch');
+                    el.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                });
+                el.addEventListener('mouseleave', () => {
+                    el.style.transform = 'none';
+                });
+                // Stop twitch on click
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent triggering the global click handler
+                    el.classList.remove('twitch');
+                });
+            });
+
+            // Resume twitch on click elsewhere
+            document.addEventListener('click', () => {
+                twitchElements.forEach(el => {
+                    if (!el.classList.contains('twitch')) {
+                        el.classList.add('twitch');
+                    }
+                });
+            });
 
             // Glitch effect after 7 seconds
             setTimeout(() => {
@@ -460,7 +496,11 @@
                         // Randomize twitch timing
                         setInterval(() => {
                             el.classList.remove('twitch');
-                            setTimeout(() => el.classList.add('twitch'), Math.random() * 2000 + 1000);
+                            setTimeout(() => {
+                                if (!el.matches(':hover')) {
+                                    el.classList.add('twitch');
+                                }
+                            }, Math.random() * 2000 + 1000);
                         }, Math.random() * 5000 + 3000);
                     });
                 }, 7000); // 4s freeze + 3s intense glitch
@@ -475,16 +515,6 @@
                     setTimeout(() => body.style.opacity = '1', 100);
                 }, 5000); // Flicker every 5 seconds
             }, 15000); // Start corrosion after 15 seconds
-
-            // Mouse interaction: subtle jitter on hover
-            twitchElements.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    el.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
-                });
-                el.addEventListener('mouseleave', () => {
-                    el.style.transform = 'none';
-                });
-            });
         });
     </script>
 </body>
