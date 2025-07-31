@@ -2015,86 +2015,25 @@
         function centerImage(container) {
             if (galleryState.focusedImage) {
                 galleryState.focusedImage.classList.remove('centered');
+                galleryState.focusedImage.classList.remove('fixed');
             }
             
-            // Get the image's current position relative to viewport
-            const imgData = galleryState.images.find(img => img.id === container.id);
-            if (!imgData) return;
+            // Show overlay
+            const overlay = document.getElementById('galleryOverlay');
+            overlay.classList.add('active');
             
-            const viewport = document.getElementById('galleryViewport');
-            const viewportRect = viewport.getBoundingClientRect();
+            // Add centered class to the image
+            container.classList.add('centered');
+            container.classList.add('show-description');
             
-            // Calculate current world position of the image
-            const currentWorldX = imgData.x + galleryState.canvasOffset.x + 150; // 150 is half the image width
-            const currentWorldY = imgData.y + galleryState.canvasOffset.y + 150; // 150 is half the image height
+            // After a frame, add fixed positioning
+            setTimeout(() => {
+                container.classList.add('fixed');
+            }, 0);
             
-            // Calculate target offset to center this image
-            const targetOffsetX = viewportRect.width / 2 - imgData.x - 150;
-            const targetOffsetY = viewportRect.height / 2 - imgData.y - 150;
+            galleryState.focusedImage = container;
             
-            // Stop any ongoing animation and set panning state
-            galleryState.isPanning = true;
-            if (galleryState.animationId) {
-                cancelAnimationFrame(galleryState.animationId);
-                galleryState.animationId = null;
-            }
-            
-            // Animate the pan
-            const startOffsetX = galleryState.canvasOffset.x;
-            const startOffsetY = galleryState.canvasOffset.y;
-            const startTime = performance.now();
-            const duration = 600; // milliseconds
-            
-            function animatePan(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function (ease-in-out)
-                const easeProgress = progress < 0.5 
-                    ? 2 * progress * progress 
-                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-                
-                // Update canvas position
-                galleryState.canvasOffset.x = startOffsetX + (targetOffsetX - startOffsetX) * easeProgress;
-                galleryState.canvasOffset.y = startOffsetY + (targetOffsetY - startOffsetY) * easeProgress;
-                
-                const canvas = document.getElementById('galleryCanvas');
-                canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-                
-                // Update visible images during pan
-                updateVisibleImages();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animatePan);
-                } else {
-                    // After pan completes, center the image first by updating its position
-                    const viewport = document.getElementById('galleryViewport');
-                    const viewportRect = viewport.getBoundingClientRect();
-                    
-                    // Position the image at the center of the viewport
-                    container.style.left = (viewportRect.width / 2 - 150) - galleryState.canvasOffset.x + 'px';
-                    container.style.top = (viewportRect.height / 2 - 150) - galleryState.canvasOffset.y + 'px';
-                    
-                    // Show overlay
-                    galleryState.isPanning = false;
-                    const overlay = document.getElementById('galleryOverlay');
-                    overlay.classList.add('active');
-                    
-                    container.classList.add('centered');
-                    container.classList.add('show-description');
-                    
-                    // Wait a frame before adding fixed positioning
-                    requestAnimationFrame(() => {
-                        container.classList.add('fixed');
-                    });
-                    
-                    galleryState.focusedImage = container;
-                    
-                    overlay.onclick = closeCenteredImage;
-                }
-            }
-            
-            requestAnimationFrame(animatePan);
+            overlay.onclick = closeCenteredImage;
         }
 
         function closeCenteredImage() {
