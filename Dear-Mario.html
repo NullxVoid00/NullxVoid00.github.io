@@ -23,6 +23,7 @@
             transition: background-color 2s ease;
             position: relative;
             overflow-x: hidden;
+            --overlay-opacity: 0;
         }
 
         body.frozen {
@@ -46,7 +47,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: transparent;
+            background: rgba(50, 50, 50, var(--overlay-opacity));
             pointer-events: none;
             transition: background 2s ease;
             z-index: 1;
@@ -113,6 +114,21 @@
             color: #fff;
         }
 
+        .happy .section-content {
+            display: none;
+        }
+
+        .happy-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ffd700;
+            display: none;
+        }
+
+        .happy .happy-content {
+            display: block;
+        }
+
         .glitched .title, .glitched .subtitle, .glitched .section-title, .glitched .section-content {
             font-family: 'Creepster', cursive;
             color: #e0e0e0;
@@ -137,6 +153,14 @@
 
         .glitched .section {
             background: rgba(20, 20, 20, 0.8);
+        }
+
+        .glitched .happy-content {
+            display: none;
+        }
+
+        .glitched .section-content {
+            display: block;
         }
 
         .twitch {
@@ -279,13 +303,13 @@
             .glitched .subtitle { font-size: 1.4rem; }
             .section-title { font-size: 1.4rem; }
             .glitched .section-title { font-size: 1.6rem; }
-            .section-content { font-size: 0.9rem; }
+            .section-content, .happy-content { font-size: 0.9rem; }
             .glitched .section-content { font-size: 1rem; }
             .play-button { font-size: 1rem; padding: 10px 20px; }
         }
     </style>
 </head>
-<body>
+<body class="happy">
     <div class="background-transition"></div>
     <div class="grey-overlay"></div>
     <div class="static-overlay"></div>
@@ -295,6 +319,9 @@
         
         <section class="section">
             <h3 class="section-title">Welcome to the Castle</h3>
+            <p class="happy-content">
+                It's-a me, Mario! Welcome to Peach's Castle, where the stars shine bright! Let's-a go on a fun adventure to collect all the Power Stars and save the day! Yahoo!
+            </p>
             <p class="section-content">
                 Step into a warped version of Peach's Castle from Super Mario 64, now a haunting, monochrome nightmare. As "Mar," a distorted Mario, you must collect 5 Bleached Stars to uncover the castle's dark secrets. Traverse eerie halls, solve puzzles, and face twisted versions of familiar characters in this VRChat horror experience.
             </p>
@@ -302,6 +329,9 @@
 
         <section class="section">
             <h3 class="section-title">Game Features</h3>
+            <p class="happy-content">
+                Wahoo! Jump, run, and grab those shiny stars! Use your camera to find secret coins and surprises. It's-a gonna be a super fun time in the castle!
+            </p>
             <p class="section-content">
                 <strong>Camera Gimmick:</strong> Use the VRChat camera to reveal hidden objects, events, and secrets, adding depth to exploration and puzzles.<br>
                 <strong>Light Platforming & Puzzles:</strong> Navigate with wall-jumping and running to collect Bleached Stars, combined with clever camera-based puzzles.<br>
@@ -311,6 +341,9 @@
 
         <section class="section">
             <h3 class="section-title">Characters</h3>
+            <p class="happy-content">
+                Meet Mario's pals! There's Peach, Toad, and those friendly Lakitu guys! Even the Boos are just playing hide-and-seek. Let's-a make some new friends!
+            </p>
             <p class="section-content">
                 <strong>Mar:</strong> A shadowed, gaunt Mario with glowing red eyes, determined to save the castle.<br>
                 <strong>Twisted Peach:</strong> A static-coated, distorted figure lurking in the camera's view.<br>
@@ -322,6 +355,9 @@
 
         <section class="section">
             <h3 class="section-title">The Corruption</h3>
+            <p class="happy-content">
+                Oh no! The castle's got some tricky glitches, but Mario's gonna fix it all up! Let's collect those stars and make everything super-duper again!
+            </p>
             <p class="section-content">
                 A modded Super Mario 64, intended as a full game conversion, was abandoned after file corruption. This unleashed a dark force, twisting the castle and its residents into a broken, eldritch world. Can you restore order, or will the castle claim you too?
             </p>
@@ -371,10 +407,19 @@
                 staticSfx.volume = volumeControl.value;
             });
 
+            // Progressive background darkening
+            let overlayOpacity = 0;
+            const maxOpacity = 0.6;
+            const darkeningInterval = setInterval(() => {
+                overlayOpacity = Math.min(overlayOpacity + 0.01, maxOpacity);
+                body.style.setProperty('--overlay-opacity', overlayOpacity);
+            }, 1000); // Increase opacity every second, max after 60s
+
             // Glitch effect after 7 seconds
             setTimeout(() => {
                 // Freeze effect for 4 seconds
                 body.classList.add('frozen');
+                body.classList.remove('happy');
                 staticSfx.play();
 
                 // Start chaotic card glitching
