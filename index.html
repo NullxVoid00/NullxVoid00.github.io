@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abyssal Light Games</title>
     <style>
+        /* All CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -1067,7 +1068,7 @@
                 },
                 {
                     title: "Enclave 447",
-                    description: "Adventure Game: Friends reunite in a strange town after a tragedy.",
+                    description: "Adventure Game: Friends reunite in a strange town after a tragedy occurs, uniting them again to watch a meteorological event.",
                     image: "Art Folder/GameProject7.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1410,13 +1411,12 @@
             canvasOffset: { x: 0, y: 0 },
             velocity: { x: 0, y: 0 },
             mousePos: { x: 0.5, y: 0.5 },
-            worldSize: { width: 10000, height: 10000 }, // Increased world size for more images
+            worldSize: { width: 10000, height: 10000 },
             focusedImage: null,
             animationId: null,
             isGalleryActive: false
         };
 
-        // Generate 120 gallery image filenames
         const galleryImages = Array.from({ length: 120 }, (_, i) => `GalleryProject${i + 1}.jpg`);
 
         function initializeGallery() {
@@ -1425,16 +1425,29 @@
             
             if (!viewport || !canvas || galleryState.images.length > 0) return;
             
-            // Scatter images across the world with minimum spacing
-            const minSpacing = 350; // Minimum distance between image centers
-            const maxAttempts = 100; // Prevent infinite loops
-            const imageSize = 300; // Approximate size for collision detection
+            const minSpacing = 350;
+            const maxAttempts = 100;
+            const imageSize = 300;
             
-            galleryImages.forEach((image, index) => {
+            // Ensure at least 2 images in viewport by adjusting spawn density
+            const viewportRect = viewport.getBoundingClientRect();
+            const imagesPerViewport = 2; // Minimum number of images
+            const viewportArea = viewportRect.width * viewportRect.height;
+            const imageArea = imageSize * imageSize;
+            const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
+            
+            // Generate additional image positions if needed
+            const imagesToUse = galleryImages.slice(0, totalImages);
+            if (totalImages > galleryImages.length) {
+                for (let i = galleryImages.length; i < totalImages; i++) {
+                    imagesToUse.push(galleryImages[i % galleryImages.length]);
+                }
+            }
+            
+            imagesToUse.forEach((image, index) => {
                 let position;
                 let attempts = 0;
                 
-                // Try to find a non-overlapping position
                 do {
                     position = {
                         x: Math.random() * (galleryState.worldSize.width - imageSize),
@@ -1450,16 +1463,12 @@
                 galleryState.images.push(position);
             });
             
-            // Set up mouse movement tracking
             viewport.addEventListener('mousemove', handleGalleryMouseMove);
             viewport.addEventListener('mouseleave', handleGalleryMouseLeave);
             
-            // Start with canvas centered
-            const viewportRect = viewport.getBoundingClientRect();
             galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
             galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
             
-            // Initial load of visible images
             loadAllVisibleImages();
         }
 
@@ -1495,9 +1504,8 @@
             const canvas = document.getElementById('galleryCanvas');
             if (!canvas) return;
             
-            // Calculate velocity based on mouse position
             const maxSpeed = 15;
-            const deadZone = 0.2; // 20% dead zone in center
+            const deadZone = 0.2;
             
             const distX = galleryState.mousePos.x - 0.5;
             const distY = galleryState.mousePos.y - 0.5;
@@ -1512,27 +1520,23 @@
             galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
             galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
             
-            // Update canvas position
             galleryState.canvasOffset.x -= galleryState.velocity.x;
             galleryState.canvasOffset.y -= galleryState.velocity.y;
             
-            // Update directional arrows
             const arrowThreshold = 1;
             document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
             document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
             document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
             document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
             
-            // Apply repulsion forces
-            const repulsionStrength = 0.5; // Adjust for desired push strength
-            const repulsionDistance = 350; // Distance at which repulsion starts
-            const damping = 0.9; // Reduce velocity over time
+            const repulsionStrength = 0.5;
+            const repulsionDistance = 350;
+            const damping = 0.9;
             
             galleryState.images.forEach((img1, i) => {
                 let forceX = 0;
                 let forceY = 0;
                 
-                // Calculate repulsion from other images
                 galleryState.images.forEach((img2, j) => {
                     if (i !== j) {
                         const dx = img1.x - img2.x;
@@ -1547,19 +1551,15 @@
                     }
                 });
                 
-                // Update velocity
                 img1.velocityX = (img1.velocityX + forceX) * damping;
                 img1.velocityY = (img1.velocityY + forceY) * damping;
                 
-                // Update position
                 img1.x += img1.velocityX;
                 img1.y += img1.velocityY;
                 
-                // Keep images within world bounds
                 img1.x = Math.max(0, Math.min(img1.x, galleryState.worldSize.width));
                 img1.y = Math.max(0, Math.min(img1.y, galleryState.worldSize.height));
                 
-                // Update loaded image elements
                 const imgElement = galleryState.loadedImages.get(img1.id);
                 if (imgElement) {
                     imgElement.style.left = img1.x + 'px';
@@ -1567,7 +1567,6 @@
                 }
             });
             
-            // Wrap around logic
             const wrapBuffer = 1000;
             if (galleryState.canvasOffset.x > wrapBuffer) {
                 galleryState.canvasOffset.x -= galleryState.worldSize.width;
@@ -1585,61 +1584,24 @@
                 repositionImages();
             }
             
-            // Update canvas transform
             canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
             
-            // Update visible images
-            if (Math.abs(galleryState.velocity.x) > 0.5 || Math.abs(galleryState.velocity.y) > 0.5) {
-                updateVisibleImages();
-            }
+            updateVisibleImages();
             
             galleryState.animationId = requestAnimationFrame(updateGalleryView);
         }
 
-        let updateVisibleImagesTimeout = null;
         function updateVisibleImages() {
-            clearTimeout(updateVisibleImagesTimeout);
-            updateVisibleImagesTimeout = setTimeout(() => {
-                const viewport = document.getElementById('galleryViewport');
-                if (!viewport) return;
-                
-                const viewportRect = viewport.getBoundingClientRect();
-                const buffer = 400;
-                
-                galleryState.images.forEach(imgData => {
-                    const worldX = imgData.x + galleryState.canvasOffset.x;
-                    const worldY = imgData.y + galleryState.canvasOffset.y;
-                    
-                    const isVisible = (
-                        worldX > -buffer && 
-                        worldX < viewportRect.width + buffer &&
-                        worldY > -buffer && 
-                        worldY < viewportRect.height + buffer
-                    );
-                    
-                    if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
-                        const imgElement = createGalleryImage(imgData);
-                        document.getElementById('galleryCanvas').appendChild(imgElement);
-                        galleryState.loadedImages.set(imgData.id, imgElement);
-                    } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
-                        const farBuffer = 800;
-                        if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
-                            worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
-                            const imgElement = galleryState.loadedImages.get(imgData.id);
-                            imgElement.remove();
-                            galleryState.loadedImages.delete(imgData.id);
-                        }
-                    }
-                });
-            }, 100);
-        }
-
-        function loadAllVisibleImages() {
             const viewport = document.getElementById('galleryViewport');
             if (!viewport) return;
             
             const viewportRect = viewport.getBoundingClientRect();
             const buffer = 400;
+            const minVisibleImages = 2;
+            
+            // Count currently visible images
+            let visibleCount = 0;
+            const visibleImages = [];
             
             galleryState.images.forEach(imgData => {
                 const worldX = imgData.x + galleryState.canvasOffset.x;
@@ -1652,12 +1614,130 @@
                     worldY < viewportRect.height + buffer
                 );
                 
+                if (isVisible) {
+                    visibleCount++;
+                    visibleImages.push(imgData);
+                }
+                
+                // Load image if visible and not loaded
                 if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
                     const imgElement = createGalleryImage(imgData);
                     document.getElementById('galleryCanvas').appendChild(imgElement);
                     galleryState.loadedImages.set(imgData.id, imgElement);
+                } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
+                    const farBuffer = 800;
+                    if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
+                        worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
+                        const imgElement = galleryState.loadedImages.get(imgData.id);
+                        imgElement.remove();
+                        galleryState.loadedImages.delete(imgData.id);
+                    }
                 }
             });
+            
+            // If fewer than 2 images are visible, spawn additional ones
+            if (visibleCount < minVisibleImages) {
+                const imagesToAdd = minVisibleImages - visibleCount;
+                const imageSize = 300;
+                const minSpacing = 350;
+                const maxAttempts = 50;
+                
+                for (let i = 0; i < imagesToAdd; i++) {
+                    let position;
+                    let attempts = 0;
+                    
+                    // Try to place new image within viewport
+                    do {
+                        const viewportX = Math.random() * viewportRect.width;
+                        const viewportY = Math.random() * viewportRect.height;
+                        position = {
+                            x: viewportX - galleryState.canvasOffset.x,
+                            y: viewportY - galleryState.canvasOffset.y,
+                            image: galleryImages[Math.floor(Math.random() * galleryImages.length)],
+                            id: `gallery-img-${galleryState.images.length + i}`,
+                            velocityX: 0,
+                            velocityY: 0
+                        };
+                        attempts++;
+                    } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
+                    
+                    if (attempts < maxAttempts) {
+                        galleryState.images.push(position);
+                        const imgElement = createGalleryImage(position);
+                        document.getElementById('galleryCanvas').appendChild(imgElement);
+                        galleryState.loadedImages.set(position.id, imgElement);
+                    }
+                }
+            }
+        }
+
+        function loadAllVisibleImages() {
+            const viewport = document.getElementById('galleryViewport');
+            if (!viewport) return;
+            
+            const viewportRect = viewport.getBoundingClientRect();
+            const buffer = 400;
+            const minVisibleImages = 2;
+            
+            // Load initially visible images
+            let visibleCount = 0;
+            const visibleImages = [];
+            
+            galleryState.images.forEach(imgData => {
+                const worldX = imgData.x + galleryState.canvasOffset.x;
+                const worldY = imgData.y + galleryState.canvasOffset.y;
+                
+                const isVisible = (
+                    worldX > -buffer && 
+                    worldX < viewportRect.width + buffer &&
+                    worldY > -buffer && 
+                    worldY < viewportRect.height + buffer
+                );
+                
+                if (isVisible) {
+                    visibleCount++;
+                    visibleImages.push(imgData);
+                    if (!galleryState.loadedImages.has(imgData.id)) {
+                        const imgElement = createGalleryImage(imgData);
+                        document.getElementById('galleryCanvas').appendChild(imgElement);
+                        galleryState.loadedImages.set(imgData.id, imgElement);
+                    }
+                }
+            });
+            
+            // Ensure at least 2 images are loaded
+            if (visibleCount < minVisibleImages) {
+                const imagesToAdd = minVisibleImages - visibleCount;
+                const imageSize = 300;
+                const minSpacing = 350;
+                const maxAttempts = 50;
+                
+                for (let i = 0; i < imagesToAdd; i++) {
+                    let position;
+                    let attempts = 0;
+                    
+                    do {
+                        const viewportX = Math.random() * viewportRect.width;
+                        const viewportY = Math.random() * viewportRect.height;
+                        position = {
+                            x: viewportX - galleryState.canvasOffset.x,
+                            y: viewportY - galleryState.canvasOffset.y,
+                            image: galleryImages[Math.floor(Math.random() * galleryImages.length)],
+                            id: `gallery-img-${galleryState.images.length + i}`,
+                            velocityX: 0,
+                            velocityY: 0
+                        };
+                        attempts++;
+                    } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
+                    
+                    if (attempts < maxAttempts) {
+                        galleryState.images.push(position);
+                        const imgElement = createGalleryImage(position);
+                        document.getElementById('galleryCanvas').appendChild(imgElement);
+                        galleryState.loadedImages.set(position.id, imgElement);
+                    }
+                }
+            }
         }
 
         function repositionImages() {
