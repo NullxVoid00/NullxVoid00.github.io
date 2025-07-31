@@ -159,9 +159,10 @@
             color: var(--primary-white);
             cursor: pointer;
             padding: 5px;
-            font-size: 1rem;
-            opacity: 0.6;
+            font-size: 1.2rem;
+            opacity: 0.8;
             transition: opacity 0.3s ease;
+            line-height: 1;
         }
 
         .password-toggle:hover {
@@ -428,6 +429,35 @@
             right: 2rem;
         }
 
+        .project-card.unavailable {
+            opacity: 0.5;
+            filter: grayscale(100%);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .project-card.unavailable:hover {
+            transform: none;
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: none;
+        }
+
+        .project-card.unavailable img {
+            filter: brightness(0.5);
+        }
+
+        .project-card.unavailable .project-card-content h3::after {
+            content: " (UNAVAILABLE)";
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .project-card.unavailable .project-card-content p,
+        .project-card.unavailable .progress-bar,
+        .project-card.unavailable .progress-bar-label {
+            display: none;
+        }
+
         .gallery-viewport {
             position: relative;
             width: 100%;
@@ -567,32 +597,16 @@
             display: block;
         }
 
-        .gallery-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 200;
-            display: none;
-            cursor: pointer;
-        }
-
-        .gallery-overlay.active {
-            display: block;
-        }
-
         .gallery-image.centered {
-            z-index: 201;
+            z-index: 100;
             transition: transform 0.3s ease;
-            transform: scale(2);
+            transform: scale(1.3);
             position: relative;
         }
         
         .gallery-image.centered img {
-            max-width: min(600px, 90vw);
-            max-height: min(600px, 70vh);
+            box-shadow: 0 0 50px rgba(220,20,60,0.8);
+            border-color: var(--accent-red);
         }
 
         .gallery-image.centered .gallery-image-info {
@@ -851,14 +865,9 @@
             }
 
             .gallery-image.centered {
-                transform: scale(1.5) !important;
-                z-index: 201;
+                transform: scale(1.2) !important;
+                z-index: 100;
                 position: relative;
-            }
-            
-            .gallery-image.centered img {
-                max-width: min(400px, 85vw);
-                max-height: min(400px, 60vh);
             }
 
             .gallery-image-info {
@@ -884,7 +893,7 @@
                        id="passwordInput" 
                        placeholder="Enter Password"
                        autocomplete="off">
-                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()"></button>
+                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()" type="button">👁</button>
             </div>
             <div class="error-message" id="errorMessage">Access Denied</div>
         </div>
@@ -989,7 +998,6 @@
             <div class="gallery-arrow left" id="arrowLeft">▲</div>
             <div class="gallery-arrow right" id="arrowRight">▲</div>
         </div>
-        <div class="gallery-overlay" id="galleryOverlay"></div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
@@ -1058,7 +1066,7 @@
         function togglePassword() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            document.getElementById('passwordToggle').textContent = type === 'password' ? '' : '';
+            document.getElementById('passwordToggle').textContent = type === 'password' ? '👁' : '●';
         }
 
         passwordInput.addEventListener('input', function() {
@@ -1173,7 +1181,7 @@
                 {
                     title: "Omni-Cube",
                     description: "Multi-sided gravity cube, with 6 different themes for each side and switchable skyboxes and video player.",
-                    image: "Art Folder/VRCProjectOmni.jpg",
+                    image: "Art Folder/VRCProject12.jpg",
                     link: "https://vrchat.com/home/launch?worldId=wrld_58b431d7-e804-44dc-975d-d0cbf0593e77",
                     progress: "Completed"
                 },
@@ -1194,7 +1202,7 @@
                 {
                     title: "Abyssal: Club and Arcade",
                     description: "Immensely Customizable Bar and Arcade with many hangout areas including a bar and theater.",
-                    image: "Art Folder/VRCProjectAbyssal.jpg",
+                    image: "Art Folder/VRCProject15.jpg",
                     link: "https://vrchat.com/home/launch?worldId=wrld_d02a5236-9024-49bd-ba3e-f6384a48872f",
                     progress: "Completed"
                 },
@@ -1473,35 +1481,75 @@
             carousel.style.width = '100%';
             carousel.style.height = '100%';
             
-            data.forEach((project, index) => {
+            // Sort data based on completion and availability
+            const sortedData = [...data].sort((a, b) => {
+                // Check if projects are unavailable
+                const aUnavailable = a.image.includes('(x)');
+                const bUnavailable = b.image.includes('(x)');
+                
+                // Unavailable projects go to the end
+                if (aUnavailable && !bUnavailable) return 1;
+                if (!aUnavailable && bUnavailable) return -1;
+                if (aUnavailable && bUnavailable) return 0;
+                
+                // Sort by completion status
+                const getCompletionOrder = (project) => {
+                    if (project.progress === "Completed") return 0;
+                    if (project.progress && project.progress.status === "Unfinished") return 1;
+                    return 2; // Concept
+                };
+                
+                const aOrder = getCompletionOrder(a);
+                const bOrder = getCompletionOrder(b);
+                
+                if (aOrder !== bOrder) return aOrder - bOrder;
+                
+                // If both are unfinished, sort by percentage
+                if (a.progress && a.progress.status === "Unfinished" && 
+                    b.progress && b.progress.status === "Unfinished") {
+                    return b.progress.percentage - a.progress.percentage;
+                }
+                
+                return 0;
+            });
+            
+            sortedData.forEach((project, index) => {
                 const card = document.createElement('div');
                 card.className = 'project-card';
+                
+                // Check if project is unavailable
+                const isUnavailable = project.image.includes('(x)');
+                if (isUnavailable) {
+                    card.classList.add('unavailable');
+                }
                 
                 card.style.left = '50%';
                 card.style.top = '50%';
                 
                 let progressHTML = '';
-                if (project.progress === "Completed") {
-                    progressHTML = `
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: 100%;"></div>
-                        </div>
-                        <div class="progress-bar-label">Progress: Completed</div>
-                    `;
-                } else if (project.progress === "Concept") {
-                    progressHTML = `
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: 0%;"></div>
-                        </div>
-                        <div class="progress-bar-label">Progress: Concept</div>
-                    `;
-                } else if (project.progress.status === "Unfinished") {
-                    progressHTML = `
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${project.progress.percentage}%;"></div>
-                        </div>
-                        <div class="progress-bar-label">Progress: Unfinished (${project.progress.percentage}%)</div>
-                    `;
+                if (!isUnavailable) {
+                    if (project.progress === "Completed") {
+                        progressHTML = `
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: 100%;"></div>
+                            </div>
+                            <div class="progress-bar-label">Progress: Completed</div>
+                        `;
+                    } else if (project.progress === "Concept") {
+                        progressHTML = `
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="progress-bar-label">Progress: Concept</div>
+                        `;
+                    } else if (project.progress.status === "Unfinished") {
+                        progressHTML = `
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: ${project.progress.percentage}%;"></div>
+                            </div>
+                            <div class="progress-bar-label">Progress: Unfinished (${project.progress.percentage}%)</div>
+                        `;
+                    }
                 }
 
                 card.innerHTML = `
@@ -1513,7 +1561,7 @@
                     </div>
                 `;
                 
-                if (project.link && project.link !== '#') {
+                if (!isUnavailable && project.link && project.link !== '#') {
                     card.onclick = () => {
                         if (project.link.startsWith('http')) {
                             window.open(project.link, '_blank');
@@ -1595,10 +1643,11 @@
         }
 
         function moveCarousel(type, direction) {
-            const data = projectData[type];
+            const carousel = document.getElementById(`${type}Carousel`);
+            const cards = carousel.querySelectorAll('.project-card');
             const state = carouselStates[type];
             
-            state.currentIndex = Math.max(0, Math.min(data.length - 1, state.currentIndex + direction));
+            state.currentIndex = Math.max(0, Math.min(cards.length - 1, state.currentIndex + direction));
             updateCarouselPositions(type);
         }
 
@@ -2070,42 +2119,11 @@
             
             const isMobile = window.innerWidth <= 768;
             
-            if (isMobile) {
-                let tapCount = 0;
-                let tapTimer = null;
-                
-                container.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    tapCount++;
-                    
-                    if (tapCount === 1) {
-                        container.classList.add('show-title');
-                        tapTimer = setTimeout(() => {
-                            tapCount = 0;
-                        }, 300);
-                    } else if (tapCount === 2) {
-                        clearTimeout(tapTimer);
-                        tapCount = 0;
-                        
-                        if (container.classList.contains('centered')) {
-                            closeCenteredImage();
-                        } else {
-                            centerImage(container);
-                        }
-                    }
-                    playClickSound();
-                });
-            } else {
-                container.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (container.classList.contains('centered')) {
-                        closeCenteredImage();
-                    } else {
-                        centerImage(container);
-                    }
-                    playClickSound();
-                });
-            }
+            container.addEventListener('click', (e) => {
+                e.stopPropagation();
+                centerImage(container);
+                playClickSound();
+            });
             
             setTimeout(() => container.classList.add('loaded'), 50);
             
@@ -2113,8 +2131,17 @@
         }
 
         function centerImage(container) {
-            if (galleryState.focusedImage) {
+            if (galleryState.focusedImage && galleryState.focusedImage !== container) {
                 galleryState.focusedImage.classList.remove('centered');
+                galleryState.focusedImage.classList.remove('show-description');
+            }
+            
+            // Toggle centered state
+            if (container.classList.contains('centered')) {
+                container.classList.remove('centered');
+                container.classList.remove('show-description');
+                galleryState.focusedImage = null;
+                return;
             }
             
             // Get the image's current position relative to viewport
@@ -2163,17 +2190,13 @@
                 if (progress < 1) {
                     requestAnimationFrame(animatePan);
                 } else {
-                    // After pan completes, show overlay and scale the image
+                    // After pan completes, scale the image
                     galleryState.isPanning = false;
-                    const overlay = document.getElementById('galleryOverlay');
-                    overlay.classList.add('active');
                     
                     container.classList.add('centered');
                     container.classList.add('show-description');
                     
                     galleryState.focusedImage = container;
-                    
-                    overlay.onclick = closeCenteredImage;
                     
                     // Resume gallery animation
                     if (galleryState.isGalleryActive && !galleryState.animationId) {
@@ -2191,15 +2214,6 @@
                 galleryState.focusedImage.classList.remove('show-description');
                 galleryState.focusedImage.classList.remove('show-title');
                 galleryState.focusedImage = null;
-            }
-            
-            const overlay = document.getElementById('galleryOverlay');
-            overlay.classList.remove('active');
-            overlay.onclick = null;
-            
-            // Restart gallery animation if gallery is active
-            if (galleryState.isGalleryActive && !galleryState.animationId) {
-                updateGalleryView();
             }
         }
 
@@ -2236,9 +2250,8 @@
                 document.querySelectorAll('.gallery-arrow').forEach(arrow => {
                     arrow.classList.remove('active');
                 });
+                closeCenteredImage();
             }
-            
-            closeCenteredImage();
             
             document.getElementById('mainHub').style.display = 'block';
         }
@@ -2257,6 +2270,7 @@
 
         window.onload = function() {
             passwordInput.focus();
+            document.getElementById('passwordToggle').textContent = '👁';
             initializeCarousels();
             
             passwordAudio.play().catch(error => {
