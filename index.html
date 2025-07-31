@@ -587,6 +587,12 @@
             z-index: 201;
             transition: transform 0.3s ease;
             transform: scale(2);
+            position: relative;
+        }
+        
+        .gallery-image.centered img {
+            max-width: min(600px, 90vw);
+            max-height: min(600px, 70vh);
         }
 
         .gallery-image.centered .gallery-image-info {
@@ -846,6 +852,13 @@
 
             .gallery-image.centered {
                 transform: scale(1.5) !important;
+                z-index: 201;
+                position: relative;
+            }
+            
+            .gallery-image.centered img {
+                max-width: min(400px, 85vw);
+                max-height: min(400px, 60vh);
             }
 
             .gallery-image-info {
@@ -1149,6 +1162,92 @@
                 }
             ],
             vrchat: [
+                // Completed projects first
+                {
+                    title: "Club Flipside",
+                    description: "VRChat Experience where players dance in a zero-gravity club with optional physics, creating a surreal social space.",
+                    image: "Art Folder/VRCProject2.jpg",
+                    link: "Club-Flipside.html",
+                    progress: "Completed"
+                },
+                {
+                    title: "Omni-Cube",
+                    description: "Multi-sided gravity cube, with 6 different themes for each side and switchable skyboxes and video player.",
+                    image: "Art Folder/VRCProject12.jpg",
+                    link: "https://vrchat.com/home/launch?worldId=wrld_58b431d7-e804-44dc-975d-d0cbf0593e77",
+                    progress: "Completed"
+                },
+                {
+                    title: "Pickup Park",
+                    description: "Park hangout environment, players can climb and ride on each other and customize environment.",
+                    image: "Art Folder/VRCProject13.jpg",
+                    link: "https://vrchat.com/home/launch?worldId=wrld_8a5ee9df-7dc3-47b9-a3b2-1b19a771cd89",
+                    progress: "Completed"
+                },
+                {
+                    title: "Void Island Redux",
+                    description: "Island hangout world, customizable settings, house hangout and secrets.",
+                    image: "Art Folder/VRCProject14.jpg",
+                    link: "#",
+                    progress: "Completed"
+                },
+                {
+                    title: "Abyssal: Club and Arcade",
+                    description: "Immensely Customizable Bar and Arcade with many hangout areas including a bar and theater.",
+                    image: "Art Folder/VRCProject15.jpg",
+                    link: "https://vrchat.com/home/launch?worldId=wrld_d02a5236-9024-49bd-ba3e-f6384a48872f",
+                    progress: "Completed"
+                },
+                // Unfinished projects (highest to lowest percentage)
+                {
+                    title: "360 Video Room",
+                    description: "360 video world with customization and customization options, group games.",
+                    image: "Art Folder/VRCProject16.jpg",
+                    link: "https://vrchat.com/home/launch?worldId=wrld_6c65be07-8720-48d6-81a5-f3cb16e4fc58",
+                    progress: { status: "Unfinished", percentage: 85 }
+                },
+                {
+                    title: "Vapor Waves",
+                    description: "Vaporwave themed beaches with multiple hangout areas and persistent customization.",
+                    image: "Art Folder/VRCProject17.jpg",
+                    link: "https://vrchat.com/home/launch?worldId=wrld_58f36abc-bcc4-419b-bc56-71d2dd288cf2",
+                    progress: { status: "Unfinished", percentage: 70 }
+                },
+                {
+                    title: "Super Mario 64 Warfare",
+                    description: "VRChat Experience where chaos unfolds in a colliding Mushroom Kingdom, blending nostalgia with mayhem.",
+                    image: "Art Folder/VRCProject3.jpg",
+                    link: "SM64W.html",
+                    progress: { status: "Unfinished", percentage: 40 }
+                },
+                {
+                    title: "Drifter's Passing",
+                    description: "World based off a Role-play Campaign, Noir Digital Cabaret diner/bar with option gameplay elements and record player with savable custom records.",
+                    image: "Art Folder/VRCProject18.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 40 }
+                },
+                {
+                    title: "Joyride",
+                    description: "Vehicle Hangout world allowing you to chill in an automated drive in different select environments and vehicles.",
+                    image: "Art Folder/VRCProject19.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 40 }
+                },
+                {
+                    title: "Sonic Adventure VR",
+                    description: "VRChat Remake of Sonic Adventure with rebuilt physics and multiplayer, reimagining the classic for VR.",
+                    image: "Art Folder/SAMCover.png",
+                    link: "SAVR.html",
+                    progress: { status: "Unfinished", percentage: 20 }
+                },
+                {
+                    title: "2000's TV Room",
+                    description: "2000's TV Room, where channels can be selected that show videos exclusively to that channel, including commercials and time blocks based on realtime.",
+                    image: "Art Folder/VRCProject20.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 20 }
+                },
                 {
                     title: "Dear Mario",
                     description: "VRChat Horror where Mario, distorted as 'Mar,' hunts for 5 Bleached Stars in a monochrome, twisted castle.",
@@ -1156,6 +1255,35 @@
                     link: "Dear-Mario.html",
                     progress: { status: "Unfinished", percentage: 10 }
                 },
+                {
+                    title: "EGO/TRIP",
+                    description: "VRChat Experience guiding players through a surreal labyrinth of the mind, serving as a prelude to deeper narratives.",
+                    image: "Art Folder/VRCProject0.jpg",
+                    link: "ego-trip.html",
+                    progress: { status: "Unfinished", percentage: 10 }
+                },
+                {
+                    title: "The Static Speaks My Name Remake",
+                    description: "Remake of the Indie horror game of the same name, inside the mind and apartment of a tortured mind.",
+                    image: "Art Folder/VRCProject21.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 10 }
+                },
+                {
+                    title: "End with You",
+                    description: "VRChat Experience where players have 30 minutes before an apocalypse to interact with NPCs, fulfill requests, or offer comfort, with a journal tracking routines.",
+                    image: "Art Folder/VRCProject1.jpg",
+                    link: "end-with-you.html",
+                    progress: { status: "Unfinished", percentage: 5 }
+                },
+                {
+                    title: "Super Mario 64 Warfare: Zombies",
+                    description: "Zombies mode version of Super Mario 64 Warfare, based around co-op and wave survival, similar to Call of Duty Zombies.",
+                    image: "Art Folder/VRCProject22.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 5 }
+                },
+                // Concept projects
                 {
                     title: "Escape Unit",
                     description: "Asymmetric VRChat Horror where players navigate haunted locations against unique monsters, guided by control room allies.",
@@ -1192,49 +1320,23 @@
                     progress: "Concept"
                 },
                 {
-                    title: "End with You",
-                    description: "VRChat Experience where players have 30 minutes before an apocalypse to interact with NPCs, fulfill requests, or offer comfort, with a journal tracking routines.",
-                    image: "Art Folder/VRCProject1.jpg",
-                    link: "end-with-you.html",
-                    progress: { status: "Unfinished", percentage: 5 }
-                },
-                {
-                    title: "EGO/TRIP",
-                    description: "VRChat Experience guiding players through a surreal labyrinth of the mind, serving as a prelude to deeper narratives.",
-                    image: "Art Folder/VRCProject0.jpg",
-                    link: "ego-trip.html",
-                    progress: { status: "Unfinished", percentage: 10 }
-                },
-                {
-                    title: "Club Flipside",
-                    description: "VRChat Experience where players dance in a zero-gravity club with optional physics, creating a surreal social space.",
-                    image: "Art Folder/VRCProject2.jpg",
-                    link: "Club-Flipside.html",
-                    progress: "Completed"
-                },
-                {
-                    title: "Super Mario 64 Warfare",
-                    description: "VRChat Experience where chaos unfolds in a colliding Mushroom Kingdom, blending nostalgia with mayhem.",
-                    image: "Art Folder/VRCProject3.jpg",
-                    link: "SM64W.html",
-                    progress: { status: "Unfinished", percentage: 40 }
-                },
-                {
-                    title: "Sonic Adventure VR",
-                    description: "VRChat Remake of Sonic Adventure with rebuilt physics and multiplayer, reimagining the classic for VR.",
-                    image: "Art Folder/SAMCover.png",
-                    link: "SAVR.html",
-                    progress: { status: "Unfinished", percentage: 20 }
-                },
-                {
-                    title: "Coming Soon",
-                    description: "New immersive worlds are being crafted in the depths of the abyss, awaiting exploration.",
-                    image: "Art Folder/VRCProject11.jpg",
+                    title: "FNAF Prophunt",
+                    description: "Prophunt based in Freddy Fazbear's Pizzaria, with jump scare prop mechanics.",
+                    image: "Art Folder/VRCProject23.jpg",
                     link: "#",
                     progress: "Concept"
                 }
             ],
             other: [
+                // Unfinished projects first
+                {
+                    title: "Wraith Blade VRChat Project",
+                    description: "Arcade Machine Project made for VRChat, inspired by Vampire Survivors.",
+                    image: "Art Folder/OtherProject12.jpg",
+                    link: "#",
+                    progress: { status: "Unfinished", percentage: 20 }
+                },
+                // Concept projects
                 {
                     title: "Red Threads",
                     description: "Book/Audio Play where a detective hunts a serial killer stitching victims into grotesque displays, unraveling a chilling mystery.",
@@ -1309,6 +1411,13 @@
                     title: "LimeLight",
                     description: "Crime Thriller where a lawyer, blackmailed by a client, navigates a dangerous murder case conspiracy.",
                     image: "Art Folder/OtherProject11.jpg",
+                    link: "#",
+                    progress: "Concept"
+                },
+                {
+                    title: "REPO Board Game",
+                    description: "A board game based on the game mechanics of REPO, the Roguelite Horror Party Game.",
+                    image: "Art Folder/OtherProject13.jpg",
                     link: "#",
                     progress: "Concept"
                 }
@@ -1405,7 +1514,13 @@
                 `;
                 
                 if (project.link && project.link !== '#') {
-                    card.onclick = () => window.location.href = project.link;
+                    card.onclick = () => {
+                        if (project.link.startsWith('http')) {
+                            window.open(project.link, '_blank');
+                        } else {
+                            window.location.href = project.link;
+                        }
+                    };
                 }
                 
                 carousel.appendChild(card);
