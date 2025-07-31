@@ -147,6 +147,17 @@
             transition: all 0.3s ease;
             letter-spacing: 0.1em;
             width: 100%;
+            -webkit-text-fill-color: var(--primary-white);
+            background-color: rgba(255,255,255,0.05) !important;
+        }
+        
+        .password-input:-webkit-autofill,
+        .password-input:-webkit-autofill:hover,
+        .password-input:-webkit-autofill:focus,
+        .password-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px rgba(255,255,255,0.05) inset !important;
+            -webkit-text-fill-color: var(--primary-white) !important;
+            background-color: rgba(255,255,255,0.05) !important;
         }
 
         .password-toggle {
@@ -1661,11 +1672,11 @@
         };
 
         const galleryImages = [
-            'GalleryProject1(Rudy the Rat).jpg', 'GalleryProject2(Dynne).jpg', 'GalleryProject3(Revera).jpg', 'GalleryProject4(Fancy Eel).jpg',
+            'GalleryProject1(Rudy the Rat)[Just a goofy little guy I drew, he looks shifty lol].jpg', 'GalleryProject2(Dynne).jpg', 'GalleryProject3(Revera).jpg', 'GalleryProject4(Fancy Eel).jpg',
             'GalleryProject5(Kalen the Demon Early).jpg', 'GalleryProject6(Kirby on a Cloud).jpg', 'GalleryProject7(You Make Me Smile).jpg', 'GalleryProject8(EgoDive Conflicting Interests).jpg',
             'GalleryProject9(The Stranger).jpg', 'GalleryProject10(Tarot in Absentia).jpg', 'GalleryProject11(Fracture).jpg', 'GalleryProject12(Self Portrait).jpg',
             'GalleryProject13(Ko Overview).jpg', 'GalleryProject14(Usurper KUA).jpg', 'GalleryProject15(C.U,A,C Poster).jpg', 'GalleryProject16(CodeMonkeys Poster).jpg',
-            'GalleryProject17(Drifters Poster).jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art).jpg', 'GalleryProject20(The Lighthouse).jpg',
+            'GalleryProject17(Drifters Poster).jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art)[Art of the character that would become my first VRChat Avatar!].jpg', 'GalleryProject20(The Lighthouse).jpg',
             'GalleryProject21(Lizzie).jpg', 'GalleryProject22(Roxie).jpg', 'GalleryProject23.jpg', 'GalleryProject24.jpg',
             'GalleryProject25.jpg', 'GalleryProject26.jpg', 'GalleryProject27.jpg', 'GalleryProject28.jpg',
             'GalleryProject29.jpg', 'GalleryProject30.jpg', 'GalleryProject31.jpg', 'GalleryProject32.jpg',
@@ -1695,13 +1706,13 @@
 
         function parseImageData(filename) {
             const titleMatch = filename.match(/\(([^)]+)\)/);
-            const descriptionMatch = filename.match(/'([^']+)'/);
+            const descriptionMatch = filename.match(/\[([^\]]+)\]/);
             
             const title = titleMatch ? titleMatch[1] : filename.replace(/\.(jpg|png|gif|jpeg)$/i, '');
             const description = descriptionMatch ? descriptionMatch[1] : null;
             
             // Clean the filename for the actual image path
-            const cleanFilename = filename.replace(/'[^']+'/g, '');
+            const cleanFilename = filename.replace(/\[[^\]]+\]/g, '');
             
             return { title, description, cleanFilename };
         }
