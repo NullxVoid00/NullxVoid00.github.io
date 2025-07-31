@@ -526,24 +526,82 @@
             border-color: var(--accent-red);
         }
 
-        .gallery-image-title {
+        .gallery-image-info {
             position: absolute;
             bottom: -30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            padding: 5px 15px;
+            background: rgba(0,0,0,0.9);
+            padding: 8px 15px;
             border-radius: 5px;
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s ease;
             font-size: 0.9rem;
             pointer-events: none;
+            text-align: center;
+            max-width: 400px;
+            width: max-content;
         }
 
-        .gallery-image:hover .gallery-image-title,
-        .gallery-image.focused .gallery-image-title {
+        .gallery-image:hover .gallery-image-info,
+        .gallery-image.show-title .gallery-image-info {
             opacity: 1;
+        }
+
+        .gallery-image-title {
+            color: var(--primary-white);
+            margin-bottom: 5px;
+        }
+
+        .gallery-image-description {
+            color: #ff4444;
+            font-size: 0.85rem;
+            white-space: normal;
+            line-height: 1.3;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .gallery-image.show-description .gallery-image-description {
+            display: block;
+        }
+
+        .gallery-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            display: none;
+            cursor: pointer;
+        }
+
+        .gallery-overlay.active {
+            display: block;
+        }
+
+        .gallery-image.centered {
+            position: fixed;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) scale(2) !important;
+            z-index: 201;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-image.centered .gallery-image-info {
+            opacity: 1;
+            bottom: -80px;
+            background: rgba(0,0,0,0.95);
+            padding: 15px 25px;
+            max-width: 90vw;
+        }
+
+        .gallery-image.centered .gallery-image-description {
+            display: block;
         }
 
         .about-section {
@@ -788,6 +846,19 @@
             .gallery-arrow {
                 font-size: 2rem;
             }
+
+            .gallery-image.centered {
+                transform: translate(-50%, -50%) scale(1.5) !important;
+            }
+
+            .gallery-image-info {
+                font-size: 0.85rem;
+                bottom: -60px;
+            }
+
+            .gallery-image.centered .gallery-image-info {
+                bottom: -100px;
+            }
         }
     </style>
 </head>
@@ -907,6 +978,7 @@
             <div class="gallery-arrow left" id="arrowLeft">▲</div>
             <div class="gallery-arrow right" id="arrowRight">▲</div>
         </div>
+        <div class="gallery-overlay" id="galleryOverlay"></div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
@@ -1058,7 +1130,7 @@
                 },
                 {
                     title: "Milo's Quest",
-                    description: "Platformer following Milo, a boy escaping his monstrous father to deliver flowers to his mother’s grave in a perilous journey.",
+                    description: "Platformer following Milo, a boy escaping his monstrous father to deliver flowers to his mother's grave in a perilous journey.",
                     image: "Art Folder/GameProject6.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1116,7 +1188,7 @@
                 },
                 {
                     title: "Tsukiō Koromashi (Moon King: Roll it Up!)",
-                    description: "VR Katamari-inspired game where players roll clutter to form planets for the Moon King’s galactic empire.",
+                    description: "VR Katamari-inspired game where players roll clutter to form planets for the Moon King's galactic empire.",
                     image: "Art Folder/VRCProject10.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1174,14 +1246,14 @@
                 },
                 {
                     title: "Oracle's Burden",
-                    description: "Book following a therapist haunted by a patient’s suicide, unraveling their cryptic influence from beyond the grave.",
+                    description: "Book following a therapist haunted by a patient's suicide, unraveling their cryptic influence from beyond the grave.",
                     image: "Art Folder/OtherProject3.jpg",
                     link: "#",
                     progress: "Concept"
                 },
                 {
                     title: "M.E.G Notes 0017| Maggie",
-                    description: "Backrooms Story where a young girl and a Party-Pooper entity form a bond to survive the Backrooms’ dangers.",
+                    description: "Backrooms Story where a young girl and a Party-Pooper entity form a bond to survive the Backrooms' dangers.",
                     image: "Art Folder/OtherProject4.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1230,7 +1302,7 @@
                 },
                 {
                     title: "Charlotte & Ben",
-                    description: "Romance War Story of a man and woman longing for reunion amidst a devastating war’s chaos.",
+                    description: "Romance War Story of a man and woman longing for reunion amidst a devastating war's chaos.",
                     image: "Art Folder/OtherProject10.jpg",
                     link: "#",
                     progress: "Concept"
@@ -1427,15 +1499,18 @@
             worldSize: { width: 10000, height: 10000 },
             focusedImage: null,
             animationId: null,
-            isGalleryActive: false
+            isGalleryActive: false,
+            touchStartPos: { x: 0, y: 0 },
+            lastTouchPos: { x: 0, y: 0 },
+            isTouching: false
         };
 
         const galleryImages = [
             'GalleryProject1(Rudy the Rat).jpg', 'GalleryProject2(Dynne).jpg', 'GalleryProject3(Revera).jpg', 'GalleryProject4(Fancy Eel).jpg',
             'GalleryProject5(Kalen the Demon Early).jpg', 'GalleryProject6(Kirby on a Cloud).jpg', 'GalleryProject7(You Make Me Smile).jpg', 'GalleryProject8(EgoDive Conflicting Interests).jpg',
-            'GalleryProject9(The Stranger)', 'GalleryProject10(Tarot in Absentia).jpg', 'GalleryProject11(Fracture).jpg', 'GalleryProject12(Self Portrait)',
+            'GalleryProject9(The Stranger).jpg', 'GalleryProject10(Tarot in Absentia).jpg', 'GalleryProject11(Fracture).jpg', 'GalleryProject12(Self Portrait).jpg',
             'GalleryProject13(Ko Overview).jpg', 'GalleryProject14(Usurper KUA).jpg', 'GalleryProject15(C.U,A,C Poster).jpg', 'GalleryProject16(CodeMonkeys Poster).jpg',
-            'GalleryProject17(Drifters Poster).jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art).jpg', 'GalleryProject20(The Lightouse).jpg',
+            'GalleryProject17(Drifters Poster).jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art).jpg', 'GalleryProject20(The Lighthouse).jpg',
             'GalleryProject21(Lizzie).jpg', 'GalleryProject22(Roxie).jpg', 'GalleryProject23.jpg', 'GalleryProject24.jpg',
             'GalleryProject25.jpg', 'GalleryProject26.jpg', 'GalleryProject27.jpg', 'GalleryProject28.jpg',
             'GalleryProject29.jpg', 'GalleryProject30.jpg', 'GalleryProject31.jpg', 'GalleryProject32.jpg',
@@ -1462,6 +1537,19 @@
             'GalleryProject113.jpg', 'GalleryProject114.jpg', 'GalleryProject115.jpg', 'GalleryProject116.jpg',
             'GalleryProject117.jpg', 'GalleryProject118.jpg', 'GalleryProject119.jpg', 'GalleryProject120.jpg'
         ];
+
+        function parseImageData(filename) {
+            const titleMatch = filename.match(/\(([^)]+)\)/);
+            const descriptionMatch = filename.match(/'([^']+)'/);
+            
+            const title = titleMatch ? titleMatch[1] : filename.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            const description = descriptionMatch ? descriptionMatch[1] : null;
+            
+            // Clean the filename for the actual image path
+            const cleanFilename = filename.replace(/'[^']+'/g, '');
+            
+            return { title, description, cleanFilename };
+        }
 
         function initializeGallery() {
             const viewport = document.getElementById('galleryViewport');
@@ -1508,10 +1596,50 @@
             viewport.addEventListener('mousemove', handleGalleryMouseMove);
             viewport.addEventListener('mouseleave', handleGalleryMouseLeave);
             
+            // Touch events for mobile
+            viewport.addEventListener('touchstart', handleGalleryTouchStart, { passive: false });
+            viewport.addEventListener('touchmove', handleGalleryTouchMove, { passive: false });
+            viewport.addEventListener('touchend', handleGalleryTouchEnd, { passive: false });
+            
             galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
             galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
             
             loadAllVisibleImages();
+        }
+
+        function handleGalleryTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            galleryState.touchStartPos.x = touch.clientX;
+            galleryState.touchStartPos.y = touch.clientY;
+            galleryState.lastTouchPos.x = touch.clientX;
+            galleryState.lastTouchPos.y = touch.clientY;
+            galleryState.isTouching = true;
+        }
+
+        function handleGalleryTouchMove(e) {
+            e.preventDefault();
+            if (!galleryState.isTouching) return;
+            
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - galleryState.lastTouchPos.x;
+            const deltaY = touch.clientY - galleryState.lastTouchPos.y;
+            
+            galleryState.canvasOffset.x += deltaX;
+            galleryState.canvasOffset.y += deltaY;
+            
+            galleryState.lastTouchPos.x = touch.clientX;
+            galleryState.lastTouchPos.y = touch.clientY;
+            
+            const canvas = document.getElementById('galleryCanvas');
+            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
+            
+            updateVisibleImages();
+        }
+
+        function handleGalleryTouchEnd(e) {
+            e.preventDefault();
+            galleryState.isTouching = false;
         }
 
         function isOverlapping(newPos, existingImages, minSpacing) {
@@ -1524,6 +1652,8 @@
         }
 
         function handleGalleryMouseMove(e) {
+            if (galleryState.isTouching) return;
+            
             const viewport = e.currentTarget;
             const rect = viewport.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -1534,12 +1664,14 @@
         }
 
         function handleGalleryMouseLeave() {
+            if (galleryState.isTouching) return;
+            
             galleryState.mousePos.x = 0.5;
             galleryState.mousePos.y = 0.5;
         }
 
         function updateGalleryView() {
-            if (!galleryState.isGalleryActive) {
+            if (!galleryState.isGalleryActive || galleryState.isTouching) {
                 return;
             }
             
@@ -1793,34 +1925,102 @@
             container.style.top = imgData.y + 'px';
             container.id = imgData.id;
             
-            const img = document.createElement('img');
-            img.src = `Art Gallery/${imgData.image}`;
-            img.alt = imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            const imageData = parseImageData(imgData.image);
             
-            const titleMatch = imgData.image.match(/\(.*?\)/);
-            const titleText = titleMatch ? titleMatch[0].slice(1, -1) : imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
+            const img = document.createElement('img');
+            img.src = `Art Gallery/${imageData.cleanFilename}`;
+            img.alt = imageData.title;
             
             img.onerror = function() { this.src = 'Art Folder/placeholder.jpg'; };
             
+            const info = document.createElement('div');
+            info.className = 'gallery-image-info';
+            
             const title = document.createElement('div');
             title.className = 'gallery-image-title';
-            title.textContent = `"${titleText}"`;
+            title.textContent = `"${imageData.title}"`;
+            info.appendChild(title);
+            
+            if (imageData.description) {
+                const desc = document.createElement('div');
+                desc.className = 'gallery-image-description';
+                desc.textContent = imageData.description;
+                info.appendChild(desc);
+            }
             
             container.appendChild(img);
-            container.appendChild(title);
+            container.appendChild(info);
             
-            container.addEventListener('click', () => {
-                if (galleryState.focusedImage) {
-                    galleryState.focusedImage.classList.remove('focused');
-                }
-                container.classList.add('focused');
-                galleryState.focusedImage = container;
-                playClickSound();
-            });
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                let tapCount = 0;
+                let tapTimer = null;
+                
+                container.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    tapCount++;
+                    
+                    if (tapCount === 1) {
+                        container.classList.add('show-title');
+                        tapTimer = setTimeout(() => {
+                            tapCount = 0;
+                        }, 300);
+                    } else if (tapCount === 2) {
+                        clearTimeout(tapTimer);
+                        tapCount = 0;
+                        
+                        if (container.classList.contains('centered')) {
+                            closeCenteredImage();
+                        } else {
+                            centerImage(container);
+                        }
+                    }
+                    playClickSound();
+                });
+            } else {
+                container.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (container.classList.contains('centered')) {
+                        closeCenteredImage();
+                    } else {
+                        centerImage(container);
+                    }
+                    playClickSound();
+                });
+            }
             
             setTimeout(() => container.classList.add('loaded'), 50);
             
             return container;
+        }
+
+        function centerImage(container) {
+            if (galleryState.focusedImage) {
+                galleryState.focusedImage.classList.remove('centered');
+            }
+            
+            const overlay = document.getElementById('galleryOverlay');
+            overlay.classList.add('active');
+            
+            container.classList.add('centered');
+            container.classList.add('show-description');
+            galleryState.focusedImage = container;
+            
+            overlay.onclick = closeCenteredImage;
+        }
+
+        function closeCenteredImage() {
+            if (galleryState.focusedImage) {
+                galleryState.focusedImage.classList.remove('centered');
+                galleryState.focusedImage.classList.remove('show-description');
+                galleryState.focusedImage.classList.remove('show-title');
+                galleryState.focusedImage = null;
+            }
+            
+            const overlay = document.getElementById('galleryOverlay');
+            overlay.classList.remove('active');
+            overlay.onclick = null;
         }
 
         function showSection(sectionType) {
@@ -1858,10 +2058,7 @@
                 });
             }
             
-            if (galleryState.focusedImage) {
-                galleryState.focusedImage.classList.remove('focused');
-                galleryState.focusedImage = null;
-            }
+            closeCenteredImage();
             
             document.getElementById('mainHub').style.display = 'block';
         }
