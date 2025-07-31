@@ -340,7 +340,6 @@
         .project-card {
             position: absolute;
             width: 300px;
-            height: 450px;
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.2);
             border-radius: 15px;
@@ -348,7 +347,7 @@
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             transform-origin: center;
-            will-change: transform, opacity;
+            will-change: transform, opacity, height;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
@@ -751,7 +750,6 @@
 
             .project-card {
                 width: 280px;
-                height: 380px;
             }
 
             .project-card img {
@@ -1302,8 +1300,6 @@
                 
                 card.style.left = '50%';
                 card.style.top = '50%';
-                card.style.marginLeft = '-150px';
-                card.style.marginTop = '-225px';
                 
                 let progressHTML = '';
                 if (project.progress === "Completed") {
@@ -1359,6 +1355,21 @@
                 const absOffset = Math.abs(offset);
                 const sign = offset < 0 ? -1 : 1;
                 
+                // Reset height to auto to measure content height for focused card
+                card.style.height = 'auto';
+                
+                // Calculate content height for focused card
+                let cardHeight = isMobile ? 380 : 450; // Default heights
+                if (index === currentIndex) {
+                    const content = card.querySelector('.project-card-content');
+                    const img = card.querySelector('img');
+                    const contentHeight = content.offsetHeight;
+                    const imgHeight = isMobile ? 180 : 200;
+                    cardHeight = contentHeight + imgHeight + 4; // Include border
+                }
+                
+                card.style.height = `${cardHeight}px`;
+                
                 if (isMobile) {
                     const cardWidth = 280;
                     const translateX = offset * (cardWidth + 20);
@@ -1366,7 +1377,7 @@
                     const opacity = absOffset === 0 ? 1 : 0.3;
                     
                     card.style.marginLeft = `-${cardWidth / 2}px`;
-                    card.style.marginTop = '-190px';
+                    card.style.marginTop = `-${cardHeight / 2}px`;
                     
                     card.style.transform = `translateX(${translateX}px) scale(${scale})`;
                     card.style.opacity = opacity;
@@ -1379,6 +1390,9 @@
                     const rotateY = sign * Math.min(absOffset * 15, 45);
                     const scale = 1 - Math.min(absOffset * 0.2, 0.6);
                     const opacity = 1 - Math.min(absOffset * 0.3, 0.7);
+                    
+                    card.style.marginLeft = '-150px';
+                    card.style.marginTop = `-${cardHeight / 2}px`;
                     
                     card.style.transform = `
                         translateX(${translateX}px) 
@@ -1416,7 +1430,38 @@
             isGalleryActive: false
         };
 
-        const galleryImages = Array.from({ length: 120 }, (_, i) => `GalleryProject${i + 1}.jpg`);
+        const galleryImages = [
+            'GalleryProject1.jpg', 'GalleryProject2.jpg', 'GalleryProject3.jpg', 'GalleryProject4.jpg',
+            'GalleryProject5.jpg', 'GalleryProject6.jpg', 'GalleryProject7.jpg', 'GalleryProject8.jpg',
+            'GalleryProject9.jpg', 'GalleryProject10.jpg', 'GalleryProject11.jpg', 'GalleryProject12.jpg',
+            'GalleryProject13.jpg', 'GalleryProject14.jpg', 'GalleryProject15.jpg', 'GalleryProject16.jpg',
+            'GalleryProject17.jpg', 'GalleryProject18.jpg', 'GalleryProject19.jpg', 'GalleryProject20.jpg',
+            'GalleryProject21.jpg', 'GalleryProject22.jpg', 'GalleryProject23.jpg', 'GalleryProject24.jpg',
+            'GalleryProject25.jpg', 'GalleryProject26.jpg', 'GalleryProject27.jpg', 'GalleryProject28.jpg',
+            'GalleryProject29.jpg', 'GalleryProject30.jpg', 'GalleryProject31.jpg', 'GalleryProject32.jpg',
+            'GalleryProject33.jpg', 'GalleryProject34.jpg', 'GalleryProject35.jpg', 'GalleryProject36.jpg',
+            'GalleryProject37.jpg', 'GalleryProject38.jpg', 'GalleryProject39.jpg', 'GalleryProject40.jpg',
+            'GalleryProject41.jpg', 'GalleryProject42.jpg', 'GalleryProject43.jpg', 'GalleryProject44.jpg',
+            'GalleryProject45.jpg', 'GalleryProject46.jpg', 'GalleryProject47.jpg', 'GalleryProject48.jpg',
+            'GalleryProject49.jpg', 'GalleryProject50.jpg', 'GalleryProject51.jpg', 'GalleryProject52.jpg',
+            'GalleryProject53.jpg', 'GalleryProject54.jpg', 'GalleryProject55.jpg', 'GalleryProject56.jpg',
+            'GalleryProject57.jpg', 'GalleryProject58.jpg', 'GalleryProject59.jpg', 'GalleryProject60.jpg',
+            'GalleryProject61.jpg', 'GalleryProject62.jpg', 'GalleryProject63.jpg', 'GalleryProject64.jpg',
+            'GalleryProject65.jpg', 'GalleryProject66.jpg', 'GalleryProject67.jpg', 'GalleryProject68.jpg',
+            'GalleryProject69.jpg', 'GalleryProject70.jpg', 'GalleryProject71.jpg', 'GalleryProject72.jpg',
+            'GalleryProject73.jpg', 'GalleryProject74.jpg', 'GalleryProject75.jpg', 'GalleryProject76.jpg',
+            'GalleryProject77.jpg', 'GalleryProject78.jpg', 'GalleryProject79.jpg', 'GalleryProject80.jpg',
+            'GalleryProject81.jpg', 'GalleryProject82.jpg', 'GalleryProject83.jpg', 'GalleryProject84.jpg',
+            'GalleryProject85.jpg', 'GalleryProject86.jpg', 'GalleryProject87.jpg', 'GalleryProject88.jpg',
+            'GalleryProject89.jpg', 'GalleryProject90.jpg', 'GalleryProject91.jpg', 'GalleryProject92.jpg',
+            'GalleryProject93.jpg', 'GalleryProject94.jpg', 'GalleryProject95.jpg', 'GalleryProject96.jpg',
+            'GalleryProject97.jpg', 'GalleryProject98.jpg', 'GalleryProject99.jpg', 'GalleryProject100.jpg',
+            'GalleryProject101.jpg', 'GalleryProject102.jpg', 'GalleryProject103.jpg', 'GalleryProject104.jpg',
+            'GalleryProject105.jpg', 'GalleryProject106.jpg', 'GalleryProject107.jpg', 'GalleryProject108.jpg',
+            'GalleryProject109.jpg', 'GalleryProject110.jpg', 'GalleryProject111.jpg', 'GalleryProject112.jpg',
+            'GalleryProject113.jpg', 'GalleryProject114.jpg', 'GalleryProject115.jpg', 'GalleryProject116.jpg',
+            'GalleryProject117.jpg', 'GalleryProject118.jpg', 'GalleryProject119.jpg', 'GalleryProject120.jpg'
+        ];
 
         function initializeGallery() {
             const viewport = document.getElementById('galleryViewport');
@@ -1428,14 +1473,12 @@
             const maxAttempts = 100;
             const imageSize = 300;
             
-            // Ensure at least 2 images in viewport by adjusting spawn density
             const viewportRect = viewport.getBoundingClientRect();
             const imagesPerViewport = 2;
             const viewportArea = viewportRect.width * viewportRect.height;
             const imageArea = imageSize * imageSize;
             const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
             
-            // Generate additional image positions if needed
             const imagesToUse = galleryImages.slice(0, totalImages);
             if (totalImages > galleryImages.length) {
                 for (let i = galleryImages.length; i < totalImages; i++) {
@@ -1754,7 +1797,6 @@
             img.src = `Art Gallery/${imgData.image}`;
             img.alt = imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
             
-            // Extract text within parentheses for the title, or fallback to filename without extension
             const titleMatch = imgData.image.match(/\(.*?\)/);
             const titleText = titleMatch ? titleMatch[0].slice(1, -1) : imgData.image.replace(/\.(jpg|png|gif|jpeg)$/i, '');
             
@@ -1795,6 +1837,8 @@
                 if (!galleryState.animationId) {
                     updateGalleryView();
                 }
+            } else {
+                updateCarouselPositions(sectionType);
             }
         }
 
