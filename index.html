@@ -304,6 +304,12 @@
             box-shadow: 0 10px 30px rgba(220,20,60,0.3);
         }
 
+        .nav-section.keyboard-selected {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 30px rgba(220,20,60,0.5);
+            transform: translateY(-5px);
+        }
+
         .nav-section h2 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
@@ -948,8 +954,7 @@
             <div class="nav-grid">
                 <div class="nav-section" onclick="showSection('games')">
                     <h2>GAMES</h2>
-                    <p>Gaming Experiences and Concepts
-                         of all different kinds</p>
+                    <p>Interactive experiences exploring the human psyche</p>
                 </div>
                 <div class="nav-section" onclick="showSection('vrchat')">
                     <h2>VRCHAT WORLDS</h2>
@@ -957,19 +962,19 @@
                 </div>
                 <div class="nav-section" onclick="showSection('gallery')">
                     <h2>ART GALLERY</h2>
-                    <p>Collection of Art Created Over The Years</p>
+                    <p>Random Collection of Art Created Over the Years</p>
                 </div>
                 <div class="nav-section" onclick="window.location.href='Abyl-RPG.html'">
                     <h2>ABYL RPG SYSTEM</h2>
-                    <p>Turn-based RPG Framework for VRChat</p>
+                    <p>Turn-based RPG framework for VRChat</p>
                 </div>
                 <div class="nav-section" onclick="showSection('other')">
                     <h2>OTHER PROJECTS</h2>
-                    <p>Other Projects and Experiments From Across Different Mediums</p>
+                    <p>Other Projects and Experiments from Across Different Mediums</p>
                 </div>
                 <div class="nav-section" onclick="showAbout()">
                     <h2>ABOUT</h2>
-                    <p>Learn More About The Creator</p>
+                    <p>Learn more about the creator</p>
                 </div>
             </div>
         </div>
@@ -1001,7 +1006,7 @@
     <div class="section-view" id="gamesSection">
         <div class="section-header">
             <h2>GAMES</h2>
-            <p>Gaming Experiences and Concepts of all different kinds</p>
+            <p>Interactive experiences exploring the human psyche</p>
         </div>
         <div class="carousel-container">
             <button class="carousel-nav prev" onclick="moveCarousel('games', -1)">‹</button>
@@ -1027,7 +1032,7 @@
     <div class="section-view" id="gallerySection">
         <div class="section-header">
             <h2>ART GALLERY</h2>
-            <p>Collection of Art Created Over The Years</p>
+            <p>Random Collection of Art Created Over the Years</p>
         </div>
         <div class="gallery-viewport" id="galleryViewport">
             <div class="gallery-canvas" id="galleryCanvas"></div>
@@ -1042,7 +1047,7 @@
     <div class="section-view" id="otherSection">
         <div class="section-header">
             <h2>OTHER PROJECTS</h2>
-            <p>Other Projects and Experiments From Across Different Mediums</p>
+            <p>Other Projects and Experiments from Across Different Mediums</p>
         </div>
         <div class="carousel-container">
             <button class="carousel-nav prev" onclick="moveCarousel('other', -1)">‹</button>
@@ -1132,6 +1137,8 @@
                 setTimeout(() => {
                     passwordScreen.style.display = 'none';
                     mainHub.classList.add('active');
+                    // Reinitialize keyboard navigation now that hub is visible
+                    initKeyboardNav();
                     hubAudio.volume = 0;
                     hubAudio.play();
                     let fadeIn = setInterval(() => {
@@ -2359,6 +2366,15 @@
             }
             
             document.getElementById('mainHub').style.display = 'block';
+            
+            // Reset keyboard navigation
+            keyboardNav.enabled = false;
+            keyboardNav.currentIndex = -1;
+            if (keyboardNav.hubSections) {
+                keyboardNav.hubSections.forEach(section => {
+                    section.classList.remove('keyboard-selected');
+                });
+            }
         }
 
         function showAbout() {
@@ -2371,12 +2387,22 @@
             document.getElementById('hubHome').style.display = 'block';
             document.getElementById('aboutSection').classList.add('hidden');
             document.getElementById('backButton').classList.add('hidden');
+            
+            // Reset keyboard navigation
+            keyboardNav.enabled = false;
+            keyboardNav.currentIndex = -1;
+            if (keyboardNav.hubSections) {
+                keyboardNav.hubSections.forEach(section => {
+                    section.classList.remove('keyboard-selected');
+                });
+            }
         }
 
         window.onload = function() {
             passwordInput.focus();
             document.getElementById('passwordToggle').textContent = '👁';
             initializeCarousels();
+            initKeyboardNav();
             
             passwordAudio.play().catch(error => {
                 console.log('Autoplay prevented:', error);
@@ -2387,10 +2413,152 @@
             });
         };
 
-        // Keyboard navigation for carousels and gallery
+        // Keyboard navigation state
+        let keyboardNav = {
+            enabled: false,
+            currentIndex: -1,
+            hubSections: []
+        };
+
+        // Initialize keyboard navigation for hub
+        function initKeyboardNav() {
+            keyboardNav.hubSections = Array.from(document.querySelectorAll('#hubHome .nav-section'));
+        }
+
+        // Update keyboard selection
+        function updateKeyboardSelection(index) {
+            // Remove previous selection
+            keyboardNav.hubSections.forEach(section => {
+                section.classList.remove('keyboard-selected');
+            });
+            
+            // Add new selection
+            if (index >= 0 && index < keyboardNav.hubSections.length) {
+                keyboardNav.currentIndex = index;
+                keyboardNav.hubSections[index].classList.add('keyboard-selected');
+                keyboardNav.enabled = true;
+            }
+        }
+
+        // Navigate hub with keyboard
+        function navigateHub(direction) {
+            if (!keyboardNav.enabled) {
+                keyboardNav.enabled = true;
+                keyboardNav.currentIndex = -1;
+            }
+            
+            // Calculate grid dimensions
+            const gridContainer = document.querySelector('.nav-grid');
+            const computedStyle = window.getComputedStyle(gridContainer);
+            const gridTemplateColumns = computedStyle.gridTemplateColumns;
+            const cols = gridTemplateColumns.split(' ').length;
+            
+            let newIndex = keyboardNav.currentIndex;
+            
+            switch(direction) {
+                case 'up':
+                    newIndex = keyboardNav.currentIndex - cols;
+                    if (newIndex < 0) {
+                        // Wrap to bottom row, same column
+                        const currentCol = keyboardNav.currentIndex % cols;
+                        const lastRowStart = Math.floor((keyboardNav.hubSections.length - 1) / cols) * cols;
+                        newIndex = Math.min(lastRowStart + currentCol, keyboardNav.hubSections.length - 1);
+                    }
+                    break;
+                case 'down':
+                    newIndex = keyboardNav.currentIndex + cols;
+                    if (newIndex >= keyboardNav.hubSections.length) {
+                        // Wrap to top row, same column
+                        newIndex = keyboardNav.currentIndex % cols;
+                    }
+                    break;
+                case 'left':
+                    newIndex = keyboardNav.currentIndex - 1;
+                    if (newIndex < 0 || (keyboardNav.currentIndex % cols === 0)) {
+                        // Wrap to end of current row
+                        const currentRow = Math.floor(keyboardNav.currentIndex / cols);
+                        newIndex = Math.min((currentRow + 1) * cols - 1, keyboardNav.hubSections.length - 1);
+                    }
+                    break;
+                case 'right':
+                    newIndex = keyboardNav.currentIndex + 1;
+                    if (newIndex >= keyboardNav.hubSections.length || (newIndex % cols === 0)) {
+                        // Wrap to start of current row
+                        newIndex = Math.floor(keyboardNav.currentIndex / cols) * cols;
+                    }
+                    break;
+            }
+            
+            updateKeyboardSelection(newIndex);
+        }
+
+        // Keyboard navigation for entire app
         document.addEventListener('keydown', function(e) {
             // Don't handle keyboard navigation if user is typing in an input
             if (document.activeElement.tagName === 'INPUT') return;
+            
+            // Volume control with Shift + Up/Down or W/S
+            if (e.shiftKey) {
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                    e.preventDefault();
+                    volumeSlider.value = Math.min(1, parseFloat(volumeSlider.value) + 0.1);
+                    volumeSlider.dispatchEvent(new Event('input'));
+                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                    e.preventDefault();
+                    volumeSlider.value = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
+                    volumeSlider.dispatchEvent(new Event('input'));
+                }
+                return;
+            }
+            
+            // Escape key to go back
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                // If in about section
+                if (!document.getElementById('aboutSection').classList.contains('hidden')) {
+                    showHub();
+                    playClickSound();
+                }
+                // If in any other section
+                else if (document.querySelector('.section-view.active')) {
+                    closeSection();
+                    playClickSound();
+                }
+                return;
+            }
+            
+            // Hub navigation
+            if (document.getElementById('hubHome').style.display !== 'none' && 
+                document.getElementById('aboutSection').classList.contains('hidden')) {
+                
+                if (e.key === 'Enter' && keyboardNav.enabled && keyboardNav.currentIndex >= 0) {
+                    e.preventDefault();
+                    keyboardNav.hubSections[keyboardNav.currentIndex].click();
+                    playClickSound();
+                    // Reset keyboard navigation when entering a section
+                    keyboardNav.enabled = false;
+                    keyboardNav.currentIndex = -1;
+                    keyboardNav.hubSections.forEach(section => {
+                        section.classList.remove('keyboard-selected');
+                    });
+                    return;
+                }
+                
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                    e.preventDefault();
+                    navigateHub('up');
+                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+                    e.preventDefault();
+                    navigateHub('down');
+                } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                    e.preventDefault();
+                    navigateHub('left');
+                } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                    e.preventDefault();
+                    navigateHub('right');
+                }
+                return;
+            }
             
             // Check if gallery is active
             if (document.getElementById('gallerySection').classList.contains('active')) {
@@ -2457,6 +2625,17 @@
                     moveCarousel(activeSection, 1);
                     playClickSound();
                 }
+            }
+        });
+
+        // Reset keyboard navigation when clicking anywhere
+        document.addEventListener('click', function() {
+            if (keyboardNav.enabled) {
+                keyboardNav.enabled = false;
+                keyboardNav.currentIndex = -1;
+                keyboardNav.hubSections.forEach(section => {
+                    section.classList.remove('keyboard-selected');
+                });
             }
         });
 
