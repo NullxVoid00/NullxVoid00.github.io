@@ -2442,16 +2442,19 @@
 
         // Navigate hub with keyboard
         function navigateHub(direction) {
-            if (!keyboardNav.enabled) {
+            if (!keyboardNav.enabled || keyboardNav.currentIndex === -1) {
                 keyboardNav.enabled = true;
-                keyboardNav.currentIndex = -1;
+                keyboardNav.currentIndex = 0; // Start at Games (first item)
+                updateKeyboardSelection(0);
+                return;
             }
             
             // Calculate grid dimensions
             const gridContainer = document.querySelector('.nav-grid');
-            const computedStyle = window.getComputedStyle(gridContainer);
-            const gridTemplateColumns = computedStyle.gridTemplateColumns;
-            const cols = gridTemplateColumns.split(' ').length;
+            const containerWidth = gridContainer.offsetWidth;
+            const firstSection = gridContainer.querySelector('.nav-section');
+            const sectionWidth = firstSection ? firstSection.offsetWidth + parseInt(window.getComputedStyle(firstSection).marginRight) * 2 : 350;
+            const cols = Math.max(1, Math.floor(containerWidth / sectionWidth));
             
             let newIndex = keyboardNav.currentIndex;
             
@@ -2474,17 +2477,16 @@
                     break;
                 case 'left':
                     newIndex = keyboardNav.currentIndex - 1;
-                    if (newIndex < 0 || (keyboardNav.currentIndex % cols === 0)) {
-                        // Wrap to end of current row
-                        const currentRow = Math.floor(keyboardNav.currentIndex / cols);
-                        newIndex = Math.min((currentRow + 1) * cols - 1, keyboardNav.hubSections.length - 1);
+                    if (keyboardNav.currentIndex === 0) {
+                        // Wrap to end
+                        newIndex = keyboardNav.hubSections.length - 1;
                     }
                     break;
                 case 'right':
                     newIndex = keyboardNav.currentIndex + 1;
-                    if (newIndex >= keyboardNav.hubSections.length || (newIndex % cols === 0)) {
-                        // Wrap to start of current row
-                        newIndex = Math.floor(keyboardNav.currentIndex / cols) * cols;
+                    if (newIndex >= keyboardNav.hubSections.length) {
+                        // Wrap to start
+                        newIndex = 0;
                     }
                     break;
             }
@@ -2625,6 +2627,7 @@
                     moveCarousel(activeSection, 1);
                     playClickSound();
                 }
+                return;
             }
         });
 
