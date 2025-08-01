@@ -58,7 +58,7 @@
         }
 
         .main-logo {
-            max-width: 585px; /* Increased by 30% from 450px */
+            max-width: 675px; /* 50% larger than 450px */
             width: 90%;
             height: auto;
             border-radius: 20px;
@@ -220,7 +220,7 @@
             }
             
             .main-logo {
-                max-width: 416px; /* Increased by 30% from 320px */
+                max-width: 320px;
             }
             
             .character-wheel-container { 
@@ -304,7 +304,7 @@
             }
             
             .main-logo {
-                max-width: 364px; /* Increased by 30% from 280px */
+                max-width: 280px;
             }
             
             .character-wheel-container { 
@@ -407,6 +407,7 @@
             position: relative;
             width: 100%;
             height: 100%;
+            animation: rotate 20s linear infinite;
         }
 
         .character-center-image {
@@ -453,7 +454,13 @@
         }
 
         .character-orb .orb-text {
+            animation: counter-rotate 20s linear infinite reverse;
             pointer-events: none;
+        }
+
+        @keyframes counter-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .character-orb:hover {
@@ -478,6 +485,11 @@
 
         .character-orb.selected .orb-text {
             transform: scale(1.2);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Character Info Display */
@@ -700,7 +712,7 @@
             border-radius: 20px;
             max-width: 600px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 80態度vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             border: 3px solid #4a90e2;
@@ -1033,11 +1045,6 @@
         }
 
         function selectCharacter(character, orbElement) {
-            // Stop all animations
-            document.querySelectorAll('.character-orb').forEach(orb => {
-                orb.style.animation = 'none';
-            });
-
             // Remove selected class from all orbs
             document.querySelectorAll('.character-orb').forEach(o => o.classList.remove('selected'));
             // Add selected class to clicked orb
@@ -1063,53 +1070,6 @@
             
             // Play click sound
             playClickSound();
-
-            // Reorganize orbs to place selected one at the bottom
-            const wheel = document.getElementById('characterWheel');
-            const selectedIndex = characterOrder.indexOf(character);
-            const totalCharacters = characterOrder.length;
-            const newOrder = [...characterOrder.slice(selectedIndex + 1), ...characterOrder.slice(0, selectedIndex)];
-
-            wheel.innerHTML = ''; // Clear current orbs
-            newOrder.forEach((char, index) => {
-                const newAngle = (index * 60) * (Math.PI / 180);
-                const newX = centerX + radius * Math.cos(newAngle) - 35;
-                const newY = centerY + radius * Math.sin(newAngle) - 35;
-
-                const newOrb = document.createElement('div');
-                newOrb.className = 'character-orb' + (char === character ? ' selected' : '');
-                newOrb.setAttribute('data-character', char);
-                newOrb.style.left = newX + 'px';
-                newOrb.style.top = newY + 'px';
-
-                const text = document.createElement('div');
-                text.className = 'orb-text';
-                text.textContent = char === 'gamma' ? 'E-102 γ' : char.toUpperCase();
-                
-                newOrb.appendChild(text);
-                wheel.appendChild(newOrb);
-
-                // Add click event to new orb
-                newOrb.addEventListener('click', function() {
-                    selectCharacter(char, newOrb);
-                });
-
-                newOrb.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                });
-
-                newOrb.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    selectCharacter(char, newOrb);
-                });
-            });
-
-            // Move selected orb to bottom position
-            const selectedOrb = document.querySelector(`.character-orb[data-character="${character}"]`);
-            const bottomX = centerX - 35; // Directly under center image
-            const bottomY = centerY + radius + 35; // Adjusted to be below the center image
-            selectedOrb.style.left = bottomX + 'px';
-            selectedOrb.style.top = bottomY + 'px';
         }
 
         function updateCharacterInfo(characterKey) {
