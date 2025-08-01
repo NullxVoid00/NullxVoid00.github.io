@@ -182,6 +182,14 @@
             letter-spacing: 1px;
         }
 
+        .character-preview {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
         .character-description {
             font-size: 15px;
             color: #333;
@@ -847,6 +855,9 @@
         <div class="character-info content-section" id="characterInfo">
             <div class="character-name" id="characterName">SONIC</div>
             <div class="character-subtitle" id="characterSubtitle">THE HEDGEHOG</div>
+            <video class="character-preview" id="characterPreview" autoplay loop muted playsinline>
+                <source src="Art Folder/CharacterPreview1.mp4" type="video/mp4">
+            </video>
             <div class="character-description" id="characterDescription">
                 Experience the classic Sonic Adventure in virtual reality! Run through Station Square, explore the Mystic Ruins, and collect Chaos Emeralds in this faithful VRChat remake.
             </div>
@@ -950,36 +961,42 @@
                 name: "SONIC",
                 subtitle: "THE HEDGEHOG",
                 image: "Art Folder/SonicM.png",
+                preview: "Art Folder/CharacterPreview1.mp4",
                 description: "The fastest hedgehog alive! Experience completely rebuilt physics and movement systems designed from the ground up for VRChat. Run at supersonic speeds through loops, corkscrews, and vertical walls with authentic momentum-based gameplay."
             },
             tails: {
                 name: "TAILS",
                 subtitle: "MILES PROWER",
                 image: "Art Folder/TailsM.png",
+                preview: "Art Folder/CharacterPreview2.mp4",
                 description: "Sonic's loyal sidekick with the power of flight! Use your twin tails to reach high platforms and discover hidden areas. Features a custom cutscene room themed around Tails' workshop with warm orange colors and mechanical details."
             },
             knuckles: {
                 name: "KNUCKLES",
                 subtitle: "THE ECHIDNA",
                 image: "Art Folder/KnucklesM.png",
+                preview: "Art Folder/CharacterPreview3.mp4",
                 description: "The guardian of Angel Island! Glide through the air and climb walls to find hidden Master Emerald shards. Includes VRChat-exclusive treasure hunting features with location tracking for other players and hidden secrets not found in the original game."
             },
             amy: {
                 name: "AMY",
                 subtitle: "ROSE",
                 image: "Art Folder/AmyM.png",
+                preview: "Art Folder/CharacterPreview4.mp4",
                 description: "Armed with her trusty Piko Piko Hammer! Smash through obstacles and enemies while chasing after Sonic. Features a pink-themed cutscene room matching her bubbly personality and new VRChat-specific interactions."
             },
             big: {
                 name: "BIG",
                 subtitle: "THE CAT",
                 image: "Art Folder/BigM.png",
+                preview: "Art Folder/CharacterPreview5.mp4",
                 description: "Take a relaxing break with enhanced fishing gameplay! Cast your line in various locations with improved VRChat mechanics. Includes a tranquil blue-green themed cutscene room perfect for Big's peaceful nature."
             },
             gamma: {
                 name: "E-102 γ",
                 subtitle: "GAMMA",
                 image: "Art Folder/GammaM.png",
+                preview: "Art Folder/CharacterPreview6.mp4",
                 description: "Dr. Eggman's robot with a mission! Features rebuilt targeting and combat systems optimized for VRChat. Experience a high-tech cutscene room with metallic themes reflecting Gamma's robotic nature."
             }
         };
@@ -1060,11 +1077,14 @@
             if (character) {
                 document.getElementById('characterName').textContent = character.name;
                 document.getElementById('characterSubtitle').textContent = character.subtitle;
+                document.getElementById('characterPreview').querySelector('source').src = character.preview;
+                document.getElementById('characterPreview').load(); // Reload video to apply new source
                 document.getElementById('characterDescription').textContent = character.description;
             }
         }
 
         function enterSite() {
+            playClickSound();
             document.getElementById('enterScreen').classList.add('hidden');
             setTimeout(() => {
                 document.getElementById('mainContainer').classList.add('active');
