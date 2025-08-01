@@ -78,6 +78,7 @@
             pointer-events: none;
             animation: ripple-expand 1s ease-out forwards;
             z-index: 100;
+            transform: translate(-50%, -50%);
         }
 
         @keyframes ripple-expand {
@@ -585,16 +586,18 @@
             border-radius: 15px;
             opacity: 0;
             transition: opacity 0.4s ease;
-            animation: border-spin 3s linear infinite;
+            animation: border-spin-once 3s linear;
+            animation-play-state: paused;
         }
 
-        @keyframes border-spin {
+        @keyframes border-spin-once {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
         .info-card:hover::before {
-            opacity: 1;
+            opacity: 0.3;
+            animation-play-state: running;
         }
 
         .info-card:hover {
@@ -662,17 +665,18 @@
             border-radius: 20px;
             opacity: 0;
             transition: opacity 0.4s ease;
-            animation: card-glow 2s ease-in-out infinite;
+            animation: card-glow-once 2s ease-in-out;
+            animation-play-state: paused;
         }
 
-        @keyframes card-glow {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
+        @keyframes card-glow-once {
+            0% { opacity: 0; transform: rotate(0deg); }
+            50% { opacity: 1; transform: rotate(180deg); }
+            100% { opacity: 0; transform: rotate(360deg); }
         }
 
         .character-card:hover::before {
-            opacity: 1;
-            animation: border-spin 1s linear infinite;
+            animation-play-state: running;
         }
 
         .character-card:hover .character-card-front,
@@ -684,6 +688,11 @@
         .character-card-back {
             transform: rotateY(180deg);
             background: rgba(0,0,0,0.9);
+            display: none;
+        }
+
+        .character-card.flipped .character-card-back {
+            display: flex;
         }
 
         .character-image {
@@ -718,6 +727,9 @@
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
         }
 
         .boss-card::before {
@@ -746,6 +758,20 @@
             background: linear-gradient(135deg, 
                 rgba(255,0,127,0.1), 
                 rgba(0,255,255,0.05));
+        }
+
+        .boss-image {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            flex-shrink: 0;
+            filter: brightness(0.9) contrast(1.1);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .boss-content {
+            flex: 1;
         }
 
         .boss-card h3 {
@@ -1048,6 +1074,15 @@
                 right: 80px;
                 font-size: 12px;
             }
+
+            .boss-card {
+                flex-direction: column;
+            }
+
+            .boss-image {
+                width: 100%;
+                height: 200px;
+            }
         }
     </style>
 </head>
@@ -1255,31 +1290,12 @@
                 <p style="margin-top: 1rem;">As fragments venture deeper into the labyrinth's distractions, Mender grows concerned they may lose themselves entirely rather than face what lies beneath. Under certain conditions, this caring bartender becomes an optional boss fight - testing whether his charges are ready for the truth.</p>
             </div>
 
-            <div class="spoiler-content" id="spoilerCharacter">
-                <h3 style="text-align: center; margin: 3rem 0 2rem; color: var(--neon-red);">Hidden Fragment</h3>
-                <div class="character-grid">
-                    <div class="character-card n-echo" onclick="flipCard(this)">
-                        <div class="character-card-inner">
-                            <div class="character-card-front">
-                                <h4>N_ / THE SELF</h4>
-                                <p><strong>The Rejected Fragment</strong></p>
-                                <p style="font-size: 0.9rem;">Weapon: Mimics Others</p>
-                                <p style="font-size: 0.9rem;">Companion: The Shadow</p>
-                                <p style="font-size: 0.8rem; margin-top: 1rem;">White-hooded figure with fully formed personality, imprisoned at labyrinth's bottom</p>
-                            </div>
-                            <div class="character-card-back">
-                                <img class="character-image" src="Art Folder/n-image.jpg" alt="N_ The Self" onerror="this.style.display='none'">
-                                <p>Click to flip back</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h4 style="color: var(--neon-red);">The Truth of N_</h4>
-                    <p>An echo of the discarded fragment Null wished to reject, N_ represents the trauma and responsibilities the host couldn't bear. The labyrinth was built as their prison, designed to keep them buried at the very bottom where their memories could never surface.</p>
-                    <p style="margin-top: 1rem;">Unlike the other echoes, N_ retained a fully formed personality and clear memories. Their sadness and rage at being abandoned gave birth to The Shadow - a hulking mass of darkness that protects them. After countless failed escape attempts, N_ now waits for Null's arrival, seeking either escape or revenge.</p>
-                    <p style="margin-top: 1rem;">The final boss battle involves both N_ and The Shadow, with players needing to attack the red shard in The Shadow's chest while N_ fights alongside it using various remnant abilities. The outcome determines which of seven possible endings the party achieves.</p>
-                </div>
+            <h3 style="text-align: center; margin: 3rem 0 2rem; color: var(--neon-green);">Unlockable Echoes</h3>
+            <div class="info-card">
+                <h4 style="color: var(--neon-green); font-size: 1.5rem;">MENDER'S BAR ECHOES</h4>
+                <p>As you progress through the labyrinth and defeat bosses, various Echo NPCs will begin appearing at Mender's Bar. These freed souls bring life and personality to the hub, each with their own stories, quests, and interactions.</p>
+                <p style="margin-top: 1rem;">The bar transforms from a quiet refuge into a lively social space filled with miniaturized versions of defeated bosses, their minds restored after being freed from corruption. You can customize the bar's appearance, unlock new areas, and watch as the space becomes increasingly vibrant with each successful run.</p>
+                <p style="margin-top: 1rem;">Special Echoes may offer unique quests, trade rare remnants, or provide insights into the labyrinth's deeper mysteries. The more you play, the more alive Mender's Haven becomes - a testament to the souls you've saved from the corruption's grasp.</p>
             </div>
         </div>
     </div>
@@ -1295,43 +1311,58 @@
 
             <div class="boss-grid">
                 <div class="boss-card">
-                    <h3>THE SERPENT</h3>
-                    <p><strong>The Fallen Artist</strong></p>
-                    <p style="margin-top: 1rem;">A giant snake coiled in crimson skies, its back serving as a treacherous pathway to its head. Once a young artist whose Ouroboros series brought fame, until false plagiarism accusations destroyed their reputation and broke their heart - literally.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Players traverse the serpent's spine while destroying weak points and avoiding flying enemies. As health drops, spikes and rotating obstacles make the climb increasingly dangerous. The red, swirling sky pulses with intense music as the battle reaches its climax.</p>
-                    <p style="margin-top: 1rem; font-style: italic;">"I just wanted to create something beautiful... Why did they have to take that away from me?"</p>
+                    <img class="boss-image" src="Art Folder/ETboss1.jpg" alt="The Serpent" onerror="this.src='Art Folder/ETboss1.png'; this.onerror=function(){this.src='Art Folder/ETboss1.gif'; this.onerror=function(){this.style.display='none'}}">
+                    <div class="boss-content">
+                        <h3>THE SERPENT</h3>
+                        <p><strong>The Fallen Artist</strong></p>
+                        <p style="margin-top: 1rem;">A giant snake coiled in crimson skies, its back serving as a treacherous pathway to its head. Once a young artist whose Ouroboros series brought fame, until false plagiarism accusations destroyed their reputation and broke their heart - literally.</p>
+                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Players traverse the serpent's spine while destroying weak points and avoiding flying enemies. As health drops, spikes and rotating obstacles make the climb increasingly dangerous. The red, swirling sky pulses with intense music as the battle reaches its climax.</p>
+                        <p style="margin-top: 1rem; font-style: italic;">"I just wanted to create something beautiful... Why did they have to take that away from me?"</p>
+                    </div>
                 </div>
 
                 <div class="boss-card">
-                    <h3>THE QUEEN</h3>
-                    <p><strong>The Reluctant Ruler</strong></p>
-                    <p style="margin-top: 1rem;">A headless Victorian woman with multiple rotating arms serving as platforms, her decapitated head flying around attacking players. Born to rule but yearning for freedom, her attempts at benevolent leadership led only to her citizens' revolt and execution by guillotine.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Scale the rotating hands safely to reach the flying head's weak points. As health drops, hands move faster and become trapped. The battle requires precise timing and platforming skills while avoiding the head's aerial assaults.</p>
-                    <p style="margin-top: 1rem; font-style: italic;">"I never wanted the crown... I just wanted to see the flowers bloom in peace."</p>
+                    <img class="boss-image" src="Art Folder/ETboss2.jpg" alt="The Queen" onerror="this.src='Art Folder/ETboss2.png'; this.onerror=function(){this.src='Art Folder/ETboss2.gif'; this.onerror=function(){this.style.display='none'}}">
+                    <div class="boss-content">
+                        <h3>THE QUEEN</h3>
+                        <p><strong>The Reluctant Ruler</strong></p>
+                        <p style="margin-top: 1rem;">A headless Victorian woman with multiple rotating arms serving as platforms, her decapitated head flying around attacking players. Born to rule but yearning for freedom, her attempts at benevolent leadership led only to her citizens' revolt and execution by guillotine.</p>
+                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Scale the rotating hands safely to reach the flying head's weak points. As health drops, hands move faster and become trapped. The battle requires precise timing and platforming skills while avoiding the head's aerial assaults.</p>
+                        <p style="margin-top: 1rem; font-style: italic;">"I never wanted the crown... I just wanted to see the flowers bloom in peace."</p>
+                    </div>
                 </div>
 
                 <div class="boss-card">
-                    <h3>THE CHARADE</h3>
-                    <p><strong>The Emotional Executive</strong></p>
-                    <p style="margin-top: 1rem;">A massive business-suited entity with three giant floating masks covering its face. Once an ambitious businessman whose emotional instability cost him job after job, until expressing anger at the wrong person in a sleazy casino led to his death.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Attack patterns change based on which mask is worn. Anger turns floors to lava, Sadness creates bullet-platform patterns, Happiness fires beam attacks. Must be destroyed in order: Sadness → Anger → Happiness, or the masks reform.</p>
-                    <p style="margin-top: 1rem; font-style: italic;">"Why is feeling things so wrong? I just wanted to make Ma and Pa proud..."</p>
+                    <img class="boss-image" src="Art Folder/ETboss3.jpg" alt="The Charade" onerror="this.src='Art Folder/ETboss3.png'; this.onerror=function(){this.src='Art Folder/ETboss3.gif'; this.onerror=function(){this.style.display='none'}}">
+                    <div class="boss-content">
+                        <h3>THE CHARADE</h3>
+                        <p><strong>The Emotional Executive</strong></p>
+                        <p style="margin-top: 1rem;">A massive business-suited entity with three giant floating masks covering its face. Once an ambitious businessman whose emotional instability cost him job after job, until expressing anger at the wrong person in a sleazy casino led to his death.</p>
+                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Attack patterns change based on which mask is worn. Anger turns floors to lava, Sadness creates bullet-platform patterns, Happiness fires beam attacks. Must be destroyed in order: Sadness → Anger → Happiness, or the masks reform.</p>
+                        <p style="margin-top: 1rem; font-style: italic;">"Why is feeling things so wrong? I just wanted to make Ma and Pa proud..."</p>
+                    </div>
                 </div>
 
                 <div class="boss-card">
-                    <h3>THE MOON</h3>
-                    <p><strong>The Lost Child</strong></p>
-                    <p style="margin-top: 1rem;">A giant moon hanging above an endless ocean, shifting phases while controlling watery hands and obstacles below. Once a young girl who, after losing her mother and facing abuse, tried to swim to the moon's reflection to reunite with her mother's soul.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> The Moon attacks with different patterns based on its phases while controlling the ocean below. Eventually lowers itself and grasps its own body with giant water hands - the only opportunity to attack while avoiding its defenses.</p>
-                    <p style="margin-top: 1rem; font-style: italic;">"Mama said souls go to the Moon when they die... Why couldn't I reach you, Mama?"</p>
+                    <img class="boss-image" src="Art Folder/ETboss4.jpg" alt="The Moon" onerror="this.src='Art Folder/ETboss4.png'; this.onerror=function(){this.src='Art Folder/ETboss4.gif'; this.onerror=function(){this.style.display='none'}}">
+                    <div class="boss-content">
+                        <h3>THE MOON</h3>
+                        <p><strong>The Lost Child</strong></p>
+                        <p style="margin-top: 1rem;">A giant moon hanging above an endless ocean, shifting phases while controlling watery hands and obstacles below. Once a young girl who, after losing her mother and facing abuse, tried to swim to the moon's reflection to reunite with her mother's soul.</p>
+                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> The Moon attacks with different patterns based on its phases while controlling the ocean below. Eventually lowers itself and grasps its own body with giant water hands - the only opportunity to attack while avoiding its defenses.</p>
+                        <p style="margin-top: 1rem; font-style: italic;">"Mama said souls go to the Moon when they die... Why couldn't I reach you, Mama?"</p>
+                    </div>
                 </div>
 
                 <div class="boss-card">
-                    <h3>MENDER (Optional/Secret)</h3>
-                    <p><strong>The Concerned Caretaker</strong></p>
-                    <p style="margin-top: 1rem;">The beloved bartender himself becomes a formidable opponent when certain conditions are met. Quick and agile with high health, he uses area attacks, bullet patterns, and can separate players for one-on-one confrontations.</p>
-                    <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Straightforward direct combat, but with massive health and immunity to most status effects. Can incapacitate separated players. This battle tests if the fragments are truly ready to face deeper truths or if they're still running from reality.</p>
-                    <p style="margin-top: 1rem; font-style: italic;">"Sometimes the kindest thing I can do is show you that you're stronger than you think."</p>
+                    <img class="boss-image" src="Art Folder/ETboss5.jpg" alt="Mender" onerror="this.src='Art Folder/ETboss5.png'; this.onerror=function(){this.src='Art Folder/ETboss5.gif'; this.onerror=function(){this.style.display='none'}}">
+                    <div class="boss-content">
+                        <h3>MENDER (Optional/Secret)</h3>
+                        <p><strong>The Concerned Caretaker</strong></p>
+                        <p style="margin-top: 1rem;">The beloved bartender himself becomes a formidable opponent when certain conditions are met. Quick and agile with high health, he uses area attacks, bullet patterns, and can separate players for one-on-one confrontations.</p>
+                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Straightforward direct combat, but with massive health and immunity to most status effects. Can incapacitate separated players. This battle tests if the fragments are truly ready to face deeper truths or if they're still running from reality.</p>
+                        <p style="margin-top: 1rem; font-style: italic;">"Sometimes the kindest thing I can do is show you that you're stronger than you think."</p>
+                    </div>
                 </div>
             </div>
 
@@ -1556,6 +1587,31 @@
             </div>
 
             <div class="spoiler-content" id="spoilerContent">
+                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">Hidden Fragment</h3>
+                <div class="character-grid">
+                    <div class="character-card n-echo" onclick="flipCard(this)">
+                        <div class="character-card-inner">
+                            <div class="character-card-front">
+                                <h4>N_ / THE SELF</h4>
+                                <p><strong>The Rejected Fragment</strong></p>
+                                <p style="font-size: 0.9rem;">Weapon: Axe</p>
+                                <p style="font-size: 0.9rem;">Companion: The Shadow</p>
+                                <p style="font-size: 0.8rem; margin-top: 1rem;">White-hooded figure with fully formed personality, imprisoned at labyrinth's bottom</p>
+                            </div>
+                            <div class="character-card-back">
+                                <img class="character-image" src="Art Folder/n-image.jpg" alt="N_ The Self" onerror="this.style.display='none'">
+                                <p>Click to flip back</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h4 style="color: var(--neon-red);">The Truth of N_</h4>
+                    <p>An echo of the discarded fragment Null wished to reject, N_ represents the trauma and responsibilities the host couldn't bear. The labyrinth was built as their prison, designed to keep them buried at the very bottom where their memories could never surface.</p>
+                    <p style="margin-top: 1rem;">Unlike the other echoes, N_ retained a fully formed personality and clear memories. Their sadness and rage at being abandoned gave birth to The Shadow - a hulking mass of darkness that protects them. After countless failed escape attempts, N_ now waits for Null's arrival, seeking either escape or revenge.</p>
+                    <p style="margin-top: 1rem;">The final boss battle involves both N_ and The Shadow, with players needing to attack the red shard in The Shadow's chest while N_ fights alongside it using various remnant abilities. The outcome determines which of seven possible endings the party achieves.</p>
+                </div>
+
                 <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Red Shard's True Purpose</h3>
                 <div class="info-card">
                     <h4>A Prison of Trauma</h4>
@@ -1586,12 +1642,7 @@
                     </div>
 
                     <div class="ending-card">
-                        <h4>MISSING ENDING (Null + All 3 Fragments)</h4>
-                        <p>With all fragments present, they attempt to break through the Red Shard together but fail. The group is left eternally trying to breakthrough, having the pieces but lacking the knowledge to proceed.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>DROWN ENDING (All Fragments, No Notes)</h4>
+                        <h4>DROWNING ENDING (Not All Notes Collected)</h4>
                         <p>Without sufficient understanding from collected notes, the echo fragments turn on Null upon reaching the shard, grabbing them and forcing their body into the crystal. Null drowns in the red liquid, leading to a restart.</p>
                     </div>
 
@@ -1845,8 +1896,8 @@
             
             const ripple = document.createElement('div');
             ripple.className = 'ripple';
-            ripple.style.left = (e.clientX - 150) + 'px';
-            ripple.style.top = (e.clientY - 150) + 'px';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
             document.body.appendChild(ripple);
             
             setTimeout(() => {
@@ -1889,7 +1940,6 @@
             const password = document.getElementById('spoilerPassword').value;
             if (password === 'Reverie') {
                 document.getElementById('spoilerContent').classList.add('unlocked');
-                document.getElementById('spoilerCharacter').classList.add('unlocked');
                 document.getElementById('spoilerNotes').classList.add('unlocked');
                 document.querySelector('.spoiler-lock').style.display = 'none';
                 closeSpoilerModal();
