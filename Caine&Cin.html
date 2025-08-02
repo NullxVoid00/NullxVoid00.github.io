@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caine & Cin: God Killers - Turn-Based Dungeon Crawler RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        /* Volume Control */
+        .volume-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .volume-btn {
+            width: 35px;
+            height: 35px;
+            background: none;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .volume-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .volume-slider {
+            width: 100px;
+            appearance: none;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Progress Indicator */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b00, #0066ff, #87CEEB);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Section Base */
+        .section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #fff;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Title Section */
+        .title-section {
+            background: radial-gradient(circle at center, #2a0000 0%, #000 100%);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            background: linear-gradient(to bottom, #ff4444, #aa0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 2rem;
+            color: #ff6666;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(255, 68, 68, 0.5)); }
+            to { filter: drop-shadow(0 0 30px rgba(255, 68, 68, 0.8)); }
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        /* Character Cards */
+        .character-section {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+        }
+
+        .character-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .character-card h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .character-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            display: block;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .ability-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .ability-list li {
+            padding: 0.5rem 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .ability-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+        }
+
+        /* Feature Box */
+        .feature-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hell Sections - Hot to Cold */
+        .hell-1 {
+            background: linear-gradient(to bottom, #330000 0%, #ff3300 100%);
+        }
+
+        .hell-2 {
+            background: linear-gradient(to bottom, #220022 0%, #4b0082 100%);
+        }
+
+        .hell-3 {
+            background: linear-gradient(to bottom, #000033 0%, #0044cc 100%);
+        }
+
+        /* Ember/Fire Effects */
+        .ember-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .ember {
+            position: absolute;
+            background: #ff6b00;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: rise 4s infinite;
+            box-shadow: 0 0 6px #ff6b00;
+        }
+
+        .floating-ember {
+            position: absolute;
+            background: radial-gradient(circle, #ffaa00 0%, #ff6b00 50%, #ff3300 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: float-around 15s infinite ease-in-out;
+            box-shadow: 0 0 10px #ff6b00, 0 0 20px #ff3300, 0 0 30px rgba(255, 107, 0, 0.5);
+        }
+
+        @keyframes rise {
+            0% {
+                bottom: -20px;
+                transform: translateX(0) scale(1);
+            }
+            100% {
+                bottom: 100vh;
+                transform: translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float-around {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(250px, -150px) scale(1.2);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-200px, -300px) scale(0.8);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translate(300px, 200px) scale(1.1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes float-complex {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            20% {
+                transform: translate(200px, -250px) rotate(90deg) scale(1.3);
+                opacity: 1;
+            }
+            40% {
+                transform: translate(-300px, -200px) rotate(180deg) scale(0.9);
+                opacity: 0.8;
+            }
+            60% {
+                transform: translate(350px, 100px) rotate(270deg) scale(1.1);
+                opacity: 0.9;
+            }
+            80% {
+                transform: translate(-100px, 300px) rotate(360deg) scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg) scale(1);
+                opacity: 0.6;
+            }
+        }
+
+        .floating-ember:nth-child(odd) {
+            animation-name: float-complex;
+        }
+
+        /* Snow for cold hell */
+        .snow-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: #b0d4ff;
+            font-size: 1em;
+            animation: fall 10s linear infinite;
+            text-shadow: 0 0 5px #b0d4ff;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10px;
+                transform: translateX(0);
+            }
+            100% {
+                top: 100vh;
+                transform: translateX(30px);
+            }
+        }
+
+        /* Purgatory Sections */
+        .purgatory-section {
+            background: linear-gradient(to bottom, #1a1a1a 0%, #333333 100%);
+        }
+
+        /* Fog Effect */
+        .fog-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(100, 100, 100, 0.2) 50%, 
+                transparent 100%);
+            animation: drift 20s infinite;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translateX(-50%); }
+            50% { transform: translateX(50%); }
+        }
+
+        /* Heaven Sections */
+        .heaven-section {
+            background: linear-gradient(to bottom, #4a7c9e 0%, #87CEEB 100%);
+        }
+
+        /* Cloud Effects */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 100px;
+            opacity: 0.6;
+            animation: float 30s infinite linear;
+        }
+
+        .cloud::before {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            top: -25px;
+            left: 25px;
+        }
+
+        @keyframes float {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* Scroll Hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .logo { font-size: 3rem; }
+            .subtitle { font-size: 1.5rem; }
+            .content { padding: 20px; }
+            .character-section { gap: 20px; }
+            
+            /* Responsive animations for smaller screens */
+            @keyframes float-around {
+                0% {
+                    transform: translate(0, 0) scale(1);
+                }
+                25% {
+                    transform: translate(100px, -100px) scale(1.2);
+                    opacity: 1;
+                }
+                50% {
+                    transform: translate(-100px, -150px) scale(0.8);
+                    opacity: 0.6;
+                }
+                75% {
+                    transform: translate(150px, 100px) scale(1.1);
+                    opacity: 0.9;
+                }
+                100% {
+                    transform: translate(0, 0) scale(1);
+                }
+            }
+
+            @keyframes float-complex {
+                0% {
+                    transform: translate(0, 0) rotate(0deg) scale(1);
+                    opacity: 0.6;
+                }
+                20% {
+                    transform: translate(80px, -120px) rotate(90deg) scale(1.3);
+                    opacity: 1;
+                }
+                40% {
+                    transform: translate(-120px, -100px) rotate(180deg) scale(0.9);
+                    opacity: 0.8;
+                }
+                60% {
+                    transform: translate(140px, 50px) rotate(270deg) scale(1.1);
+                    opacity: 0.9;
+                }
+                80% {
+                    transform: translate(-50px, 150px) rotate(360deg) scale(1.2);
+                    opacity: 0.7;
+                }
+                100% {
+                    transform: translate(0, 0) rotate(360deg) scale(1);
+                    opacity: 0.6;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Volume Control -->
+    <div class="volume-control">
+        <button class="volume-btn" id="muteBtn">🔊</button>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="30">
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="hellMusic" loop preload="auto">
+        <source src="hell-theme.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="purgatoryMusic" loop preload="auto">
+        <source src="purgatory-theme.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="heavenMusic" loop preload="auto">
+        <source src="heaven-theme.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Title Section -->
+    <section class="section title-section" data-realm="none">
+        <div class="content">
+            <h1 class="logo">Caine & Cin</h1>
+            <p class="subtitle">God Killers</p>
+            <p style="margin-top: 2rem; font-size: 1.3rem;">A Turn-Based Dungeon Crawler RPG</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>📖 The Story</h3>
+                    <p>After his brother is left in a coma following a tragic accident, Caine becomes consumed with retrieving his brother's soul from the Afterlife, taking his own life to descend as a demon.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎮 Core Gameplay</h3>
+                    <p>Control Caine and Cin through treacherous realms, combining alchemical ingenuity with summoned creatures in strategic turn-based combat.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🗺️ The Journey</h3>
+                    <p>Navigate through Hell, Purgatory, and finally the gates of Heaven to retrieve Caine's brother's soul from the divine realm.</p>
+                </div>
+            </div>
+            <div class="scroll-hint">⬇</div>
+        </div>
+    </section>
+
+    <!-- Characters Section - Hell Layer 1 (Hot) -->
+    <section class="section hell-1" data-realm="hell">
+        <div class="ember-container" id="emberContainer1"></div>
+        <div class="content">
+            <h2>The Unlikely Heroes</h2>
+            
+            <div class="character-section">
+                <div class="character-card">
+                    <h3>Caine - The Demon Alchemist</h3>
+                    <img src="caine-portrait.png" alt="Caine" class="character-image">
+                    <p><strong>Appearance:</strong> Purple skin, curved back horns, red open jacket with yellow trim, dark pants, red narrowish eyes with crosses for pupils. Carries a sword on his back and a belt with orb-shaped potions.</p>
+                    <p><strong>Personality:</strong> Brash and naive with sarcastic wit and determined mindset. Clever and cunning, devoted to those he cares about.</p>
+                    <h4>Combat Style:</h4>
+                    <ul class="ability-list">
+                        <li>Potions and toxicology expert</li>
+                        <li>Uses poisons, buffs, debuffs, elemental charges</li>
+                        <li>Great agility and reflexes</li>
+                        <li>Strategy over brute force</li>
+                    </ul>
+                    <h4>Flaws:</h4>
+                    <ul class="ability-list">
+                        <li>Not great at formal combat</li>
+                        <li>Sword too big without potion buffs</li>
+                        <li>Naive - easily fooled by emotional tales</li>
+                        <li>Spite and justice cloud his vision</li>
+                    </ul>
+                </div>
+                
+                <div class="character-card">
+                    <h3>Cin - The Fallen Angel</h3>
+                    <img src="cin-portrait.png" alt="Cin" class="character-image">
+                    <p><strong>Appearance:</strong> Glass bowl helmet (like cartoonish astronaut), face completely obscured. Plain disheveled white dress, red scarf, red mittens, large book strapped to back like a backpack.</p>
+                    <p><strong>Personality:</strong> Quiet and short-spoken with sharp mind. High moral judgment, wrathful toward the unjust. Loves to draw, fanciful and imaginative internally.</p>
+                    <h4>Combat Style:</h4>
+                    <ul class="ability-list">
+                        <li>Draws creatures to life from her book</li>
+                        <li>Can summon 2 combat familiars at once</li>
+                        <li>Limited healing and light magic</li>
+                        <li>Can break certain seals</li>
+                    </ul>
+                    <h4>Flaws:</h4>
+                    <ul class="ability-list">
+                        <li>Stripped of full angel powers</li>
+                        <li>Snap decision-making</li>
+                        <li>Only 2 summons at a time</li>
+                        <li>Protective of bowl and book</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supporting Characters & Systems - Hell Layer 2 (Mid) -->
+    <section class="section hell-2" data-realm="hell">
+        <div class="ember-container" id="emberContainer2"></div>
+        <div class="content">
+            <h2>World & Systems</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🧙‍♀️ Rena - The Merchant</h3>
+                    <p>A potion and ingredients seller who travels throughout the underworld, occasionally meeting with Caine & Cin.</p>
+                    <ul class="ability-list">
+                        <li>Provides essential materials for alchemy</li>
+                        <li>Shares information about the realms</li>
+                        <li>Key to the crafting economy</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>🗺️ Mapping System</h3>
+                    <p>Players can draw and mark their own maps as they explore the dungeon realms.</p>
+                    <ul class="ability-list">
+                        <li>Custom map annotations</li>
+                        <li>Mark important locations</li>
+                        <li>Track unexplored areas</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>⚗️ Alchemy Crafting</h3>
+                    <p>Combine materials found in the field to create the majority of your items.</p>
+                    <ul class="ability-list">
+                        <li>Discover new recipes</li>
+                        <li>Experiment with combinations</li>
+                        <li>Essential for progression</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <h3>Combat Synergy</h3>
+                <p>The key to success lies in combining Caine's consumable items with Cin's summoned creatures.</p>
+                <div class="info-grid" style="margin-top: 1.5rem;">
+                    <div class="info-card">
+                        <h4>Caine's Role</h4>
+                        <ul class="ability-list">
+                            <li>Apply status effects with toxins</li>
+                            <li>Buff Cin's summons with potions</li>
+                            <li>Set traps for tactical advantage</li>
+                            <li>Emergency escapes with smoke bombs</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>Cin's Role</h4>
+                        <ul class="ability-list">
+                            <li>Tank damage with defensive summons</li>
+                            <li>Deal consistent damage with familiars</li>
+                            <li>Heal party with support creatures</li>
+                            <li>Solve puzzles with utility summons</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Mechanics - Hell Layer 3 (Cold) -->
+    <section class="section hell-3" data-realm="hell">
+        <div class="snow-container" id="snowContainer1"></div>
+        <div class="content">
+            <h2>Turn-Based Combat System</h2>
+            
+            <div class="feature-box">
+                <h3>Strategic Resource Management</h3>
+                <p>Every potion used and every summon called requires careful consideration. Resources are limited, and poor management can lead to defeat.</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>⚔️ Combat Flow</h3>
+                    <ul class="ability-list">
+                        <li>Turn order based on agility stats</li>
+                        <li>Position matters for area effects</li>
+                        <li>Environmental hazards affect battle</li>
+                        <li>Combo potential between characters</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 Item Management</h3>
+                    <ul class="ability-list">
+                        <li>Limited inventory space</li>
+                        <li>Cooldowns on powerful potions</li>
+                        <li>Ingredients take up slots</li>
+                        <li>Strategic loadout decisions</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>📖 Summon Strategy</h3>
+                    <ul class="ability-list">
+                        <li>Maximum 2 active summons</li>
+                        <li>Different types for situations</li>
+                        <li>Summon health persists between battles</li>
+                        <li>Drawing time affects turn economy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purgatory Section 1 -->
+    <section class="section purgatory-section" data-realm="purgatory">
+        <div class="fog-overlay"></div>
+        <div class="content">
+            <h2>Exploration & Discovery</h2>
+            
+            <div class="feature-box">
+                <h3>Dungeon Crawling Elements</h3>
+                <p>Navigate through thematically distinct realms, each presenting unique challenges and rewards.</p>
+                
+                <div class="info-grid" style="margin-top: 2rem;">
+                    <div class="info-card">
+                        <h4>🔍 Exploration Features</h4>
+                        <ul class="ability-list">
+                            <li>Hidden paths and secret rooms</li>
+                            <li>Environmental storytelling</li>
+                            <li>Resource gathering nodes</li>
+                            <li>Optional challenging encounters</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>🧩 Puzzle Elements</h4>
+                        <ul class="ability-list">
+                            <li>Use specific potions to progress</li>
+                            <li>Summon creatures to reach areas</li>
+                            <li>Combine abilities creatively</li>
+                            <li>Multiple solution approaches</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purgatory Section 2 -->
+    <section class="section purgatory-section" data-realm="purgatory">
+        <div class="fog-overlay" style="animation-duration: 25s;"></div>
+        <div class="content">
+            <h2>Character Development</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🌟 Progression Systems</h3>
+                    <p>Both characters grow stronger through their journey:</p>
+                    <ul class="ability-list">
+                        <li>Unlock new potion recipes</li>
+                        <li>Discover creature drawings</li>
+                        <li>Improve base statistics</li>
+                        <li>Enhance existing abilities</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>🔄 Replayability</h3>
+                    <p>Multiple ways to approach challenges:</p>
+                    <ul class="ability-list">
+                        <li>Different item loadouts</li>
+                        <li>Varied summon strategies</li>
+                        <li>Alternative puzzle solutions</li>
+                        <li>New Game+ features</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>💫 Bond System</h3>
+                    <p>Caine and Cin's relationship deepens:</p>
+                    <ul class="ability-list">
+                        <li>Unlock combination attacks</li>
+                        <li>Story revelations through progress</li>
+                        <li>Enhanced synergy bonuses</li>
+                        <li>Character-specific upgrades</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Heaven Section 1 -->
+    <section class="section heaven-section" data-realm="heaven">
+        <div class="cloud" style="width: 100px; height: 50px; top: 20%;"></div>
+        <div class="cloud" style="width: 80px; height: 40px; top: 60%; animation-delay: 5s;"></div>
+        <div class="content">
+            <h2>The Journey's Purpose</h2>
+            
+            <div class="feature-box">
+                <h3>Narrative Themes</h3>
+                <p>At its heart, this is a story about grief, determination, and the unlikely bond between a demon and a fallen angel.</p>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>Key Story Elements:</h4>
+                    <ul class="ability-list">
+                        <li>Caine's desperate quest to save his brother's soul</li>
+                        <li>The mystery of Cin's past and her glass bowl</li>
+                        <li>Clashing personalities that complement in combat</li>
+                        <li>The weight of defying death and divine order</li>
+                        <li>Shared trauma forging an unbreakable alliance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Heaven Section 2 - Final -->
+    <section class="section heaven-section" data-realm="heaven">
+        <div class="cloud" style="width: 120px; height: 60px; top: 30%; animation-delay: 10s;"></div>
+        <div class="cloud" style="width: 90px; height: 45px; top: 70%; animation-delay: 15s;"></div>
+        <div class="content">
+            <h2>Key Features Summary</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>⚗️ Alchemy System</h3>
+                    <p>Craft essential items by combining materials found throughout your journey</p>
+                </div>
+                <div class="info-card">
+                    <h3>📖 Summoning Magic</h3>
+                    <p>Draw creatures to life with Cin's book, managing up to 2 combat-ready familiars</p>
+                </div>
+                <div class="info-card">
+                    <h3>🗺️ Custom Mapping</h3>
+                    <p>Draw and annotate your own maps as you explore the realms</p>
+                </div>
+                <div class="info-card">
+                    <h3>💰 Merchant System</h3>
+                    <p>Trade with Rena for rare ingredients and valuable information</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎮 Strategic Combat</h3>
+                    <p>Turn-based battles requiring careful resource management</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎭 Dual Protagonists</h3>
+                    <p>Experience the story through two unique perspectives and playstyles</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 4rem;">
+                <h3 style="font-size: 2.5rem;">Caine & Cin: God Killers</h3>
+                <p style="font-size: 1.3rem; margin-top: 1rem;">Defy death. Challenge divinity. Save your brother's soul.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Update progress bar
+        function updateProgress() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        updateProgress();
+
+        // Audio management
+        const audioElements = {
+            hell: document.getElementById('hellMusic'),
+            purgatory: document.getElementById('purgatoryMusic'),
+            heaven: document.getElementById('heavenMusic')
+        };
+
+        let currentRealm = null;
+        let isMuted = false;
+        const volumeSlider = document.getElementById('volumeSlider');
+        const muteBtn = document.getElementById('muteBtn');
+
+        // Set initial volume
+        Object.values(audioElements).forEach(audio => {
+            audio.volume = volumeSlider.value / 100;
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            Object.values(audioElements).forEach(audio => {
+                audio.volume = volume;
+            });
+        });
+
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            Object.values(audioElements).forEach(audio => {
+                audio.muted = isMuted;
+            });
+        });
+
+        // Intersection Observer for audio transitions
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const realm = entry.target.dataset.realm;
+                    if (realm && realm !== 'none' && realm !== currentRealm) {
+                        updateAudio(realm);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        function updateAudio(realm) {
+            // Fade out current
+            if (currentRealm && audioElements[currentRealm]) {
+                fadeOut(audioElements[currentRealm]);
+            }
+            
+            // Fade in new
+            if (audioElements[realm]) {
+                fadeIn(audioElements[realm]);
+            }
+            
+            currentRealm = realm;
+        }
+
+        function fadeIn(audio) {
+            audio.volume = 0;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+            const targetVolume = volumeSlider.value / 100;
+            const fadeInterval = setInterval(() => {
+                if (audio.volume < (targetVolume - 0.05)) {
+                    audio.volume = Math.min(audio.volume + 0.05, targetVolume);
+                } else {
+                    audio.volume = targetVolume;
+                    clearInterval(fadeInterval);
+                }
+            }, 100);
+        }
+
+        function fadeOut(audio) {
+            const fadeInterval = setInterval(() => {
+                if (audio.volume > 0.05) {
+                    audio.volume = Math.max(audio.volume - 0.05, 0);
+                } else {
+                    audio.volume = 0;
+                    audio.pause();
+                    clearInterval(fadeInterval);
+                }
+            }, 100);
+        }
+
+        // Generate ember effects for hot hell
+        function createEmbers(containerId, count = 25, floating = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            for (let i = 0; i < count; i++) {
+                const ember = document.createElement('div');
+                ember.className = floating ? 'floating-ember' : 'ember';
+                ember.style.width = floating ? (4 + Math.random() * 10) + 'px' : (3 + Math.random() * 7) + 'px';
+                ember.style.height = ember.style.width;
+                
+                if (floating) {
+                    // For floating embers, distribute them across the screen
+                    ember.style.left = Math.random() * 100 + '%';
+                    ember.style.top = Math.random() * 100 + '%';
+                    ember.style.animationDelay = Math.random() * 15 + 's';
+                    ember.style.animationDuration = (10 + Math.random() * 15) + 's';
+                    // Add some variety in opacity
+                    ember.style.opacity = 0.5 + Math.random() * 0.5;
+                } else {
+                    // For rising embers
+                    ember.style.left = Math.random() * 100 + '%';
+                    ember.style.animationDelay = Math.random() * 4 + 's';
+                    ember.style.animationDuration = (4 + Math.random() * 3) + 's';
+                }
+                
+                container.appendChild(ember);
+            }
+        }
+
+        createEmbers('emberContainer1', 40, true);  // More floating embers for top section
+        createEmbers('emberContainer2', 20, false); // Rising embers for middle section
+
+        // Generate snow for cold hell
+        function createSnow(containerId, count = 40) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            for (let i = 0; i < count; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snowflake';
+                snow.innerHTML = '❄';
+                snow.style.left = Math.random() * 100 + '%';
+                snow.style.animationDelay = Math.random() * 10 + 's';
+                snow.style.animationDuration = (10 + Math.random() * 5) + 's';
+                snow.style.fontSize = (0.8 + Math.random() * 0.5) + 'em';
+                container.appendChild(snow);
+            }
+        }
+
+        createSnow('snowContainer1');
+
+        // Track current section for keyboard navigation
+        let currentSection = 0;
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY + window.innerHeight / 2;
+            sections.forEach((section, index) => {
+                const top = section.offsetTop;
+                const bottom = top + section.offsetHeight;
+                if (scrollPos >= top && scrollPos <= bottom) {
+                    currentSection = index;
+                }
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const direction = e.key === 'ArrowDown' ? 1 : -1;
+                const nextIndex = Math.max(0, Math.min(sections.length - 1, currentSection + direction));
+                if (nextIndex !== currentSection) {
+                    currentSection = nextIndex;
+                    sections[currentSection].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
