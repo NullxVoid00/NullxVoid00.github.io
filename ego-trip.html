@@ -586,8 +586,6 @@
             border-radius: 15px;
             opacity: 0;
             transition: opacity 0.4s ease;
-            animation: border-spin-once 3s linear;
-            animation-play-state: paused;
         }
 
         @keyframes border-spin-once {
@@ -597,7 +595,7 @@
 
         .info-card:hover::before {
             opacity: 0.3;
-            animation-play-state: running;
+            animation: border-spin-once 3s linear;
         }
 
         .info-card:hover {
@@ -665,8 +663,6 @@
             border-radius: 20px;
             opacity: 0;
             transition: opacity 0.4s ease;
-            animation: card-glow-once 2s ease-in-out;
-            animation-play-state: paused;
         }
 
         @keyframes card-glow-once {
@@ -676,7 +672,7 @@
         }
 
         .character-card:hover::before {
-            animation-play-state: running;
+            animation: card-glow-once 2s ease-in-out;
         }
 
         .character-card:hover .character-card-front,
@@ -688,11 +684,6 @@
         .character-card-back {
             transform: rotateY(180deg);
             background: rgba(0,0,0,0.9);
-            display: none;
-        }
-
-        .character-card.flipped .character-card-back {
-            display: flex;
         }
 
         .character-image {
