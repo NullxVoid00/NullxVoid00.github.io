@@ -141,6 +141,10 @@
             transform: scale(0.8);
         }
 
+        .music-visualizer.hidden + .volume-bar-container {
+            opacity: 0;
+        }
+
         #visualizerCanvas {
             width: 100%;
             height: 100%;
@@ -196,6 +200,28 @@
             stroke-linecap: round;
             transition: stroke-dashoffset 0.3s ease;
             filter: drop-shadow(0 0 8px var(--neon-pink));
+        }
+
+        /* Volume Bar */
+        .volume-bar-container {
+            position: fixed;
+            bottom: 15px;
+            right: 30px;
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            z-index: 998;
+            overflow: hidden;
+        }
+
+        .volume-bar-fill {
+            height: 100%;
+            width: 50%;
+            background: var(--neon-pink);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--neon-pink);
         }
 
         /* Volume Tooltip */
@@ -1068,6 +1094,12 @@
                 right: 20px;
             }
 
+            .volume-bar-container {
+                width: 60px;
+                right: 20px;
+                bottom: 10px;
+            }
+
             .volume-tooltip {
                 bottom: 25px;
                 right: 80px;
@@ -1102,6 +1134,9 @@
                 <circle class="volume-ring-fill" cx="48" cy="48" r="44" />
             </svg>
         </div>
+    </div>
+    <div class="volume-bar-container">
+        <div class="volume-bar-fill" id="volumeBarFill"></div>
     </div>
     <div class="volume-tooltip" id="volumeTooltip">Volume: <span id="volumePercent">50</span>%</div>
 
@@ -1701,6 +1736,7 @@
         const volumeTooltip = document.getElementById('volumeTooltip');
         const volumePercent = document.getElementById('volumePercent');
         const volumeRingFill = document.querySelector('.volume-ring-fill');
+        const volumeBarFill = document.getElementById('volumeBarFill');
         
         // Initialize volume
         bgMusic.volume = 0.5;
@@ -1741,6 +1777,7 @@
             volumeRingFill.style.strokeDasharray = `${circumference} ${circumference}`;
             volumeRingFill.style.strokeDashoffset = offset;
             volumePercent.textContent = Math.round(volume * 100);
+            volumeBarFill.style.width = (volume * 100) + '%';
         }
 
         // Draw Visualizer
