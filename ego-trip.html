@@ -145,6 +145,8 @@
             width: 100%;
             height: 100%;
             display: block;
+            position: relative;
+            z-index: 1;
         }
 
         .music-icon {
@@ -166,12 +168,13 @@
         /* Volume Ring */
         .volume-ring {
             position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
             border-radius: 50%;
             pointer-events: none;
+            z-index: 2;
         }
 
         .volume-ring svg {
@@ -182,17 +185,17 @@
 
         .volume-ring-bg {
             fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 3;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 4;
         }
 
         .volume-ring-fill {
             fill: none;
-            stroke: var(--neon-blue);
-            stroke-width: 3;
+            stroke: var(--neon-pink);
+            stroke-width: 4;
             stroke-linecap: round;
-            transition: stroke-dashoffset 0.1s ease;
-            filter: drop-shadow(0 0 5px var(--neon-blue));
+            transition: stroke-dashoffset 0.3s ease;
+            filter: drop-shadow(0 0 8px var(--neon-pink));
         }
 
         /* Volume Tooltip */
@@ -616,6 +619,8 @@
             height: 350px;
             perspective: 1000px;
             cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
         }
 
         .character-card-inner {
@@ -644,7 +649,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: all 0.4s ease;
+            transition: background 0.4s ease;
             overflow: hidden;
         }
 
@@ -671,6 +676,10 @@
             100% { opacity: 0; transform: rotate(360deg); }
         }
 
+        .character-card:hover {
+            transform: scale(1.05);
+        }
+
         .character-card:hover::before {
             animation: card-glow-once 2s ease-in-out;
         }
@@ -678,7 +687,6 @@
         .character-card:hover .character-card-front,
         .character-card:hover .character-card-back {
             background: rgba(255,255,255,0.1);
-            transform: scale(1.05);
         }
 
         .character-card-back {
@@ -1089,9 +1097,9 @@
         <canvas id="visualizerCanvas"></canvas>
         <span class="music-icon">🔇</span>
         <div class="volume-ring">
-            <svg viewBox="0 0 90 90">
-                <circle class="volume-ring-bg" cx="45" cy="45" r="42" />
-                <circle class="volume-ring-fill" cx="45" cy="45" r="42" />
+            <svg viewBox="0 0 96 96">
+                <circle class="volume-ring-bg" cx="48" cy="48" r="44" />
+                <circle class="volume-ring-fill" cx="48" cy="48" r="44" />
             </svg>
         </div>
     </div>
@@ -1697,6 +1705,10 @@
         // Initialize volume
         bgMusic.volume = 0.5;
         updateVolumeRing(0.5);
+        // Initialize stroke properties
+        const circumference = 2 * Math.PI * 44;
+        volumeRingFill.style.strokeDasharray = `${circumference} ${circumference}`;
+        volumeRingFill.style.strokeDashoffset = circumference * 0.5;
 
         // Set canvas size
         function resizeCanvas() {
@@ -1724,7 +1736,7 @@
 
         // Update Volume Ring
         function updateVolumeRing(volume) {
-            const circumference = 2 * Math.PI * 42; // radius = 42
+            const circumference = 2 * Math.PI * 44; // radius = 44
             const offset = circumference - (volume * circumference);
             volumeRingFill.style.strokeDasharray = `${circumference} ${circumference}`;
             volumeRingFill.style.strokeDashoffset = offset;
@@ -1887,8 +1899,8 @@
             
             const ripple = document.createElement('div');
             ripple.className = 'ripple';
-            ripple.style.left = e.clientX + 'px';
-            ripple.style.top = e.clientY + 'px';
+            ripple.style.left = e.pageX + 'px';
+            ripple.style.top = e.pageY + 'px';
             document.body.appendChild(ripple);
             
             setTimeout(() => {
