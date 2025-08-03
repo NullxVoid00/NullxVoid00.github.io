@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -445,6 +446,32 @@
             opacity: 0.8;
         }
 
+        .link-status {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .link-status.has-website {
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .link-status.has-vrchat {
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .link-status.no-website {
+            color: #888;
+            border: 1px solid #666;
+        }
+
         .carousel-nav {
             position: absolute;
             top: 50%;
@@ -502,7 +529,8 @@
 
         .project-card.unavailable .project-card-content p,
         .project-card.unavailable .progress-bar,
-        .project-card.unavailable .progress-bar-label {
+        .project-card.unavailable .progress-bar-label,
+        .project-card.unavailable .link-status {
             display: none;
         }
 
