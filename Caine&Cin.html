@@ -204,12 +204,12 @@
         }
 
         .character-image {
-            width: 200px;
-            height: 200px;
+            max-width: 300px;
+            width: 100%;
+            height: auto;
             margin: 0 auto 1.5rem;
             display: block;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .ability-list {
@@ -554,7 +554,7 @@
             <div class="character-section">
                 <div class="character-card">
                     <h3>Caine - The Demon Alchemist</h3>
-                    <img src="Art Folder/caine-portrait.png" alt="Caine" class="character-image">
+                    <img src="caine-portrait.png" alt="Caine" class="character-image">
                     <p><strong>Appearance:</strong> Purple skin, curved back horns, red open jacket with yellow trim, dark pants, red narrowish eyes with crosses for pupils. Carries a sword on his back and a belt with orb-shaped potions.</p>
                     <p><strong>Personality:</strong> Brash and naive with sarcastic wit and determined mindset. Clever and cunning, devoted to those he cares about.</p>
                     <h4>Combat Style:</h4>
@@ -575,7 +575,7 @@
                 
                 <div class="character-card">
                     <h3>Cin - The Fallen Angel</h3>
-                    <img src="Art Folder/cin-portrait.png" alt="Cin" class="character-image">
+                    <img src="cin-portrait.png" alt="Cin" class="character-image">
                     <p><strong>Appearance:</strong> Glass bowl helmet (like cartoonish astronaut), face completely obscured. Plain disheveled white dress, red scarf, red mittens, large book strapped to back like a backpack.</p>
                     <p><strong>Personality:</strong> Quiet and short-spoken with sharp mind. High moral judgment, wrathful toward the unjust. Loves to draw, fanciful and imaginative internally.</p>
                     <h4>Combat Style:</h4>
@@ -601,18 +601,24 @@
     <section class="section hell-2" data-realm="hell">
         <div class="ember-container" id="emberContainer2"></div>
         <div class="content">
-            <h2>World & Systems</h2>
+            <h2>Supporting Characters & World Systems</h2>
             
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3>🧙‍♀️ Rena - The Merchant</h3>
+            <div class="character-section">
+                <div class="character-card" style="max-width: 600px; margin: 0 auto;">
+                    <h3>Rena - The Underworld Merchant</h3>
+                    <img src="rena-portrait.png" alt="Rena" class="character-image">
                     <p>A potion and ingredients seller who travels throughout the underworld, occasionally meeting with Caine & Cin.</p>
+                    <h4>Services:</h4>
                     <ul class="ability-list">
-                        <li>Provides essential materials for alchemy</li>
-                        <li>Shares information about the realms</li>
-                        <li>Key to the crafting economy</li>
+                        <li>Sells rare ingredients for alchemy</li>
+                        <li>Provides essential potion materials</li>
+                        <li>Shares valuable information about the realms</li>
+                        <li>Key to the game's crafting economy</li>
                     </ul>
                 </div>
+            </div>
+            
+            <div class="info-grid" style="margin-top: 3rem;">
                 <div class="info-card">
                     <h3>🗺️ Mapping System</h3>
                     <p>Players can draw and mark their own maps as they explore the dungeon realms.</p>
@@ -620,20 +626,22 @@
                         <li>Custom map annotations</li>
                         <li>Mark important locations</li>
                         <li>Track unexplored areas</li>
+                        <li>Share discoveries</li>
                     </ul>
                 </div>
                 <div class="info-card">
                     <h3>⚗️ Alchemy Crafting</h3>
                     <p>Combine materials found in the field to create the majority of your items.</p>
                     <ul class="ability-list">
-                        <li>Discover new recipes</li>
-                        <li>Experiment with combinations</li>
-                        <li>Essential for progression</li>
+                        <li>Discover new recipes through experimentation</li>
+                        <li>Gather ingredients from defeated enemies</li>
+                        <li>Essential for game progression</li>
+                        <li>Trade with Rena for rare components</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="feature-box">
+            <div class="feature-box" style="margin-top: 3rem;">
                 <h3>Combat Synergy</h3>
                 <p>The key to success lies in combining Caine's consumable items with Cin's summoned creatures.</p>
                 <div class="info-grid" style="margin-top: 1.5rem;">
