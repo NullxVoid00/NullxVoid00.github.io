@@ -1150,38 +1150,46 @@
             }
         });
 
-        function checkPassword() {
-            if (passwordInput.value === 'Neurorine') {
-                passwordScreen.classList.add('hidden');
-                let fadeOut = setInterval(() => {
-                    if (passwordAudio.volume > 0.01) {
-                        passwordAudio.volume -= 0.01;
-                    } else {
-                        passwordAudio.pause();
-                        clearInterval(fadeOut);
-                    }
-                }, 50);
-                setTimeout(() => {
-                    passwordScreen.style.display = 'none';
-                    mainHub.classList.add('active');
-                    // Reinitialize keyboard navigation now that hub is visible
-                    initKeyboardNav();
-                    hubAudio.volume = 0;
-                    hubAudio.play();
-                    let fadeIn = setInterval(() => {
-                        if (hubAudio.volume < volumeSlider.value) {
-                            hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
-                        } else {
-                            clearInterval(fadeIn);
-                        }
-                    }, 50);
-                }, 500);
+function checkPassword() {
+    if (passwordInput.value === 'Neurorine') {
+        // Store authentication flag in localStorage
+        localStorage.setItem('abyssalAuth', 'true');
+        passwordScreen.classList.add('hidden');
+        let fadeOut = setInterval(() => {
+            if (passwordAudio.volume > 0.01) {
+                passwordAudio.volume -= 0.01;
             } else {
-                errorMessage.classList.add('show');
-                passwordInput.value = '';
-                setTimeout(() => errorMessage.classList.remove('show'), 2000);
+                passwordAudio.pause();
+                clearInterval(fadeOut);
             }
-        }
+        }, 50);
+        setTimeout(() => {
+            passwordScreen.style.display = 'none';
+            mainHub.classList.add('active');
+            // Reinitialize keyboard navigation now that hub is visible
+            initKeyboardNav();
+            // Reset keyboard navigation state
+            keyboardNav.enabled = false;
+            keyboardNav.currentIndex = -1;
+            keyboardNav.hubSections.forEach(section => {
+                section.classList.remove('keyboard-selected');
+            });
+            hubAudio.volume = 0;
+            hubAudio.play();
+            let fadeIn = setInterval(() => {
+                if (hubAudio.volume < volumeSlider.value) {
+                    hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
+                } else {
+                    clearInterval(fadeIn);
+                }
+            }, 50);
+        }, 500);
+    } else {
+        errorMessage.classList.add('show');
+        passwordInput.value = '';
+        setTimeout(() => errorMessage.classList.remove('show'), 2000);
+    }
+}
 
         function checkPasswordViaShard() {
             redShard.classList.add('shake');
