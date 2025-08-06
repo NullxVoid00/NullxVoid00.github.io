@@ -2385,20 +2385,35 @@ function checkPassword() {
             }
         }
 
-        window.onload = function() {
-            passwordInput.focus();
-            document.getElementById('passwordToggle').textContent = '👁';
-            initializeCarousels();
-            initKeyboardNav();
-            
-            passwordAudio.play().catch(error => {
-                console.log('Autoplay prevented:', error);
-                document.addEventListener('click', function playAudioOnce() {
-                    passwordAudio.play();
-                    document.removeEventListener('click', playAudioOnce);
-                });
+window.onload = function() {
+    // Check if user is already authenticated
+    if (localStorage.getItem('abyssalAuth') === 'true') {
+        passwordScreen.style.display = 'none';
+        mainHub.classList.add('active');
+        initKeyboardNav();
+        hubAudio.volume = 0;
+        hubAudio.play();
+        let fadeIn = setInterval(() => {
+            if (hubAudio.volume < volumeSlider.value) {
+                hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
+            } else {
+                clearInterval(fadeIn);
+            }
+        }, 50);
+    } else {
+        passwordInput.focus();
+        document.getElementById('passwordToggle').textContent = '👁';
+        passwordAudio.play().catch(error => {
+            console.log('Autoplay prevented:', error);
+            document.addEventListener('click', function playAudioOnce() {
+                passwordAudio.play();
+                document.removeEventListener('click', playAudioOnce);
             });
-        };
+        });
+    }
+    initializeCarousels();
+    initKeyboardNav();
+};
 
         // Keyboard navigation state for hub only
         let keyboardNav = {
