@@ -1971,41 +1971,48 @@
         }
 
         function updateGalleryView() {
-            if (!galleryState.isGalleryActive || galleryState.isTouching || galleryState.isPanning) {
-                if (galleryState.isGalleryActive && !galleryState.isPanning) {
-                    galleryState.animationId = requestAnimationFrame(updateGalleryView);
-                }
+            if (!galleryState.isGalleryActive) {
                 return;
             }
             
             const canvas = document.getElementById('galleryCanvas');
             if (!canvas) return;
             
-            const maxSpeed = 15;
-            const deadZone = 0.2;
+            // Only apply movement if not touching or panning
+            if (!galleryState.isTouching && !galleryState.isPanning) {
+                const maxSpeed = 15;
+                const deadZone = 0.2;
+                
+                const distX = galleryState.mousePos.x - 0.5;
+                const distY = galleryState.mousePos.y - 0.5;
+                
+                const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
+                const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
+                
+                const targetVelX = effectiveDistX * maxSpeed * 2;
+                const targetVelY = effectiveDistY * maxSpeed * 2;
+                
+                const smoothing = 0.1;
+                galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
+                galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
+                
+                galleryState.canvasOffset.x -= galleryState.velocity.x;
+                galleryState.canvasOffset.y -= galleryState.velocity.y;
+                
+                const arrowThreshold = 1;
+                document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
+                document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
+                document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
+                document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
+            } else {
+                // Clear arrow indicators when touching or panning
+                document.getElementById('arrowLeft').classList.remove('active');
+                document.getElementById('arrowRight').classList.remove('active');
+                document.getElementById('arrowTop').classList.remove('active');
+                document.getElementById('arrowBottom').classList.remove('active');
+            }
             
-            const distX = galleryState.mousePos.x - 0.5;
-            const distY = galleryState.mousePos.y - 0.5;
-            
-            const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
-            const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
-            
-            const targetVelX = effectiveDistX * maxSpeed * 2;
-            const targetVelY = effectiveDistY * maxSpeed * 2;
-            
-            const smoothing = 0.1;
-            galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
-            galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
-            
-            galleryState.canvasOffset.x -= galleryState.velocity.x;
-            galleryState.canvasOffset.y -= galleryState.velocity.y;
-            
-            const arrowThreshold = 1;
-            document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
-            document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
-            document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
-            document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
-            
+            // Always apply physics to images
             const repulsionStrength = 0.5;
             const repulsionDistance = 350;
             const damping = 0.9;
@@ -2044,6 +2051,7 @@
                 }
             });
             
+            // Handle world wrapping
             const wrapBuffer = 1000;
             if (galleryState.canvasOffset.x > wrapBuffer) {
                 galleryState.canvasOffset.x -= galleryState.worldSize.width;
@@ -2065,7 +2073,12 @@
             
             updateVisibleImages();
             
+            // Continue animation loop
             galleryState.animationId = requestAnimationFrame(updateGalleryView);
+        }
+
+        function loadAllVisibleImages() {
+            updateVisibleImages();
         }
 
         function updateVisibleImages() {
@@ -2244,10 +2257,6 @@
             
             // Stop any ongoing animation and set panning state
             galleryState.isPanning = true;
-            if (galleryState.animationId) {
-                cancelAnimationFrame(galleryState.animationId);
-                galleryState.animationId = null;
-            }
             
             // Animate the pan
             const startOffsetX = galleryState.canvasOffset.x;
@@ -2284,11 +2293,6 @@
                     container.classList.add('show-description');
                     
                     galleryState.focusedImage = container;
-                    
-                    // Resume gallery animation
-                    if (galleryState.isGalleryActive && !galleryState.animationId) {
-                        updateGalleryView();
-                    }
                 }
             }
             
