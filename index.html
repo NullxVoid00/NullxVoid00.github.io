@@ -2474,143 +2474,177 @@
         }
 
         // Keyboard navigation for carousels and gallery
-        document.addEventListener('keydown', function(e) {
-            // Don't handle keyboard navigation if user is typing in an input
-            if (document.activeElement.tagName === 'INPUT') return;
-            
-            // Volume control with Shift + Up/Down or W/S
-            if (e.shiftKey) {
-                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-                    e.preventDefault();
-                    volumeSlider.value = Math.min(1, parseFloat(volumeSlider.value) + 0.1);
-                    volumeSlider.dispatchEvent(new Event('input'));
-                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-                    e.preventDefault();
-                    volumeSlider.value = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
-                    volumeSlider.dispatchEvent(new Event('input'));
-                }
-                return;
-            }
-            
-            // Escape key to go back
-            if (e.key === 'Escape') {
-                e.preventDefault();
-                // If in about section
-                if (!document.getElementById('aboutSection').classList.contains('hidden')) {
-                    showHub();
+document.addEventListener('keydown', function(e) {
+    // Don't handle keyboard navigation if user is typing in an input
+    if (document.activeElement.tagName === 'INPUT') return;
+    
+    // Log keypress for debugging
+    console.log('Key pressed:', e.key);
+
+    // Volume control with Shift + Up/Down or W/S
+    if (e.shiftKey) {
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+            e.preventDefault();
+            volumeSlider.value = Math.min(1, parseFloat(volumeSlider.value) + 0.1);
+            volumeSlider.dispatchEvent(new Event('input'));
+        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+            e.preventDefault();
+            volumeSlider.value = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
+            volumeSlider.dispatchEvent(new Event('input'));
+        }
+        return;
+    }
+    
+    // Escape key to go back
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        // If in about section
+        if (!document.getElementById('aboutSection').classList.contains('hidden')) {
+            showHub();
+            playClickSound();
+        }
+        // If in any other section
+        else if (document.querySelector('.section-view.active')) {
+            closeSection();
+            playClickSound();
+        }
+        return;
+    }
+    
+    // PRIORITY: Check if gallery is active FIRST
+    if (document.getElementById('gallerySection').classList.contains('active')) {
+        // Don't move if currently panning to a centered image
+        if (galleryState.isPanning) return;
+        
+        // WASD navigation for gallery
+        const keySpeed = 20;
+        let moved = false;
+        
+        if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            galleryState.canvasOffset.y += keySpeed;
+            moved = true;
+            document.getElementById('arrowTop').classList.add('active');
+            setTimeout(() => document.getElementById('arrowTop').classList.remove('active'), 200);
+        } else if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            galleryState.canvasOffset.y -= keySpeed;
+            moved = true;
+            document.getElementById('arrowBottom').classList.add('active');
+            setTimeout(() => document.getElementById('arrowBottom').classList.remove('active'), 200);
+        } else if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            galleryState.canvasOffset.x += keySpeed;
+            moved = true;
+            document.getElementById('arrowLeft').classList.add('active');
+            setTimeout(() => document.getElementById('arrowLeft').classList.remove('active'), 200);
+        } else if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            galleryState.canvasOffset.x -= keySpeed;
+            moved = true;
+            document.getElementById('arrowRight').classList.add('active');
+            setTimeout(() => document.getElementById('arrowRight').classList.remove('active'), 200);
+        }
+        
+        if (moved) {
+            const canvas = document.getElementById('galleryCanvas');
+            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
+            updateVisibleImages();
+        }
+        return; // Stop here to avoid other controls
+    }
+    
+    // PRIORITY: Check if any carousel section is active
+    let activeSection = null;
+    if (document.getElementById('gamesSection').classList.contains('active')) {
+        activeSection = 'games';
+    } else if (document.getElementById('vrchatSection').classList.contains('active')) {
+        activeSection = 'vrchat';
+    } else if (document.getElementById('otherSection').classList.contains('active')) {
+        activeSection = 'other';
+    }
+    
+    if (activeSection) {
+        console.log('Active carousel section:', activeSection, 'Current index:', carouselStates[activeSection].currentIndex);
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+            e.preventDefault();
+            moveCarousel(activeSection, -1);
+            playClickSound();
+        } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+            e.preventDefault();
+            moveCarousel(activeSection, 1);
+            playClickSound();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            console.log('Enter/Space pressed in carousel:', activeSection, 'index:', carouselStates[activeSection].currentIndex);
+            const carousel = document.getElementById(`${activeSection}Carousel`);
+            const cards = carousel.querySelectorAll('.project-card');
+            const currentIndex = carouselStates[activeSection].currentIndex;
+            const selectedCard = cards[currentIndex];
+            if (selectedCard) {
+                if (!selectedCard.classList.contains('unavailable')) {
+                    console.log('Triggering click on card:', selectedCard.querySelector('h3').textContent);
+                    selectedCard.click();
                     playClickSound();
+                } else {
+                    console.log('Card is unavailable, click not triggered');
                 }
-                // If in any other section
-                else if (document.querySelector('.section-view.active')) {
-                    closeSection();
-                    playClickSound();
-                }
-                return;
+            } else {
+                console.log('No card found at index:', currentIndex);
             }
-            
-            // PRIORITY: Check if gallery is active FIRST
-            if (document.getElementById('gallerySection').classList.contains('active')) {
-                // Don't move if currently panning to a centered image
-                if (galleryState.isPanning) return;
-                
-                // WASD navigation for gallery
-                const keySpeed = 20;
-                let moved = false;
-                
-                if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    galleryState.canvasOffset.y += keySpeed;
-                    moved = true;
-                    // Show arrow indicator
-                    document.getElementById('arrowTop').classList.add('active');
-                    setTimeout(() => document.getElementById('arrowTop').classList.remove('active'), 200);
-                } else if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    galleryState.canvasOffset.y -= keySpeed;
-                    moved = true;
-                    // Show arrow indicator
-                    document.getElementById('arrowBottom').classList.add('active');
-                    setTimeout(() => document.getElementById('arrowBottom').classList.remove('active'), 200);
-                } else if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    galleryState.canvasOffset.x += keySpeed;
-                    moved = true;
-                    // Show arrow indicator
-                    document.getElementById('arrowLeft').classList.add('active');
-                    setTimeout(() => document.getElementById('arrowLeft').classList.remove('active'), 200);
-                } else if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    galleryState.canvasOffset.x -= keySpeed;
-                    moved = true;
-                    // Show arrow indicator
-                    document.getElementById('arrowRight').classList.add('active');
-                    setTimeout(() => document.getElementById('arrowRight').classList.remove('active'), 200);
-                }
-                
-                if (moved) {
-                    const canvas = document.getElementById('galleryCanvas');
-                    canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-                    updateVisibleImages();
-                }
-                return; // STOP HERE - don't process hub controls
+        }
+        return; // Stop here to avoid hub controls
+    }
+    
+    // ONLY NOW check hub navigation - if no sections are active
+    if (document.getElementById('hubHome').style.display !== 'none' && 
+        document.getElementById('aboutSection').classList.contains('hidden')) {
+        
+        // Log state for debugging
+        console.log('Hub active, keyboardNav:', keyboardNav);
+
+        if ((e.key === 'Enter' || e.key === ' ') && keyboardNav.enabled && keyboardNav.currentIndex >= 0) {
+            e.preventDefault();
+            console.log('Enter/Space pressed, activating hub section:', keyboardNav.currentIndex);
+            const selectedSection = keyboardNav.hubSections[keyboardNav.currentIndex];
+            if (selectedSection) {
+                selectedSection.click();
+                playClickSound();
+                // Reset keyboard navigation
+                keyboardNav.enabled = false;
+                keyboardNav.currentIndex = -1;
+                keyboardNav.hubSections.forEach(section => {
+                    section.classList.remove('keyboard-selected');
+                });
             }
-            
-            // PRIORITY: Check if any carousel section is active
-            let activeSection = null;
-            if (document.getElementById('gamesSection').classList.contains('active')) {
-                activeSection = 'games';
-            } else if (document.getElementById('vrchatSection').classList.contains('active')) {
-                activeSection = 'vrchat';
-            } else if (document.getElementById('otherSection').classList.contains('active')) {
-                activeSection = 'other';
-            }
-            
-            // If a carousel section is active, handle arrow keys
-            if (activeSection) {
-                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-                    e.preventDefault();
-                    moveCarousel(activeSection, -1);
-                    playClickSound();
-                } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                    e.preventDefault();
-                    moveCarousel(activeSection, 1);
-                    playClickSound();
-                }
-                return; // STOP HERE - don't process hub controls
-            }
-            
-            // ONLY NOW check hub navigation - if no sections are active
-            if (document.getElementById('hubHome').style.display !== 'none' && 
-                document.getElementById('aboutSection').classList.contains('hidden')) {
-                
-                if (e.key === 'Enter' && keyboardNav.enabled && keyboardNav.currentIndex >= 0) {
-                    e.preventDefault();
-                    keyboardNav.hubSections[keyboardNav.currentIndex].click();
-                    playClickSound();
-                    // Reset keyboard navigation when entering a section
-                    keyboardNav.enabled = false;
-                    keyboardNav.currentIndex = -1;
-                    keyboardNav.hubSections.forEach(section => {
-                        section.classList.remove('keyboard-selected');
-                    });
-                    return;
-                }
-                
-                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-                    e.preventDefault();
-                    navigateHub('up');
-                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-                    e.preventDefault();
-                    navigateHub('down');
-                } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-                    e.preventDefault();
-                    navigateHub('left');
-                } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                    e.preventDefault();
-                    navigateHub('right');
-                }
-            }
-        });
+            return;
+        }
+
+        // Initialize keyboard navigation on first keypress if not enabled
+        if (!keyboardNav.enabled && 
+            ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S', 'a', 'A', 'd', 'D'].includes(e.key)) {
+            e.preventDefault();
+            keyboardNav.enabled = true;
+            keyboardNav.currentIndex = 0; // Start at first section
+            updateKeyboardSelection(0);
+        }
+
+        // Handle navigation
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+            e.preventDefault();
+            navigateHub('up');
+        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+            e.preventDefault();
+            navigateHub('down');
+        } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+            e.preventDefault();
+            navigateHub('left');
+        } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+            e.preventDefault();
+            navigateHub('right');
+        }
+    }
+});
 
         // Reset keyboard navigation when clicking anywhere
         document.addEventListener('click', function() {
