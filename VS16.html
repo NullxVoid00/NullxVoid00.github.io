@@ -748,6 +748,11 @@
         body.decay-5 { filter: contrast(0.7) brightness(0.7) saturate(0.4) hue-rotate(10deg); }
         
         /* Console Section */
+        #console {
+            background: #000;
+            min-height: 100vh;
+        }
+        
         .console-container {
             background: #000;
             border: 1px solid #0f0;
@@ -757,6 +762,7 @@
             font-size: 18px;
             position: relative;
             box-shadow: 0 0 20px rgba(0,255,0,0.1);
+            color: #0f0;
         }
         
         .console-output {
@@ -765,6 +771,7 @@
             overflow-y: auto;
             margin-bottom: 20px;
             padding-bottom: 10px;
+            font-family: 'VT323', monospace;
         }
         
         .console-line {
@@ -772,6 +779,8 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             line-height: 1.4;
+            color: #0f0;
+            font-family: 'VT323', monospace;
         }
         
         .console-line.error {
@@ -794,11 +803,14 @@
             display: flex;
             align-items: center;
             position: relative;
+            color: #0f0;
         }
         
         .console-prompt {
             color: #0f0;
             margin-right: 5px;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
         }
         
         .console-input {
@@ -809,7 +821,7 @@
             font-size: 18px;
             flex: 1;
             outline: none;
-            width: 100%;
+            width: calc(100% - 30px);
         }
         
         .console-cursor {
@@ -869,17 +881,17 @@
                     <img src="Art Folder/paula_silhouette.png" alt="">
                     <!-- Console Section -->
         <div id="console" class="content-section">
-            <h1 class="section-title">SYSTEM_CONSOLE://RESTRICTED_ACCESS</h1>
+            <h1 class="section-title" style="color: #0f0;">SYSTEM_CONSOLE://RESTRICTED_ACCESS</h1>
             <div class="console-container">
                 <div class="console-output" id="consoleOutput">
-                    <div class="console-line">VTalkR: Rebuilt - System Console v1.3.7</div>
-                    <div class="console-line">Build V04.12.23 - Server DEGRADED</div>
-                    <div class="console-line">Type 'help' for commands</div>
-                    <div class="console-line">===============================</div>
+                    <div class="console-line" style="color: #0f0;">VTalkR: Rebuilt - System Console v1.3.7</div>
+                    <div class="console-line" style="color: #0f0;">Build V04.12.23 - Server DEGRADED</div>
+                    <div class="console-line" style="color: #0f0;">Type 'help' for commands</div>
+                    <div class="console-line" style="color: #0f0;">===============================</div>
                 </div>
                 <div class="console-input-line">
-                    <span class="console-prompt">&gt; </span>
-                    <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false">
+                    <span class="console-prompt" style="color: #0f0;">&gt; </span>
+                    <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false" style="color: #0f0;">
                     <span class="console-cursor"></span>
                 </div>
             </div>
@@ -1178,6 +1190,170 @@
     </div>
     
     <script>
+        // Console functions - define these first
+        function addConsoleLine(text, type = '') {
+            const consoleOutput = document.getElementById('consoleOutput');
+            if (!consoleOutput) return;
+            
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = text;
+            line.style.color = type === 'error' ? '#f00' : type === 'warning' ? '#f90' : type === 'info' ? '#0ff' : '#0f0';
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        function processCommand(cmd) {
+            const args = cmd.split(' ');
+            const command = args[0];
+            
+            switch(command) {
+                case 'help':
+                    addConsoleLine('AVAILABLE COMMANDS:', 'info');
+                    addConsoleLine('  help - Show this message');
+                    addConsoleLine('  status - Server status');
+                    addConsoleLine('  victims - [RESTRICTED]');
+                    addConsoleLine('  decrypt [key] - Decrypt files');
+                    addConsoleLine('  line4000 - Check source line 4000');
+                    addConsoleLine('  313 - [RESTRICTED]');
+                    addConsoleLine('  47 - Coordinates data');
+                    addConsoleLine('  andrew - [CLASSIFIED]');
+                    addConsoleLine('  paula - [REDACTED]');
+                    addConsoleLine('  xoxo - [WARNING]');
+                    addConsoleLine('  clear - Clear console');
+                    break;
+                    
+                case 'status':
+                    addConsoleLine('SERVER STATUS:', 'warning');
+                    addConsoleLine(`  Integrity: ${100 - (decayLevel * 20)}%`);
+                    addConsoleLine(`  Decay Level: ${decayLevel}`);
+                    addConsoleLine(`  Active Users: ${document.getElementById('activeCount') ? document.getElementById('activeCount').textContent : '??'}`);
+                    addConsoleLine(`  Queue: ${document.getElementById('queueCount') ? document.getElementById('queueCount').textContent : '???'}/50`);
+                    addConsoleLine(`  Visits: ${visits}`);
+                    break;
+                    
+                case 'victims':
+                    addConsoleLine('ACCESSING VICTIM DATABASE...', 'warning');
+                    setTimeout(() => {
+                        addConsoleLine('=== CLASSIFIED INFORMATION ===', 'error');
+                        addConsoleLine('Total Affected: 4,247');
+                        addConsoleLine('Hospitalized: 4,000+');
+                        addConsoleLine('Confirmed Deaths: 247', 'error');
+                        addConsoleLine('Age Range: 8-67 years');
+                        addConsoleLine('');
+                        addConsoleLine('PAULA [REDACTED], Age 13', 'error');
+                        addConsoleLine('Cause: Neurological trauma from photosensitive seizure');
+                        addConsoleLine('Time in hospital: 3 days');
+                        addConsoleLine('');
+                        addConsoleLine('[REMAINING RECORDS SEALED]', 'warning');
+                    }, 1000);
+                    break;
+                    
+                case 'decrypt':
+                    if (args[1] === 'xoxo') {
+                        addConsoleLine('DECRYPTING FILE...', 'success');
+                        setTimeout(() => {
+                            addConsoleLine('=== FILE FRAGMENTS RECOVERED ===', 'success');
+                            addConsoleLine('"Just wanted to see if I could"');
+                            addConsoleLine('"Didn\'t mean for anyone to get hurt"');
+                            addConsoleLine('"I was 14"');
+                            addConsoleLine('"Sorry sorry sorry sorry"');
+                            addConsoleLine('');
+                            addConsoleLine('ERROR: REMAINING DATA CORRUPTED', 'error');
+                            showXoXoWarning();
+                        }, 1500);
+                    } else {
+                        addConsoleLine('Invalid decryption key', 'error');
+                        addConsoleLine('Hint: The incident name', 'warning');
+                    }
+                    break;
+                    
+                case 'line4000':
+                    addConsoleLine('ACCESSING SOURCE...', 'info');
+                    setTimeout(() => {
+                        addConsoleLine('// Line 4000:', 'success');
+                        addConsoleLine('// If you\'re reading this, you\'re close');
+                        addConsoleLine('// The real hacker left breadcrumbs');
+                        addConsoleLine('// Check school records: 2002-2016');
+                        addConsoleLine('// Programming clubs, CS classes');
+                        addConsoleLine('// They were talented. Too talented.');
+                        addConsoleLine('// - VStalkR16');
+                    }, 500);
+                    break;
+                    
+                case '313':
+                    addConsoleLine('ROOM 313 - THE NIGHT OWL', 'info');
+                    addConsoleLine('Paula\'s hospital room number.');
+                    addConsoleLine('Now a memorial in VTalkR: Rebuilt.');
+                    addConsoleLine('She appears there at 3:13.');
+                    addConsoleLine('Every day. Waiting.');
+                    break;
+                    
+                case '47':
+                    addConsoleLine('COORDINATES: 47.6062° N', 'info');
+                    addConsoleLine('Location significance: [ANALYZING]');
+                    addConsoleLine('Duration of incident: 47 seconds');
+                    addConsoleLine('Server Node: 47');
+                    addConsoleLine('Too many coincidences...');
+                    break;
+                    
+                case 'andrew':
+                    addConsoleLine('ACCESSING CLASSIFIED FILE...', 'warning');
+                    setTimeout(() => {
+                        addConsoleLine('=== ANDREW WINSTON ===', 'error');
+                        addConsoleLine('Alias: :)HackHackHackHack:)');
+                        addConsoleLine('Age: 28');
+                        addConsoleLine('Status: NOT the XoXo hacker');
+                        addConsoleLine('Location: Toledo, Ohio');
+                        addConsoleLine('');
+                        addConsoleLine('INVESTIGATION NOTE:', 'warning');
+                        addConsoleLine('Claims to know real hacker identity.');
+                        addConsoleLine('Under surveillance.');
+                        addConsoleLine('DO NOT APPROACH.');
+                    }, 1000);
+                    break;
+                    
+                case 'paula':
+                    addConsoleLine('ACCESSING...', 'error');
+                    setTimeout(() => {
+                        addConsoleLine('She was 13.', 'error');
+                        addConsoleLine('She was my sister.', 'error');
+                        addConsoleLine('She didn\'t deserve this.', 'error');
+                        addConsoleLine('');
+                        addConsoleLine('I will find who did this.', 'error');
+                        addConsoleLine('- VStalkR16', 'error');
+                        document.getElementById('paula').classList.add('active');
+                        document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
+                    }, 1000);
+                    break;
+                    
+                case 'xoxo':
+                    addConsoleLine('WARNING: RESTRICTED FILE', 'error');
+                    setTimeout(() => {
+                        addConsoleLine('The signature. The taunt.', 'error');
+                        addConsoleLine('Left on victim machines.');
+                        addConsoleLine('A calling card from a child');
+                        addConsoleLine('who didn\'t understand consequences.');
+                        showXoXoWarning();
+                    }, 1000);
+                    break;
+                    
+                case 'clear':
+                    const consoleOutput = document.getElementById('consoleOutput');
+                    if (consoleOutput) {
+                        consoleOutput.innerHTML = '';
+                        addConsoleLine('Console cleared.');
+                    }
+                    break;
+                    
+                default:
+                    if (command) {
+                        addConsoleLine(`Command not found: ${command}`, 'error');
+                        addConsoleLine('Type "help" for available commands', 'warning');
+                    }
+            }
+        }
+        
         // Initialize
         let decayLevel = 0;
         let visits = parseInt(localStorage.getItem('vstalkr_visits') || '0');
@@ -1252,6 +1428,11 @@
                                 consoleInput.focus();
                                 consoleInput.click(); // Force focus on some browsers
                             }, 100);
+                        }
+                        // Make sure console is visible
+                        const consoleContainer = document.querySelector('.console-container');
+                        if (consoleContainer) {
+                            consoleContainer.style.display = 'block';
                         }
                     }
                     
@@ -1425,167 +1606,7 @@
                 });
             }
         });
-        function addConsoleLine(text, type = '') {
-            const consoleOutput = document.getElementById('consoleOutput');
-            if (!consoleOutput) return;
-            
-            const line = document.createElement('div');
-            line.className = `console-line ${type}`;
-            line.textContent = text;
-            consoleOutput.appendChild(line);
-        }
-        
-        function processCommand(cmd) {
-            const args = cmd.split(' ');
-            const command = args[0];
-            
-            switch(command) {
-                case 'help':
-                    addConsoleLine('AVAILABLE COMMANDS:', 'info');
-                    addConsoleLine('  help - Show this message');
-                    addConsoleLine('  status - Server status');
-                    addConsoleLine('  victims - [RESTRICTED]');
-                    addConsoleLine('  decrypt [key] - Decrypt files');
-                    addConsoleLine('  line4000 - Check source line 4000');
-                    addConsoleLine('  313 - [RESTRICTED]');
-                    addConsoleLine('  47 - Coordinates data');
-                    addConsoleLine('  andrew - [CLASSIFIED]');
-                    addConsoleLine('  paula - [REDACTED]');
-                    addConsoleLine('  xoxo - [WARNING]');
-                    addConsoleLine('  clear - Clear console');
-                    break;
-                    
-                case 'status':
-                    addConsoleLine('SERVER STATUS:', 'warning');
-                    addConsoleLine(`  Integrity: ${100 - (decayLevel * 20)}%`);
-                    addConsoleLine(`  Decay Level: ${decayLevel}`);
-                    addConsoleLine(`  Active Users: ${document.getElementById('activeCount').textContent}`);
-                    addConsoleLine(`  Queue: ${document.getElementById('queueCount').textContent}/50`);
-                    addConsoleLine(`  Visits: ${visits}`);
-                    break;
-                    
-                case 'victims':
-                    addConsoleLine('ACCESSING VICTIM DATABASE...', 'warning');
-                    setTimeout(() => {
-                        addConsoleLine('=== CLASSIFIED INFORMATION ===', 'error');
-                        addConsoleLine('Total Affected: 4,247');
-                        addConsoleLine('Hospitalized: 4,000+');
-                        addConsoleLine('Confirmed Deaths: 247', 'error');
-                        addConsoleLine('Age Range: 8-67 years');
-                        addConsoleLine('');
-                        addConsoleLine('PAULA [REDACTED], Age 13', 'error');
-                        addConsoleLine('Cause: Neurological trauma from photosensitive seizure');
-                        addConsoleLine('Time in hospital: 3 days');
-                        addConsoleLine('');
-                        addConsoleLine('[REMAINING RECORDS SEALED]', 'warning');
-                    }, 1000);
-                    break;
-                    
-                case 'decrypt':
-                    if (args[1] === 'xoxo') {
-                        addConsoleLine('DECRYPTING FILE...', 'success');
-                        setTimeout(() => {
-                            addConsoleLine('=== FILE FRAGMENTS RECOVERED ===', 'success');
-                            addConsoleLine('"Just wanted to see if I could"');
-                            addConsoleLine('"Didn\'t mean for anyone to get hurt"');
-                            addConsoleLine('"I was 14"');
-                            addConsoleLine('"Sorry sorry sorry sorry"');
-                            addConsoleLine('');
-                            addConsoleLine('ERROR: REMAINING DATA CORRUPTED', 'error');
-                            showXoXoWarning();
-                        }, 1500);
-                    } else {
-                        addConsoleLine('Invalid decryption key', 'error');
-                        addConsoleLine('Hint: The incident name', 'warning');
-                    }
-                    break;
-                    
-                case 'line4000':
-                    addConsoleLine('ACCESSING SOURCE...', 'info');
-                    setTimeout(() => {
-                        addConsoleLine('// Line 4000:', 'success');
-                        addConsoleLine('// If you\'re reading this, you\'re close');
-                        addConsoleLine('// The real hacker left breadcrumbs');
-                        addConsoleLine('// Check school records: 2002-2016');
-                        addConsoleLine('// Programming clubs, CS classes');
-                        addConsoleLine('// They were talented. Too talented.');
-                        addConsoleLine('// - VStalkR16');
-                    }, 500);
-                    break;
-                    
-                case '313':
-                    addConsoleLine('ROOM 313 - THE NIGHT OWL', 'info');
-                    addConsoleLine('Paula\'s hospital room number.');
-                    addConsoleLine('Now a memorial in VTalkR: Rebuilt.');
-                    addConsoleLine('She appears there at 3:13.');
-                    addConsoleLine('Every day. Waiting.');
-                    break;
-                    
-                case '47':
-                    addConsoleLine('COORDINATES: 47.6062° N', 'info');
-                    addConsoleLine('Location significance: [ANALYZING]');
-                    addConsoleLine('Duration of incident: 47 seconds');
-                    addConsoleLine('Server Node: 47');
-                    addConsoleLine('Too many coincidences...');
-                    break;
-                    
-                case 'andrew':
-                    addConsoleLine('ACCESSING CLASSIFIED FILE...', 'warning');
-                    setTimeout(() => {
-                        addConsoleLine('=== ANDREW WINSTON ===', 'error');
-                        addConsoleLine('Alias: :)HackHackHackHack:)');
-                        addConsoleLine('Age: 28');
-                        addConsoleLine('Status: NOT the XoXo hacker');
-                        addConsoleLine('Location: Toledo, Ohio');
-                        addConsoleLine('');
-                        addConsoleLine('INVESTIGATION NOTE:', 'warning');
-                        addConsoleLine('Claims to know real hacker identity.');
-                        addConsoleLine('Under surveillance.');
-                        addConsoleLine('DO NOT APPROACH.');
-                    }, 1000);
-                    break;
-                    
-                case 'paula':
-                    addConsoleLine('ACCESSING...', 'error');
-                    setTimeout(() => {
-                        addConsoleLine('She was 13.', 'error');
-                        addConsoleLine('She was my sister.', 'error');
-                        addConsoleLine('She didn\'t deserve this.', 'error');
-                        addConsoleLine('');
-                        addConsoleLine('I will find who did this.', 'error');
-                        addConsoleLine('- VStalkR16', 'error');
-                        document.getElementById('paula').classList.add('active');
-                        document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
-                    }, 1000);
-                    break;
-                    
-                case 'xoxo':
-                    addConsoleLine('WARNING: RESTRICTED FILE', 'error');
-                    setTimeout(() => {
-                        addConsoleLine('The signature. The taunt.', 'error');
-                        addConsoleLine('Left on victim machines.');
-                        addConsoleLine('A calling card from a child');
-                        addConsoleLine('who didn\'t understand consequences.');
-                        showXoXoWarning();
-                    }, 1000);
-                    break;
-                    
-                case 'clear':
-                    const consoleOutput = document.getElementById('consoleOutput');
-                    if (consoleOutput) {
-                        consoleOutput.innerHTML = '';
-                        addConsoleLine('Console cleared.');
-                    }
-                    break;
-                    
-                default:
-                    if (command) {
-                        addConsoleLine(`Command not found: ${command}`, 'error');
-                        addConsoleLine('Type "help" for available commands', 'warning');
-                    }
-            }
-        }
-        
+                
         // Remove old console.log override
         console.log('VStalkR16 System Active');
         
@@ -1693,20 +1714,32 @@
             if (visits > 2) {
                 playStatic();
             }
-            
-            // Initialize console system
+        });
+        
+        // Console initialization - separate from load event for better reliability
+        document.addEventListener('DOMContentLoaded', () => {
             const consoleInput = document.getElementById('consoleInput');
             const consoleOutput = document.getElementById('consoleOutput');
             
             if (consoleInput && consoleOutput) {
                 // Handle enter key for commands
-                consoleInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
+                consoleInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        e.preventDefault();
                         const command = consoleInput.value.trim().toLowerCase();
-                        addConsoleLine(`> ${consoleInput.value}`, 'success');
-                        processCommand(command);
-                        consoleInput.value = '';
-                        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                        if (command) {
+                            addConsoleLine(`> ${consoleInput.value}`, 'success');
+                            processCommand(command);
+                            consoleInput.value = '';
+                            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                        }
+                    }
+                });
+                
+                // Also handle keypress for compatibility
+                consoleInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        e.preventDefault();
                     }
                 });
             }
