@@ -1214,25 +1214,112 @@
             </div>
 
             <h3 style="text-align: center; margin: 3rem 0 2rem;">Major Encounters</h3>
-            <div class="layer-grid">
-                <div class="layer-card">
-                    <h4>Bolster - The Devoted Knight</h4>
-                    <p>Bird-knight protector of Dolor. First encountered outside the prison, later transforms into a Demi-Mare when desperate to protect his charge. Only Dolor's pleas can bring him back.</p>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button class="route-toggle-btn active" onclick="showRoute('acceptance')" style="padding: 0.8rem 2rem; margin: 0 0.5rem; background: var(--accent-green); border: none; color: white; cursor: pointer; border-radius: 5px; transition: all 0.3s ease;">Self-Acceptance Route</button>
+                <button class="route-toggle-btn" onclick="showRoute('destruction')" style="padding: 0.8rem 2rem; margin: 0 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid var(--accent-red); color: white; cursor: pointer; border-radius: 5px; transition: all 0.3s ease;">Self-Destruction Route</button>
+            </div>
+
+            <div id="acceptance-route" class="route-content">
+                <div class="layer-grid">
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] Bolster - First Encounter</h4>
+                        <p>Met outside Dolor's prison where he's trying to gain entrance after being locked out for his own safety. Suspicious of Null and protective of Dolor, he attacks. Once defeated, he leaves to find another entrance.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Bolster - Demi-Mare Transformation</h4>
+                        <p>After nearing Dolor's Throne Room, Bolster blocks the path. Desperately fighting to protect Dolor from heartbreak, he transforms into a Demi-Mare. Only through combat and Dolor's pleas for him to calm does he transform back.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] Midas - Yellow King Form</h4>
+                        <p>Midas in his transformed state, wielding the full power of his hedonistic nature before his fall from grace.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Flourish - The Corrupted Idol</h4>
+                        <p>Green-skinned Demi-Mare with pink hair and cracked white mask. Once a street child who killed her Mare-corrupted mother in self-defense, now controls Insomnia tower through hypnotic songs and mind control.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] Shadow Crowd</h4>
+                        <p>While Null is in Aldora, Midas and Dolor face the restless shadow audience in the auditorium. They must perform a makeshift show with rhythm-based gameplay to appease the violent figments and win Mimi's admiration.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] The Decaying Hand</h4>
+                        <p>A massive rotting hand composed of Limerence's accumulated corpses from Aldora. Located in The Pit, it emerges from a mountain of bodies with an oval eye displaying Limerence's roulette symbols. Players must observe the palm's rotating symbols to determine attack strategies.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Amalgamation</h4>
+                        <p>A conglomerate of Limerence's copies merged together and towering in size. Looms over the dome during the fight to gain entrance, battling Null, Midas, and Dolor while Limerence confronts the False Idalia inside.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] Idalia</h4>
+                        <p>The powerful Figment and guardian of Absentia must be confronted in her role as arbiter of the fractured world.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Neuro - The Harsh Mirror</h4>
+                        <p>The rejected trauma fragment who remembers all resets. Tests the party relentlessly with overwhelming speed, power, and mental manipulation. His harsh methods aim to force progress through confrontation.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Basilisk</h4>
+                        <p>A monster feeding off the chaos in their mind. This manifestation of darkness and anxiety grows stronger as it feasts on mental turmoil, representing the collective fears and doubts of the psyche.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Shiva - Final Boss</h4>
+                        <p>A floating distorted figure with a lowered hood and glitches obscuring their face. Has multiple phases and uses multiple weapons, mainly wielding dual guitars. The final test before self-acceptance.</p>
+                    </div>
                 </div>
-                
-                <div class="layer-card">
-                    <h4>Flourish - The Corrupted Idol</h4>
-                    <p>Once a street child who lost her mother to Mare corruption, now a Demi-Mare pop star controlling Insomnia. Her hypnotic songs control minds while her cracked mask hides her pain.</p>
-                </div>
-                
-                <div class="layer-card">
-                    <h4>The False Idalia</h4>
-                    <p>Within Aldora's glass dome, a reflection of Limerence's lost love. Dancing with her allows Limerence to finally let go of his obsession and accept the truth of their separation.</p>
-                </div>
-                
-                <div class="layer-card">
-                    <h4>The Amalgamation</h4>
-                    <p>A towering fusion of Limerence's dark copies, attacking while he confronts the False Idalia. Null and companions must hold it off during the emotional climax.</p>
+            </div>
+
+            <div id="destruction-route" class="route-content" style="display: none;">
+                <div class="layer-grid">
+                    <div class="layer-card">
+                        <h4>Bolster</h4>
+                        <p>The loyal bird-knight must be eliminated to reach Dolor. His devotion makes him fight to the bitter end, unable to accept Null's destructive path.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Dolor</h4>
+                        <p>The sensitive fragment must be forcefully absorbed. His fear and sadness transform into desperate resistance as he realizes Null's true intentions.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Midas</h4>
+                        <p>The hedonistic fragment fights with all his clever tactics and perceptive abilities, but ultimately falls to Null's violence.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Mini-Boss] Skim and Parlor</h4>
+                        <p>After defeating Midas, his devoted podcast fans desperately try to protect their fallen idol. They fight together despite being outmatched, their loyalty unshakeable even in the face of destruction.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>[Optional] Limerence</h4>
+                        <p>Can be killed immediately upon encounter. The obsessive showman's death adds pink to The Veil, his theatrical nature ending in tragedy.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Idalia & Neuro</h4>
+                        <p>The guardian and the rejected trauma fight together as one. Their combined memories of all resets and harsh determination make them formidable opponents on the path of destruction.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Basilisk</h4>
+                        <p>A monster feeding off the chaos in their mind. This manifestation of darkness and anxiety grows stronger as it feasts on the violence and destruction Null has wrought.</p>
+                    </div>
+                    
+                    <div class="layer-card">
+                        <h4>Brahma - Final Boss</h4>
+                        <p>A dark rainbow heart that pulses with energy. It cannot attack and produces music until defeated, its light growing dimmer and music fainter as the fight progresses. The final guardian before complete self-destruction.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1379,7 +1466,7 @@
                     <div class="video-container">
                         <h4>Neuro's Awakening</h4>
                         <video class="video-player" controls>
-                            <source src="videos/neuro-scene.mp4" type="video/mp4">
+                            <source src="Art Folder/neuro-scene.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
@@ -1387,7 +1474,7 @@
                     <div class="video-container">
                         <h4>The Dome Fight</h4>
                         <video class="video-player" controls>
-                            <source src="videos/dome-fight.mp4" type="video/mp4">
+                            <source src="Art Folder/dome-fight.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
@@ -1434,6 +1521,29 @@
                 drop.style.animationDelay = Math.random() * 2 + 's';
                 drop.style.opacity = Math.random() * 0.5 + 0.1;
                 container.appendChild(drop);
+            }
+        }
+
+        // Route Toggle for Boss Encounters
+        function showRoute(route) {
+            const acceptanceRoute = document.getElementById('acceptance-route');
+            const destructionRoute = document.getElementById('destruction-route');
+            const buttons = document.querySelectorAll('.route-toggle-btn');
+            
+            if (route === 'acceptance') {
+                acceptanceRoute.style.display = 'block';
+                destructionRoute.style.display = 'none';
+                buttons[0].style.background = 'var(--accent-green)';
+                buttons[0].style.border = 'none';
+                buttons[1].style.background = 'rgba(255,255,255,0.1)';
+                buttons[1].style.border = '1px solid var(--accent-red)';
+            } else {
+                acceptanceRoute.style.display = 'none';
+                destructionRoute.style.display = 'block';
+                buttons[0].style.background = 'rgba(255,255,255,0.1)';
+                buttons[0].style.border = '1px solid var(--accent-green)';
+                buttons[1].style.background = 'var(--accent-red)';
+                buttons[1].style.border = 'none';
             }
         }
 
