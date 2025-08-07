@@ -17,6 +17,8 @@
         :root {
             --glitch-red: #ff0040;
             --glitch-blue: #00ffff;
+            --glitch-white: #ffffff;
+            --glitch-black: #000000;
             --decay-level: 0;
         }
         
@@ -704,21 +706,6 @@
             background: url('Art Folder/night_owl_pattern.png') center/cover;
         }
         
-        /* Hidden Console Commands */
-        .console-hint {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 10px;
-            color: #222;
-            opacity: 0;
-            transition: opacity 10s;
-        }
-        
-        body:hover .console-hint {
-            opacity: 1;
-        }
-        
         /* Audio Visualizer */
         .audio-indicator {
             position: fixed;
@@ -760,6 +747,77 @@
         body.decay-4 { filter: contrast(0.8) brightness(0.8) saturate(0.6); }
         body.decay-5 { filter: contrast(0.7) brightness(0.7) saturate(0.4) hue-rotate(10deg); }
         
+        /* Console Section */
+        .console-container {
+            background: #000;
+            border: 1px solid #0f0;
+            padding: 20px;
+            min-height: 500px;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,255,0,0.1);
+        }
+        
+        .console-output {
+            color: #0f0;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .console-line {
+            margin-bottom: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .console-line.error {
+            color: #f00;
+        }
+        
+        .console-line.warning {
+            color: #f90;
+        }
+        
+        .console-line.success {
+            color: #0f0;
+        }
+        
+        .console-line.info {
+            color: #0ff;
+        }
+        
+        .console-input-line {
+            display: flex;
+            align-items: center;
+        }
+        
+        .console-prompt {
+            color: #0f0;
+            margin-right: 5px;
+        }
+        
+        .console-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            flex: 1;
+            outline: none;
+        }
+        
+        .console-input::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .logo-main {
@@ -799,7 +857,23 @@
             <div class="logo-container">
                 <div class="paula-figure">
                     <img src="Art Folder/paula_silhouette.png" alt="">
+                    <!-- Console Section -->
+        <div id="console" class="content-section">
+            <h1 class="section-title">SYSTEM_CONSOLE://RESTRICTED_ACCESS</h1>
+            <div class="console-container">
+                <div class="console-output" id="consoleOutput">
+                    <div class="console-line">VTalkR: Rebuilt - System Console v1.3.7</div>
+                    <div class="console-line">Build V04.12.23 - Server DEGRADED</div>
+                    <div class="console-line">Type 'help' for commands</div>
+                    <div class="console-line">===============================</div>
                 </div>
+                <div class="console-input-line">
+                    <span class="console-prompt">&gt; </span>
+                    <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+    </div>
                 <div class="logo-main" data-text="VStalkR16">VStalkR16</div>
                 <div class="tagline">
                     <span>Create.</span> <span>Share.</span> <span>Find.</span>
@@ -808,7 +882,7 @@
             <div class="login-form">
                 <input type="text" class="login-input" id="usernameInput" placeholder="Username_">
                 <br>
-                <input type="password" class="login-input" id="passwordInput" placeholder="Access_Code">
+                <input type="password" class="login-input" id="passwordInput" placeholder="Access_Code" title="The incident name...">
                 <div class="server-status">
                     <span class="status-indicator"></span>
                     <span id="serverMessage">Server Status: DEGRADED</span>
@@ -829,6 +903,7 @@
                         <li><a class="nav-item" data-section="incident">INCIDENT_LOG</a></li>
                         <li><a class="nav-item" data-section="games">GAMES</a></li>
                         <li><a class="nav-item" data-section="stalkers">STALKERS</a></li>
+                        <li><a class="nav-item" data-section="console" style="color: #0f0;">&gt;_</a></li>
                         <li><a class="nav-item" data-section="paula" style="opacity: 0.3;">P̸A̵U̶L̷A̴</a></li>
                     </ul>
                 </nav>
@@ -843,16 +918,20 @@
                     <div class="timeline-marker"></div>
                     <div class="timeline-date">2014.03.15</div>
                     <div class="timeline-content">
-                        VTalkR launches. "The future of social VR" they called it.
+                        VTalkR launches. "The future of social VR" - Praised as main influence for VR culture rise.
+                        <br><span style="color: #666;">Initial user base: 50,000</span>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-marker"></div>
                     <div class="timeline-date">2016.11.24 - 14:32:07</div>
                     <div class="timeline-content">
-                        The XoXo Incident. Red. Blue. Flashing. Screaming.
+                        The XoXo Incident. Simultaneous pattern attack across entire platform.
+                        <br>Red. Blue. Flashing. Seizures. Hospitalizations. Deaths.
+                        <br><span style="color: #888;">Duration: 47 seconds</span>
                         <div class="casualty-counter">
                             AFFECTED: <span id="affectedCount">0</span>
+                            <br><span style="font-size: 16px; color: #888;">CONFIRMED DEAD: 247</span>
                         </div>
                     </div>
                 </div>
@@ -860,24 +939,60 @@
                     <div class="timeline-marker"></div>
                     <div class="timeline-date">2016.11.25</div>
                     <div class="timeline-content">
-                        File found: "XoXo". Contents: [REDACTED]
-                        <br>Hacker: UNKNOWN
+                        File "XoXo" discovered on victim machines. Contents: [REDACTED]
+                        <br>Security breach vector: Unknown
+                        <br>Hacker Identity: UNCONFIRMED
+                        <br><span style="color: #666;">// System console access required for details</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2017.01-07 - Legal Proceedings</div>
+                    <div class="timeline-content">
+                        Class action lawsuit. Public recovery campaign fails.
+                        <br>VTalkR reputation: IRREPARABLE
+                        <br>Investigation Status: COLD CASE
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-marker"></div>
                     <div class="timeline-date">2017.08.03</div>
                     <div class="timeline-content">
-                        VTalkR shuts down permanently. They couldn't wash the blood off.
+                        VTalkR shuts down permanently. All servers wiped.
+                        <br>Official statement: "We cannot continue after such tragedy."
+                        <br><span style="color: #666;">But I saved everything. Every line of code.</span>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-marker"></div>
-                    <div class="timeline-date">2026.XX.XX</div>
+                    <div class="timeline-date">2024.XX.XX - PERSONAL LOG</div>
                     <div class="timeline-content">
-                        We rebuilt it. We'll find them. They'll pay.
+                        7 years of learning. Coding. Planning. Hunting.
+                        <br>Found former VTalkR developers. They gave me what I needed.
+                        <br>The hacker thinks they're safe. They're wrong.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2026.10.13 - VTalkR: REBUILT</div>
+                    <div class="timeline-content">
+                        We rebuilt it. Personal servers. Stripped down. Decaying.
+                        <br>Purpose: Draw them out. Make them pay.
                         <br><br>
-                        <span style="color: var(--glitch-red);">Paula remembers.</span>
+                        <span style="color: var(--glitch-red);">She was 13. She didn't deserve this.</span>
+                        <br><br>
+                        The hunt begins. -VStalkR16
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">CURRENT - PHASE 2</div>
+                    <div class="timeline-content">
+                        Games deployed. Stalkers recruited. 
+                        <br>Server population growing.
+                        <br>Someone knows something.
+                        <br><br>
+                        <span style="color: #666;">Check coordinates: 47.XX.XX</span>
                     </div>
                 </div>
             </div>
@@ -886,6 +1001,7 @@
         <!-- Games Section -->
         <div id="games" class="content-section">
             <h1 class="section-title">GAMES://HUNT_PROTOCOL</h1>
+            <p style="color: #888; margin-bottom: 20px;">Each game contains clues. Each player helps narrow the search. Find them. Help me find them.</p>
             <div class="games-grid">
                 <div class="game-card" data-game="1">
                     <div class="game-thumbnail">
@@ -896,6 +1012,9 @@
                     <div class="game-info">
                         <div class="game-title">FIND_ME.exe</div>
                         <div class="game-date">Released: 10 days ago</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                            Players: 1,847 | Clues Found: 23
+                        </div>
                     </div>
                 </div>
                 <div class="game-card" data-game="2">
@@ -907,6 +1026,9 @@
                     <div class="game-info">
                         <div class="game-title">REMEMBER_HER.vtr</div>
                         <div class="game-date">Released: 3 days ago</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                            Players: 892 | Paula appears at 3:13
+                        </div>
                     </div>
                 </div>
                 <div class="game-card" data-game="3">
@@ -917,15 +1039,30 @@
                     </div>
                     <div class="game-info">
                         <div class="game-title">VENGEANCE_PROTOCOL.end</div>
-                        <div class="game-date">Coming: SOON</div>
+                        <div class="game-date">Coming: When we find them</div>
+                        <div style="font-size: 11px; color: var(--glitch-red); margin-top: 5px;">
+                            This one will be... different.
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div style="margin-top: 40px; padding: 20px; background: rgba(0,0,0,0.5); border-left: 2px solid var(--glitch-red);">
+                <h3 style="color: #fff; margin-bottom: 10px;">INVESTIGATION NOTES:</h3>
+                <p style="color: #888; font-size: 14px;">
+                    Game 1 revealed specific exploit pattern - buffer overflow.
+                    <br>Game 2 contains fragments. Players report seeing "a young girl" before crashes.
+                    <br>Someone calling themselves ":)HackHackHackHack:)" is watching. Claims to know things.
+                    <br><br>
+                    <span style="color: #666;">// Access restricted. Authorization required.</span>
+                    <br><span style="color: #444;">// Try: line<span style="opacity: 0.5;">4000</span></span>
+                </p>
             </div>
         </div>
         
         <!-- Stalkers Section -->
         <div id="stalkers" class="content-section">
             <h1 class="section-title">STALKERS://ACTIVE_HUNT</h1>
+            <p style="color: #888; margin-bottom: 20px;">The Night Owl - Hub World. Limited capacity. They help me search. They don't know everything.</p>
             <div class="stalkers-board">
                 <div class="active-users">
                     <div class="user-count">ACTIVE: <span id="activeCount">23</span></div>
@@ -933,26 +1070,42 @@
                 </div>
                 <div class="message-board" id="messageBoard">
                     <div class="stalker-message">
+                        <div class="stalker-name">VStalkR16</div>
+                        <div class="stalker-text" style="color: var(--glitch-red);">Welcome. You know why you're here. Help me find them.</div>
+                        <div class="stalker-timestamp">Pinned</div>
+                    </div>
+                    <div class="stalker-message">
                         <div class="stalker-name">Trinity_Gaming</div>
-                        <div class="stalker-text">Found something in the old server files. Check coordinates 47.XX.XX</div>
+                        <div class="stalker-text">Been digging through old forums. Found someone using "Xo_Xo" handle in 2015.</div>
                         <div class="stalker-timestamp">2 hours ago</div>
                     </div>
                     <div class="stalker-message">
                         <div class="stalker-name">Anonymous_Hunter_16</div>
-                        <div class="stalker-text">The pattern in FIND_ME matches the original incident. Red, blue, red, blue...</div>
+                        <div class="stalker-text">The pattern in FIND_ME matches the original incident. It's like a signature.</div>
                         <div class="stalker-timestamp">47 minutes ago</div>
                     </div>
                     <div class="stalker-message">
+                        <div class="stalker-name">DeepWeb_Searcher</div>
+                        <div class="stalker-text">Someone's been asking about "photosensitive exploits" on old forums. <span style="color: #666;">Line 4000...</span></div>
+                        <div class="stalker-timestamp">31 minutes ago</div>
+                    </div>
+                    <div class="stalker-message">
                         <div class="stalker-name">:)HackHackHackHack:)</div>
-                        <div class="stalker-text">You're all looking in the wrong places :)</div>
+                        <div class="stalker-text">You're all looking in the wrong places :) I know who did it.</div>
                         <div class="stalker-timestamp">12 minutes ago</div>
                     </div>
                     <div class="stalker-message">
                         <div class="stalker-name">System</div>
-                        <div class="stalker-text" style="color: var(--glitch-red);">User [REDACTED] has been removed from server.</div>
+                        <div class="stalker-text" style="color: #f90;">Server integrity check... <span style="color: #666;">Status: check console</span></div>
                         <div class="stalker-timestamp">5 minutes ago</div>
                     </div>
                 </div>
+            </div>
+            <div style="margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid #333;">
+                <p style="color: #666; font-size: 12px;">
+                    // Some information requires higher clearance
+                    <br>// <span style="color: #444;">Try: victims</span>
+                </p>
             </div>
         </div>
         
@@ -964,16 +1117,34 @@
                 <div class="memory-fragments">
                     <div class="fragment">
                         <img src="Art Folder/paula_memory1.jpg" alt="">
-                        <div class="fragment-text">Before</div>
+                        <div class="fragment-text">Before - "Can I try VR?"</div>
                     </div>
                     <div class="fragment">
                         <img src="Art Folder/paula_memory2.jpg" alt="">
-                        <div class="fragment-text">During</div>
+                        <div class="fragment-text">During - Seizure at 14:32:13</div>
                     </div>
                     <div class="fragment">
                         <img src="Art Folder/paula_memory3.jpg" alt="">
-                        <div class="fragment-text">After</div>
+                        <div class="fragment-text">After - Room 313</div>
                     </div>
+                </div>
+                <div style="margin-top: 40px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <p style="color: #888; font-size: 14px; line-height: 1.8;">
+                        November 24, 2016. Thanksgiving evening.
+                        <br><br>
+                        She had epilepsy. Always careful. No flashing lights. No strobes. VTalkR was supposed to be safe.
+                        <br><br>
+                        14:32:07 - The attack begins<br>
+                        14:32:13 - Seizure starts<br>
+                        14:32:28 - Headset removed, too late<br>
+                        14:32:54 - Attack ends. 47 seconds.<br>
+                        <br>
+                        Neurological damage severe. Confused. Scared. "Why did they make it flash?"
+                        <br><br>
+                        Three days. Room 313. Then nothing.
+                        <br><br>
+                        <span style="color: var(--glitch-red);">Someone has to pay for this.</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -993,9 +1164,6 @@
         <span class="audio-bar"></span>
         <span class="audio-bar"></span>
     </div>
-    
-    <!-- Console Hint -->
-    <div class="console-hint">console.log('help')</div>
     
     <script>
         // Initialize
@@ -1137,10 +1305,10 @@
             warning.classList.add('active');
             playGlitch();
             
-            // Flash effect
+            // Flash effect - SAFE VERSION (white/black, not red/blue)
             let flashes = 0;
             const flashInterval = setInterval(() => {
-                document.body.style.background = flashes % 2 === 0 ? '#ff0040' : '#00ffff';
+                document.body.style.background = flashes % 2 === 0 ? '#ffffff' : '#1a1a1a';
                 flashes++;
                 if (flashes > 6) {
                     clearInterval(flashInterval);
@@ -1209,55 +1377,184 @@
             }, 30000);
         }
         
-        // Console commands (Easter eggs)
-        const originalLog = console.log;
-        console.log = function(...args) {
-            originalLog.apply(console, args);
+        // Console System
+        const consoleInput = document.getElementById('consoleInput');
+        const consoleOutput = document.getElementById('consoleOutput');
+        
+        if (consoleInput) {
+            consoleInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const command = consoleInput.value.trim().toLowerCase();
+                    addConsoleLine(`> ${consoleInput.value}`, 'success');
+                    processCommand(command);
+                    consoleInput.value = '';
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+            });
             
-            if (args[0] === 'help') {
-                originalLog('%c COMMANDS:', 'color: #0f0; font-weight: bold');
-                originalLog('findPaula() - Search for Paula');
-                originalLog('findHacker() - Hunt the XoXo hacker');
-                originalLog('serverStatus() - Check server integrity');
-                originalLog('decrypt("XoXo") - Decrypt the file');
+            // Focus console input when section is active
+            document.querySelector('[data-section="console"]').addEventListener('click', () => {
+                setTimeout(() => consoleInput.focus(), 100);
+            });
+        }
+        
+        function addConsoleLine(text, type = '') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = text;
+            consoleOutput.appendChild(line);
+        }
+        
+        function processCommand(cmd) {
+            const args = cmd.split(' ');
+            const command = args[0];
+            
+            switch(command) {
+                case 'help':
+                    addConsoleLine('AVAILABLE COMMANDS:', 'info');
+                    addConsoleLine('  help - Show this message');
+                    addConsoleLine('  status - Server status');
+                    addConsoleLine('  victims - [RESTRICTED]');
+                    addConsoleLine('  decrypt [key] - Decrypt files');
+                    addConsoleLine('  line4000 - Check source line 4000');
+                    addConsoleLine('  313 - [RESTRICTED]');
+                    addConsoleLine('  47 - Coordinates data');
+                    addConsoleLine('  andrew - [CLASSIFIED]');
+                    addConsoleLine('  paula - [REDACTED]');
+                    addConsoleLine('  xoxo - [WARNING]');
+                    addConsoleLine('  clear - Clear console');
+                    break;
+                    
+                case 'status':
+                    addConsoleLine('SERVER STATUS:', 'warning');
+                    addConsoleLine(`  Integrity: ${100 - (decayLevel * 20)}%`);
+                    addConsoleLine(`  Decay Level: ${decayLevel}`);
+                    addConsoleLine(`  Active Users: ${document.getElementById('activeCount').textContent}`);
+                    addConsoleLine(`  Queue: ${document.getElementById('queueCount').textContent}/50`);
+                    addConsoleLine(`  Visits: ${visits}`);
+                    break;
+                    
+                case 'victims':
+                    addConsoleLine('ACCESSING VICTIM DATABASE...', 'warning');
+                    setTimeout(() => {
+                        addConsoleLine('=== CLASSIFIED INFORMATION ===', 'error');
+                        addConsoleLine('Total Affected: 4,247');
+                        addConsoleLine('Hospitalized: 4,000+');
+                        addConsoleLine('Confirmed Deaths: 247', 'error');
+                        addConsoleLine('Age Range: 8-67 years');
+                        addConsoleLine('');
+                        addConsoleLine('PAULA [REDACTED], Age 13', 'error');
+                        addConsoleLine('Cause: Neurological trauma from photosensitive seizure');
+                        addConsoleLine('Time in hospital: 3 days');
+                        addConsoleLine('');
+                        addConsoleLine('[REMAINING RECORDS SEALED]', 'warning');
+                    }, 1000);
+                    break;
+                    
+                case 'decrypt':
+                    if (args[1] === 'xoxo') {
+                        addConsoleLine('DECRYPTING FILE...', 'success');
+                        setTimeout(() => {
+                            addConsoleLine('=== FILE FRAGMENTS RECOVERED ===', 'success');
+                            addConsoleLine('"Just wanted to see if I could"');
+                            addConsoleLine('"Didn\'t mean for anyone to get hurt"');
+                            addConsoleLine('"I was 14"');
+                            addConsoleLine('"Sorry sorry sorry sorry"');
+                            addConsoleLine('');
+                            addConsoleLine('ERROR: REMAINING DATA CORRUPTED', 'error');
+                            showXoXoWarning();
+                        }, 1500);
+                    } else {
+                        addConsoleLine('Invalid decryption key', 'error');
+                        addConsoleLine('Hint: The incident name', 'warning');
+                    }
+                    break;
+                    
+                case 'line4000':
+                    addConsoleLine('ACCESSING SOURCE...', 'info');
+                    setTimeout(() => {
+                        addConsoleLine('// Line 4000:', 'success');
+                        addConsoleLine('// If you\'re reading this, you\'re close');
+                        addConsoleLine('// The real hacker left breadcrumbs');
+                        addConsoleLine('// Check school records: 2002-2016');
+                        addConsoleLine('// Programming clubs, CS classes');
+                        addConsoleLine('// They were talented. Too talented.');
+                        addConsoleLine('// - VStalkR16');
+                    }, 500);
+                    break;
+                    
+                case '313':
+                    addConsoleLine('ROOM 313 - THE NIGHT OWL', 'info');
+                    addConsoleLine('Paula\'s hospital room number.');
+                    addConsoleLine('Now a memorial in VTalkR: Rebuilt.');
+                    addConsoleLine('She appears there at 3:13.');
+                    addConsoleLine('Every day. Waiting.');
+                    break;
+                    
+                case '47':
+                    addConsoleLine('COORDINATES: 47.6062° N', 'info');
+                    addConsoleLine('Location significance: [ANALYZING]');
+                    addConsoleLine('Duration of incident: 47 seconds');
+                    addConsoleLine('Server Node: 47');
+                    addConsoleLine('Too many coincidences...');
+                    break;
+                    
+                case 'andrew':
+                    addConsoleLine('ACCESSING CLASSIFIED FILE...', 'warning');
+                    setTimeout(() => {
+                        addConsoleLine('=== ANDREW WINSTON ===', 'error');
+                        addConsoleLine('Alias: :)HackHackHackHack:)');
+                        addConsoleLine('Age: 28');
+                        addConsoleLine('Status: NOT the XoXo hacker');
+                        addConsoleLine('Location: Toledo, Ohio');
+                        addConsoleLine('');
+                        addConsoleLine('INVESTIGATION NOTE:', 'warning');
+                        addConsoleLine('Claims to know real hacker identity.');
+                        addConsoleLine('Under surveillance.');
+                        addConsoleLine('DO NOT APPROACH.');
+                    }, 1000);
+                    break;
+                    
+                case 'paula':
+                    addConsoleLine('ACCESSING...', 'error');
+                    setTimeout(() => {
+                        addConsoleLine('She was 13.', 'error');
+                        addConsoleLine('She was my sister.', 'error');
+                        addConsoleLine('She didn\'t deserve this.', 'error');
+                        addConsoleLine('');
+                        addConsoleLine('I will find who did this.', 'error');
+                        addConsoleLine('- VStalkR16', 'error');
+                        document.getElementById('paula').classList.add('active');
+                        document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
+                    }, 1000);
+                    break;
+                    
+                case 'xoxo':
+                    addConsoleLine('WARNING: RESTRICTED FILE', 'error');
+                    setTimeout(() => {
+                        addConsoleLine('The signature. The taunt.', 'error');
+                        addConsoleLine('Left on victim machines.');
+                        addConsoleLine('A calling card from a child');
+                        addConsoleLine('who didn\'t understand consequences.');
+                        showXoXoWarning();
+                    }, 1000);
+                    break;
+                    
+                case 'clear':
+                    consoleOutput.innerHTML = '';
+                    addConsoleLine('Console cleared.');
+                    break;
+                    
+                default:
+                    if (command) {
+                        addConsoleLine(`Command not found: ${command}`, 'error');
+                        addConsoleLine('Type "help" for available commands', 'warning');
+                    }
             }
-        };
+        }
         
-        // Console command functions
-        window.findPaula = function() {
-            console.log('%c Paula is everywhere. Paula is nowhere. She remembers.', 'color: red');
-            document.getElementById('paula').classList.add('active');
-            document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
-        };
-        
-        window.findHacker = function() {
-            console.log('%c Searching...', 'color: yellow');
-            setTimeout(() => {
-                console.log('%c IP: 192.168.XX.XX', 'color: red');
-                console.log('%c Location: [REDACTED]', 'color: red');
-                console.log('%c Status: STILL ALIVE', 'color: red');
-                console.log('%c They\'re watching you too.', 'color: red; font-weight: bold');
-            }, 2000);
-        };
-        
-        window.serverStatus = function() {
-            console.log('%c Server Integrity: ' + (100 - (decayLevel * 20)) + '%', 'color: orange');
-            console.log('%c Decay Level: ' + decayLevel, 'color: red');
-            console.log('%c Visits: ' + visits, 'color: yellow');
-        };
-        
-        window.decrypt = function(key) {
-            if (key === 'XoXo' || key === 'xoxo') {
-                console.log('%c Decrypting...', 'color: green');
-                setTimeout(() => {
-                    console.log('%c ERROR: FILE CORRUPTED', 'color: red; font-size: 20px');
-                    console.log('%c But you found this: "14 years old. Just a kid. Just a stupid kid."', 'color: white');
-                    showXoXoWarning();
-                }, 1500);
-            } else {
-                console.log('%c Invalid decryption key', 'color: red');
-            }
-        };
+        // Remove old console.log override since we have actual console now
+        console.log('VStalkR16 System Active');
         
         // Game card interactions
         document.querySelectorAll('.game-card').forEach(card => {
@@ -1275,12 +1572,32 @@
         // Random message additions
         function addStalkerMessage() {
             const messages = [
-                { name: 'Anonymous_12', text: 'The files are corrupted beyond repair.' },
-                { name: 'SeekTruth99', text: 'Has anyone else noticed the pattern?' },
-                { name: 'DeepDiver', text: 'Check the source code. There\'s something hidden.' },
-                { name: 'System', text: 'Connection lost. Attempting to reconnect...', style: 'color: #f90;' },
-                { name: '???', text: 'Stop looking for me.', style: 'color: var(--glitch-red);' },
-                { name: 'Trinity_Gaming', text: 'I think I found something in The Night Owl...' }
+                { name: 'Trinity_Gaming', text: 'The Night Owl has hidden rooms. Still searching...' },
+                { name: 'Anonymous_12', text: 'Files corrupted. But there\'s metadata if you know where to look.' },
+                { name: 'SeekTruth99', text: 'Every 47 seconds something changes. <span style="color: #444;">47...</span>' },
+                { name: 'DeepDiver', text: 'Source code has comments. Check deeper.' },
+                { name: 'DataMiner_X', text: 'Old forums had someone asking about VR exploits. 2015.' },
+                { name: ':)HackHackHackHack:)', text: 'Getting warmer :)', style: 'color: #0f0;' },
+                { name: 'System', text: 'Memory leak detected at address 0x<span style="color: #444;">313</span>', style: 'color: #f90;' },
+                { name: 'GhostHunter', text: 'The XoXo file has layers. It\'s not just a name.' },
+                { name: 'VRVeteran2014', text: 'I was there. The pattern... it was deliberate.' },
+                { name: 'Investigator_7', text: 'Following breadcrumbs. Young coder, made mistakes.' },
+                { name: '???', text: '...', style: 'color: var(--glitch-red);' },
+                { name: 'Trinity_Gaming', text: 'Meeting tonight. The Night Owl. Room TBD.' },
+                { name: 'CodeBreaker', text: 'Buffer overflow was sophisticated for a teenager.' },
+                { name: 'MemoryLeak', text: 'Paula appears at timestamp 3:13. Every time.' },
+                { name: 'RedBluePattern', text: 'The flashing was calculated. Maximum damage.' },
+                { name: 'ServerAdmin', text: 'Decay increasing. Check <span style="color: #444;">status</span>', style: 'color: #f90;' },
+                { name: 'WitnessZero', text: 'My brother still has seizures. This isn\'t a game.' },
+                { name: 'HackHunter99', text: 'Cross-referencing records. So many possibilities.' },
+                { name: 'Digital_Ghost', text: 'VStalkR is methodical. This is personal for them.' },
+                { name: 'LastSurvivor', text: 'The Night Owl. Everything converges there.' },
+                { name: 'Anonymous_Hunter', text: 'Why Paula? What\'s special about her?' },
+                { name: 'TruthSeeker', text: 'Justice or vengeance? Does it matter?' },
+                { name: 'System', text: 'Build update pending. <span style="color: #444;">Decrypt</span> required.', style: 'color: #f90;' },
+                { name: 'Node_47', text: 'Coordinates mean something. <span style="color: #444;">47.XX.XX</span>' },
+                { name: 'Observer', text: 'They\'re watching us watch them.' },
+                { name: 'UNKNOWN', text: 'I didn\'t mean for this to happen', style: 'color: #fff; opacity: 0.3;' }
             ];
             
             const board = document.getElementById('messageBoard');
@@ -1293,25 +1610,26 @@
                     <div class="stalker-text" ${msg.style ? `style="${msg.style}"` : ''}>${msg.text}</div>
                     <div class="stalker-timestamp">Just now</div>
                 `;
-                board.insertBefore(msgDiv, board.firstChild);
+                board.insertBefore(msgDiv, board.children[1]); // Insert after pinned message
                 
                 // Remove old messages if too many
-                while (board.children.length > 10) {
+                while (board.children.length > 12) {
                     board.removeChild(board.lastChild);
                 }
             }
         }
-        setInterval(addStalkerMessage, 15000);
+        setInterval(addStalkerMessage, 12000);
         
-        // Mobile touch events for Paula appearances
+        // Mobile touch events for Paula appearances (10 taps with 3 fingers)
         let touchCount = 0;
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length === 3) {
                 touchCount++;
-                if (touchCount >= 3) {
+                if (touchCount >= 10) {
                     document.getElementById('paula').classList.add('active');
                     document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
                     touchCount = 0;
+                    console.log('%c Paula awakens...', 'color: red; font-size: 20px');
                 }
             }
         });
