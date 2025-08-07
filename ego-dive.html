@@ -579,12 +579,41 @@
             align-items: center;
             justify-content: center;
             border-left: 2px solid rgba(255,255,255,0.1);
+            position: relative;
+            cursor: pointer;
         }
 
         .side-character-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Video Players */
+        .video-section {
+            margin-top: 4rem;
+        }
+
+        .video-container {
+            margin: 2rem 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .video-container h4 {
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .video-player {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
         }
 
         /* Mobile Responsive */
@@ -631,6 +660,17 @@
                 border-left: none;
                 border-top: 2px solid rgba(255,255,255,0.1);
                 order: -1;
+                overflow: hidden;
+            }
+
+            .side-character-image-container.expanded {
+                height: auto;
+            }
+
+            .side-character-image-container.expanded .side-character-image {
+                object-fit: contain;
+                height: auto;
+                max-height: 400px;
             }
         }
     </style>
@@ -694,17 +734,17 @@
                     </div>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">🔄</div>
-                    <div>
-                        <strong>Time Loop System</strong>
-                        <p>Certain events trigger resets, but some beings remember...</p>
-                    </div>
-                </div>
-                <div class="feature-item">
                     <div class="feature-icon">💭</div>
                     <div>
                         <strong>Reality Manipulation</strong>
                         <p>Fragments can alter Absentia through willpower and emotion</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💎</div>
+                    <div>
+                        <strong>Remnant System</strong>
+                        <p>Collect emotional fragments to modify abilities and powers</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -779,8 +819,8 @@
                         <p>Non-euclidean transport between layers. Reach extends with more fragments present.</p>
                     </div>
                     <div>
-                        <h4>Drowning Events</h4>
-                        <p>Extreme despair causes tears to flood entire spaces, triggering world resets.</p>
+                        <h4>Figments</h4>
+                        <p>Denizens created by Fragments with varying independence. They have remnants that make up their personalities.</p>
                     </div>
                 </div>
             </div>
@@ -943,7 +983,7 @@
                         <p>Armed with a knife he carries in his mouth, Void provides crucial emotional support and moral grounding for Null's journey. His unwavering compassion and innocence represent the host's lost capacity for trust and connection - qualities essential for becoming whole.</p>
                         <p>As a Figment rather than Fragment, Void uniquely cannot be corrupted by Neuro's base abilities, though he remains susceptible to becoming a Mare. His inquisitive nature often helps uncover things others would miss.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="Art Folder/void-image.jpg" alt="Void" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -955,7 +995,7 @@
                         <p>Once living near Absentia's center with Limerence, she made the painful choice to leave him, understanding that staying would perpetuate their illusory existence. She gave him Aldora as both a gift of self-discovery and a replacement for their shared fantasy.</p>
                         <p>Now aligned with Neuro in his harsh methods, Idalia believes that sometimes the cruelest truths are necessary for growth. Despite her lost faith in the fragments' ability to save themselves, she remains highly empathetic and intelligent, serving as arbiter of this fractured world.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="Art Folder/idalia-image.jpg" alt="Idalia" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -967,7 +1007,7 @@
                         <p>Taking himself extremely seriously, Bolster vows to protect not just Dolor but everyone in their layer from outsiders. A prominent scar marks his face - a reminder of when Dolor's Ire form struck him in an overwhelmed state. This incident led Dolor to lock Bolster out of the prison for his own safety.</p>
                         <p>Bolster views Dolor as both a parental figure and a child needing protection. Despite his knightly duties, he secretly wishes he could join Skim and Parlor's podcast crew, revealing a more playful side beneath his serious exterior.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="Art Folder/bolster-image.jpg" alt="Bolster" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -979,7 +1019,7 @@
                         <p>Forced to kill her own transformed mother in self-defense, this trauma triggered Flourish's partial Mare transformation. Retaining her sanity but gaining immense power, she leveraged her new abilities to dominate the entertainment industry as a hypnotic pop idol.</p>
                         <p>Now controlling Insomnia tower through mind-controlled victims and strategic cunning, Flourish harbors deep resentment toward Midas for neglecting the city's vulnerable during his hedonistic reign. Her motivations blend justified anger, past trauma, and the corruption of her Demi-Mare nature.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="Art Folder/flourish-image.jpg" alt="Flourish" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -991,7 +1031,7 @@
                         <p>Both idolize Midas and have followed his career since his glory days. Now they unknowingly track the masked vigilante cleaning up the streets - never realizing it's their fallen idol himself. Their genuine love for their city and its people drives their reporting.</p>
                         <p>While they can seem naive to some, their dedication to uncovering truth and spreading information makes them valuable allies. They view the fragments as Midas' extended family, referring to them as his "brothers" in their coverage.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="Art Folder/skim-parlor-image.jpg" alt="Skim & Parlor" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -1003,7 +1043,7 @@
                         <p>Once a devoted fan of both Limerence and Idalia's performances, Mimi was devastated when their shows suddenly stopped. Now she waits in lonely confusion, unable to understand why Limerence abandoned the theater or her place in this strange world.</p>
                         <p>Her interactions with others reveal a child seeking connection and understanding. She views Limerence as a father figure and star, supporting him despite not comprehending his actions. Her presence serves as a reminder of those affected by the fragments' choices.</p>
                     </div>
-                    <div class="side-character-image-container">
+                    <div class="side-character-image-container" onclick="toggleImageExpand(this)">
                         <img class="side-character-image" src="mimi-image.jpg" alt="Mimi" onerror="this.style.display='none'">
                     </div>
                 </div>
@@ -1063,20 +1103,6 @@
                     <div>
                         <strong>Creation Powers</strong>
                         <p>Fragments can manifest objects and alter reality through willpower. Limited by imagination and exhaustion.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔄</div>
-                    <div>
-                        <strong>Reset Mechanics</strong>
-                        <p>Time loops occur under certain conditions. Most lose memories, but some remember...</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">💧</div>
-                    <div>
-                        <strong>Drowning Events</strong>
-                        <p>Extreme despair causes tears to flood spaces. All beings dissolve and reform.</p>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -1219,80 +1245,151 @@
             
             <div class="spoiler-lock" onclick="showSpoilerModal()">
                 <h3 style="color: var(--accent-red); margin-bottom: 1rem;">🔒 LOCKED SECRETS</h3>
-                <p>This section contains major story spoilers including the truth about the host, character backstories, and ending details.</p>
+                <p>This section contains major story spoilers including the truth about the host, full character backstories, and ending details.</p>
                 <p style="margin-top: 1rem; opacity: 0.8;">Click to enter password</p>
             </div>
 
             <div class="spoiler-content" id="spoilerContent">
-                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Truth of the Fracturing</h3>
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Host Body - The Truth</h3>
                 <div class="info-card">
-                    <h4>The Host's Story</h4>
-                    <p>A young boy, battered by an abusive upbringing, did his best to protect his younger sister from their father's drunken rages. On a rain-drenched night, he arrived home to find his father striking his sister. Lunging to intervene, the boy was cast aside as his sister fled into the downpour.</p>
-                    <p style="margin-top: 1rem;">Chasing after her desperately onto the slick streets, his vision blurred by rain and tears. The headlights came too fast. The impact shattered his psyche entirely as he fell into a coma, mind adrift in Absentia.</p>
+                    <p>Battered by the storms of an abusive upbringing, a young boy struggled to keep himself whole. Sheltering his beloved younger sister as best he could from their father's drunken rages, he found fleeting solace in loyal friends and online escapes.</p>
+                    <p style="margin-top: 1rem;">On a rain-drenched night, the boy arrived home to find his father striking his sister. Lunging to intervene, the boy was cast aside, his sister fleeing into the downpour. Chasing after her desperately onto the slick streets, his vision blurred by rain and tears.</p>
+                    <p style="margin-top: 1rem;">In an instant, headlights suddenly bore down on him, brakes screeching too late. The impact shattered his psyche entirely as he fell into a coma, mind adrift in fathomless darkness. Only in the depths of his subconscious did a spark yet flicker - a realm known as Absentia.</p>
                 </div>
 
-                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Fragments' Origins</h3>
-                <div class="layer-grid">
-                    <div class="layer-card">
-                        <h4>Dolor's Creation</h4>
-                        <p>Awakening alone and afraid, Dolor's uncontrolled abilities nearly drowned him in his own tears. In desperation, he subconsciously created Bolster to save himself. His fortress represents the boy's desire for safety from abuse, while his fragile creatures embody vulnerability he couldn't show.</p>
-                    </div>
-                    
-                    <div class="layer-card">
-                        <h4>Midas' Fall</h4>
-                        <p>Resentful of Null for restricting their expression in real life, Midas built Ambrosia as ultimate freedom. When unchecked hedonism corrupted his citizens into violence, he felt the weight of responsibility. His vigilante persona represents the boy's desire to fix mistakes and protect others.</p>
-                    </div>
-                    
-                    <div class="layer-card">
-                        <h4>Limerence's Obsession</h4>
-                        <p>His destructive love for Idalia mirrors the boy's desperate need for affection never received at home. Aldora's endless deaths represent self-punishment for perceived inadequacy. The dance with False Idalia is accepting that some love must be let go to grow.</p>
-                    </div>
-                    
-                    <div class="layer-card">
-                        <h4>Neuro's Rejection</h4>
-                        <p>Originally vulnerable and concerned, Neuro was rejected as Null tried to bury trauma. Awakening in the graveyard of discarded memories, surrounded by attacking corpses of past pain. His appearance distorted by rage, he killed Null repeatedly before Idalia granted him memory between resets. Now he tests others, believing harsh truth creates growth.</p>
-                    </div>
-                </div>
-
-                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Lighthouse Truth</h3>
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Resets and Time Loops</h3>
                 <div class="info-card">
-                    <p>The Lighthouse interior transforms based on your journey:</p>
+                    <h4>The Reset System</h4>
+                    <p>Resets are outcomes that end in a loop, usually back to the point of Null's awakening. They can happen for various reasons:</p>
                     <ul style="margin-top: 1rem;">
-                        <li><strong>Self-Acceptance:</strong> A warm, healing space where fragments unite willingly. The host awakens changed but whole, ready to face life with support.</li>
-                        <li><strong>Repeat Pain:</strong> A cold, sterile hospital room. The host awakens unchanged, mentally detached, doomed to repeat cycles.</li>
-                        <li><strong>Self-Destruction:</strong> A shattered mirror realm. Killing the host's representation potentially ends their actual life.</li>
+                        <li><strong>Drowning Events:</strong> If Null is pushed past utter despair, tears can flood entire spaces or all of Absentia. All living beings dissolve and reform.</li>
+                        <li><strong>Idalia's Powers:</strong> As guardian of Absentia, Idalia can trigger resets when needed.</li>
+                        <li><strong>Unreachable Outcomes:</strong> Certain dead-end situations automatically reset.</li>
+                        <li><strong>Null's Death:</strong> The world always resets if Null dies, restoring him in a Red Shard.</li>
                     </ul>
+                    <p style="margin-top: 1rem;">Resets leave almost all inhabitants with no memory of previous loops. Only Idalia initially retained memories - until she granted this ability to Neuro. Cicero's book keeps track of events across resets, but his personal memories fade.</p>
                 </div>
 
-                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Hidden Connections</h3>
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Full Fragment Backstories</h3>
+                
+                <div class="layer-card">
+                    <h4>Null's Journey</h4>
+                    <p>Null awakens in Absentia with no memory, climbing from a shattered red pool. An empty embodiment of the host with little emotion and foggy memories of the incident. Guided by Cicero, Null must delve deeper into Absentia to confront the other fragments.</p>
+                    <p style="margin-top: 1rem;">Throughout the journey, Null encounters fragments representing different aspects of their personality. As they interact with these parts, Null gradually gains a clearer sense of identity. Their emotions, memories, and experiences become more defined through the choices made - whether helping, ignoring, or absorbing the fragments.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h4>Cicero's Endless Vigil</h4>
+                    <p>After the fracturing event, Cicero manifested as the living embodiment of Null's lost knowledge, memories, and experiences. He awoke alone with Void inside a bare elevator. His purpose was to preserve Null's essence until the fragments could reunite.</p>
+                    <p style="margin-top: 1rem;">As time stretched on, other fragments lost hope and withdrew into isolation. Armed with Null's journal of memories, Cicero repeatedly tried to share his knowledge, only to realize events were stuck in endless cycles. These recursive failures eroded Cicero's memories until only his journal retained the complete picture.</p>
+                    <p style="margin-top: 1rem;">When Null finally reawoke, Cicero was ready with a new approach - to guide differently this time, pushing towards the Lighthouse to hopefully wake their dormant host for good.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h4>Dolor's Sanctuary</h4>
+                    <p>Dolor awoke afraid and alone in Absentia after the splitting. Overwhelmed by his powerful but uncontrollable abilities, he accidentally trapped himself in a small box, nearly drowning in his own tears. In desperation, he subconsciously created Bolster - a loyal creature who helped him break free.</p>
+                    <p style="margin-top: 1rem;">Seeking safety, Dolor constructed a fortress to isolate himself. He populated it with fragile creatures for company, but realized they were too delicate to defend. Rather than reinforce them, he chose to embrace their vulnerability, living among them peacefully.</p>
+                    <p style="margin-top: 1rem;">At times, Dolor's sadness gives way to rare joy (Voluptus form) or overwhelming rage (Ire form). He deeply regrets his violent outbursts, especially after scarring Bolster, leading him to lock his protector out for safety.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h4>Midas' Fall and Redemption</h4>
+                    <p>Midas was always drawn to indulgence and pleasure, resenting Null for not allowing full expression. After splitting, he created the bustling city Ambrosia devoted to hedonistic dreams. He built the towering Insomnia club, hosting wild parties and encouraging vice.</p>
+                    <p style="margin-top: 1rem;">As decadence grew unchecked, citizens descended into violence and corruption. Horrified, Midas donned a disguise and abandoned Insomnia. Returning later, he found it taken over by Flourish, a hypnotic pop idol. He challenged her but was humiliated and exiled.</p>
+                    <p style="margin-top: 1rem;">Now he wanders the city's shadows as a masked vigilante, planning to save his people and reclaim his reputation. Skim and Parlor, once sycophantic fans, unknowingly track the masked hero, hoping to uncover the truth behind Insomnia's fall.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h4>Limerence's Obsession</h4>
+                    <p>Limerence, a charismatic showman with a perpetual smile, hides deep obsession. He longs for love and adoration. Once close to Idalia, his obsession became all-consuming. To prevent him from hurting himself or others, Idalia left him with the virtual world Aldora.</p>
+                    <p style="margin-top: 1rem;">In Aldora, Limerence encounters countless copies of himself in brutal, violent encounters. He dies uncountable times, only to rise again, consumed by the endless cycle. Each death erodes his sense of self, blurring lines between who he is and who he pretends to be.</p>
+                    <p style="margin-top: 1rem;">When Null arrives with companions, Limerence's perspective shifts. In the climactic encounter with False Idalia, he finally breaks free from the cycle through their final dance - understanding that his real love, the true Idalia, wanted him to move forward without her.</p>
+                </div>
+
+                <div class="layer-card">
+                    <h4>Neuro's Transformation</h4>
+                    <p>Neuro was once a vulnerable and concerned fragment, but experienced rejection and was sent to a desolate section of Absentia. He awoke in a graveyard raining down bodies - each one a memory, emotion, or trauma that Null had discarded.</p>
+                    <p style="margin-top: 1rem;">Filled with rage, Neuro saw himself as embodiment of Null's rejected traumas. His face and body distorted. Whenever Null arrived, Neuro would attack and kill them, triggering resets. But like the others, he would forget.</p>
+                    <p style="margin-top: 1rem;">Everything changed when Idalia arrived, granting him memory between resets. His rage transformed into ambivalence and pity as he witnessed repeated failures. He set a new goal: if they couldn't overcome their traumas, they had already accepted their fate. Testing them relentlessly became his purpose - the only way to catalyze improvement.</p>
+                </div>
+
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">The Lighthouse - Final Destination</h3>
+                <div class="info-card">
+                    <p>The Lighthouse sits at Absentia's bottom layers - a small floating island with a lonely lighthouse, surrounded by purple ocean under red sunset skies. Its interior shifts based on the path taken:</p>
+                    
+                    <h4 style="margin-top: 2rem;">Self-Acceptance Path</h4>
+                    <p>The Lighthouse becomes a warm, healing space. Null integrates the fragments and awakens with growth and self-love, showing willingness to face life's challenges and embrace loved ones' care. Guarded by Shiva - a floating distorted figure with multiple phases and weapons.</p>
+                    
+                    <h4 style="margin-top: 2rem;">Repeat Pain Path</h4>
+                    <p>The Lighthouse appears as a cold, sterile environment. Null reunites with the host body and wakes up fundamentally unchanged, doomed to repeat old patterns and left mentally detached. Guarded by Vishnu - a white, tall, multi-armed figure wielding blades with black mist leaking from its body.</p>
+                    
+                    <h4 style="margin-top: 2rem;">Self-Destruction Path</h4>
+                    <p>The Lighthouse transforms into a shattered, dark space. Null kills off the host body's representation, destroying any chance at reunification and potentially ending the host's actual life. Guarded by Brahma - a dark rainbow heart that pulses with energy, producing music that grows fainter as the fight progresses.</p>
+                </div>
+
+                <h3 style="color: var(--accent-red); margin: 3rem 0 2rem;">Key Story Revelations</h3>
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-icon">🐕</div>
                         <div>
-                            <strong>Void's Nature</strong>
-                            <p>The only being the boy truly trusted - his deceased pet. As a Figment rather than Fragment, Void represents pure, uncomplicated love.</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">👁️</div>
-                        <div>
-                            <strong>Idalia's Purpose</strong>
-                            <p>Created by Limerence but gained independence. Her control over resets represents the psyche's attempt at self-preservation through repetition.</p>
+                            <strong>Void's True Nature</strong>
+                            <p>Void manifested as a Figment, not a Fragment - the embodiment of the host's beloved deceased pet, their sole source of vulnerable connection before the fracture.</p>
                         </div>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">📖</div>
                         <div>
-                            <strong>Cicero's Knowledge</strong>
-                            <p>Contains all memories of the original boy. His repeated failures mirror real-life inability to prevent trauma despite foreknowledge.</p>
+                            <strong>Cicero's Book</strong>
+                            <p>Contains all memories and events across resets. The book retains knowledge even when Cicero's personal memories fade from the loops.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎭</div>
+                        <div>
+                            <strong>Aldora's Purpose</strong>
+                            <p>The virtual forest was Idalia's gift to Limerence - both to help him find self-love and as a replacement for their shared fantasy, knowing she had to leave him.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💧</div>
+                        <div>
+                            <strong>Drowning Events</strong>
+                            <p>Null's extreme despair can cause tears to flood entire spaces. All beings dissolve and reform, triggering a complete reset.</p>
                         </div>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">🌈</div>
                         <div>
-                            <strong>The Veil's Meaning</strong>
-                            <p>Each absorbed fragment's color represents destroying part of oneself for power - the ultimate self-harm metaphor.</p>
+                            <strong>The Veil's Growth</strong>
+                            <p>Starts as a simple garment matching the first absorbed fragment's color. Grows longer and more elaborate with each kill, reaching full rainbow spectrum when all are absorbed.</p>
                         </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔄</div>
+                        <div>
+                            <strong>Memory Retention</strong>
+                            <p>Only Idalia originally remembered between resets. She granted this curse/gift to Neuro, allowing him to learn from each loop and test the fragments more effectively.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-section">
+                    <h3 style="color: var(--accent-red); text-align: center; margin-bottom: 2rem;">Example Scenes</h3>
+                    
+                    <div class="video-container">
+                        <h4>Neuro's Awakening</h4>
+                        <video class="video-player" controls>
+                            <source src="videos/neuro-scene.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <div class="video-container">
+                        <h4>The Dome Fight</h4>
+                        <video class="video-player" controls>
+                            <source src="videos/dome-fight.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
             </div>
@@ -1357,6 +1454,13 @@
         // Character Card Flip
         function flipCard(card) {
             card.classList.toggle('flipped');
+        }
+
+        // Toggle Image Expand for Mobile
+        function toggleImageExpand(container) {
+            if (window.innerWidth <= 768) {
+                container.classList.toggle('expanded');
+            }
         }
 
         // Spoiler System
