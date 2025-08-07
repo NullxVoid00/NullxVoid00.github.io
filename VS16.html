@@ -764,12 +764,14 @@
             max-height: 400px;
             overflow-y: auto;
             margin-bottom: 20px;
+            padding-bottom: 10px;
         }
         
         .console-line {
             margin-bottom: 5px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            line-height: 1.4;
         }
         
         .console-line.error {
@@ -791,6 +793,7 @@
         .console-input-line {
             display: flex;
             align-items: center;
+            position: relative;
         }
         
         .console-prompt {
@@ -806,11 +809,18 @@
             font-size: 18px;
             flex: 1;
             outline: none;
+            width: 100%;
         }
         
-        .console-input::after {
-            content: '_';
+        .console-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #0f0;
             animation: blink 1s infinite;
+            position: relative;
+            top: 2px;
+            margin-left: 2px;
         }
         
         @keyframes blink {
@@ -870,6 +880,7 @@
                 <div class="console-input-line">
                     <span class="console-prompt">&gt; </span>
                     <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false">
+                    <span class="console-cursor"></span>
                 </div>
             </div>
         </div>
@@ -928,10 +939,10 @@
                     <div class="timeline-content">
                         The XoXo Incident. Simultaneous pattern attack across entire platform.
                         <br>Red. Blue. Flashing. Seizures. Hospitalizations. Deaths.
-                        <br><span style="color: #888;">Duration: 47 seconds</span>
+                        <br><span style="color: #888;">Duration: 47 seconds of pure chaos</span>
                         <div class="casualty-counter">
                             AFFECTED: <span id="affectedCount">0</span>
-                            <br><span style="font-size: 16px; color: #888;">CONFIRMED DEAD: 247</span>
+                            <br><span style="font-size: 16px; color: #888;">Too many victims to list here</span>
                         </div>
                     </div>
                 </div>
@@ -939,10 +950,10 @@
                     <div class="timeline-marker"></div>
                     <div class="timeline-date">2016.11.25</div>
                     <div class="timeline-content">
-                        File "XoXo" discovered on victim machines. Contents: [REDACTED]
+                        File "XoXo" discovered on victim machines. Need to decrypt somehow.
                         <br>Security breach vector: Unknown
                         <br>Hacker Identity: UNCONFIRMED
-                        <br><span style="color: #666;">// System console access required for details</span>
+                        <br><span style="color: #666;">Investigation status: Ongoing</span>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -968,8 +979,9 @@
                     <div class="timeline-date">2024.XX.XX - PERSONAL LOG</div>
                     <div class="timeline-content">
                         7 years of learning. Coding. Planning. Hunting.
-                        <br>Found former VTalkR developers. They gave me what I needed.
+                        <br>Found former VTalkR developers. They helped me understand the system.
                         <br>The hacker thinks they're safe. They're wrong.
+                        <br><span style="color: #666;">Everything leads back to line 4000.</span>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -992,7 +1004,7 @@
                         <br>Server population growing.
                         <br>Someone knows something.
                         <br><br>
-                        <span style="color: #666;">Check coordinates: 47.XX.XX</span>
+                        <span style="color: #666;">Monitoring user Andrew Winston closely.</span>
                     </div>
                 </div>
             </div>
@@ -1027,7 +1039,7 @@
                         <div class="game-title">REMEMBER_HER.vtr</div>
                         <div class="game-date">Released: 3 days ago</div>
                         <div style="font-size: 11px; color: #666; margin-top: 5px;">
-                            Players: 892 | Paula appears at 3:13
+                            Players: 892 | Paula appears at room 313
                         </div>
                     </div>
                 </div>
@@ -1050,11 +1062,11 @@
                 <h3 style="color: #fff; margin-bottom: 10px;">INVESTIGATION NOTES:</h3>
                 <p style="color: #888; font-size: 14px;">
                     Game 1 revealed specific exploit pattern - buffer overflow.
-                    <br>Game 2 contains fragments. Players report seeing "a young girl" before crashes.
+                    <br>Game 2 contains fragments. Players report seeing "a young girl" at timestamp 313 before crashes.
                     <br>Someone calling themselves ":)HackHackHackHack:)" is watching. Claims to know things.
+                    <br>Andrew Winston, age 28, is being monitored.
                     <br><br>
-                    <span style="color: #666;">// Access restricted. Authorization required.</span>
-                    <br><span style="color: #444;">// Try: line<span style="opacity: 0.5;">4000</span></span>
+                    <span style="color: #666;">Need to check line 4000 of the source for more clues.</span>
                 </p>
             </div>
         </div>
@@ -1081,12 +1093,12 @@
                     </div>
                     <div class="stalker-message">
                         <div class="stalker-name">Anonymous_Hunter_16</div>
-                        <div class="stalker-text">The pattern in FIND_ME matches the original incident. It's like a signature.</div>
+                        <div class="stalker-text">The pattern in FIND_ME matches the original incident. It lasted exactly 47 seconds.</div>
                         <div class="stalker-timestamp">47 minutes ago</div>
                     </div>
                     <div class="stalker-message">
                         <div class="stalker-name">DeepWeb_Searcher</div>
-                        <div class="stalker-text">Someone's been asking about "photosensitive exploits" on old forums. <span style="color: #666;">Line 4000...</span></div>
+                        <div class="stalker-text">Found something interesting at line 4000 in the old source. Someone left comments.</div>
                         <div class="stalker-timestamp">31 minutes ago</div>
                     </div>
                     <div class="stalker-message">
@@ -1096,15 +1108,15 @@
                     </div>
                     <div class="stalker-message">
                         <div class="stalker-name">System</div>
-                        <div class="stalker-text" style="color: #f90;">Server integrity check... <span style="color: #666;">Status: check console</span></div>
+                        <div class="stalker-text" style="color: #f90;">Server status degrading. Running diagnostics...</div>
                         <div class="stalker-timestamp">5 minutes ago</div>
                     </div>
                 </div>
             </div>
             <div style="margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid #333;">
                 <p style="color: #666; font-size: 12px;">
-                    // Some information requires higher clearance
-                    <br>// <span style="color: #444;">Try: victims</span>
+                    Server logs indicate increasing activity. Too many victims to track individually.
+                    <br>Access restricted to authorized personnel only.
                 </p>
             </div>
         </div>
@@ -1132,7 +1144,7 @@
                     <p style="color: #888; font-size: 14px; line-height: 1.8;">
                         November 24, 2016. Thanksgiving evening.
                         <br><br>
-                        She had epilepsy. Always careful. No flashing lights. No strobes. VTalkR was supposed to be safe.
+                        She had epilepsy. Always careful. No flashing lights. VTalkR was supposed to be safe.
                         <br><br>
                         14:32:07 - The attack begins<br>
                         14:32:13 - Seizure starts<br>
@@ -1143,7 +1155,7 @@
                         <br><br>
                         Three days. Room 313. Then nothing.
                         <br><br>
-                        <span style="color: var(--glitch-red);">Someone has to pay for this.</span>
+                        <span style="color: var(--glitch-red);">I watched her die. I will never forget. I will never forgive.</span>
                     </p>
                 </div>
             </div>
@@ -1231,6 +1243,17 @@
                 const targetSection = document.getElementById(section);
                 if (targetSection) {
                     targetSection.classList.add('active');
+                    
+                    // Special handling for console section
+                    if (section === 'console') {
+                        const consoleInput = document.getElementById('consoleInput');
+                        if (consoleInput) {
+                            setTimeout(() => {
+                                consoleInput.focus();
+                                consoleInput.click(); // Force focus on some browsers
+                            }, 100);
+                        }
+                    }
                     
                     // Special effects for Paula section
                     if (section === 'paula') {
@@ -1377,28 +1400,35 @@
             }, 30000);
         }
         
-        // Console System
-        const consoleInput = document.getElementById('consoleInput');
-        const consoleOutput = document.getElementById('consoleOutput');
-        
-        if (consoleInput) {
-            consoleInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const command = consoleInput.value.trim().toLowerCase();
-                    addConsoleLine(`> ${consoleInput.value}`, 'success');
-                    processCommand(command);
-                    consoleInput.value = '';
-                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
-                }
-            });
+        // Console System - Initialize after page load
+        window.addEventListener('load', () => {
+            const consoleInput = document.getElementById('consoleInput');
+            const consoleOutput = document.getElementById('consoleOutput');
             
-            // Focus console input when section is active
-            document.querySelector('[data-section="console"]').addEventListener('click', () => {
-                setTimeout(() => consoleInput.focus(), 100);
-            });
-        }
-        
+            if (consoleInput && consoleOutput) {
+                // Handle enter key for commands
+                consoleInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const command = consoleInput.value.trim().toLowerCase();
+                        addConsoleLine(`> ${consoleInput.value}`, 'success');
+                        processCommand(command);
+                        consoleInput.value = '';
+                        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                    }
+                });
+                
+                // Auto-focus console when section is active
+                document.querySelector('[data-section="console"]').addEventListener('click', () => {
+                    setTimeout(() => {
+                        consoleInput.focus();
+                    }, 100);
+                });
+            }
+        });
         function addConsoleLine(text, type = '') {
+            const consoleOutput = document.getElementById('consoleOutput');
+            if (!consoleOutput) return;
+            
             const line = document.createElement('div');
             line.className = `console-line ${type}`;
             line.textContent = text;
@@ -1541,8 +1571,11 @@
                     break;
                     
                 case 'clear':
-                    consoleOutput.innerHTML = '';
-                    addConsoleLine('Console cleared.');
+                    const consoleOutput = document.getElementById('consoleOutput');
+                    if (consoleOutput) {
+                        consoleOutput.innerHTML = '';
+                        addConsoleLine('Console cleared.');
+                    }
                     break;
                     
                 default:
@@ -1553,7 +1586,7 @@
             }
         }
         
-        // Remove old console.log override since we have actual console now
+        // Remove old console.log override
         console.log('VStalkR16 System Active');
         
         // Game card interactions
@@ -1572,32 +1605,36 @@
         // Random message additions
         function addStalkerMessage() {
             const messages = [
-                { name: 'Trinity_Gaming', text: 'The Night Owl has hidden rooms. Still searching...' },
-                { name: 'Anonymous_12', text: 'Files corrupted. But there\'s metadata if you know where to look.' },
-                { name: 'SeekTruth99', text: 'Every 47 seconds something changes. <span style="color: #444;">47...</span>' },
-                { name: 'DeepDiver', text: 'Source code has comments. Check deeper.' },
-                { name: 'DataMiner_X', text: 'Old forums had someone asking about VR exploits. 2015.' },
+                { name: 'Trinity_Gaming', text: 'The Night Owl has hidden rooms. Room 313 keeps appearing in logs.' },
+                { name: 'Anonymous_12', text: 'Files corrupted. Tried to decrypt the XoXo file but need the right key.' },
+                { name: 'SeekTruth99', text: 'Every 47 seconds something changes. That number keeps appearing.' },
+                { name: 'DeepDiver', text: 'Source code has hidden comments. Check around line 4000.' },
+                { name: 'DataMiner_X', text: 'Andrew Winston from Toledo keeps posting. Something off about him.' },
                 { name: ':)HackHackHackHack:)', text: 'Getting warmer :)', style: 'color: #0f0;' },
-                { name: 'System', text: 'Memory leak detected at address 0x<span style="color: #444;">313</span>', style: 'color: #f90;' },
-                { name: 'GhostHunter', text: 'The XoXo file has layers. It\'s not just a name.' },
-                { name: 'VRVeteran2014', text: 'I was there. The pattern... it was deliberate.' },
-                { name: 'Investigator_7', text: 'Following breadcrumbs. Young coder, made mistakes.' },
+                { name: 'System', text: 'Memory leak detected at address 0x313', style: 'color: #f90;' },
+                { name: 'GhostHunter', text: 'The XoXo file needs proper decryption. It\'s not just a taunt.' },
+                { name: 'VRVeteran2014', text: 'I was there when it happened. 47 seconds of hell.' },
+                { name: 'Investigator_7', text: 'Following breadcrumbs. Check the victim count - it\'s staggering.' },
                 { name: '???', text: '...', style: 'color: var(--glitch-red);' },
-                { name: 'Trinity_Gaming', text: 'Meeting tonight. The Night Owl. Room TBD.' },
-                { name: 'CodeBreaker', text: 'Buffer overflow was sophisticated for a teenager.' },
-                { name: 'MemoryLeak', text: 'Paula appears at timestamp 3:13. Every time.' },
-                { name: 'RedBluePattern', text: 'The flashing was calculated. Maximum damage.' },
-                { name: 'ServerAdmin', text: 'Decay increasing. Check <span style="color: #444;">status</span>', style: 'color: #f90;' },
-                { name: 'WitnessZero', text: 'My brother still has seizures. This isn\'t a game.' },
-                { name: 'HackHunter99', text: 'Cross-referencing records. So many possibilities.' },
-                { name: 'Digital_Ghost', text: 'VStalkR is methodical. This is personal for them.' },
-                { name: 'LastSurvivor', text: 'The Night Owl. Everything converges there.' },
-                { name: 'Anonymous_Hunter', text: 'Why Paula? What\'s special about her?' },
-                { name: 'TruthSeeker', text: 'Justice or vengeance? Does it matter?' },
-                { name: 'System', text: 'Build update pending. <span style="color: #444;">Decrypt</span> required.', style: 'color: #f90;' },
-                { name: 'Node_47', text: 'Coordinates mean something. <span style="color: #444;">47.XX.XX</span>' },
-                { name: 'Observer', text: 'They\'re watching us watch them.' },
-                { name: 'UNKNOWN', text: 'I didn\'t mean for this to happen', style: 'color: #fff; opacity: 0.3;' }
+                { name: 'Trinity_Gaming', text: 'Meeting tonight. The Night Owl, room 313.' },
+                { name: 'CodeBreaker', text: 'Line 4000 in the code has developer notes. Interesting.' },
+                { name: 'MemoryLeak', text: 'Paula appears at timestamp 313. Always room 313.' },
+                { name: 'RedBluePattern', text: 'The 47-second attack was precisely calculated.' },
+                { name: 'ServerAdmin', text: 'Server status deteriorating. Need diagnostic check.', style: 'color: #f90;' },
+                { name: 'WitnessZero', text: 'My brother was one of the victims. Still recovering.' },
+                { name: 'HackHunter99', text: 'Cross-referencing victim database. So many affected.' },
+                { name: 'Digital_Ghost', text: 'VStalkR must have lost someone. This feels personal.' },
+                { name: 'LastSurvivor', text: 'The Night Owl, room 313. Everything converges there.' },
+                { name: 'Anonymous_Hunter', text: 'Who is Paula? She appears everywhere in the games.' },
+                { name: 'TruthSeeker', text: 'Andrew knows something. He\'s not the real hacker though.' },
+                { name: 'System', text: 'Build update pending. Decryption required.', style: 'color: #f90;' },
+                { name: 'Node_47', text: 'Coordinates 47 north... that can\'t be coincidence.' },
+                { name: 'Observer', text: 'Need to decrypt that XoXo file. It holds answers.' },
+                { name: 'UNKNOWN', text: 'I was just a kid...', style: 'color: #fff; opacity: 0.3;' },
+                { name: 'FileDigger', text: 'Found references to room 313 in Paula\'s game files.' },
+                { name: 'Archivist', text: 'The victim list is massive. Checking status reports.' },
+                { name: 'Shadow_Walker', text: 'Line 4000 has been modified recently. Someone\'s leaving clues.' },
+                { name: 'VStalkR16', text: 'Getting closer. The hunt continues.', style: 'color: var(--glitch-red);' }
             ];
             
             const board = document.getElementById('messageBoard');
@@ -1647,11 +1684,31 @@
         // Initialize on load
         window.addEventListener('load', () => {
             // Focus on username input
-            usernameInput.focus();
+            const usernameInput = document.getElementById('usernameInput');
+            if (usernameInput) {
+                usernameInput.focus();
+            }
             
             // Add subtle background static
             if (visits > 2) {
                 playStatic();
+            }
+            
+            // Initialize console system
+            const consoleInput = document.getElementById('consoleInput');
+            const consoleOutput = document.getElementById('consoleOutput');
+            
+            if (consoleInput && consoleOutput) {
+                // Handle enter key for commands
+                consoleInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const command = consoleInput.value.trim().toLowerCase();
+                        addConsoleLine(`> ${consoleInput.value}`, 'success');
+                        processCommand(command);
+                        consoleInput.value = '';
+                        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                    }
+                });
             }
         });
         
