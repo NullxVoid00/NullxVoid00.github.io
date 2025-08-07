@@ -1,0 +1,1357 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTalkR: Rebuilt - Build V04.12.23</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="2" fill="white" stroke="black"/></svg>') 16 16, auto;
+        }
+        
+        :root {
+            --glitch-red: #ff0040;
+            --glitch-blue: #00ffff;
+            --decay-level: 0;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0,0,0,0) 0px,
+                    rgba(0,0,0,0.3) 1px,
+                    rgba(0,0,0,0) 2px,
+                    rgba(0,0,0,0) 3px
+                ),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noiseFilter"><feTurbulence type="turbulence" baseFrequency="0.9" numOctaves="4" /></filter><rect width="100" height="100" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.3;
+            animation: scanlines 8s linear infinite;
+        }
+        
+        @keyframes scanlines {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+        
+        /* Login Screen */
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s, visibility 1s;
+        }
+        
+        #loginScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .login-container {
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo-container {
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .paula-figure {
+            position: absolute;
+            left: -150px;
+            top: -50px;
+            width: 120px;
+            height: 200px;
+            opacity: 0;
+            animation: paulaAppear 10s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes paulaAppear {
+            0%, 90%, 100% { opacity: 0; }
+            92%, 98% { opacity: 0.3; }
+        }
+        
+        .paula-figure img {
+            width: 100%;
+            height: 100%;
+            filter: contrast(2) brightness(0.8);
+        }
+        
+        .logo-main {
+            font-size: 72px;
+            font-family: 'VT323', monospace;
+            color: #fff;
+            text-shadow: 
+                3px 3px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            position: relative;
+            display: inline-block;
+            animation: glitchText 4s infinite;
+        }
+        
+        .logo-main::before,
+        .logo-main::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .logo-main::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--glitch-red);
+            z-index: -1;
+        }
+        
+        .logo-main::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--glitch-blue);
+            z-index: -2;
+        }
+        
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(50% 0 20% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 0); }
+        }
+        
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            30% { clip-path: inset(70% 0 10% 0); transform: translate(2px, 1px); }
+            50% { clip-path: inset(20% 0 50% 0); transform: translate(-1px, 2px); }
+            70% { clip-path: inset(40% 0 40% 0); transform: translate(1px, -1px); }
+        }
+        
+        .tagline {
+            font-size: 24px;
+            margin-top: 10px;
+            letter-spacing: 4px;
+            color: #888;
+            position: relative;
+        }
+        
+        .tagline span {
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .tagline.corrupted span:nth-child(1)::after { content: 'Consume.'; position: absolute; left: 0; color: var(--glitch-red); opacity: 0; animation: flicker 3s infinite; }
+        .tagline.corrupted span:nth-child(2)::after { content: 'Suffer.'; position: absolute; left: 0; color: var(--glitch-red); opacity: 0; animation: flicker 3s infinite 0.5s; }
+        .tagline.corrupted span:nth-child(3)::after { content: 'F̸̗̈́í̵̱n̷̰̈́d̶̬̾.'; position: absolute; left: 0; color: var(--glitch-red); opacity: 0; animation: flicker 3s infinite 1s; }
+        
+        @keyframes flicker {
+            0%, 90%, 100% { opacity: 0; }
+            92%, 98% { opacity: 1; }
+        }
+        
+        .login-form {
+            background: rgba(0,0,0,0.8);
+            padding: 30px;
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(255,0,64,0.1);
+        }
+        
+        .login-input {
+            background: #000;
+            border: 1px solid #444;
+            color: #0f0;
+            padding: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            width: 300px;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: var(--glitch-red);
+            box-shadow: 0 0 10px rgba(255,0,64,0.3);
+        }
+        
+        .login-input::placeholder {
+            color: #555;
+        }
+        
+        .server-status {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #f00;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Main Content */
+        #mainContent {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        #mainContent.active {
+            display: block;
+        }
+        
+        .header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+            padding: 20px;
+            border-bottom: 2px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .build-version {
+            font-size: 12px;
+            color: #666;
+            font-family: 'VT323', monospace;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-item {
+            color: #ccc;
+            text-decoration: none;
+            position: relative;
+            padding: 5px 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover {
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        .nav-item::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-item.corrupted {
+            animation: textCorrupt 0.3s;
+        }
+        
+        @keyframes textCorrupt {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+        
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 48px;
+            font-family: 'VT323', monospace;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--glitch-red), transparent);
+            animation: slideGradient 3s infinite;
+        }
+        
+        @keyframes slideGradient {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* Incident Log */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #333;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInSlide 0.5s forwards;
+        }
+        
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -35px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--glitch-red);
+            border: 2px solid #000;
+            border-radius: 50%;
+        }
+        
+        .timeline-date {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-content {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-left: 2px solid var(--glitch-red);
+        }
+        
+        .casualty-counter {
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            color: var(--glitch-red);
+            margin-top: 10px;
+        }
+        
+        .casualty-counter span {
+            display: inline-block;
+            animation: countUp 2s;
+        }
+        
+        /* Games Section */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .game-card {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            border-color: var(--glitch-red);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255,0,64,0.3);
+        }
+        
+        .game-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            transition: filter 0.3s;
+        }
+        
+        .game-card:hover .game-thumbnail img {
+            filter: grayscale(50%) contrast(1.5);
+        }
+        
+        .game-static {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="static"><feTurbulence baseFrequency="0.9"/></filter><rect width="100" height="100" filter="url(%23static)" opacity="0.1"/></svg>');
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .game-card:hover .game-static {
+            opacity: 0.3;
+            animation: staticNoise 0.1s infinite;
+        }
+        
+        @keyframes staticNoise {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-1%, -1%); }
+            20% { transform: translate(1%, 1%); }
+            30% { transform: translate(-1%, 1%); }
+            40% { transform: translate(1%, -1%); }
+            50% { transform: translate(-1%, 0); }
+            60% { transform: translate(1%, 0); }
+            70% { transform: translate(0, -1%); }
+            80% { transform: translate(0, 1%); }
+            90% { transform: translate(1%, 1%); }
+        }
+        
+        .game-info {
+            padding: 15px;
+        }
+        
+        .game-title {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .game-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .game-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,0,0,0.8);
+            color: #fff;
+            padding: 3px 8px;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        
+        /* Stalkers Section */
+        .stalkers-board {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #333;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .active-users {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .user-count {
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            color: #0f0;
+            margin-right: 20px;
+        }
+        
+        .queue-status {
+            font-size: 14px;
+            color: #f90;
+        }
+        
+        .message-board {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .stalker-message {
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 2px solid #444;
+            position: relative;
+        }
+        
+        .stalker-message:hover {
+            border-left-color: var(--glitch-red);
+        }
+        
+        .stalker-name {
+            color: #0f0;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stalker-text {
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .stalker-timestamp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 11px;
+            color: #555;
+        }
+        
+        /* Paula Section (Hidden) */
+        #paula-section {
+            filter: brightness(0.5) contrast(2);
+            animation: paulaGlitch 10s infinite;
+        }
+        
+        @keyframes paulaGlitch {
+            0%, 90%, 100% { filter: brightness(0.5) contrast(2); }
+            91% { filter: brightness(1.5) contrast(3) hue-rotate(180deg); }
+            92% { filter: brightness(0.2) contrast(4); }
+            93% { filter: brightness(2) contrast(1) invert(1); }
+            94% { filter: brightness(0.5) contrast(2); }
+        }
+        
+        .paula-content {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .paula-message {
+            font-size: 24px;
+            color: #fff;
+            opacity: 0;
+            animation: fadeInOut 5s infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        .memory-fragments {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+        
+        .fragment {
+            aspect-ratio: 1;
+            background: #000;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .fragment img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.3);
+            transition: filter 0.3s;
+        }
+        
+        .fragment:hover img {
+            filter: brightness(0.7);
+        }
+        
+        .fragment-text {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: var(--glitch-red);
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .fragment:hover .fragment-text {
+            opacity: 1;
+        }
+        
+        /* XoXo Warning */
+        .xoxo-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            border: 2px solid var(--glitch-red);
+            padding: 30px;
+            display: none;
+            z-index: 10000;
+            text-align: center;
+        }
+        
+        .xoxo-warning.active {
+            display: block;
+            animation: warningPulse 0.5s infinite;
+        }
+        
+        @keyframes warningPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        .xoxo-text {
+            font-size: 48px;
+            color: var(--glitch-red);
+            font-family: 'VT323', monospace;
+            animation: rgbShift 0.1s infinite;
+        }
+        
+        @keyframes rgbShift {
+            0% { text-shadow: 1px 0 var(--glitch-blue), -1px 0 var(--glitch-red); }
+            50% { text-shadow: -1px 0 var(--glitch-blue), 1px 0 var(--glitch-red); }
+            100% { text-shadow: 0 1px var(--glitch-blue), 0 -1px var(--glitch-red); }
+        }
+        
+        /* Night Owl Background */
+        .night-owl-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            background: url('Art Folder/night_owl_pattern.png') center/cover;
+        }
+        
+        /* Hidden Console Commands */
+        .console-hint {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 10px;
+            color: #222;
+            opacity: 0;
+            transition: opacity 10s;
+        }
+        
+        body:hover .console-hint {
+            opacity: 1;
+        }
+        
+        /* Audio Visualizer */
+        .audio-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            display: none;
+        }
+        
+        .audio-indicator.active {
+            display: block;
+        }
+        
+        .audio-bar {
+            display: inline-block;
+            width: 3px;
+            height: 100%;
+            background: var(--glitch-red);
+            margin: 0 1px;
+            animation: audioWave 0.5s infinite;
+        }
+        
+        .audio-bar:nth-child(1) { animation-delay: 0s; }
+        .audio-bar:nth-child(2) { animation-delay: 0.1s; }
+        .audio-bar:nth-child(3) { animation-delay: 0.2s; }
+        .audio-bar:nth-child(4) { animation-delay: 0.3s; }
+        .audio-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes audioWave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        
+        /* Decay System */
+        body.decay-1 { filter: contrast(0.95) brightness(0.95); }
+        body.decay-2 { filter: contrast(0.9) brightness(0.9); }
+        body.decay-3 { filter: contrast(0.85) brightness(0.85) saturate(0.8); }
+        body.decay-4 { filter: contrast(0.8) brightness(0.8) saturate(0.6); }
+        body.decay-5 { filter: contrast(0.7) brightness(0.7) saturate(0.4) hue-rotate(10deg); }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .logo-main {
+                font-size: 48px;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .memory-fragments {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Audio Elements -->
+    <audio id="staticAudio" loop>
+        <source src="audio/static_loop.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="whisperAudio">
+        <source src="audio/paula_whisper.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="glitchAudio">
+        <source src="audio/glitch_sound.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div class="logo-container">
+                <div class="paula-figure">
+                    <img src="Art Folder/paula_silhouette.png" alt="">
+                </div>
+                <div class="logo-main" data-text="VStalkR16">VStalkR16</div>
+                <div class="tagline">
+                    <span>Create.</span> <span>Share.</span> <span>Find.</span>
+                </div>
+            </div>
+            <div class="login-form">
+                <input type="text" class="login-input" id="usernameInput" placeholder="Username_">
+                <br>
+                <input type="password" class="login-input" id="passwordInput" placeholder="Access_Code">
+                <div class="server-status">
+                    <span class="status-indicator"></span>
+                    <span id="serverMessage">Server Status: DEGRADED</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div id="mainContent">
+        <div class="night-owl-bg"></div>
+        
+        <header class="header">
+            <div class="header-content">
+                <div class="build-version">BUILD V04.12.23 | QUEUE: <span id="queueCount">847</span>/50</div>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a class="nav-item" data-section="incident">INCIDENT_LOG</a></li>
+                        <li><a class="nav-item" data-section="games">GAMES</a></li>
+                        <li><a class="nav-item" data-section="stalkers">STALKERS</a></li>
+                        <li><a class="nav-item" data-section="paula" style="opacity: 0.3;">P̸A̵U̶L̷A̴</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        
+        <!-- Incident Log Section -->
+        <div id="incident" class="content-section active">
+            <h1 class="section-title">INCIDENT_LOG://XoXo</h1>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2014.03.15</div>
+                    <div class="timeline-content">
+                        VTalkR launches. "The future of social VR" they called it.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2016.11.24 - 14:32:07</div>
+                    <div class="timeline-content">
+                        The XoXo Incident. Red. Blue. Flashing. Screaming.
+                        <div class="casualty-counter">
+                            AFFECTED: <span id="affectedCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2016.11.25</div>
+                    <div class="timeline-content">
+                        File found: "XoXo". Contents: [REDACTED]
+                        <br>Hacker: UNKNOWN
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2017.08.03</div>
+                    <div class="timeline-content">
+                        VTalkR shuts down permanently. They couldn't wash the blood off.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">2026.XX.XX</div>
+                    <div class="timeline-content">
+                        We rebuilt it. We'll find them. They'll pay.
+                        <br><br>
+                        <span style="color: var(--glitch-red);">Paula remembers.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Games Section -->
+        <div id="games" class="content-section">
+            <h1 class="section-title">GAMES://HUNT_PROTOCOL</h1>
+            <div class="games-grid">
+                <div class="game-card" data-game="1">
+                    <div class="game-thumbnail">
+                        <img src="Art Folder/game1_thumb.jpg" alt="FIND_ME">
+                        <div class="game-static"></div>
+                        <div class="game-status">PHASE 1</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">FIND_ME.exe</div>
+                        <div class="game-date">Released: 10 days ago</div>
+                    </div>
+                </div>
+                <div class="game-card" data-game="2">
+                    <div class="game-thumbnail">
+                        <img src="Art Folder/game2_thumb.jpg" alt="REMEMBER">
+                        <div class="game-static"></div>
+                        <div class="game-status">PHASE 2</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">REMEMBER_HER.vtr</div>
+                        <div class="game-date">Released: 3 days ago</div>
+                    </div>
+                </div>
+                <div class="game-card" data-game="3">
+                    <div class="game-thumbnail">
+                        <img src="Art Folder/game3_thumb.jpg" alt="VENGEANCE">
+                        <div class="game-static"></div>
+                        <div class="game-status">LOCKED</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">VENGEANCE_PROTOCOL.end</div>
+                        <div class="game-date">Coming: SOON</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stalkers Section -->
+        <div id="stalkers" class="content-section">
+            <h1 class="section-title">STALKERS://ACTIVE_HUNT</h1>
+            <div class="stalkers-board">
+                <div class="active-users">
+                    <div class="user-count">ACTIVE: <span id="activeCount">23</span></div>
+                    <div class="queue-status">QUEUE OVERLOAD - LIMITED ACCESS</div>
+                </div>
+                <div class="message-board" id="messageBoard">
+                    <div class="stalker-message">
+                        <div class="stalker-name">Trinity_Gaming</div>
+                        <div class="stalker-text">Found something in the old server files. Check coordinates 47.XX.XX</div>
+                        <div class="stalker-timestamp">2 hours ago</div>
+                    </div>
+                    <div class="stalker-message">
+                        <div class="stalker-name">Anonymous_Hunter_16</div>
+                        <div class="stalker-text">The pattern in FIND_ME matches the original incident. Red, blue, red, blue...</div>
+                        <div class="stalker-timestamp">47 minutes ago</div>
+                    </div>
+                    <div class="stalker-message">
+                        <div class="stalker-name">:)HackHackHackHack:)</div>
+                        <div class="stalker-text">You're all looking in the wrong places :)</div>
+                        <div class="stalker-timestamp">12 minutes ago</div>
+                    </div>
+                    <div class="stalker-message">
+                        <div class="stalker-name">System</div>
+                        <div class="stalker-text" style="color: var(--glitch-red);">User [REDACTED] has been removed from server.</div>
+                        <div class="stalker-timestamp">5 minutes ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Paula Section (Hidden) -->
+        <div id="paula" class="content-section">
+            <h1 class="section-title">P̸A̵U̶L̷A̴://M̴E̶M̸O̵R̷Y̶_̵F̷R̴A̸G̶M̵E̸N̶T̵S̷</h1>
+            <div class="paula-content">
+                <div class="paula-message">She was only 13</div>
+                <div class="memory-fragments">
+                    <div class="fragment">
+                        <img src="Art Folder/paula_memory1.jpg" alt="">
+                        <div class="fragment-text">Before</div>
+                    </div>
+                    <div class="fragment">
+                        <img src="Art Folder/paula_memory2.jpg" alt="">
+                        <div class="fragment-text">During</div>
+                    </div>
+                    <div class="fragment">
+                        <img src="Art Folder/paula_memory3.jpg" alt="">
+                        <div class="fragment-text">After</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- XoXo Warning Popup -->
+    <div class="xoxo-warning" id="xoxoWarning">
+        <div class="xoxo-text">XoXo</div>
+        <div style="color: #fff; margin-top: 10px;">SYSTEM BREACH DETECTED</div>
+    </div>
+    
+    <!-- Audio Indicator -->
+    <div class="audio-indicator" id="audioIndicator">
+        <span class="audio-bar"></span>
+        <span class="audio-bar"></span>
+        <span class="audio-bar"></span>
+        <span class="audio-bar"></span>
+        <span class="audio-bar"></span>
+    </div>
+    
+    <!-- Console Hint -->
+    <div class="console-hint">console.log('help')</div>
+    
+    <script>
+        // Initialize
+        let decayLevel = 0;
+        let visits = parseInt(localStorage.getItem('vstalkr_visits') || '0');
+        let foundSecrets = JSON.parse(localStorage.getItem('vstalkr_secrets') || '[]');
+        
+        // Update visit counter and decay
+        visits++;
+        localStorage.setItem('vstalkr_visits', visits);
+        decayLevel = Math.min(Math.floor(visits / 3), 5);
+        document.body.className = decayLevel > 0 ? `decay-${decayLevel}` : '';
+        
+        // Login System
+        const loginScreen = document.getElementById('loginScreen');
+        const mainContent = document.getElementById('mainContent');
+        const passwordInput = document.getElementById('passwordInput');
+        const usernameInput = document.getElementById('usernameInput');
+        
+        // Auto-corruption of tagline
+        setTimeout(() => {
+            document.querySelector('.tagline').classList.add('corrupted');
+        }, 5000);
+        
+        // Password check
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const password = passwordInput.value.toLowerCase();
+                const username = usernameInput.value;
+                
+                if (password === 'xoxo' || password === 'paula' || password === '4000' || password === '') {
+                    // Success
+                    loginScreen.classList.add('hidden');
+                    setTimeout(() => {
+                        mainContent.classList.add('active');
+                        startAmbientEffects();
+                    }, 1000);
+                    
+                    if (password === 'xoxo') {
+                        setTimeout(showXoXoWarning, 3000);
+                    }
+                } else {
+                    // Failed attempt
+                    passwordInput.style.animation = 'textCorrupt 0.5s';
+                    setTimeout(() => {
+                        passwordInput.style.animation = '';
+                        passwordInput.value = '';
+                    }, 500);
+                }
+            }
+        });
+        
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.dataset.section;
+                
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(s => {
+                    s.classList.remove('active');
+                });
+                
+                // Show selected section
+                const targetSection = document.getElementById(section);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Special effects for Paula section
+                    if (section === 'paula') {
+                        playWhisper();
+                        document.body.style.filter = 'brightness(0.7)';
+                        setTimeout(() => {
+                            document.body.style.filter = '';
+                        }, 2000);
+                    }
+                }
+                
+                // Random corruption
+                if (Math.random() < 0.1) {
+                    item.classList.add('corrupted');
+                    setTimeout(() => item.classList.remove('corrupted'), 300);
+                }
+            });
+        });
+        
+        // Casualty counter animation
+        function animateCounter() {
+            const counter = document.getElementById('affectedCount');
+            if (!counter) return;
+            
+            let count = 0;
+            const target = 4000 + Math.floor(Math.random() * 247);
+            const increment = target / 100;
+            
+            const timer = setInterval(() => {
+                count += increment;
+                if (count >= target) {
+                    count = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(count);
+            }, 20);
+        }
+        
+        // Trigger counter when section is viewed
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.id === 'affectedCount' && entry.target.textContent === '0') {
+                    animateCounter();
+                }
+            });
+        });
+        
+        const affectedCount = document.getElementById('affectedCount');
+        if (affectedCount) observer.observe(affectedCount);
+        
+        // Queue counter updates
+        function updateQueueCount() {
+            const queue = document.getElementById('queueCount');
+            if (queue) {
+                queue.textContent = 800 + Math.floor(Math.random() * 200);
+            }
+        }
+        setInterval(updateQueueCount, 5000);
+        
+        // Active user count fluctuation
+        function updateActiveCount() {
+            const active = document.getElementById('activeCount');
+            if (active) {
+                active.textContent = 15 + Math.floor(Math.random() * 20);
+            }
+        }
+        setInterval(updateActiveCount, 7000);
+        
+        // XoXo Warning
+        function showXoXoWarning() {
+            const warning = document.getElementById('xoxoWarning');
+            warning.classList.add('active');
+            playGlitch();
+            
+            // Flash effect
+            let flashes = 0;
+            const flashInterval = setInterval(() => {
+                document.body.style.background = flashes % 2 === 0 ? '#ff0040' : '#00ffff';
+                flashes++;
+                if (flashes > 6) {
+                    clearInterval(flashInterval);
+                    document.body.style.background = '';
+                    warning.classList.remove('active');
+                }
+            }, 100);
+        }
+        
+        // Audio functions
+        function playStatic() {
+            const audio = document.getElementById('staticAudio');
+            if (audio) {
+                audio.volume = 0.02;
+                audio.play().catch(() => {});
+            }
+        }
+        
+        function playWhisper() {
+            const audio = document.getElementById('whisperAudio');
+            if (audio) {
+                audio.volume = 0.1;
+                audio.play().catch(() => {});
+            }
+        }
+        
+        function playGlitch() {
+            const audio = document.getElementById('glitchAudio');
+            if (audio) {
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+            }
+        }
+        
+        // Ambient effects
+        function startAmbientEffects() {
+            // Random glitches
+            setInterval(() => {
+                if (Math.random() < 0.05) {
+                    document.body.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                    setTimeout(() => {
+                        document.body.style.filter = '';
+                    }, 50);
+                }
+            }, 10000);
+            
+            // Random Paula appearances
+            setInterval(() => {
+                if (Math.random() < 0.02) {
+                    const paula = document.createElement('div');
+                    paula.style.cssText = `
+                        position: fixed;
+                        top: ${Math.random() * window.innerHeight}px;
+                        left: ${Math.random() * window.innerWidth}px;
+                        width: 60px;
+                        height: 100px;
+                        background: url('Art Folder/paula_silhouette.png') center/contain no-repeat;
+                        opacity: 0.3;
+                        pointer-events: none;
+                        z-index: 9999;
+                        animation: fadeOut 0.5s forwards;
+                    `;
+                    document.body.appendChild(paula);
+                    setTimeout(() => paula.remove(), 500);
+                }
+            }, 30000);
+        }
+        
+        // Console commands (Easter eggs)
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            
+            if (args[0] === 'help') {
+                originalLog('%c COMMANDS:', 'color: #0f0; font-weight: bold');
+                originalLog('findPaula() - Search for Paula');
+                originalLog('findHacker() - Hunt the XoXo hacker');
+                originalLog('serverStatus() - Check server integrity');
+                originalLog('decrypt("XoXo") - Decrypt the file');
+            }
+        };
+        
+        // Console command functions
+        window.findPaula = function() {
+            console.log('%c Paula is everywhere. Paula is nowhere. She remembers.', 'color: red');
+            document.getElementById('paula').classList.add('active');
+            document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
+        };
+        
+        window.findHacker = function() {
+            console.log('%c Searching...', 'color: yellow');
+            setTimeout(() => {
+                console.log('%c IP: 192.168.XX.XX', 'color: red');
+                console.log('%c Location: [REDACTED]', 'color: red');
+                console.log('%c Status: STILL ALIVE', 'color: red');
+                console.log('%c They\'re watching you too.', 'color: red; font-weight: bold');
+            }, 2000);
+        };
+        
+        window.serverStatus = function() {
+            console.log('%c Server Integrity: ' + (100 - (decayLevel * 20)) + '%', 'color: orange');
+            console.log('%c Decay Level: ' + decayLevel, 'color: red');
+            console.log('%c Visits: ' + visits, 'color: yellow');
+        };
+        
+        window.decrypt = function(key) {
+            if (key === 'XoXo' || key === 'xoxo') {
+                console.log('%c Decrypting...', 'color: green');
+                setTimeout(() => {
+                    console.log('%c ERROR: FILE CORRUPTED', 'color: red; font-size: 20px');
+                    console.log('%c But you found this: "14 years old. Just a kid. Just a stupid kid."', 'color: white');
+                    showXoXoWarning();
+                }, 1500);
+            } else {
+                console.log('%c Invalid decryption key', 'color: red');
+            }
+        };
+        
+        // Game card interactions
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const gameNum = card.dataset.game;
+                if (gameNum === '3') {
+                    alert('ACCESS DENIED - AWAIT FURTHER INSTRUCTIONS');
+                } else {
+                    console.log(`Loading game ${gameNum}...`);
+                    // Here you could open game videos or load game content
+                }
+            });
+        });
+        
+        // Random message additions
+        function addStalkerMessage() {
+            const messages = [
+                { name: 'Anonymous_12', text: 'The files are corrupted beyond repair.' },
+                { name: 'SeekTruth99', text: 'Has anyone else noticed the pattern?' },
+                { name: 'DeepDiver', text: 'Check the source code. There\'s something hidden.' },
+                { name: 'System', text: 'Connection lost. Attempting to reconnect...', style: 'color: #f90;' },
+                { name: '???', text: 'Stop looking for me.', style: 'color: var(--glitch-red);' },
+                { name: 'Trinity_Gaming', text: 'I think I found something in The Night Owl...' }
+            ];
+            
+            const board = document.getElementById('messageBoard');
+            if (board && Math.random() < 0.3) {
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'stalker-message';
+                msgDiv.innerHTML = `
+                    <div class="stalker-name">${msg.name}</div>
+                    <div class="stalker-text" ${msg.style ? `style="${msg.style}"` : ''}>${msg.text}</div>
+                    <div class="stalker-timestamp">Just now</div>
+                `;
+                board.insertBefore(msgDiv, board.firstChild);
+                
+                // Remove old messages if too many
+                while (board.children.length > 10) {
+                    board.removeChild(board.lastChild);
+                }
+            }
+        }
+        setInterval(addStalkerMessage, 15000);
+        
+        // Mobile touch events for Paula appearances
+        let touchCount = 0;
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 3) {
+                touchCount++;
+                if (touchCount >= 3) {
+                    document.getElementById('paula').classList.add('active');
+                    document.querySelectorAll('.content-section:not(#paula)').forEach(s => s.classList.remove('active'));
+                    touchCount = 0;
+                }
+            }
+        });
+        
+        // Page visibility corruption
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && Math.random() < 0.3) {
+                document.title = 'XoXo';
+                setTimeout(() => {
+                    document.title = 'VTalkR: Rebuilt - Build V04.12.23';
+                }, 1000);
+            }
+        });
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            // Focus on username input
+            usernameInput.focus();
+            
+            // Add subtle background static
+            if (visits > 2) {
+                playStatic();
+            }
+        });
+        
+        // Prevent right-click (adds to mystique)
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            console.log('%c ACCESS DENIED', 'color: red; font-size: 20px');
+            return false;
+        });
+        
+        // Error handler for missing assets
+        window.addEventListener('error', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.target.style.background = '#000';
+                e.target.style.border = '1px solid var(--glitch-red)';
+                e.target.alt = '[CORRUPTED]';
+            }
+        }, true);
+    </script>
+</body>
+</html>
