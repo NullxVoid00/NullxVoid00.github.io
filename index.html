@@ -1,1090 +1,910 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abyssal Light Games</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-black: #0a0a0a;
-            --primary-white: #f0f0f0;
-            --accent-red: #dc143c;
-            --accent-blue: #4169e1;
-            --accent-pink: #ff69b4;
-            --accent-green: #32cd32;
-            --accent-purple: #9370db;
-            --text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--primary-black);
-            color: var(--primary-white);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(255,255,255,0.03) 0px,
-                    transparent 1px,
-                    transparent 2px,
-                    rgba(255,255,255,0.03) 3px
-                );
-            pointer-events: none;
-            z-index: 1;
-            animation: staticNoise 8s steps(10) infinite;
-        }
-
-        @keyframes staticNoise {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-1%, -1%); }
-            20% { transform: translate(1%, 1%); }
-            30% { transform: translate(-1%, 1%); }
-            40% { transform: translate(1%, -1%); }
-            50% { transform: translate(-1%, 0); }
-            60% { transform: translate(1%, 0); }
-            70% { transform: translate(0, -1%); }
-            80% { transform: translate(0, 1%); }
-            90% { transform: translate(1%, 1%); }
-        }
-
-        @keyframes glitch {
-            0%, 100% { 
-                text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
-                transform: translate(0);
-            }
-            20% { 
-                text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
-                transform: translate(-2px, 2px);
-            }
-            40% { 
-                text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
-                transform: translate(-2px, -2px);
-            }
-            60% { 
-                text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
-                transform: translate(2px, 2px);
-            }
-            80% { 
-                text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
-                transform: translate(2px, -2px);
-            }
-        }
-
-        @keyframes shake {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-            100% { transform: translate(0, 0); }
-        }
-
-        .password-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .password-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .password-container {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .password-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 300px;
-            background: rgba(10,10,10,0.5);
-            border-radius: 5px;
-        }
-
-        .password-container h1 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 2rem;
-            letter-spacing: 0.2em;
-            animation: glitch 2s infinite;
-        }
-
-        .password-input {
-            background: rgba(255,255,255,0.05) !important;
-            background-color: rgba(255,255,255,0.05) !important;
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white) !important;
-            padding: 1rem 3rem 1rem 2rem;
-            font-size: 1.2rem;
-            text-align: center;
-            border-radius: 5px;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            letter-spacing: 0.1em;
-            width: 100%;
-            -webkit-text-fill-color: var(--primary-white) !important;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        
-        .password-input:focus {
-            background: rgba(255,255,255,0.05) !important;
-            background-color: rgba(255,255,255,0.05) !important;
-            border-color: var(--accent-red);
-            box-shadow: 0 0 20px rgba(220,20,60,0.3);
-        }
-        
-        .password-input:-webkit-autofill,
-        .password-input:-webkit-autofill:hover,
-        .password-input:-webkit-autofill:focus,
-        .password-input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 1000px #0a0a0a inset !important;
-            -webkit-text-fill-color: var(--primary-white) !important;
-            background-color: transparent !important;
-            transition: background-color 5000s ease-in-out 0s;
-            caret-color: var(--primary-white) !important;
-            filter: brightness(0.9) !important;
-            color: #0a0a0a !important; /* Fallback to black text if white background appears */
-        }
-        
-        /* Firefox autofill fix */
-        .password-input:-moz-autofill,
-        .password-input:-moz-autofill-preview {
-            background-color: transparent !important;
-            color: var(--primary-white) !important;
-            filter: brightness(0.9) !important;
-        }
-        
-        /* Edge/IE autofill fix */
-        .password-input:-ms-input-placeholder {
-            color: rgba(255,255,255,0.5) !important;
-        }
-        
-        input:-internal-autofill-selected {
-            appearance: menulist-button;
-            background-color: transparent !important;
-            background-image: none !important;
-            color: var(--primary-white) !important;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--primary-white);
-            cursor: pointer;
-            padding: 5px;
-            font-size: 1.2rem;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-            line-height: 1;
-        }
-
-        .password-toggle:hover {
-            opacity: 1;
-        }
-
-        @keyframes typing-glow {
-            0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-            50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
-            100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
-        }
-
-        .password-input.typing {
-            animation: typing-glow 0.5s ease;
-        }
-
-        .error-message {
-            color: var(--accent-red);
-            margin-top: 1rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .error-message.show {
-            opacity: 1;
-        }
-
-        .main-hub {
-            display: none;
-            min-height: 100vh;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
-            position: relative;
-            z-index: 2;
-        }
-
-        .main-hub.active {
-            display: block;
-        }
-
-        .hub-header {
-            text-align: center;
-            padding: 4rem 2rem 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .hub-logo {
-            max-width: 400px;
-            width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-            animation: floatLogo 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(220,20,60,0.5)) 
-                    drop-shadow(0 0 40px rgba(220,20,60,0.3));
-            position: relative;
-            z-index: 2;
-        }
-
-        .hub-header p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .nav-section {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-section:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-red);
-            box-shadow: 0 10px 30px rgba(220,20,60,0.3);
-        }
-
-        .nav-section.keyboard-selected {
-            border-color: var(--accent-red);
-            box-shadow: 0 0 30px rgba(220,20,60,0.5);
-            transform: translateY(-5px);
-        }
-
-        .nav-section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: var(--accent-red);
-            letter-spacing: 0.1em;
-        }
-
-        .nav-section p {
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-view {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-
-        .section-view.active {
-            display: flex;
-            flex-direction: column;
-            animation: expandIn 0.5s ease-out;
-        }
-
-        @keyframes expandIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .section-header {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .section-header h2 {
-            font-size: 3rem;
-            color: var(--accent-red);
-            margin-bottom: 1rem;
-            animation: glitch 3s infinite;
-        }
-
-        .carousel-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 2rem;
-            perspective: 1200px;
-            min-height: 600px;
-        }
-
-        .carousel {
-            display: flex;
-            align-items: center;
-            height: 500px;
-            position: relative;
-            transform-style: preserve-3d;
-            width: 100%;
-            max-width: 1400px;
-        }
-
-        .project-card {
-            position: absolute;
-            width: 300px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            transform-origin: center;
-            will-change: transform, opacity, height;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
-
-        .project-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .project-card-content {
-            padding: 1.5rem;
-        }
-
-        .project-card h3 {
-            font-size: 1.5rem;
-            color: var(--accent-red);
-            margin-bottom: 1rem;
-        }
-
-        .project-card p {
-            opacity: 0.8;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .progress-bar {
-            margin-top: 1rem;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--accent-green);
-            transition: width 0.3s ease;
-        }
-
-        .progress-bar-label {
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            color: var(--primary-white);
-            opacity: 0.8;
-        }
-
-        .link-status {
-            margin-top: 1rem;
-            padding: 0.5rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 5px;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 0.05em;
-        }
-
-        .link-status.has-website {
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-
-        .link-status.has-vrchat {
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-        }
-
-        .link-status.no-website {
-            color: #888;
-            border: 1px solid #666;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            line-height: 40px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-            z-index: 10;
-            text-align: center;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(220,20,60,0.2);
-            border-color: var(--accent-red);
-        }
-
-        .carousel-nav.prev {
-            left: 2rem;
-        }
-
-        .carousel-nav.next {
-            right: 2rem;
-        }
-
-        .project-card.unavailable {
-            opacity: 0.5;
-            filter: grayscale(100%);
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .project-card.unavailable:hover {
-            transform: none;
-            border-color: rgba(255,255,255,0.1);
-            box-shadow: none;
-        }
-
-        .project-card.unavailable img {
-            filter: brightness(0.5);
-        }
-
-        .project-card.unavailable .project-card-content h3::after {
-            content: " (UNAVAILABLE)";
-            color: #888;
-            font-size: 0.8rem;
-        }
-
-        .project-card.unavailable .project-card-content p,
-        .project-card.unavailable .progress-bar,
-        .project-card.unavailable .progress-bar-label,
-        .project-card.unavailable .link-status {
-            display: none;
-        }
-
-        .gallery-viewport {
-            position: relative;
-            width: 100%;
-            height: calc(100vh - 120px);
-            overflow: hidden;
-            cursor: move;
-        }
-
-        .gallery-canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-origin: center center;
-            transition: transform 0.1s ease-out;
-        }
-
-        .gallery-arrow {
-            position: absolute;
-            color: var(--accent-red);
-            font-size: 3rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            text-shadow: 0 0 20px rgba(220,20,60,0.8);
-            z-index: 10;
-        }
-
-        .gallery-arrow.active {
-            opacity: 0.8;
-        }
-
-        .gallery-arrow.top {
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .gallery-arrow.bottom {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) rotate(180deg);
-        }
-
-        .gallery-arrow.left {
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .gallery-arrow.right {
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%) rotate(90deg);
-        }
-
-        .gallery-image {
-            position: absolute;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        .gallery-image.loaded {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .gallery-image img {
-            max-width: 300px;
-            max-height: 300px;
-            width: auto;
-            height: auto;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            display: block;
-        }
-
-        .gallery-image:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-
-        .gallery-image:hover img {
-            box-shadow: 0 0 30px rgba(220,20,60,0.6);
-            border-color: var(--accent-red);
-        }
-
-        .gallery-image.focused {
-            transform: scale(1.3);
-            z-index: 100;
-        }
-
-        .gallery-image.focused img {
-            box-shadow: 0 0 50px rgba(220,20,60,0.8);
-            border-color: var(--accent-red);
-        }
-
-        .gallery-image-info {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            padding: 8px 15px;
-            border-radius: 5px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-size: 0.9rem;
-            pointer-events: none;
-            text-align: center;
-            max-width: 400px;
-            width: max-content;
-        }
-
-        .gallery-image:hover .gallery-image-info,
-        .gallery-image.show-title .gallery-image-info {
-            opacity: 1;
-        }
-
-        .gallery-image-title {
-            color: var(--primary-white);
-            margin-bottom: 5px;
-        }
-
-        .gallery-image-description {
-            color: #ff4444;
-            font-size: 0.85rem;
-            white-space: normal;
-            line-height: 1.3;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .gallery-image.show-description .gallery-image-description {
-            display: block;
-        }
-
-        .gallery-image.centered {
-            transform: scale(1.3);
-            z-index: 100;
-        }
-        
-        .gallery-image.centered img {
-            box-shadow: 0 0 50px rgba(220,20,60,0.8);
-            border-color: var(--accent-red);
-        }
-
-        .gallery-image.centered .gallery-image-info {
-            opacity: 1;
-        }
-
-        .gallery-image.centered .gallery-image-description {
-            display: block;
-        }
-
-        .about-section {
-            max-width: 800px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .about-section.hidden {
-            display: none;
-        }
-
-        .profile-header {
-            margin-bottom: 2rem;
-        }
-
-        .profile-pic {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 3px solid var(--accent-red);
-            margin-bottom: 2rem;
-            object-fit: cover;
-            filter: drop-shadow(0 0 20px rgba(220,20,60,0.3));
-        }
-
-        .bio-text p {
-            margin-bottom: 1rem;
-        }
-
-        .bio-text p:last-child {
-            margin-bottom: 2rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .social-link {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 5px;
-            text-decoration: none;
-            color: var(--primary-white);
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            border-color: var(--accent-red);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220,20,60,0.3);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .red-shard {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            margin: 2rem auto;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 0 50px var(--accent-red);
-            cursor: pointer;
-            transition: transform 0.1s ease;
-        }
-
-        .red-shard.shake {
-            animation: shake 0.3s ease;
-        }
-
-        .back-button {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: var(--primary-white);
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .back-button:hover {
-            border-color: var(--accent-red);
-            animation: glitch 0.3s;
-        }
-
-        .back-button.hidden {
-            display: none;
-        }
-
-        .volume-control {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .volume-control label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100px;
-            height: 5px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            outline: none;
-            transition: background 0.3s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 15px;
-            height: 15px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(220,20,60,0.5);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 15px;
-            height: 15px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(220,20,60,0.5);
-        }
-
-        .volume-slider:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden;
-            }
-
-            .section-view {
-                overflow-x: hidden;
-                overflow-y: hidden;
-            }
-
-            .nav-grid {
-                grid-template-columns: 1fr;
-                padding: 0 1rem;
-            }
-
-            .hub-logo {
-                max-width: 250px;
-            }
-
-            .social-links {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .profile-pic {
-                width: 150px;
-                height: 150px;
-            }
-
-            .volume-control {
-                bottom: 0.5rem;
-                right: 0.5rem;
-            }
-
-            .volume-slider {
-                width: 80px;
-            }
-
-            .carousel-container {
-                perspective: none;
-                padding: 1rem;
-                min-height: 500px;
-            }
-
-            .carousel {
-                height: 420px;
-                transform-style: flat;
-            }
-
-            .project-card {
-                width: 280px;
-            }
-
-            .project-card img {
-                height: 180px;
-            }
-
-            .carousel-nav {
-                width: 40px;
-                height: 40px;
-                padding: 0;
-                line-height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .carousel-nav.prev {
-                left: 0.5rem;
-            }
-
-            .carousel-nav.next {
-                right: 0.5rem;
-            }
-
-            .section-header {
-                padding: 1.5rem 1rem;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .gallery-image img {
-                max-width: 200px;
-                max-height: 200px;
-            }
-
-            .gallery-arrow {
-                font-size: 2rem;
-            }
-
-            .gallery-image.centered {
-                transform: scale(1.2) !important;
-                z-index: 100;
-            }
-
-            .gallery-image-info {
-                font-size: 0.85rem;
-                bottom: -60px;
-            }
-
-            .gallery-image.centered .gallery-image-info {
-                opacity: 1;
-            }
-        }
-    </style>
+0deg,
+rgba(255,255,255,0.03) 0px,
+transparent 1px,
+transparent 2px,
+rgba(255,255,255,0.03) 3px
+);
+pointer-events: none;
+z-index: 1;
+animation: staticNoise 8s steps(10) infinite;
+}
+@keyframes staticNoise {
+0%, 100% { transform: translate(0, 0); }
+10% { transform: translate(-1%, -1%); }
+20% { transform: translate(1%, 1%); }
+30% { transform: translate(-1%, 1%); }
+40% { transform: translate(1%, -1%); }
+50% { transform: translate(-1%, 0); }
+60% { transform: translate(1%, 0); }
+70% { transform: translate(0, -1%); }
+80% { transform: translate(0, 1%); }
+90% { transform: translate(1%, 1%); }
+}
+@keyframes glitch {
+0%, 100% {
+text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-blue);
+transform: translate(0);
+}
+20% {
+text-shadow: 2px 0 var(--accent-blue), -2px 0 var(--accent-red);
+transform: translate(-2px, 2px);
+}
+40% {
+text-shadow: -2px 0 var(--accent-pink), 2px 0 var(--accent-green);
+transform: translate(-2px, -2px);
+}
+60% {
+text-shadow: 2px 0 var(--accent-green), -2px 0 var(--accent-purple);
+transform: translate(2px, 2px);
+}
+80% {
+text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-pink);
+transform: translate(2px, -2px);
+}
+}
+@keyframes shake {
+0% { transform: translate(0, 0); }
+25% { transform: translate(-5px, 0); }
+50% { transform: translate(5px, 0); }
+75% { transform: translate(-5px, 0); }
+100% { transform: translate(0, 0); }
+}
+.password-screen {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: radial-gradient(circle at center, rgba(220,20,60,0.1) 0%, rgba(10,10,10,1) 100%);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 9999;
+transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.password-screen.hidden {
+opacity: 0;
+visibility: hidden;
+}
+.password-container {
+text-align: center;
+padding: 2rem;
+position: relative;
+z-index: 2;
+}
+.password-wrapper {
+position: relative;
+display: inline-block;
+width: 100%;
+max-width: 300px;
+background: rgba(10,10,10,0.5);
+border-radius: 5px;
+}
+.password-container h1 {
+font-size: clamp(2rem, 5vw, 3rem);
+margin-bottom: 2rem;
+letter-spacing: 0.2em;
+animation: glitch 2s infinite;
+}
+.password-input {
+background: rgba(255,255,255,0.05) !important;
+background-color: rgba(255,255,255,0.05) !important;
+border: 2px solid rgba(255,255,255,0.2);
+color: var(--primary-white) !important;
+padding: 1rem 3rem 1rem 2rem;
+font-size: 1.2rem;
+text-align: center;
+border-radius: 5px;
+outline: none;
+transition: border-color 0.3s ease, box-shadow 0.3s ease;
+letter-spacing: 0.1em;
+width: 100%;
+-webkit-text-fill-color: var(--primary-white) !important;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+.password-input:focus {
+background: rgba(255,255,255,0.05) !important;
+background-color: rgba(255,255,255,0.05) !important;
+border-color: var(--accent-red);
+box-shadow: 0 0 20px rgba(220,20,60,0.3);
+}
+.password-input:-webkit-autofill,
+.password-input:-webkit-autofill:hover,
+.password-input:-webkit-autofill:focus,
+.password-input:-webkit-autofill:active {
+-webkit-box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+-webkit-text-fill-color: var(--primary-white) !important;
+background-color: transparent !important;
+transition: background-color 5000s ease-in-out 0s;
+caret-color: var(--primary-white) !important;
+filter: brightness(0.9) !important;
+color: #0a0a0a !important; /* Fallback to black text if white background appears */
+}
+/* Firefox autofill fix */
+.password-input:-moz-autofill,
+.password-input:-moz-autofill-preview {
+background-color: transparent !important;
+color: var(--primary-white) !important;
+filter: brightness(0.9) !important;
+}
+/* Edge/IE autofill fix */
+.password-input:-ms-input-placeholder {
+color: rgba(255,255,255,0.5) !important;
+}
+input:-internal-autofill-selected {
+appearance: menulist-button;
+background-color: transparent !important;
+background-image: none !important;
+color: var(--primary-white) !important;
+}
+.password-toggle {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+background: none;
+border: none;
+color: var(--primary-white);
+cursor: pointer;
+padding: 5px;
+font-size: 1.2rem;
+opacity: 0.8;
+transition: opacity 0.3s ease;
+line-height: 1;
+}
+.password-toggle:hover {
+opacity: 1;
+}
+@keyframes typing-glow {
+0% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+50% { box-shadow: 0 0 20px rgba(220,20,60,0.8); }
+100% { box-shadow: 0 0 5px rgba(220,20,60,0.5); }
+}
+.password-input.typing {
+animation: typing-glow 0.5s ease;
+}
+.error-message {
+color: var(--accent-red);
+margin-top: 1rem;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+.error-message.show {
+opacity: 1;
+}
+.main-hub {
+display: none;
+min-height: 100vh;
+background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+position: relative;
+z-index: 2;
+}
+.main-hub.active {
+display: block;
+}
+.hub-header {
+text-align: center;
+padding: 4rem 2rem 2rem;
+position: relative;
+z-index: 2;
+}
+@keyframes floatLogo {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+}
+.hub-logo {
+max-width: 400px;
+width: 100%;
+height: auto;
+margin-bottom: 1rem;
+animation: floatLogo 3s ease-in-out infinite;
+filter: drop-shadow(0 0 20px rgba(220,20,60,0.5))
+drop-shadow(0 0 40px rgba(220,20,60,0.3));
+position: relative;
+z-index: 2;
+}
+.hub-header p {
+font-size: 1.2rem;
+opacity: 0.8;
+}
+.nav-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+max-width: 1200px;
+margin: 4rem auto;
+padding: 0 2rem;
+position: relative;
+z-index: 2;
+}
+.nav-section {
+background: rgba(255,255,255,0.05);
+border: 2px solid rgba(255,255,255,0.1);
+border-radius: 10px;
+padding: 2rem;
+transition: all 0.3s ease;
+cursor: pointer;
+}
+.nav-section:hover {
+transform: translateY(-5px);
+border-color: var(--accent-red);
+box-shadow: 0 10px 30px rgba(220,20,60,0.3);
+}
+.nav-section.keyboard-selected {
+border-color: var(--accent-red);
+box-shadow: 0 0 30px rgba(220,20,60,0.5);
+transform: translateY(-5px);
+}
+.nav-section h2 {
+font-size: 1.8rem;
+margin-bottom: 1rem;
+color: var(--accent-red);
+letter-spacing: 0.1em;
+}
+.nav-section p {
+opacity: 0.8;
+margin-bottom: 1.5rem;
+}
+.section-view {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: radial-gradient(circle at center, rgba(220,20,60,0.05) 0%, rgba(10,10,10,1) 100%);
+display: none;
+z-index: 1000;
+overflow: hidden;
+}
+.section-view.active {
+display: flex;
+flex-direction: column;
+animation: expandIn 0.5s ease-out;
+}
+@keyframes expandIn {
+from {
+opacity: 0;
+transform: scale(0.95);
+}
+to {
+opacity: 1;
+transform: scale(1);
+}
+}
+.section-header {
+text-align: center;
+padding: 2rem;
+position: relative;
+z-index: 2;
+}
+.section-header h2 {
+font-size: 3rem;
+color: var(--accent-red);
+margin-bottom: 1rem;
+animation: glitch 3s infinite;
+}
+.carousel-container {
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+padding: 2rem;
+perspective: 1200px;
+min-height: 600px;
+}
+.carousel {
+display: flex;
+align-items: center;
+height: 500px;
+position: relative;
+transform-style: preserve-3d;
+width: 100%;
+max-width: 1400px;
+}
+.project-card {
+position: absolute;
+width: 300px;
+background: rgba(255,255,255,0.05);
+border: 2px solid rgba(255,255,255,0.2);
+border-radius: 15px;
+overflow: hidden;
+transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer;
+transform-origin: center;
+will-change: transform, opacity, height;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+}
+.project-card img {
+width: 100%;
+height: 200px;
+object-fit: cover;
+border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+.project-card-content {
+padding: 1.5rem;
+}
+.project-card h3 {
+font-size: 1.5rem;
+color: var(--accent-red);
+margin-bottom: 1rem;
+}
+.project-card p {
+opacity: 0.8;
+font-size: 0.9rem;
+line-height: 1.4;
+}
+.progress-bar {
+margin-top: 1rem;
+height: 10px;
+background: rgba(255, 255, 255, 0.2);
+border-radius: 5px;
+overflow: hidden;
+}
+.progress-bar-fill {
+height: 100%;
+background: var(--accent-green);
+transition: width 0.3s ease;
+}
+.progress-bar-label {
+font-size: 0.8rem;
+margin-top: 0.5rem;
+color: var(--primary-white);
+opacity: 0.8;
+}
+.link-status {
+margin-top: 1rem;
+padding: 0.5rem;
+background: rgba(255,255,255,0.1);
+border-radius: 5px;
+text-align: center;
+font-size: 0.9rem;
+font-weight: bold;
+letter-spacing: 0.05em;
+}
+.link-status.has-website {
+color: var(--accent-green);
+border: 1px solid var(--accent-green);
+}
+.link-status.has-vrchat {
+color: var(--accent-blue);
+border: 1px solid var(--accent-blue);
+}
+.link-status.no-website {
+color: #888;
+border: 1px solid #666;
+}
+.carousel-nav {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background: rgba(255,255,255,0.1);
+border: 2px solid rgba(255,255,255,0.2);
+color: var(--primary-white);
+width: 40px;
+height: 40px;
+padding: 0;
+line-height: 40px;
+cursor: pointer;
+border-radius: 50%;
+font-size: 1.5rem;
+transition: all 0.3s ease;
+z-index: 10;
+text-align: center;
+}
+.carousel-nav:hover {
+background: rgba(220,20,60,0.2);
+border-color: var(--accent-red);
+}
+.carousel-nav.prev {
+left: 2rem;
+}
+.carousel-nav.next {
+right: 2rem;
+}
+.project-card.unavailable {
+opacity: 0.5;
+filter: grayscale(100%);
+cursor: not-allowed;
+pointer-events: none;
+}
+.project-card.unavailable:hover {
+transform: none;
+border-color: rgba(255,255,255,0.1);
+box-shadow: none;
+}
+.project-card.unavailable img {
+filter: brightness(0.5);
+}
+.project-card.unavailable .project-card-content h3::after {
+content: " (UNAVAILABLE)";
+color: #888;
+font-size: 0.8rem;
+}
+.project-card.unavailable .project-card-content p,
+.project-card.unavailable .progress-bar,
+.project-card.unavailable .progress-bar-label,
+.project-card.unavailable .link-status {
+display: none;
+}
+.gallery-viewport {
+position: relative;
+width: 100%;
+height: calc(100vh - 120px);
+overflow: hidden;
+cursor: move;
+}
+.gallery-canvas {
+position: absolute;
+width: 100%;
+height: 100%;
+transform-origin: center center;
+transition: transform 0.1s ease-out;
+}
+.gallery-arrow {
+position: absolute;
+color: var(--accent-red);
+font-size: 3rem;
+opacity: 0;
+transition: opacity 0.3s ease;
+pointer-events: none;
+text-shadow: 0 0 20px rgba(220,20,60,0.8);
+z-index: 10;
+}
+.gallery-arrow.active {
+opacity: 0.8;
+}
+.gallery-arrow.top {
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+}
+.gallery-arrow.bottom {
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%) rotate(180deg);
+}
+.gallery-arrow.left {
+left: 20px;
+top: 50%;
+transform: translateY(-50%) rotate(-90deg);
+}
+.gallery-arrow.right {
+right: 20px;
+top: 50%;
+transform: translateY(-50%) rotate(90deg);
+}
+.gallery-image {
+position: absolute;
+cursor: pointer;
+transition: transform 0.3s ease;
+opacity: 0;
+transform: scale(0.9);
+}
+.gallery-image.loaded {
+opacity: 1;
+transform: scale(1);
+}
+.gallery-image img {
+max-width: 300px;
+max-height: 300px;
+width: auto;
+height: auto;
+border: 2px solid rgba(255,255,255,0.1);
+border-radius: 10px;
+display: block;
+}
+.gallery-image:hover {
+transform: scale(1.1);
+z-index: 10;
+}
+.gallery-image:hover img {
+box-shadow: 0 0 30px rgba(220,20,60,0.6);
+border-color: var(--accent-red);
+}
+.gallery-image.focused {
+transform: scale(1.3);
+z-index: 100;
+}
+.gallery-image.focused img {
+box-shadow: 0 0 50px rgba(220,20,60,0.8);
+border-color: var(--accent-red);
+}
+.gallery-image-info {
+position: absolute;
+bottom: -30px;
+left: 50%;
+transform: translateX(-50%);
+background: rgba(0,0,0,0.9);
+padding: 8px 15px;
+border-radius: 5px;
+white-space: nowrap;
+opacity: 0;
+transition: opacity 0.3s ease;
+font-size: 0.9rem;
+pointer-events: none;
+text-align: center;
+max-width: 400px;
+width: max-content;
+}
+.gallery-image:hover .gallery-image-info,
+.gallery-image.show-title .gallery-image-info {
+opacity: 1;
+}
+.gallery-image-title {
+color: var(--primary-white);
+margin-bottom: 5px;
+}
+.gallery-image-description {
+color: #ff4444;
+font-size: 0.85rem;
+white-space: normal;
+line-height: 1.3;
+margin-top: 5px;
+display: none;
+}
+.gallery-image.show-description .gallery-image-description {
+display: block;
+}
+.gallery-image.centered {
+transform: scale(1.3);
+z-index: 100;
+}
+.gallery-image.centered img {
+box-shadow: 0 0 50px rgba(220,20,60,0.8);
+border-color: var(--accent-red);
+}
+.gallery-image.centered .gallery-image-info {
+opacity: 1;
+}
+.gallery-image.centered .gallery-image-description {
+display: block;
+}
+.about-section {
+max-width: 800px;
+margin: 4rem auto;
+padding: 0 2rem;
+text-align: center;
+position: relative;
+z-index: 2;
+}
+.about-section.hidden {
+display: none;
+}
+.profile-header {
+margin-bottom: 2rem;
+}
+.profile-pic {
+width: 200px;
+height: 200px;
+border-radius: 50%;
+border: 3px solid var(--accent-red);
+margin-bottom: 2rem;
+object-fit: cover;
+filter: drop-shadow(0 0 20px rgba(220,20,60,0.3));
+}
+.bio-text p {
+margin-bottom: 1rem;
+}
+.bio-text p:last-child {
+margin-bottom: 2rem;
+}
+.social-links {
+display: flex;
+justify-content: center;
+gap: 2rem;
+flex-wrap: wrap;
+}
+.social-link {
+display: inline-block;
+padding: 0.8rem 1.5rem;
+background: rgba(255,255,255,0.05);
+border: 2px solid rgba(255,255,255,0.2);
+border-radius: 5px;
+text-decoration: none;
+color: var(--primary-white);
+transition: all 0.3s ease;
+}
+.social-link:hover {
+border-color: var(--accent-red);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(220,20,60,0.3);
+}
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-20px); }
+}
+.red-shard {
+width: 80px;
+height: 80px;
+background: radial-gradient(circle, var(--accent-red), rgba(220,20,60,0.3));
+border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+margin: 2rem auto;
+animation: float 3s ease-in-out infinite;
+box-shadow: 0 0 50px var(--accent-red);
+cursor: pointer;
+transition: transform 0.1s ease;
+}
+.red-shard.shake {
+animation: shake 0.3s ease;
+}
+.back-button {
+position: fixed;
+top: 2rem;
+left: 2rem;
+padding: 0.8rem 1.5rem;
+background: rgba(255,255,255,0.05);
+border: 2px solid rgba(255,255,255,0.2);
+color: var(--primary-white);
+cursor: pointer;
+border-radius: 5px;
+transition: all 0.3s ease;
+z-index: 100;
+}
+.back-button:hover {
+border-color: var(--accent-red);
+animation: glitch 0.3s;
+}
+.back-button.hidden {
+display: none;
+}
+.volume-control {
+position: fixed;
+bottom: 1rem;
+right: 1rem;
+z-index: 1000;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.volume-control label {
+font-size: 0.9rem;
+opacity: 0.8;
+}
+.volume-slider {
+-webkit-appearance: none;
+appearance: none;
+width: 100px;
+height: 5px;
+background: rgba(255,255,255,0.2);
+border-radius: 5px;
+outline: none;
+transition: background 0.3s ease;
+}
+.volume-slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 15px;
+height: 15px;
+background: var(--accent-red);
+border-radius: 50%;
+cursor: pointer;
+box-shadow: 0 0 10px rgba(220,20,60,0.5);
+}
+.volume-slider::-moz-range-thumb {
+width: 15px;
+height: 15px;
+background: var(--accent-red);
+border-radius: 50%;
+cursor: pointer;
+box-shadow: 0 0 10px rgba(220,20,60,0.5);
+}
+.volume-slider:hover {
+background: rgba(255,255,255,0.3);
+}
+@media (max-width: 768px) {
+body {
+overflow-x: hidden;
+}
+.section-view {
+overflow-x: hidden;
+overflow-y: hidden;
+}
+.nav-grid {
+grid-template-columns: 1fr;
+padding: 0 1rem;
+}
+.hub-logo {
+max-width: 250px;
+}
+.social-links {
+flex-direction: column;
+align-items: center;
+}
+.profile-pic {
+width: 150px;
+height: 150px;
+}
+.volume-control {
+bottom: 0.5rem;
+right: 0.5rem;
+}
+.volume-slider {
+width: 80px;
+}
+.carousel-container {
+perspective: none;
+padding: 1rem;
+min-height: 500px;
+}
+.carousel {
+height: 420px;
+transform-style: flat;
+}
+.project-card {
+width: 280px;
+}
+.project-card img {
+height: 180px;
+}
+.carousel-nav {
+width: 40px;
+height: 40px;
+padding: 0;
+line-height: 40px;
+font-size: 1.2rem;
+}
+.carousel-nav.prev {
+left: 0.5rem;
+}
+.carousel-nav.next {
+right: 0.5rem;
+}
+.section-header {
+padding: 1.5rem 1rem;
+}
+.section-header h2 {
+font-size: 2rem;
+}
+.gallery-image img {
+max-width: 200px;
+max-height: 200px;
+}
+.gallery-arrow {
+font-size: 2rem;
+}
+.gallery-image.centered {
+transform: scale(1.2) !important;
+z-index: 100;
+}
+.gallery-image-info {
+font-size: 0.85rem;
+bottom: -60px;
+}
+.gallery-image.centered .gallery-image-info {
+opacity: 1;
+}
+}
+</style>
 </head>
 <body>
-    <div class="password-screen" id="passwordScreen">
-        <div class="password-container">
-            <h1>ENTER THE ABYSS</h1>
-            <div class="red-shard" id="redShard" onclick="checkPasswordViaShard()"></div>
-            <div class="password-wrapper">
-                <input type="password" 
-                       class="password-input" 
-                       id="passwordInput" 
-                       placeholder="Enter Password"
-                       autocomplete="new-password"
-                       autocorrect="off"
-                       autocapitalize="off"
-                       spellcheck="false">
-                <button class="password-toggle" id="passwordToggle" onclick="togglePassword()" type="button">👁</button>
-            </div>
-            <div class="error-message" id="errorMessage">Access Denied</div>
-        </div>
-    </div>
-
-    <div class="main-hub" id="mainHub">
+<div class="password-screen" id="passwordScreen">
+<div class="password-container">
+<h1>ENTER THE ABYSS</h1>
+<div class="red-shard" id="redShard" onclick="checkPasswordViaShard()"></div>
+<div class="password-wrapper">
+<input type="password"
+class="password-input"
+id="passwordInput"
+placeholder="Enter Password"
+autocomplete="new-password"
+autocorrect="off"
+autocapitalize="off"
+spellcheck="false">
+<button class="password-toggle" id="passwordToggle" onclick="togglePassword()" type="button">👁</button>
+</div>
+<div class="error-message" id="errorMessage">Access Denied</div>
+</div>
+</div>
+    
         <button class="back-button hidden" id="backButton" onclick="showHub()">← BACK TO HUB</button>
         
-        <div id="hubHome">
-            <div class="hub-header">
+            
                 <img src="Art Folder/logo0.png" alt="Abyssal Light Logo" class="hub-logo">
-                <p>Games & Digital Experiences</p>
-            </div>
-
-            <div class="nav-grid">
-                <div class="nav-section" onclick="showSection('games')">
-                    <h2>GAMES</h2>
-                    <p>Gaming Experiences and Concepts of all different kinds</p>
-                </div>
-                <div class="nav-section" onclick="showSection('vrchat')">
-                    <h2>VRCHAT WORLDS</h2>
-                    <p>Worlds and Games Made Exclusively for VRChat</p>
-                </div>
-                <div class="nav-section" onclick="showSection('gallery')">
-                    <h2>ART GALLERY</h2>
-                    <p>Random Collection of Art Created Over the Years</p>
-                </div>
-                <div class="nav-section" onclick="window.location.href='Abyl-RPG.html'">
-                    <h2>ABYL RPG SYSTEM</h2>
-                    <p>Turn-based RPG framework for VRChat</p>
-                </div>
-                <div class="nav-section" onclick="showSection('other')">
-                    <h2>OTHER PROJECTS</h2>
-                    <p>Other Projects and Experiments from Across Different Mediums</p>
-                </div>
-                <div class="nav-section" onclick="showAbout()">
-                    <h2>ABOUT</h2>
-                    <p>Learn more about the creator</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="about-section hidden" id="aboutSection">
-            <div class="profile-header">
+                Games & Digital Experiences
+            
+            
+                
+                    GAMES
+                    Gaming Experiences and Concepts of all different kinds
+                
+                
+                    VRCHAT WORLDS
+                    Worlds and Games Made Exclusively for VRChat
+                
+                
+                    ART GALLERY
+                    Random Collection of Art Created Over the Years
+                
+                
+                    ABYL RPG SYSTEM
+                    Turn-based RPG framework for VRChat
+                
+                
+                    OTHER PROJECTS
+                    Other Projects and Experiments from Across Different Mediums
+                
+                
+                    ABOUT
+                    Learn more about the creator
+                
+            
+        
+        
+            
                 <img src="Art Folder/profile-pic.jpg" alt="Profile" class="profile-pic">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">NULLXVOID</h2>
-            </div>
-
-            <div class="bio-text">
-                <p>
+                NULLXVOID
+            
+            
+                
                     I'm NullxVoid — or just "Null" — And I'm an amateur game designer and VRChat world and avatar creator. I specialize in crafting emotionally driven, psychologically rich experiences that blend surrealism with interactive storytelling.
-                </p>
-                <p>
+                
+                
                     My work often explores identity, perception, and the uncanny, using genre fusion as a tool to challenge expectations. As a creator, I aspire to build immersive spaces that resonate deeply, provoke thought, and leave a lasting impression beyond the screen.
-                </p>
-            </div>
-
-            <div class="social-links">
-                <a href="https://x.com/Skell20XX" class="social-link">Twitter</a>
-                <a href="https://discord.gg/tAkXbESacu" class="social-link">Discord</a>
-                <a href="https://www.youtube.com/@null7198" class="social-link">YouTube</a>
-                <a href="https://github.com/NullxVoid00" class="social-link">GitHub</a>
-                <a href="https://Patreon.com/KalArts" class="social-link">Patreon</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-view" id="gamesSection">
-        <div class="section-header">
-            <h2>GAMES</h2>
-            <p>Gaming Experiences and Concepts of all different kinds</p>
-        </div>
-        <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('games', -1)">‹</button>
-            <div class="carousel" id="gamesCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('games', 1)">›</button>
-        </div>
+                
+            
+            
+                Twitter
+                Discord
+                YouTube
+                GitHub
+                Patreon
+            
+        
+    
+    
+        
+            GAMES
+            Gaming Experiences and Concepts of all different kinds
+        
+        
+            <button class="carousel-nav prev" onclick="moveCarousel(&#x27;games&#x27;, -1)">‹</button>
+            
+            <button class="carousel-nav next" onclick="moveCarousel(&#x27;games&#x27;, 1)">›</button>
+        
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
-    </div>
-
-    <div class="section-view" id="vrchatSection">
-        <div class="section-header">
-            <h2>VRCHAT WORLDS</h2>
-            <p>Worlds and Games Made Exclusively for VRChat</p>
-        </div>
-        <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('vrchat', -1)">‹</button>
-            <div class="carousel" id="vrchatCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('vrchat', 1)">›</button>
-        </div>
+    
+    
+        
+            VRCHAT WORLDS
+            Worlds and Games Made Exclusively for VRChat
+        
+        
+            <button class="carousel-nav prev" onclick="moveCarousel(&#x27;vrchat&#x27;, -1)">‹</button>
+            
+            <button class="carousel-nav next" onclick="moveCarousel(&#x27;vrchat&#x27;, 1)">›</button>
+        
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
-    </div>
-
-    <div class="section-view" id="gallerySection">
-        <div class="section-header">
-            <h2>ART GALLERY</h2>
-            <p>Random Collection of Art Created Over the Years</p>
-        </div>
-        <div class="gallery-viewport" id="galleryViewport">
-            <div class="gallery-canvas" id="galleryCanvas"></div>
-            <div class="gallery-arrow top" id="arrowTop">▲</div>
-            <div class="gallery-arrow bottom" id="arrowBottom">▲</div>
-            <div class="gallery-arrow left" id="arrowLeft">▲</div>
-            <div class="gallery-arrow right" id="arrowRight">▲</div>
-        </div>
+    
+    
+        
+            ART GALLERY
+            Random Collection of Art Created Over the Years
+        
+        
+            
+            ▲
+            ▲
+            ▲
+            ▲
+        
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
-    </div>
-
-    <div class="section-view" id="otherSection">
-        <div class="section-header">
-            <h2>OTHER PROJECTS</h2>
-            <p>Other Projects and Experiments from Across Different Mediums</p>
-        </div>
-        <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('other', -1)">‹</button>
-            <div class="carousel" id="otherCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('other', 1)">›</button>
-        </div>
+    
+    
+        
+            OTHER PROJECTS
+            Other Projects and Experiments from Across Different Mediums
+        
+        
+            <button class="carousel-nav prev" onclick="moveCarousel(&#x27;other&#x27;, -1)">‹</button>
+            
+            <button class="carousel-nav next" onclick="moveCarousel(&#x27;other&#x27;, 1)">›</button>
+        
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
-    </div>
-
+    
     <audio id="passwordAudio" loop>
         <source src="audio/password-bg.mp3" type="audio/mpeg">
     </audio>
@@ -1094,12 +914,10 @@
     <audio id="clickAudio">
         <source src="audio/Click.mp3" type="audio/mpeg">
     </audio>
-
-    <div class="volume-control">
-        <label for="volumeSlider">Volume</label>
-        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
-    </div>
-
+    
+        Volume
+        
+    
     <script>
         // Audio functionality
         const passwordAudio = document.getElementById('passwordAudio');
@@ -1568,6 +1386,14 @@ function checkPassword() {
                     link: "#",
                     progress: "Concept",
                     isAvailable: "O"
+                },
+                {
+                    title: "Abyl DND System",
+                    description: "DnD Combat and Game Manager",
+                    image: "Art Folder/OtherProject14.jpg",
+                    link: "#",
+                    progress: "Concept",
+                    isAvailable: "O"
                 }
             ]
         };
@@ -1673,47 +1499,47 @@ function checkPassword() {
                     // Progress bar HTML
                     if (project.progress === "Completed") {
                         progressHTML = `
-                            <div class="progress-bar">
-                                <div class="progress-bar-fill" style="width: 100%;"></div>
-                            </div>
-                            <div class="progress-bar-label">Progress: Completed</div>
+                            
+                                
+                            
+                            Progress: Completed
                         `;
                     } else if (project.progress === "Concept") {
                         progressHTML = `
-                            <div class="progress-bar">
-                                <div class="progress-bar-fill" style="width: 0%;"></div>
-                            </div>
-                            <div class="progress-bar-label">Progress: Concept</div>
+                            
+                                
+                            
+                            Progress: Concept
                         `;
                     } else if (project.progress.status === "Unfinished") {
                         progressHTML = `
-                            <div class="progress-bar">
-                                <div class="progress-bar-fill" style="width: ${project.progress.percentage}%;"></div>
-                            </div>
-                            <div class="progress-bar-label">Progress: Unfinished (${project.progress.percentage}%)</div>
+                            
+                                
+                            
+                            Progress: Unfinished (${project.progress.percentage}%)
                         `;
                     }
                     
                     // Link status HTML
                     if (project.link && project.link !== '#') {
                         if (project.link.includes('vrchat')) {
-                            linkStatusHTML = '<div class="link-status has-vrchat">Visit VRChat Link!</div>';
+                            linkStatusHTML = 'Visit VRChat Link!';
                         } else {
-                            linkStatusHTML = '<div class="link-status has-website">Visit Website!</div>';
+                            linkStatusHTML = 'Visit Website!';
                         }
                     } else {
-                        linkStatusHTML = '<div class="link-status no-website">No Website Yet Available</div>';
+                        linkStatusHTML = 'No Website Yet Available';
                     }
                 }
 
                 card.innerHTML = `
-                    <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
-                    <div class="project-card-content">
-                        <h3>${project.title}</h3>
-                        <p>${project.description}</p>
+                    <img src="${project.image}" alt="${project.title}" onerror="this.src=&#x27;Art Folder/placeholder.jpg&#x27;">
+                    
+                        ${project.title}
+                        ${project.description}
                         ${progressHTML}
                         ${linkStatusHTML}
-                    </div>
+                    
                 `;
                 
                 if (!isUnavailable && project.link && project.link !== '#') {
@@ -1858,9 +1684,9 @@ function checkPassword() {
 
         function parseImageData(filename) {
             // Extract title from parentheses
-            const titleMatch = filename.match(/\(([^)]+)\)/);
+            const titleMatch = filename.match(/$$ ([^)]+) $$/);
             // Extract description from square brackets
-            const descriptionMatch = filename.match(/\[([^\]]+)\]/);
+            const descriptionMatch = filename.match(/$$ ([^ $$]+)\]/);
             
             // Get base filename without description (but keep everything else)
             let baseFilename = filename;
@@ -2709,5 +2535,5 @@ document.addEventListener('keydown', function(e) {
             }, 250);
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9856ab606d5d6b19',t:'MTc1ODkzMDY4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
