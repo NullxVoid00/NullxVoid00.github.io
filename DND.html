@@ -1947,6 +1947,7 @@
         <button class="tab" onclick="switchTab(event, 'backgrounds')">🖼️ Backgrounds</button>
         <button class="tab" onclick="switchTab(event, 'media')">🎵 Saved Media</button>
         <button class="tab" onclick="switchTab(event, 'import-export')">📁 Import/Export</button>
+        <button class="tab" onclick="openConversationManager()">💬 Conversation Manager</button>
     </div>
    
     <!-- Combat Board Tab -->
@@ -2007,6 +2008,13 @@
                     <button class="btn btn-success" onclick="game.nextTurn()">▶️ Next Turn</button>
                     <button class="btn btn-warning" onclick="game.endTurn()">⏸️ End Current Turn</button>
                     <button class="btn btn-danger" onclick="game.rollInitiative()">🎲 Roll Initiative</button>
+                </div>
+
+                <!-- Rests Section -->
+                <div class="section">
+                    <div class="section-title">Rests</div>
+                    <button class="btn btn-primary" onclick="game.shortRest()">Short Rest</button>
+                    <button class="btn btn-primary" onclick="game.longRest()">Long Rest</button>
                 </div>
                
                 <!-- Settings Section -->
@@ -2267,7 +2275,7 @@
            
             raceList: [
                 'Aarakocra', 'Aasimar', 'Bugbear', 'Centaur', 'Changeling', 'Dragonborn',
-                'Dwarf', 'Elf', 'Firbolg', 'Genasi', 'Githyanki', 'Githzerai', 'Gnome',
+                'Dwarf', 'Elf', 'Bugbear', 'Firbolg', 'Genasi', 'Githyanki', 'Githzerai', 'Gnome',
                 'Goblin', 'Goliath', 'Half-Elf', 'Halfling', 'Half-Orc', 'Hobgoblin',
                 'Human', 'Kalashtar', 'Kenku', 'Kobold', 'Lizardfolk', 'Loxodon',
                 'Minotaur', 'Orc', 'Shifter', 'Simic Hybrid', 'Tabaxi', 'Tiefling',
@@ -2727,7 +2735,8 @@
                         higherLevel: 'Additional 1d6 damage per spell slot above 3rd',
                         image: '',
                         soundEffect: '',
-                        visualEffect: ''
+                        visualEffect: '',
+                        visualPattern: 'onEntity'
                     },
                     {
                         name: 'Cure Wounds',
@@ -2743,7 +2752,8 @@
                         higherLevel: 'Additional 1d8 healing per spell slot above 1st',
                         image: '',
                         soundEffect: '',
-                        visualEffect: ''
+                        visualEffect: '',
+                        visualPattern: 'onEntity'
                     }
                 ],
                 items: [
@@ -2989,7 +2999,7 @@
                     effects: {attackAdvantage: true, defenseDisadvantage: true}
                 },
                 paralyzed: {
-                    description: 'Incapacitated, cannot move or speak. Auto-fail Str and Dex saves. Attacks have advantage. Hits within 5ft are crits.',
+                    description: 'Incapacitated, cannot move or speak. Auto-fail Str and Dex saves. Attacks have advantage. Attacks within 5ft are crits.',
                     effects: {noActions: true, noReactions: true, speed: 0, attackDisadvantage: true, defenseAdvantage: true, autoFailSaves: ['str', 'dex']}
                 },
                 petrified: {
@@ -3641,6 +3651,11 @@
                         <input type="text" id="spellDescription" placeholder="Description" value="${spell ? spell.description : ''}">
                         <input type="text" id="spellSound" placeholder="Sound Effect URL" value="${spell ? spell.soundEffect : ''}">
                         <input type="text" id="spellVFX" placeholder="Visual Effect URL" value="${spell ? spell.visualEffect : ''}">
+                        <select id="spellPattern">
+                            <option value="onEntity" ${spell && spell.visualPattern === 'onEntity' ? 'selected' : ''}>On Entity</option>
+                            <option value="shoot" ${spell && spell.visualPattern === 'shoot' ? 'selected' : ''}>Shoot</option>
+                            <option value="aoe" ${spell && spell.visualPattern === 'aoe' ? 'selected' : ''}>Area of Effect</option>
+                        </select>
                         <button class="btn btn-success" onclick="game.saveSpellFromEditor(${isEdit ? `'${spell.name}'` : 'null'})">Save</button>
                     </div>
                 `;
@@ -3659,7 +3674,8 @@
                     healing: modal.querySelector('#spellHealing').value,
                     description: modal.querySelector('#spellDescription').value,
                     soundEffect: modal.querySelector('#spellSound').value,
-                    visualEffect: modal.querySelector('#spellVFX').value
+                    visualEffect: modal.querySelector('#spellVFX').value,
+                    visualPattern: modal.querySelector('#spellPattern').value
                 };
                
                 if (this.validateContent(spell, 'spell')) {
@@ -4232,7 +4248,8 @@
                         level: type === 'player' || type === 'npc' ? 1 : 1,
                         hitDice: '1d10',
                         hitDiceRemaining: 1,
-                        baseActions: [...this.baseCombatActions] // Add base combat actions
+                        baseActions: [...this.baseCombatActions], // Add base combat actions
+                        inspiration: 0
                     });
                    
                     if (type === 'player' || type === 'npc') {
@@ -4282,7 +4299,7 @@
                         entity.y = y;
                         entity.scale = 1.0;
                         entity.baseActions = [...this.baseCombatActions];
-                        // Ensure monsters have inventories for loot drops
+                        // Ensure monsters have inventories for later loot drops
                         if (!entity.inventory) {
                             entity.inventory = [];
                         }
@@ -4705,7 +4722,7 @@
                         if (total < dc) {
                             if (special.includes('prone')) {
                                 this.addCondition(target, 'prone');
-                                this.addLog(`${target.name} is knocked prone! (Save: ${total} vs DC ${dc})`, 'info');
+                                this.addLog(` ${target.name} is knocked prone! (Save: ${total} vs DC ${dc})`, 'info');
                                 this.showActionDisplay('info', 'Saving Throw Failed', `${target.name} fails save and is knocked prone`, `${total} vs DC ${dc}`);
                             } else if (special.includes('poison')) {
                                 const poisonDamage = this.rollDice('2d8');
@@ -4789,11 +4806,14 @@
                         }
                     }
                 }
+                if ((target.type === 'player' || target.type === 'npc') && target.soundEffect) {
+                    this.playIndividualSound(target.soundEffect)
+                }
             },
            
             // Cast Spell
-            castSpell(caster, target, spell, spellLevel = null) {
-                if (caster.id === target.id && spell.name !== 'Shield' && spell.name !== 'Misty Step') {
+            castSpell(caster, target, spell, spellLevel = null, pos = null) {
+                if (caster.id === target?.id && spell.name !== 'Shield' && spell.name !== 'Misty Step') {
                     this.addLog('Cannot target self with this spell!', 'info');
                     return;
                 }
@@ -4831,7 +4851,15 @@
                 }
                
                 if (spell.visualEffect) {
-                    this.playVisualEffect(spell.visualEffect, target.x, target.y);
+                    let vfxX = target ? target.x : pos?.x || caster.x;
+                    let vfxY = target ? target.y : pos?.y || caster.y;
+                    if (spell.visualPattern === 'shoot') {
+                        this.createSpellAnimation(caster.x + 35, caster.y + 35, vfxX + 35, vfxY + 35, spell.school);
+                    } else if (spell.visualPattern === 'aoe') {
+                        this.playVisualEffect(spell.visualEffect, vfxX, vfxY);
+                    } else {
+                        this.playVisualEffect(spell.visualEffect, vfxX, vfxY);
+                    }
                 }
                
                 // Use spell slot
@@ -5020,6 +5048,7 @@
                 }
                 this.render();
             },
+           
             // Enhanced Play Individual Sound function
             playIndividualSound(url) {
                 if (url) {
@@ -5468,7 +5497,7 @@
                         if (this.editMode && this.selectedEntity && this.selectedEntity.id === entity.id) {
                             e.preventDefault();
                             const scaleChange = e.deltaY > 0 ? -0.1 : 0.1;
-                            entity.scale = Math.max(0.5, Math.min(2.0, (entity.scale || 1.0) + scaleChange));
+                            entity.scale = Math.max(0.5, Math.min(4.0, (entity.scale || 1.0) + scaleChange));
                             this.render();
                         }
                     });
@@ -5754,10 +5783,15 @@
                    
                     let actionPerformed = false;
                    
-                    if (this.targetingMode && this.draggingEntity.id === this.targetingMode.source.id && target) {
-                        // Execute targeted action
-                        this.executeTargetedAction(target);
-                        actionPerformed = true;
+                    if (this.targetingMode && this.draggingEntity.id === this.targetingMode.source.id) {
+                        if (this.targetingMode.action.visualPattern === 'aoe') {
+                            this.executeTargetedAction(null, {x, y});
+                            actionPerformed = true;
+                        } else if (target) {
+                            // Execute targeted action
+                            this.executeTargetedAction(target);
+                            actionPerformed = true;
+                        }
                     } else if (target) {
                         // Use enhanced token interaction system
                         actionPerformed = this.handleTokenInteraction(this.draggingEntity, target, x, y);
@@ -5830,10 +5864,10 @@
                 this.render();
             },
            
-            executeTargetedAction(target) {
+            executeTargetedAction(target = null, pos = null) {
                 if (!this.targetingMode) return;
                
-                if (this.targetingMode.source.id === target.id) {
+                if (this.targetingMode.source.id === target?.id) {
                     this.addLog('Cannot target self!', 'info');
                     return;
                 }
@@ -5842,7 +5876,7 @@
                
                 if (action.level !== undefined) {
                     // It's a spell
-                    this.castSpell(source, target, action);
+                    this.castSpell(source, target, action, null, pos);
                 } else if (action.toHit !== undefined) {
                     // It's an attack
                     this.performAttack(source, target, action);
@@ -5869,7 +5903,7 @@
                             this.addLog(`${performer.name} shoves ${target.name} prone!`, 'info');
                             this.showActionDisplay('info', 'Shove Success', `${target.name} is knocked prone`);
                         } else {
-                            this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
+                            this.addLog(`${performer.name} fails to shove${target.name}`, 'info');
                             this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
                         }
                         break;
@@ -6043,7 +6077,6 @@
                
                 return false;
             },
-           
             showItemDetailsPanel(entity) {
                 document.querySelectorAll('.details-panel').forEach(el => el.remove());
                
@@ -6311,7 +6344,6 @@
                 if (item && item.spell) {
                     const spell = this.library.spells.find(s => s.name === item.spell);
                     if (spell) {
-                        // For now, just log that the spell would be cast
                         this.addLog(`${item.name} scroll activates ${spell.name}!`, 'info');
                         this.showActionDisplay('spell', 'Spell Scroll', `${item.name} activates ${spell.name}`);
                         if (item.consumable) {
@@ -6607,6 +6639,25 @@
                                 <div class="item-card">
                                     <strong>${s.name}</strong> (Level ${s.level})<br>
                                     <small>${s.description}</small><br>
+                                    <div>
+                                        Sound: <select onchange="game.updateSpellSFX(${entityId}, ${i}, this.value)">
+                                            <option value="">None</option>
+                                            ${game.library.sfx.map(sfx => `<option value="${sfx.url}" ${s.soundEffect === sfx.url ? 'selected' : ''}>${sfx.name}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        VFX: <select onchange="game.updateSpellVFX(${entityId}, ${i}, this.value)">
+                                            <option value="">None</option>
+                                            ${game.library.vfx.map(vfx => `<option value="${vfx.url}" ${s.visualEffect === vfx.url ? 'selected' : ''}>${vfx.name}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        Pattern: <select onchange="game.updateSpellPattern(${entityId}, ${i}, this.value)">
+                                            <option value="onEntity" ${s.visualPattern === 'onEntity' ? 'selected' : ''}>On Entity</option>
+                                            <option value="shoot" ${s.visualPattern === 'shoot' ? 'selected' : ''}>Shoot</option>
+                                            <option value="aoe" ${s.visualPattern === 'aoe' ? 'selected' : ''}>Area of Effect</option>
+                                        </select>
+                                    </div>
                                     <button class="btn btn-small btn-danger" onclick="game.removeSpell(${entityId}, ${i}); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openSpellManager(${entityId});">Remove</button>
                                 </div>
                             `).join('')}
@@ -6654,6 +6705,20 @@
                                 <div class="item-card">
                                     <strong>${item.name}</strong><br>
                                     <small>${item.description || ''}</small><br>
+                                    ${item.type === 'weapon' ? `
+                                        <div>
+                                            Sound: <select onchange="game.updateInventorySFX(${entityId}, ${i}, this.value)">
+                                                <option value="">None</option>
+                                                ${game.library.sfx.map(sfx => `<option value="${sfx.url}" ${item.soundEffect === sfx.url ? 'selected' : ''}>${sfx.name}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            VFX: <select onchange="game.updateInventoryVFX(${entityId}, ${i}, this.value)">
+                                                <option value="">None</option>
+                                                ${game.library.vfx.map(vfx => `<option value="${vfx.url}" ${item.visualEffect === vfx.url ? 'selected' : ''}>${vfx.name}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    ` : ''}
                                     <button class="btn btn-small btn-danger" onclick="game.removeInventoryItem(${entityId}, ${i}); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openInventoryManager(${entityId});">Remove</button>
                                     ${item.equipSlot ? `<button class="btn btn-small btn-primary" onclick="game.equipItem(game.getEntity(${entityId}), game.getEntity(${entityId}).inventory[${i}]); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openInventoryManager(${entityId});">Equip</button>` : ''}
                                 </div>
@@ -6712,42 +6777,35 @@
                 }
             },
            
-            // Entity management
-            getEntity(id) {
-                return this.entities.find(e => e.id === id);
+            updateSpellSFX(entityId, index, value) {
+                const entity = this.getEntity(entityId);
+                if (entity && entity.spells[index]) {
+                    entity.spells[index].soundEffect = value;
+                }
             },
-           
-            updateEntity(id, prop, value) {
-                const entity = this.getEntity(id);
-                if (!entity) return;
-               
-                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level', 'width', 'height', 'duration'];
-                const booleanProps = ['isMimic'];
-               
-                if (numericProps.includes(prop)) {
-                    entity[prop] = parseInt(value) || 0;
-                } else if (booleanProps.includes(prop)) {
-                    entity[prop] = value;
-                } else {
-                    entity[prop] = value;
+            updateSpellVFX(entityId, index, value) {
+                const entity = this.getEntity(entityId);
+                if (entity && entity.spells[index]) {
+                    entity.spells[index].visualEffect = value;
                 }
-               
-                // Recalculate AC if ability scores change
-                if (['str', 'dex'].includes(prop)) {
-                    entity.ac = this.calculateAC(entity);
-                }
-               
-                this.render();
             },
-           
-            removeEntity(id) {
-                this.entities = this.entities.filter(e => e.id !== id);
-                if (this.selectedEntity && this.selectedEntity.id === id) {
-                    this.selectedEntity = null;
+            updateSpellPattern(entityId, index, value) {
+                const entity = this.getEntity(entityId);
+                if (entity && entity.spells[index]) {
+                    entity.spells[index].visualPattern = value;
                 }
-                this.updateTurnOrder();
-                this.render();
-                document.querySelectorAll('.details-panel, .action-menu').forEach(el => el.remove());
+            },
+            updateInventorySFX(entityId, index, value) {
+                const entity = this.getEntity(entityId);
+                if (entity && entity.inventory[index]) {
+                    entity.inventory[index].soundEffect = value;
+                }
+            },
+            updateInventoryVFX(entityId, index, value) {
+                const entity = this.getEntity(entityId);
+                if (entity && entity.inventory[index]) {
+                    entity.inventory[index].visualEffect = value;
+                }
             },
            
             // Enhanced Add entities with better modals
@@ -7550,6 +7608,13 @@
                             <div class="stat-card-value">${this.getAbilityModifier(character.dex) >= 0 ? '+' : ''}${this.getAbilityModifier(character.dex)}</div>
                             <div class="stat-card-subtitle">Dex Modifier</div>
                         </div>
+
+                        <div class="stat-card stat-card-large">
+                            <h3>Inspiration</h3>
+                            <div class="stat-card-value">
+                                <input type="number" value="${character.inspiration || 0}" onchange="game.updateCharacterStat(${character.id}, 'inspiration', this.value)" class="editable-field">
+                            </div>
+                        </div>
                     </div>
                    
                     <h3 style="color: #fbbf24; margin-bottom: 20px;">Ability Scores</h3>
@@ -7707,7 +7772,11 @@
                                 return `
                                     <div class="spell-slot-level">
                                         <h5>Level ${level}</h5>
-                                        <div class="spell-slot-tracker">${used}/${total}</div>
+                                        <div class="spell-slot-tracker">
+                                            <input type="number" value="${used}" style="width:40px" onchange="game.updateSpellSlots(${character.id}, ${level}, this.value, 'used')">
+                                            /
+                                            <input type="number" value="${total}" style="width:40px" onchange="game.updateSpellSlots(${character.id}, ${level}, this.value, 'total')">
+                                        </div>
                                     </div>
                                 `;
                             }).join('')}
@@ -7817,7 +7886,7 @@
                 const character = this.getEntity(characterId);
                 if (!character) return;
                
-                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level', 'proficiencyBonus'];
+                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level', 'inspiration'];
                
                 if (numericProps.includes(property)) {
                     character[property] = parseInt(value) || 0;
@@ -7837,6 +7906,12 @@
                 if (document.getElementById('characters-tab').classList.contains('active')) {
                     this.updateCharacterList();
                 }
+            },
+
+            updateSpellSlots(id, level, value, type) {
+                const char = this.getEntity(id);
+                if (type === 'used') char.spellSlotsUsed[level] = parseInt(value);
+                else char.spellSlots[level] = parseInt(value);
             },
             updateMediaLists() {
                 this.updateSfxList()
@@ -7915,6 +7990,26 @@
             },
             previewVFX(url) {
                 this.playVisualEffect(url, window.innerWidth/2, window.innerHeight/2, 200, 200, 5)
+            },
+
+            shortRest() {
+                this.entities.filter(e => e.type === 'player' || e.type === 'npc').forEach(e => {
+                    if (e.hitDiceRemaining > 0) {
+                        const roll = this.rollDice(e.hitDice);
+                        e.hp = Math.min(e.maxHp, e.hp + roll + this.getAbilityModifier(e.con));
+                        e.hitDiceRemaining--;
+                        this.addLog(`${e.name} recovers ${roll} HP from short rest.`, 'heal');
+                    }
+                });
+            },
+            longRest() {
+                this.entities.filter(e => e.type === 'player' || e.type === 'npc').forEach(e => {
+                    e.hp = e.maxHp;
+                    Object.keys(e.spellSlotsUsed).forEach(level => e.spellSlotsUsed[level] = 0);
+                    e.hitDiceRemaining = Math.floor(e.level / 2) || 1;
+                    e.conditions = e.conditions.filter(c => !['exhaustion'].includes(c));
+                    this.addLog(`${e.name} fully recovers from long rest.`, 'heal');
+                });
             }
         };
        
@@ -7931,6 +8026,10 @@
             if (tabName === 'characters') game.updateCharacterList();
             if (tabName === 'backgrounds') game.updateBackgroundList();
             if (tabName === 'media') game.updateMediaLists();
+        }
+
+        function openConversationManager() {
+            window.open("DND Conversation Manager.html", "_blank");
         }
        
         // Initialize the game when DOM is loaded
