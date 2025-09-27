@@ -161,11 +161,41 @@
             cursor: pointer;
             font-size: 12px;
             transition: all 0.2s;
+            position: relative;
         }
         
         .quick-add-btn:hover {
             background: rgba(59, 130, 246, 0.2);
             transform: scale(1.05);
+        }
+
+        .quick-add-btn.customizable {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+
+        .quick-add-btn.customizable:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .quick-add-btn .remove-quick {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .quick-add-btn:hover .remove-quick {
+            display: block;
         }
         
         /* Dice Roll Grid */
@@ -1496,8 +1526,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
             z-index: 1500;
             animation: slideIn 0.3s ease-out;
-            max-width: 300px;
-            min-width: 200px;
         }
         
         @keyframes slideIn {
@@ -1762,16 +1790,184 @@
             background: #f59e0b !important;
         }
 
-        .effect-entity {
+        /* Visual Effects System */
+        .visual-effect {
             position: absolute;
             pointer-events: none;
-            z-index: 20;
+            z-index: 8;
         }
 
-        .effect-img {
+        .visual-effect.decoration {
+            z-index: 2;
+        }
+
+        .visual-effect img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .visual-effect.loop img {
+            animation: none;
+        }
+
+        .visual-effect.once img {
+            animation: playOnce forwards;
+        }
+
+        @keyframes playOnce {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Quick Slot Assignment Modal */
+        .quick-slot-modal {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 400px;
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .quick-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-slot-option {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .quick-slot-option:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: scale(1.05);
+        }
+
+        .quick-slot-option.selected {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+        }
+
+        /* Action Display */
+        .action-display {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            z-index: 1500;
+            animation: slideIn 0.3s ease-out;
+            min-width: 250px;
+        }
+
+        .action-display.roll {
+            border-color: #fbbf24;
+        }
+
+        .action-display.damage {
+            border-color: #ef4444;
+        }
+
+        .action-display.heal {
+            border-color: #10b981;
+        }
+
+        .action-display.info {
+            border-color: #3b82f6;
+        }
+
+        .action-display.spell {
+            border-color: #8b5cf6;
+        }
+
+        .action-display h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .action-display.roll h3 { color: #fbbf24; }
+        .action-display.damage h3 { color: #ef4444; }
+        .action-display.heal h3 { color: #10b981; }
+        .action-display.info h3 { color: #3b82f6; }
+        .action-display.spell h3 { color: #8b5cf6; }
+
+        .action-breakdown {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        /* Enhanced Item Details Panel */
+        .item-property-group {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .item-property-group h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .property-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .property-label {
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .property-input {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 4px;
+            color: white;
+            padding: 4px 8px;
+            font-size: 12px;
+            width: 150px;
+        }
+
+        .sound-field {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            padding: 6px 10px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .effect-field {
+            width: 100%;
+            padding: 6px 10px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -1809,10 +2005,14 @@
                     <button class="btn btn-primary" onclick="game.addChest()">
                         🗃️ Add Chest
                     </button>
-                    <button class="btn btn-primary" onclick="game.customizeQuickSlots()">
+                    <button class="btn btn-primary" onclick="game.addVisualEffect()">
+                        ✨ Add Visual Effect
+                    </button>
+                    <div class="section-title" style="margin-top: 15px;">Quick Slots</div>
+                    <div class="quick-add-grid" id="quickAddGrid"></div>
+                    <button class="btn btn-warning btn-small" onclick="game.customizeQuickSlots()">
                         ⚙️ Customize Quick Slots
                     </button>
-                    <div class="quick-add-grid" id="quickAddGrid"></div>
                 </div>
                 
                 <!-- Dice Rolls Section -->
@@ -1874,17 +2074,11 @@
                     </button>
                     
                     <div class="section-title">Background Music</div>
-                    <input type="file" accept=".mp3" id="backgroundMusicFile" onchange="game.setBackgroundMusicFromFile(this.files[0])">
+                    <input type="text" class="sound-input" id="backgroundMusic" placeholder="Background Music URL" onchange="game.setBackgroundMusic(this.value)">
                     <div class="music-controls">
                         <button class="music-btn" id="playBtn" onclick="game.playBackgroundMusic()">▶️ Play</button>
                         <button class="music-btn" id="pauseBtn" onclick="game.pauseBackgroundMusic()">⏸️ Pause</button>
                     </div>
-                    
-                    <div class="section-title">Sound Effects</div>
-                    <input type="file" accept=".mp3" id="soundHealFile" onchange="game.setSoundFromFile('heal', this.files[0])">
-                    <input type="file" accept=".mp3" id="soundAttackFile" onchange="game.setSoundFromFile('attack', this.files[0])">
-                    <input type="file" accept=".mp3" id="soundSpellFile" onchange="game.setSoundFromFile('spell', this.files[0])">
-                    <input type="file" accept=".mp3" id="soundOpenFile" onchange="game.setSoundFromFile('open', this.files[0])">
                 </div>
                 
                 <!-- Combat Log Section -->
@@ -2036,6 +2230,12 @@
             // Library Sidebar
             librarySidebarOpen: false,
             
+            // Quick Slots System
+            quickSlots: [],
+            
+            // Visual Effects
+            visualEffects: [],
+            
             // Action Economy State
             currentTurnActions: {
                 movement: 0,
@@ -2060,6 +2260,93 @@
                 'Tortle', 'Triton', 'Vedalken', 'Warforged', 'Yuan-ti Pureblood', 'Custom'
             ],
             
+            // Base Combat Actions
+            baseCombatActions: [
+                {
+                    name: 'Unarmed Strike',
+                    type: 'attack',
+                    actionType: 'action',
+                    toHit: 0,
+                    damage: '1',
+                    damageType: 'bludgeoning',
+                    range: 5,
+                    description: 'Make an unarmed attack using Strength',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Shove',
+                    type: 'special',
+                    actionType: 'action',
+                    description: 'Shove a creature prone or push it 5 feet away',
+                    effect: 'shove',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Grapple',
+                    type: 'special',
+                    actionType: 'action',
+                    description: 'Attempt to grapple a creature',
+                    effect: 'grapple',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Hide',
+                    type: 'skill',
+                    actionType: 'action',
+                    description: 'Make a Dexterity (Stealth) check to hide',
+                    skill: 'stealth',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Dash',
+                    type: 'movement',
+                    actionType: 'action',
+                    description: 'Double your movement speed this turn',
+                    effect: 'dash',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Disengage',
+                    type: 'movement',
+                    actionType: 'action',
+                    description: 'Move without provoking opportunity attacks',
+                    effect: 'disengage',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Dodge',
+                    type: 'defense',
+                    actionType: 'action',
+                    description: 'Focus on avoiding attacks',
+                    effect: 'dodge',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Help',
+                    type: 'support',
+                    actionType: 'action',
+                    description: 'Help an ally with their next ability check or attack',
+                    effect: 'help',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Ready',
+                    type: 'special',
+                    actionType: 'action',
+                    description: 'Prepare an action to trigger on a condition',
+                    effect: 'ready',
+                    soundEffect: ''
+                },
+                {
+                    name: 'Search',
+                    type: 'skill',
+                    actionType: 'action',
+                    description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
+                    skill: 'perception',
+                    soundEffect: ''
+                }
+            ],
+            
             // Comprehensive Content Library
             library: {
                 monsters: [
@@ -2069,14 +2356,15 @@
                         hp: 7, maxHp: 7, ac: 15, speed: 30,
                         str: 8, dex: 14, con: 10, int: 10, wis: 8, cha: 8,
                         proficiencyBonus: 2,
-                        attacks: [{name: 'Scimitar', toHit: 4, damage: '1d6+2', damageType: 'slashing', range: 5, sound: ''}],
-                        abilities: [{name: 'Nimble Escape', description: 'Disengage or Hide as bonus action', actionType: 'bonus', sound: ''}],
+                        attacks: [{name: 'Scimitar', toHit: 4, damage: '1d6+2', damageType: 'slashing', range: 5, soundEffect: ''}],
+                        abilities: [{name: 'Nimble Escape', description: 'Disengage or Hide as bonus action', actionType: 'bonus', soundEffect: ''}],
                         skills: {stealth: 6},
                         savingThrows: {str: -1, dex: 2, con: 0, int: 0, wis: -1, cha: -1},
                         color: '#4a7c59',
                         cr: 0.25,
                         description: 'Small green-skinned humanoid, sneaky and aggressive.',
-                        image: ''
+                        image: '',
+                        soundEffect: ''
                     },
                     {
                         name: 'Orc',
@@ -2084,14 +2372,15 @@
                         hp: 15, maxHp: 15, ac: 13, speed: 30,
                         str: 16, dex: 12, con: 16, int: 7, wis: 11, cha: 10,
                         proficiencyBonus: 2,
-                        attacks: [{name: 'Greataxe', toHit: 5, damage: '1d12+3', damageType: 'slashing', range: 5, sound: ''}],
-                        abilities: [{name: 'Aggressive', description: 'Bonus action to move up to speed toward enemy', actionType: 'bonus', sound: ''}],
+                        attacks: [{name: 'Greataxe', toHit: 5, damage: '1d12+3', damageType: 'slashing', range: 5, soundEffect: ''}],
+                        abilities: [{name: 'Aggressive', description: 'Bonus action to move up to speed toward enemy', actionType: 'bonus', soundEffect: ''}],
                         skills: {intimidation: 2},
                         savingThrows: {str: 3, dex: 1, con: 3, int: -2, wis: 0, cha: 0},
                         color: '#8b4513',
                         cr: 0.5,
                         description: 'Savage humanoid warrior with gray skin and tusks.',
-                        image: ''
+                        image: '',
+                        soundEffect: ''
                     },
                     {
                         name: 'Mimic',
@@ -2100,12 +2389,12 @@
                         str: 17, dex: 12, con: 15, int: 5, wis: 13, cha: 8,
                         proficiencyBonus: 2,
                         attacks: [
-                            {name: 'Pseudopod', toHit: 5, damage: '1d8+3', damageType: 'bludgeoning', range: 5, sound: ''},
-                            {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing', range: 5, special: 'Grapples target (escape DC 13)', sound: ''}
+                            {name: 'Pseudopod', toHit: 5, damage: '1d8+3', damageType: 'bludgeoning', range: 5, soundEffect: ''},
+                            {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing', range: 5, special: 'Grapples target (escape DC 13)', soundEffect: ''}
                         ],
                         abilities: [
-                            {name: 'Shapechanger', description: 'Can polymorph into object', actionType: 'action', sound: ''},
-                            {name: 'Adhesive', description: 'Adheres to anything that touches it', actionType: 'passive', sound: ''}
+                            {name: 'Shapechanger', description: 'Can polymorph into object', actionType: 'action', soundEffect: ''},
+                            {name: 'Adhesive', description: 'Adheres to anything that touches it', actionType: 'passive', soundEffect: ''}
                         ],
                         skills: {stealth: 5},
                         savingThrows: {str: 3, dex: 1, con: 2, int: -3, wis: 1, cha: -1},
@@ -2113,7 +2402,8 @@
                         cr: 2,
                         isMimic: true,
                         description: 'Shapeshifting predator that mimics objects.',
-                        image: ''
+                        image: '',
+                        soundEffect: ''
                     }
                 ],
                 spells: [
@@ -2134,8 +2424,8 @@
                         description: 'Each creature in a 20-foot-radius sphere must make a Dexterity saving throw. Takes 8d6 fire damage on failed save, half on success.',
                         higherLevel: 'Additional 1d6 damage per spell slot above 3rd',
                         image: '',
-                        sound: '',
-                        visualEffect: {url: '', loop: false}
+                        soundEffect: '',
+                        visualEffect: ''
                     },
                     {
                         name: 'Cure Wounds',
@@ -2150,8 +2440,8 @@
                         description: 'A creature you touch regains 1d8 + spellcasting modifier hit points.',
                         higherLevel: 'Additional 1d8 healing per spell slot above 1st',
                         image: '',
-                        sound: '',
-                        visualEffect: {url: '', loop: false}
+                        soundEffect: '',
+                        visualEffect: ''
                     }
                 ],
                 items: [
@@ -2165,7 +2455,8 @@
                         description: 'Regain 2d4+2 hit points when consumed.',
                         consumable: true,
                         image: '',
-                        sound: ''
+                        soundEffect: '',
+                        visualEffect: ''
                     },
                     {
                         name: 'Chest',
@@ -2176,7 +2467,8 @@
                         weight: 25,
                         description: 'A wooden chest that can hold items.',
                         image: '',
-                        sound: ''
+                        soundEffect: '',
+                        visualEffect: ''
                     }
                 ],
                 equipment: [
@@ -2192,7 +2484,8 @@
                         equipSlot: 'armor',
                         description: 'Light armor. AC = 11 + Dex modifier.',
                         image: '',
-                        sound: ''
+                        soundEffect: '',
+                        visualEffect: ''
                     },
                     {
                         name: 'Longsword',
@@ -2208,7 +2501,8 @@
                         damageBonus: 0,
                         description: 'Versatile martial weapon.',
                         image: '',
-                        sound: ''
+                        soundEffect: '',
+                        visualEffect: ''
                     }
                 ],
                 players: []
@@ -2307,17 +2601,17 @@
                 }
             },
             
-            quickSlots: [], // For customizable quick slots
-            
+            // Initialize the game
             init() {
                 this.loadGameState();
                 this.loadLibrary();
                 this.loadSounds();
                 this.loadSavedBackgrounds();
+                this.loadQuickSlots();
                 this.setupDrawingCanvas();
                 this.setupEventListeners();
                 this.setupQuickAdd();
-                this.populateLibrarySidebar(); // Initialize sidebar content
+                this.populateLibrarySidebar();
                 this.render();
                 this.updateTurnOrder();
                 
@@ -2327,8 +2621,195 @@
                     this.entities.push(this.createEntity('monster', 'Goblin', 500, 300));
                     this.render();
                 }
+            },
 
-                this.loadQuickSlots();
+            // Quick Slots Management
+            loadQuickSlots() {
+                const saved = localStorage.getItem('dndQuickSlots');
+                if (saved) {
+                    this.quickSlots = JSON.parse(saved);
+                } else {
+                    // Default quick slots
+                    this.quickSlots = [
+                        {name: 'Goblin', type: 'monster'},
+                        {name: 'Orc', type: 'monster'},
+                        {name: 'Healing Potion', type: 'item'},
+                        {name: 'Chest', type: 'item'}
+                    ];
+                }
+            },
+
+            saveQuickSlots() {
+                localStorage.setItem('dndQuickSlots', JSON.stringify(this.quickSlots));
+            },
+
+            customizeQuickSlots() {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="quick-slot-modal">
+                        <h2>⚙️ Customize Quick Slots</h2>
+                        <p>Select up to 8 items from your library to appear as quick-add buttons:</p>
+                        
+                        <div class="quick-slot-grid">
+                            ${[...this.library.monsters, ...this.library.players, ...this.library.items, ...this.library.equipment].map(item => `
+                                <div class="quick-slot-option ${this.quickSlots.some(q => q.name === item.name) ? 'selected' : ''}" 
+                                     onclick="game.toggleQuickSlot('${item.name}', '${item.type || (item.class ? 'player' : 'monster')}', this)">
+                                    <div style="font-weight: bold;">${item.name}</div>
+                                    <div style="font-size: 10px; color: #9ca3af;">${item.type || (item.class ? 'Player' : 'Monster')}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                            <button class="btn btn-danger" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                            <button class="btn btn-success" onclick="game.saveQuickSlotsAndClose()">Save Changes</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+
+            toggleQuickSlot(name, type, element) {
+                const existing = this.quickSlots.findIndex(q => q.name === name);
+                if (existing > -1) {
+                    this.quickSlots.splice(existing, 1);
+                    element.classList.remove('selected');
+                } else {
+                    if (this.quickSlots.length < 8) {
+                        this.quickSlots.push({name, type});
+                        element.classList.add('selected');
+                    } else {
+                        alert('Maximum 8 quick slots allowed!');
+                    }
+                }
+            },
+
+            saveQuickSlotsAndClose() {
+                this.saveQuickSlots();
+                this.setupQuickAdd();
+                document.querySelector('.modal-overlay').remove();
+            },
+
+            // Visual Effects System
+            addVisualEffect() {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="creation-modal">
+                        <h2>✨ Add Visual Effect</h2>
+                        <div class="form-group">
+                            <label class="form-label">Effect Name:</label>
+                            <input type="text" id="effectName" placeholder="e.g., Magic Circle" class="custom-input show">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Image/GIF URL:</label>
+                            <input type="text" id="effectUrl" placeholder="https://..." class="custom-input show">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Width (pixels):</label>
+                            <input type="number" id="effectWidth" value="100" class="custom-input show">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Height (pixels):</label>
+                            <input type="number" id="effectHeight" value="100" class="custom-input show">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Play Mode:</label>
+                            <select id="effectMode" class="form-select">
+                                <option value="decoration">Decoration (stays on field)</option>
+                                <option value="once">Play Once (auto-remove)</option>
+                                <option value="loop">Loop Continuously</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration (seconds, for 'once' mode):</label>
+                            <input type="number" id="effectDuration" value="3" class="custom-input show">
+                        </div>
+                        
+                        <div class="modal-buttons">
+                            <button class="btn btn-danger" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                            <button class="btn btn-success" onclick="game.createVisualEffectFromModal()">Add Effect</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+
+            createVisualEffectFromModal() {
+                const modal = document.querySelector('.modal-overlay');
+                const name = modal.querySelector('#effectName').value || 'Visual Effect';
+                const url = modal.querySelector('#effectUrl').value;
+                const width = parseInt(modal.querySelector('#effectWidth').value) || 100;
+                const height = parseInt(modal.querySelector('#effectHeight').value) || 100;
+                const mode = modal.querySelector('#effectMode').value;
+                const duration = parseInt(modal.querySelector('#effectDuration').value) || 3;
+
+                if (!url) {
+                    alert('Please provide an image/GIF URL');
+                    return;
+                }
+
+                const effect = {
+                    id: this.nextId++,
+                    name: name,
+                    type: 'visualEffect',
+                    x: 400 + Math.random() * 200,
+                    y: 300 + Math.random() * 200,
+                    url: url,
+                    width: width,
+                    height: height,
+                    mode: mode,
+                    duration: duration,
+                    startTime: Date.now()
+                };
+
+                this.visualEffects.push(effect);
+                this.entities.push(effect);
+                this.render();
+                modal.remove();
+            },
+
+            playVisualEffect(url, x, y, width = 100, height = 100, duration = 3) {
+                const effect = document.createElement('div');
+                effect.className = 'visual-effect';
+                effect.style.left = (x - width/2) + 'px';
+                effect.style.top = (y - height/2) + 'px';
+                effect.style.width = width + 'px';
+                effect.style.height = height + 'px';
+                effect.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                
+                document.getElementById('boardCanvas').appendChild(effect);
+                
+                setTimeout(() => {
+                    if (effect.parentNode) {
+                        effect.parentNode.removeChild(effect);
+                    }
+                }, duration * 1000);
+            },
+
+            // Enhanced Action Display System
+            showActionDisplay(type, title, description, details = '') {
+                // Remove any existing action displays
+                document.querySelectorAll('.action-display').forEach(el => el.remove());
+                
+                const display = document.createElement('div');
+                display.className = `action-display ${type}`;
+                
+                display.innerHTML = `
+                    <h3>${title}</h3>
+                    <div style="font-size: 13px; margin-bottom: 5px;">${description}</div>
+                    ${details ? `<div class="action-breakdown">${details}</div>` : ''}
+                `;
+                
+                document.body.appendChild(display);
+                
+                // Auto-remove after 4 seconds
+                setTimeout(() => {
+                    if (display.parentNode) {
+                        display.parentNode.removeChild(display);
+                    }
+                }, 4000);
             },
             
             // Enhanced Add NPC function (renamed from addNPCToken)
@@ -2596,23 +3077,29 @@
             },
             
             // Background Music Functions
-            setBackgroundMusicFromFile(file) {
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.backgroundMusic.url = e.target.result;
-                        localStorage.setItem('dndBackgroundMusic', e.target.result);
-                        if (this.backgroundMusic.audio) {
-                            this.backgroundMusic.audio.pause();
-                            this.backgroundMusic.audio = null;
-                        }
-                        this.backgroundMusic.audio = new Audio();
-                        this.backgroundMusic.audio.src = e.target.result;
-                        this.backgroundMusic.audio.loop = true;
-                        this.backgroundMusic.audio.volume = 0.3;
-                    };
-                    reader.readAsDataURL(file);
+            setBackgroundMusic(url) {
+                this.backgroundMusic.url = url;
+                if (this.backgroundMusic.audio) {
+                    this.backgroundMusic.audio.pause();
+                    this.backgroundMusic.audio = null;
                 }
+                
+                if (url) {
+                    // Create video element for video sources, audio element for audio sources
+                    if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('.mp4') || url.includes('.webm') || url.includes('.ogg')) {
+                        this.backgroundMusic.audio = document.createElement('video');
+                        this.backgroundMusic.audio.style.display = 'none';
+                        document.body.appendChild(this.backgroundMusic.audio);
+                    } else {
+                        this.backgroundMusic.audio = new Audio();
+                    }
+                    
+                    this.backgroundMusic.audio.src = url;
+                    this.backgroundMusic.audio.loop = true;
+                    this.backgroundMusic.audio.volume = 0.3; // Set to 30% volume
+                }
+                
+                localStorage.setItem('dndBackgroundMusic', url);
             },
             
             playBackgroundMusic() {
@@ -2795,7 +3282,9 @@
                     color: type === 'player' ? '#3b82f6' : 
                            type === 'npc' ? '#f59e0b' : 
                            type === 'monster' ? '#ef4444' : '#fbbf24',
-                    image: ''
+                    image: '',
+                    soundEffect: '',
+                    visualEffect: ''
                 };
                 
                 // Only add full character attributes for players, monsters, and NPCs
@@ -2844,14 +3333,13 @@
                         race: type === 'player' || type === 'npc' ? 'Human' : 'Humanoid',
                         level: type === 'player' || type === 'npc' ? 1 : 1,
                         hitDice: '1d10',
-                        hitDiceRemaining: 1
+                        hitDiceRemaining: 1,
+                        baseActions: [...this.baseCombatActions] // Add base combat actions
                     });
                     
                     if (type === 'player' || type === 'npc') {
                         entity.spellSlots = {1: 2, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
                     }
-                    // Add base combat actions
-                    this.addBaseCombatActions(entity);
                 } else if (type === 'item' || type === 'container') {
                     // Items only have basic properties needed for their function
                     Object.assign(entity, {
@@ -2862,19 +3350,25 @@
                         healing: null,
                         effect: null,
                         spell: null,
-                        sound: ''
+                        damage: '',
+                        damageType: '',
+                        ac: 0,
+                        rarity: 'common'
                     });
                     
                     if (type === 'container') {
                         entity.inventory = [];
                         entity.isMimic = false;
                     }
-                } else if (type === 'effect') {
+                } else if (type === 'visualEffect') {
+                    // Visual effects have their own properties
                     Object.assign(entity, {
                         url: '',
-                        loop: false,
-                        playOnce: true,
-                        duration: 1000 // ms, if playOnce
+                        width: 100,
+                        height: 100,
+                        mode: 'decoration',
+                        duration: 3,
+                        startTime: Date.now()
                     });
                 }
                 
@@ -2887,6 +3381,7 @@
                         entity.x = x;
                         entity.y = y;
                         entity.scale = 1.0;
+                        entity.baseActions = [...this.baseCombatActions];
                         // Ensure monsters have inventories for loot drops
                         if (!entity.inventory) {
                             entity.inventory = [];
@@ -2929,36 +3424,6 @@
                 }
                 
                 return entity;
-            },
-            
-            addBaseCombatActions(entity) {
-                const unarmed = {
-                    name: 'Unarmed Attack',
-                    toHit: this.getAbilityModifier(entity.str) + entity.proficiencyBonus,
-                    damage: '1+' + this.getAbilityModifier(entity.str),
-                    damageType: 'bludgeoning',
-                    range: 5,
-                    actionType: 'action',
-                    sound: ''
-                };
-                if (!entity.attacks.some(a => a.name === 'Unarmed Attack')) {
-                    entity.attacks.push(unarmed);
-                }
-                
-                const baseAbilities = [
-                    {name: 'Shove', description: 'Push or prone target', actionType: 'action', sound: ''},
-                    {name: 'Hide', description: 'Attempt to hide', actionType: 'action', sound: ''},
-                    {name: 'Disengage', description: 'No opportunity attacks', actionType: 'action', sound: ''},
-                    {name: 'Dash', description: 'Double movement', actionType: 'action', sound: ''},
-                    {name: 'Help', description: 'Give advantage to ally', actionType: 'action', sound: ''},
-                    {name: 'Ready', description: 'Prepare an action', actionType: 'action', sound: ''}
-                ];
-
-                baseAbilities.forEach(ability => {
-                    if (!entity.abilities.some(a => a.name === ability.name)) {
-                        entity.abilities.push(ability);
-                    }
-                });
             },
             
             // Get Ability Modifier
@@ -3005,7 +3470,7 @@
             // Roll Initiative
             rollInitiative() {
                 this.entities.forEach(entity => {
-                    if (entity.type !== 'item' && entity.type !== 'container') {
+                    if (entity.type !== 'item' && entity.type !== 'container' && entity.type !== 'visualEffect') {
                         const dexMod = this.getAbilityModifier(entity.dex);
                         const roll = this.rollDice('1d20');
                         entity.initiative = roll + dexMod;
@@ -3020,6 +3485,7 @@
                 this.roundNumber = 1;
                 this.resetTurnActions();
                 this.addLog('🎲 Initiative rolled! Round 1 begins!', 'info');
+                this.showActionDisplay('info', 'Initiative Rolled', 'Round 1 begins! Turn order has been set.');
             },
             
             // Update Turn Order with proper tiebreaking
@@ -3094,6 +3560,7 @@
                 if (this.currentTurn === 0) {
                     this.roundNumber++;
                     this.addLog(`📜 Round ${this.roundNumber} begins!`, 'info');
+                    this.showActionDisplay('info', `Round ${this.roundNumber}`, 'A new round of combat begins!');
                     
                     // Reset reactions for all and update condition durations
                     this.entities.forEach(e => {
@@ -3118,6 +3585,7 @@
                         this.turnOrder[this.currentTurn].conditions.includes('unconscious'))) {
                     if (this.turnOrder.every(e => e.hp <= 0 || e.conditions.includes('unconscious'))) {
                         this.addLog('Combat ended - no active combatants!', 'info');
+                        this.showActionDisplay('info', 'Combat Ended', 'No active combatants remaining!');
                         return;
                     }
                     this.currentTurn = (this.currentTurn + 1) % this.turnOrder.length;
@@ -3128,6 +3596,7 @@
                     this.resetTurnActions();
                     this.handleStartOfTurn(newCurrent);
                     this.addLog(`➡️ ${newCurrent.name}'s turn begins!`, 'info');
+                    this.showActionDisplay('info', 'Turn Start', `${newCurrent.name}'s turn begins!`);
                 }
                 
                 this.updateTurnOrder();
@@ -3171,17 +3640,21 @@
                 if (roll === 1) {
                     entity.deathSaves.failures += 2;
                     this.addLog(`${entity.name} critically fails death save! (${roll})`, 'death');
+                    this.showActionDisplay('damage', 'Critical Death Save Failure', `${entity.name} rolled ${roll} - 2 failures added!`);
                 } else if (roll === 20) {
                     entity.hp = 1;
                     entity.deathSaves.successes = 0;
                     entity.deathSaves.failures = 0;
                     this.addLog(`${entity.name} critically succeeds death save and regains consciousness with 1 HP!`, 'heal');
+                    this.showActionDisplay('heal', 'Critical Death Save Success', `${entity.name} rolled ${roll} - returns to consciousness!`);
                 } else if (roll >= 10) {
                     entity.deathSaves.successes++;
                     this.addLog(`${entity.name} succeeds death save (${roll}). Successes: ${entity.deathSaves.successes}/3`, 'save');
+                    this.showActionDisplay('info', 'Death Save Success', `${entity.name} rolled ${roll} - ${entity.deathSaves.successes}/3 successes`);
                 } else {
                     entity.deathSaves.failures++;
                     this.addLog(`${entity.name} fails death save (${roll}). Failures: ${entity.deathSaves.failures}/3`, 'death');
+                    this.showActionDisplay('damage', 'Death Save Failure', `${entity.name} rolled ${roll} - ${entity.deathSaves.failures}/3 failures`);
                 }
                 
                 if (entity.deathSaves.successes >= 3) {
@@ -3189,9 +3662,11 @@
                     entity.deathSaves.successes = 0;
                     entity.deathSaves.failures = 0;
                     this.addLog(`${entity.name} is stabilized!`, 'heal');
+                    this.showActionDisplay('heal', 'Stabilized', `${entity.name} is now stable!`);
                 } else if (entity.deathSaves.failures >= 3) {
                     entity.conditions.push('dead');
                     this.addLog(`${entity.name} has died!`, 'death');
+                    this.showActionDisplay('damage', 'Death', `${entity.name} has died!`);
                 }
                 
                 this.render();
@@ -3244,13 +3719,13 @@
                 if (hasAdvantage && !hasDisadvantage) {
                     const second = this.rollDice('1d20', true);
                     roll = Math.max(d20, second);
-                    this.showEventPopup(`Attack Roll (Advantage)`, `${roll} (${d20}, ${second}) + ${toHitBonus} = ${roll + toHitBonus}`);
+                    this.showRollResult(`Attack Roll (Advantage)`, `${roll} (${d20}, ${second}) + ${toHitBonus} = ${roll + toHitBonus}`);
                 } else if (hasDisadvantage && !hasAdvantage) {
                     const second = this.rollDice('1d20', true);
                     roll = Math.min(d20, second);
-                    this.showEventPopup(`Attack Roll (Disadvantage)`, `${roll} (${d20}, ${second}) + ${toHitBonus} = ${roll + toHitBonus}`);
+                    this.showRollResult(`Attack Roll (Disadvantage)`, `${roll} (${d20}, ${second}) + ${toHitBonus} = ${roll + toHitBonus}`);
                 } else {
-                    this.showEventPopup(`Attack Roll`, `${roll} + ${toHitBonus} = ${roll + toHitBonus}`);
+                    this.showRollResult(`Attack Roll`, `${roll} + ${toHitBonus} = ${roll + toHitBonus}`);
                 }
                 
                 const totalHit = roll + toHitBonus;
@@ -3259,6 +3734,7 @@
                 if (roll === 1) {
                     this.addLog(`${attacker.name} critically misses ${target.name}!`, 'info');
                     this.createFloatingText('CRITICAL MISS!', target.x, target.y - 30, '#808080');
+                    this.showActionDisplay('info', 'Critical Miss', `${attacker.name} rolled a 1 attacking ${target.name}`);
                 } else if (roll === 20 || totalHit >= targetAC) {
                     // Calculate damage
                     let damage = this.rollDice(attack.damage);
@@ -3266,8 +3742,10 @@
                     if (roll === 20) {
                         damage *= 2;
                         this.addLog(`💥 ${attacker.name} CRITICALLY HITS ${target.name} for ${damage} ${attack.damageType} damage!`, 'damage');
+                        this.showActionDisplay('damage', 'Critical Hit!', `${attacker.name} deals ${damage} ${attack.damageType} damage to ${target.name}`, `Double damage from critical hit!`);
                     } else {
                         this.addLog(`⚔️ ${attacker.name} hits ${target.name} for ${damage} ${attack.damageType} damage!`, 'damage');
+                        this.showActionDisplay('damage', 'Attack Hit', `${attacker.name} deals ${damage} ${attack.damageType} damage to ${target.name}`, `Attack roll: ${totalHit} vs AC ${targetAC}`);
                     }
                     
                     // Apply damage
@@ -3278,10 +3756,21 @@
                     if (attack.special) {
                         this.applySpecialAttackEffect(target, attack.special);
                     }
-                    this.playSpecificSound(attack.sound);
+                    
+                    // Play sound and visual effects
+                    if (attack.soundEffect) {
+                        this.playIndividualSound(attack.soundEffect);
+                    } else {
+                        this.playSound('attack');
+                    }
+                    
+                    if (attack.visualEffect) {
+                        this.playVisualEffect(attack.visualEffect, target.x, target.y);
+                    }
                 } else {
                     this.addLog(`${attacker.name} misses ${target.name}! (${totalHit} vs AC ${targetAC})`, 'info');
                     this.createFloatingText('MISS', target.x, target.y - 30, '#808080');
+                    this.showActionDisplay('info', 'Attack Miss', `${attacker.name} misses ${target.name}`, `Attack roll: ${totalHit} vs AC ${targetAC}`);
                 }
                 
                 // Mark action used
@@ -3317,13 +3806,16 @@
                             if (special.includes('prone')) {
                                 this.addCondition(target, 'prone');
                                 this.addLog(`${target.name} is knocked prone! (Save: ${total} vs DC ${dc})`, 'info');
+                                this.showActionDisplay('info', 'Saving Throw Failed', `${target.name} fails save and is knocked prone`, `${total} vs DC ${dc}`);
                             } else if (special.includes('poison')) {
                                 const poisonDamage = this.rollDice('2d8');
                                 this.dealDamage(target, poisonDamage, 'poison');
                                 this.addLog(`${target.name} takes ${poisonDamage} poison damage! (Save: ${total} vs DC ${dc})`, 'damage');
+                                this.showActionDisplay('damage', 'Poison Damage', `${target.name} takes ${poisonDamage} poison damage`, `Failed save: ${total} vs DC ${dc}`);
                             }
                         } else {
                             this.addLog(`${target.name} resists the effect! (Save: ${total} vs DC ${dc})`, 'info');
+                            this.showActionDisplay('info', 'Saving Throw Success', `${target.name} resists the effect`, `${total} vs DC ${dc}`);
                         }
                     }
                 }
@@ -3336,7 +3828,7 @@
                 // Check immunities
                 if (target.damageImmunities && target.damageImmunities.includes(damageType)) {
                     this.addLog(`${target.name} is immune to ${damageType} damage!`, 'info');
-                    this.showEventPopup('Damage', `${target.name} is immune to ${damageType} damage!`);
+                    this.showActionDisplay('info', 'Damage Immunity', `${target.name} takes no damage from ${damageType}`);
                     return;
                 }
                 
@@ -3344,14 +3836,14 @@
                 if (target.damageResistances && target.damageResistances.includes(damageType)) {
                     finalDamage = Math.floor(finalDamage / 2);
                     this.addLog(`${target.name} resists ${damageType} damage!`, 'info');
-                    this.showEventPopup('Damage', `${target.name} resists ${damageType} damage!`);
+                    this.showActionDisplay('info', 'Damage Resistance', `${target.name} takes half damage from ${damageType}`, `${amount} reduced to ${finalDamage}`);
                 }
                 
                 // Check vulnerabilities
                 if (target.damageVulnerabilities && target.damageVulnerabilities.includes(damageType)) {
                     finalDamage = finalDamage * 2;
                     this.addLog(`${target.name} is vulnerable to ${damageType} damage!`, 'info');
-                    this.showEventPopup('Damage', `${target.name} is vulnerable to ${damageType} damage!`);
+                    this.showActionDisplay('damage', 'Damage Vulnerability', `${target.name} takes double damage from ${damageType}`, `${amount} increased to ${finalDamage}`);
                 }
                 
                 // Apply to temp HP first
@@ -3370,12 +3862,12 @@
                         if (!target.conditions.includes('unconscious')) {
                             this.addCondition(target, 'unconscious');
                             this.addLog(`${target.name} falls unconscious!`, 'death');
-                            this.showEventPopup('Condition', `${target.name} falls unconscious!`);
+                            this.showActionDisplay('damage', 'Unconscious', `${target.name} falls unconscious at 0 HP`);
                         }
                     } else if (target.type === 'monster') {
                         this.addCondition(target, 'dead');
                         this.addLog(`${target.name} is defeated!`, 'death');
-                        this.showEventPopup('Condition', `${target.name} is defeated!`);
+                        this.showActionDisplay('damage', 'Defeated', `${target.name} is defeated!`);
                         
                         // Drop inventory items when monster dies
                         if (target.inventory && target.inventory.length > 0) {
@@ -3393,6 +3885,7 @@
                                 this.entities.push(newItem);
                             });
                             this.addLog(`${target.name} drops ${target.inventory.length} items!`, 'info');
+                            this.showActionDisplay('info', 'Loot Dropped', `${target.name} drops ${target.inventory.length} items`);
                         }
                     }
                 }
@@ -3428,8 +3921,18 @@
                 
                 // Cast the spell
                 this.addLog(`✨ ${caster.name} casts ${spell.name}${actualLevel > spell.level ? ` at level ${actualLevel}` : ''}!`, 'info');
-                this.showEventPopup('Action', `${caster.name} casts ${spell.name}!`);
-                this.playSpecificSound(spell.sound);
+                this.showActionDisplay('spell', 'Spell Cast', `${caster.name} casts ${spell.name}`, actualLevel > spell.level ? `Upcast to level ${actualLevel}` : '');
+                
+                // Play sound and visual effects
+                if (spell.soundEffect) {
+                    this.playIndividualSound(spell.soundEffect);
+                } else {
+                    this.playSound('spell');
+                }
+                
+                if (spell.visualEffect) {
+                    this.playVisualEffect(spell.visualEffect, target.x, target.y);
+                }
                 
                 // Use spell slot
                 if (spell.level > 0) {
@@ -3463,8 +3966,10 @@
                         if (saveTotal >= spell.saveDC) {
                             damage = Math.floor(damage / 2);
                             this.addLog(`${target.name} saves! (${saveTotal} vs DC ${spell.saveDC}) Half damage.`, 'save');
+                            this.showActionDisplay('info', 'Saving Throw Success', `${target.name} takes half damage`, `${saveTotal} vs DC ${spell.saveDC}`);
                         } else {
                             this.addLog(`${target.name} fails save! (${saveTotal} vs DC ${spell.saveDC})`, 'save');
+                            this.showActionDisplay('damage', 'Saving Throw Failed', `${target.name} takes full damage`, `${saveTotal} vs DC ${spell.saveDC}`);
                         }
                     }
                     
@@ -3483,7 +3988,8 @@
                     target.hp = Math.min(target.maxHp, target.hp + healing);
                     this.addLog(`${target.name} heals ${healing} HP!`, 'heal');
                     this.createFloatingText(`+${healing}`, target.x, target.y - 30, '#00ff00');
-                    this.playSpecificSound(spell.sound);
+                    this.showActionDisplay('heal', 'Healing', `${target.name} regains ${healing} HP`, `Current HP: ${target.hp}/${target.maxHp}`);
+                    this.playSound('heal');
                 } else if (spell.effect) {
                     this.applySpellEffect(caster, target, spell.effect, spell);
                 }
@@ -3496,9 +4002,6 @@
                 // Animation
                 this.createPersistentArrow(caster.x + 35, caster.y + 35, target.x + 35, target.y + 35);
                 setTimeout(() => this.createSpellAnimation(caster.x + 35, caster.y + 35, target.x + 35, target.y + 35, spell.school), 100);
-                
-                // Visual effect
-                this.applyVisualEffect(target, spell.visualEffect);
                 
                 this.updateTurnOrder();
                 this.render();
@@ -3515,30 +4018,30 @@
                             
                             if (saveTotal >= spell.saveDC) {
                                 this.addLog(`${target.name} resists! (${saveTotal} vs DC ${spell.saveDC})`, 'save');
-                                this.showEventPopup('Save', `${target.name} resists! (${saveTotal} vs DC ${spell.saveDC})`);
+                                this.showActionDisplay('info', 'Condition Resisted', `${target.name} resists ${effect.condition}`, `${saveTotal} vs DC ${spell.saveDC}`);
                                 return;
                             }
                         }
                         this.addCondition(target, effect.condition);
-                        this.showEventPopup('Condition', `${target.name} is now ${effect.condition}!`);
+                        this.showActionDisplay('info', 'Condition Applied', `${target.name} is now ${effect.condition}`);
                         break;
                         
                     case 'ac_bonus':
                         target.ac += effect.value;
                         this.addLog(`${target.name} gains +${effect.value} AC!`, 'info');
-                        this.showEventPopup('Buff', `${target.name} gains +${effect.value} AC!`);
+                        this.showActionDisplay('info', 'AC Bonus', `${target.name} gains +${effect.value} AC`);
                         break;
                         
                     case 'ac_set':
                         const dexMod = this.getAbilityModifier(target.dex);
                         target.ac = effect.value + dexMod;
                         this.addLog(`${target.name}'s AC is now ${target.ac}!`, 'info');
-                        this.showEventPopup('Buff', `${target.name}'s AC is now ${target.ac}!`);
+                        this.showActionDisplay('info', 'AC Changed', `${target.name}'s AC is now ${target.ac}`);
                         break;
                         
                     case 'buff':
                         this.addLog(`${target.name} is buffed: ${effect.effects.join(', ')}`, 'info');
-                        this.showEventPopup('Buff', `${target.name} is buffed: ${effect.effects.join(', ')}`);
+                        this.showActionDisplay('info', 'Buff Applied', `${target.name} gains ${effect.effects.join(', ')}`);
                         // Store buff for later reference
                         if (!target.buffs) target.buffs = [];
                         target.buffs.push({name: spell.name, effects: effect.effects});
@@ -3546,7 +4049,7 @@
                         
                     case 'debuff':
                         this.addLog(`${target.name} is debuffed: ${effect.effects.join(', ')}`, 'info');
-                        this.showEventPopup('Debuff', `${target.name} is debuffed: ${effect.effects.join(', ')}`);
+                        this.showActionDisplay('info', 'Debuff Applied', `${target.name} suffers ${effect.effects.join(', ')}`);
                         if (!target.debuffs) target.debuffs = [];
                         target.debuffs.push({name: spell.name, effects: effect.effects});
                         break;
@@ -3557,13 +4060,13 @@
                         caster.x += Math.cos(angle) * effect.distance * 5; // 5 pixels per foot
                         caster.y += Math.sin(angle) * effect.distance * 5;
                         this.addLog(`${caster.name} teleports!`, 'info');
-                        this.showEventPopup('Action', `${caster.name} teleports!`);
+                        this.showActionDisplay('info', 'Teleport', `${caster.name} teleports ${effect.distance} feet`);
                         break;
                         
                     case 'sleep':
                         const hpPool = this.rollDice(effect.hitpoints);
                         this.addLog(`Sleep affects ${hpPool} HP worth of creatures`, 'info');
-                        this.showEventPopup('Spell', `Sleep affects ${hpPool} HP worth of creatures`);
+                        this.showActionDisplay('spell', 'Sleep Effect', `Affects ${hpPool} HP worth of creatures`);
                         // Would need to implement area selection for full effect
                         break;
                 }
@@ -3586,7 +4089,7 @@
                     }
                     
                     this.addLog(`${entity.name} is now ${condition}!`, 'info');
-                    this.showEventPopup('Condition', `${entity.name} is now ${condition}!`);
+                    this.showActionDisplay('info', 'Condition Added', `${entity.name} is now ${condition}`);
                     
                     // Apply condition effects
                     const conditionData = this.conditions[condition];
@@ -3608,9 +4111,22 @@
                         delete entity.conditionTurns[condition];
                     }
                     this.addLog(`${entity.name} is no longer ${condition}!`, 'info');
-                    this.showEventPopup('Condition', `${entity.name} is no longer ${condition}!`);
+                    this.showActionDisplay('info', 'Condition Removed', `${entity.name} is no longer ${condition}`);
+                    
+                    // Restore normal state
+                    if (condition === 'unconscious' && entity.hp === 0) {
+                        entity.hp = 1;
+                    }
                 }
                 this.render();
+            },
+
+            // Enhanced Play Individual Sound function
+            playIndividualSound(url) {
+                if (url) {
+                    const audio = new Audio(url);
+                    audio.play().catch(e => console.log('Sound play failed:', e));
+                }
             },
             
             // Roll Dice with display
@@ -3648,45 +4164,30 @@
                     if (this.diceRollHistory.length > 20) {
                         this.diceRollHistory.shift();
                     }
-                    this.showEventPopup(`Roll: ${formula}`, `Total: ${total} (${rolls.join(', ')}${mod ? ` ${mod}` : ''})`);
+                    this.showRollResult(`Roll: ${formula}`, `Total: ${total} (${rolls.join(', ')}${mod ? ` ${mod}` : ''})`);
                 }
                 
                 return total;
             },
             
-            // Enhanced Event Popup
-            showEventPopup(title, breakdown) {
-                const existing = document.querySelector('.roll-result');
-                if (existing) existing.remove();
-                
-                const result = document.createElement('div');
-                result.className = 'roll-result';
-                result.innerHTML = `
-                    <h3>${title}</h3>
-                    <div class="roll-breakdown">${breakdown}</div>
-                `;
-                document.body.appendChild(result);
-                
-                setTimeout(() => result.remove(), 5000);
+            // Show Roll Result
+            showRollResult(title, breakdown) {
+                this.showActionDisplay('roll', title, breakdown);
             },
             
             // Play Sound
-            playSpecificSound(url) {
+            playSound(type) {
+                const url = this.sounds[type];
                 if (url) {
                     const audio = new Audio(url);
                     audio.play().catch(e => console.log('Sound play failed:', e));
                 }
             },
             
-            setSoundFromFile(type, file) {
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.sounds[type] = e.target.result;
-                        localStorage.setItem('dndSounds', JSON.stringify(this.sounds));
-                    };
-                    reader.readAsDataURL(file);
-                }
+            // Set Sound
+            setSound(type, url) {
+                this.sounds[type] = url;
+                localStorage.setItem('dndSounds', JSON.stringify(this.sounds));
             },
             
             // Load Sounds
@@ -3694,16 +4195,20 @@
                 const saved = localStorage.getItem('dndSounds');
                 if (saved) {
                     this.sounds = JSON.parse(saved);
+                    Object.keys(this.sounds).forEach(type => {
+                        const element = document.getElementById(`sound${type.charAt(0).toUpperCase() + type.slice(1)}`);
+                        if (element) {
+                            element.value = this.sounds[type];
+                        }
+                    });
                 }
                 
                 // Load background music
                 const savedMusic = localStorage.getItem('dndBackgroundMusic');
                 if (savedMusic) {
-                    this.backgroundMusic.url = savedMusic;
-                    this.backgroundMusic.audio = new Audio();
-                    this.backgroundMusic.audio.src = savedMusic;
-                    this.backgroundMusic.audio.loop = true;
-                    this.backgroundMusic.audio.volume = 0.3;
+                    const musicInput = document.getElementById('backgroundMusic');
+                    if (musicInput) musicInput.value = savedMusic;
+                    this.setBackgroundMusic(savedMusic);
                 }
             },
             
@@ -3750,7 +4255,7 @@
                 entity.ac = this.calculateAC(entity);
                 
                 this.addLog(`${entity.name} equips ${item.name}`, 'info');
-                this.showEventPopup('Action', `${entity.name} equips ${item.name}`);
+                this.showActionDisplay('info', 'Item Equipped', `${entity.name} equips ${item.name}`);
                 this.render();
             },
             
@@ -3787,7 +4292,7 @@
                 entity.ac = this.calculateAC(entity);
                 
                 this.addLog(`${entity.name} unequips ${item.name}`, 'info');
-                this.showEventPopup('Action', `${entity.name} unequips ${item.name}`);
+                this.showActionDisplay('info', 'Item Unequipped', `${entity.name} unequips ${item.name}`);
                 this.render();
             },
             
@@ -3832,12 +4337,31 @@
                     target.hp = Math.min(target.maxHp, target.hp + healing);
                     this.addLog(`${user.name} uses ${item.name} on ${target.name}, healing ${healing} HP!`, 'heal');
                     this.createFloatingText(`+${healing}`, target.x, target.y - 30, '#00ff00');
-                    this.playSpecificSound(item.sound);
+                    this.showActionDisplay('heal', 'Item Used', `${target.name} heals ${healing} HP from ${item.name}`, `Current HP: ${target.hp}/${target.maxHp}`);
+                    
+                    // Play individual sound effect or fallback
+                    if (item.soundEffect) {
+                        this.playIndividualSound(item.soundEffect);
+                    } else {
+                        this.playSound('heal');
+                    }
+                    
+                    // Play visual effect
+                    if (item.visualEffect) {
+                        this.playVisualEffect(item.visualEffect, target.x, target.y);
+                    }
                 } else if (item.effect) {
                     this.applyItemEffect(target, item.effect);
                     this.addLog(`${user.name} uses ${item.name} on ${target.name}!`, 'info');
-                    this.showEventPopup('Action', `${user.name} uses ${item.name} on ${target.name}!`);
-                    this.playSpecificSound(item.sound);
+                    this.showActionDisplay('info', 'Item Used', `${user.name} uses ${item.name} on ${target.name}`);
+                    
+                    if (item.soundEffect) {
+                        this.playIndividualSound(item.soundEffect);
+                    }
+                    
+                    if (item.visualEffect) {
+                        this.playVisualEffect(item.visualEffect, target.x, target.y);
+                    }
                 } else if (item.spell) {
                     // Scroll
                     const spell = this.library.spells.find(s => s.name === item.spell);
@@ -3911,6 +4435,11 @@
                 
                 // Render entities
                 this.entities.forEach(entity => {
+                    if (entity.type === 'visualEffect') {
+                        this.renderVisualEffect(entity, canvas);
+                        return;
+                    }
+                    
                     const elem = document.createElement('div');
                     elem.className = 'entity';
                     elem.dataset.id = entity.id;
@@ -3918,12 +4447,6 @@
                     // Add type-specific classes
                     if (entity.type === 'npc') {
                         elem.classList.add('npc');
-                    } else if (entity.type === 'effect') {
-                        elem.className = 'effect-entity';
-                        elem.style.left = `${entity.x - 35}px`; // Center
-                        elem.style.top = `${entity.y - 35}px`;
-                        elem.style.width = '70px';
-                        elem.style.height = '70px';
                     }
                     
                     // Add condition classes
@@ -3962,7 +4485,7 @@
                     }
                     
                     let hpBar = '';
-                    if (entity.type !== 'item' && entity.type !== 'container' && entity.type !== 'effect') {
+                    if (entity.type !== 'item' && entity.type !== 'container') {
                         const hpPercent = entity.hp / entity.maxHp * 100;
                         const hpClass = hpPercent > 75 ? 'high' : hpPercent > 25 ? 'medium' : 'low';
                         hpBar = `
@@ -4023,12 +4546,6 @@
                         if (entity.rarity && entity.rarity !== 'common') {
                             nameDisplay += ` (${entity.rarity})`;
                         }
-                    } else if (entity.type === 'effect') {
-                        elem.innerHTML = `<img src="${entity.url}" class="effect-img">`;
-                        if (!entity.loop && entity.playOnce) {
-                            setTimeout(() => this.removeEntity(entity.id), entity.duration || 1000);
-                        }
-                        return;
                     }
                     
                     elem.innerHTML = `
@@ -4059,6 +4576,43 @@
                     
                     canvas.appendChild(elem);
                 });
+            },
+
+            renderVisualEffect(effect, canvas) {
+                const elem = document.createElement('div');
+                elem.className = 'visual-effect';
+                elem.dataset.id = effect.id;
+                
+                if (effect.mode === 'decoration') {
+                    elem.classList.add('decoration');
+                }
+                
+                elem.style.left = (effect.x - effect.width/2) + 'px';
+                elem.style.top = (effect.y - effect.height/2) + 'px';
+                elem.style.width = effect.width + 'px';
+                elem.style.height = effect.height + 'px';
+                
+                if (effect.mode === 'once') {
+                    const elapsed = Date.now() - effect.startTime;
+                    if (elapsed > effect.duration * 1000) {
+                        // Remove effect after duration
+                        this.entities = this.entities.filter(e => e.id !== effect.id);
+                        return;
+                    }
+                    elem.innerHTML = `<img src="${effect.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                } else {
+                    elem.innerHTML = `<img src="${effect.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                }
+                
+                // Make effects draggable in edit mode
+                if (this.editMode) {
+                    elem.addEventListener('click', () => this.selectEntity(effect));
+                    elem.draggable = true;
+                    elem.addEventListener('dragstart', (e) => this.handleDragStart(e, effect));
+                    elem.addEventListener('dragend', (e) => this.handleDragEnd(e, effect));
+                }
+                
+                canvas.appendChild(elem);
             },
             
             // Toggle Edit Mode
@@ -4159,6 +4713,7 @@
                     target.inventory.push({...draggingEntity});
                     this.removeEntity(draggingEntity.id);
                     this.addLog(`${target.name} picks up ${draggingEntity.name}!`, 'info');
+                    this.showActionDisplay('info', 'Item Collected', `${target.name} picks up ${draggingEntity.name}`);
                     actionPerformed = true;
                 }
                 
@@ -4171,6 +4726,7 @@
                         draggingEntity.inventory.push({...target});
                         this.removeEntity(target.id);
                         this.addLog(`${draggingEntity.name} picks up ${target.name}!`, 'info');
+                        this.showActionDisplay('info', 'Item Collected', `${draggingEntity.name} picks up ${target.name}`);
                         actionPerformed = true;
                     }
                     
@@ -4188,7 +4744,8 @@
                                 toHit: this.getAbilityModifier(draggingEntity.str) + draggingEntity.proficiencyBonus,
                                 damage: '1+' + this.getAbilityModifier(draggingEntity.str),
                                 damageType: 'bludgeoning',
-                                range: 5
+                                range: 5,
+                                soundEffect: ''
                             };
                             this.performAttack(draggingEntity, target, unarmedAttack);
                             actionPerformed = true;
@@ -4212,7 +4769,8 @@
                                 target.inventory = originalInventory; // Restore chest inventory for when mimic dies
                             }
                             this.addLog(`${target.name} reveals itself as a Mimic!`, 'info');
-                            const mimicAttack = target.attacks[0] || {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing'};
+                            this.showActionDisplay('damage', 'Mimic Revealed!', `${target.name} was actually a Mimic!`);
+                            const mimicAttack = target.attacks[0] || {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing', soundEffect: ''};
                             this.performAttack(target, draggingEntity, mimicAttack);
                             this.playSound('attack');
                         } else {
@@ -4232,12 +4790,14 @@
                                     this.entities.push(newItem);
                                 });
                                 this.addLog(`${draggingEntity.name} opens the chest! ${target.inventory.length} items spill out.`, 'info');
+                                this.showActionDisplay('info', 'Chest Opened', `${target.inventory.length} items spill from the chest`);
                                 target.inventory = []; // Empty the chest
                                 
                                 // Update chest color to grey since it's now empty
                                 target.color = '#6b7280';
                             } else {
                                 this.addLog(`${draggingEntity.name} opens the chest. It's empty.`, 'info');
+                                this.showActionDisplay('info', 'Empty Chest', 'The chest contains nothing');
                             }
                             this.playSound('open');
                         }
@@ -4254,6 +4814,7 @@
                         target.inventory.push({...draggingEntity});
                         this.removeEntity(draggingEntity.id);
                         this.addLog(`${draggingEntity.name} added to chest.`, 'info');
+                        this.showActionDisplay('info', 'Item Stored', `${draggingEntity.name} added to chest`);
                         
                         // Update chest color to gold since it now has items
                         target.color = '#fbbf24';
@@ -4324,6 +4885,7 @@
                                 this.draggingEntity.movement -= movementCost;
                                 this.updateTurnOrder();
                                 this.addLog(`${this.draggingEntity.name} moves ${movementCost}ft.`, 'info');
+                                this.showActionDisplay('info', 'Movement', `${this.draggingEntity.name} moves ${movementCost} feet`, `${this.draggingEntity.movement} feet remaining`);
                                 actionPerformed = true;
                             } else if (this.draggingEntity.movement === undefined) {
                                 // Items and containers can always move
@@ -4388,21 +4950,75 @@
                 } else if (action.healing || action.effect) {
                     // It's an item
                     this.useItem(source, action, target);
-                } else if (action.name === 'Shove') {
-                    this.performShove(source, target, action);
-                } else if (action.name === 'Hide') {
-                    this.performHide(source);
-                } else if (action.name === 'Disengage') {
-                    this.performDisengage(source);
-                } else if (action.name === 'Dash') {
-                    this.performDash(source);
-                } else if (action.name === 'Help') {
-                    this.performHelp(source, target);
-                } else if (action.name === 'Ready') {
-                    this.performReady(source);
+                } else if (action.type === 'special') {
+                    // It's a base combat action
+                    this.performBaseAction(source, target, action);
                 }
                 
                 this.cancelTargeting();
+            },
+
+            // Perform Base Combat Actions
+            performBaseAction(performer, target, action) {
+                this.showActionDisplay('info', `${action.name}`, `${performer.name} uses ${action.name}`, action.description);
+                
+                switch (action.effect) {
+                    case 'shove':
+                        const shoveRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
+                        const shoveTarget = Math.max(target.ac, 8 + this.getAbilityModifier(target.str));
+                        if (shoveRoll >= shoveTarget) {
+                            this.addCondition(target, 'prone');
+                            this.addLog(`${performer.name} shoves ${target.name} prone!`, 'info');
+                            this.showActionDisplay('info', 'Shove Success', `${target.name} is knocked prone`);
+                        } else {
+                            this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
+                            this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
+                        }
+                        break;
+                    case 'grapple':
+                        const grappleRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
+                        const grappleTarget = Math.max(target.ac, 8 + Math.max(this.getAbilityModifier(target.str), this.getAbilityModifier(target.dex)));
+                        if (grappleRoll >= grappleTarget) {
+                            this.addCondition(target, 'grappled');
+                            this.addLog(`${performer.name} grapples ${target.name}!`, 'info');
+                            this.showActionDisplay('info', 'Grapple Success', `${target.name} is grappled`);
+                        } else {
+                            this.addLog(`${performer.name} fails to grapple ${target.name}`, 'info');
+                            this.showActionDisplay('info', 'Grapple Failed', `${target.name} escapes the grapple attempt`);
+                        }
+                        break;
+                    case 'dash':
+                        performer.movement += performer.speed;
+                        this.addLog(`${performer.name} dashes! Movement doubled.`, 'info');
+                        this.showActionDisplay('info', 'Dash', `${performer.name} gains extra movement`, `Total movement: ${performer.movement} feet`);
+                        break;
+                    case 'disengage':
+                        this.addLog(`${performer.name} disengages from combat.`, 'info');
+                        this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
+                        break;
+                    case 'dodge':
+                        this.addLog(`${performer.name} focuses on dodging attacks.`, 'info');
+                        this.showActionDisplay('info', 'Dodge', `${performer.name} is harder to hit until next turn`);
+                        break;
+                    case 'help':
+                        this.addLog(`${performer.name} helps ${target.name}.`, 'info');
+                        this.showActionDisplay('info', 'Help', `${target.name} gains advantage on their next roll`);
+                        break;
+                    case 'ready':
+                        this.addLog(`${performer.name} readies an action.`, 'info');
+                        this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react`);
+                        break;
+                }
+                
+                if (action.skill) {
+                    const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
+                    this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
+                    this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
+                }
+                
+                // Mark action used
+                performer.actionUsed = true;
+                this.updateTurnOrder();
             },
             
             cancelTargeting() {
@@ -4444,6 +5060,8 @@
                     if (entity.type === 'item') {
                         this.showItemActionMenu(entity);
                     }
+                } else if (entity.type === 'visualEffect') {
+                    this.showVisualEffectDetailsPanel(entity);
                 } else {
                     this.showDetailsPanel(entity);
                     
@@ -4451,6 +5069,57 @@
                         this.showActionMenu(entity);
                     }
                 }
+            },
+
+            // Visual Effect Details Panel
+            showVisualEffectDetailsPanel(entity) {
+                document.querySelectorAll('.details-panel').forEach(el => el.remove());
+                
+                const panel = document.createElement('div');
+                panel.className = 'details-panel';
+                
+                panel.innerHTML = `
+                    <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
+                    <h3 style="color: #fbbf24; margin-bottom: 15px;">${entity.name}</h3>
+                    
+                    <div class="stat-row">
+                        <span>Name:</span>
+                        <input type="text" value="${entity.name}" onchange="game.updateEntity(${entity.id}, 'name', this.value)" class="stat-input" style="width: 120px;">
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Image/GIF URL:</span>
+                        <input type="text" value="${entity.url || ''}" onchange="game.updateEntity(${entity.id}, 'url', this.value)" class="stat-input" style="width: 200px;">
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Width:</span>
+                        <input type="number" value="${entity.width || 100}" onchange="game.updateEntity(${entity.id}, 'width', this.value)" class="stat-input">
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Height:</span>
+                        <input type="number" value="${entity.height || 100}" onchange="game.updateEntity(${entity.id}, 'height', this.value)" class="stat-input">
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Mode:</span>
+                        <select onchange="game.updateEntity(${entity.id}, 'mode', this.value)" class="stat-input">
+                            <option value="decoration" ${entity.mode === 'decoration' ? 'selected' : ''}>Decoration</option>
+                            <option value="once" ${entity.mode === 'once' ? 'selected' : ''}>Play Once</option>
+                            <option value="loop" ${entity.mode === 'loop' ? 'selected' : ''}>Loop</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Duration (seconds):</span>
+                        <input type="number" value="${entity.duration || 3}" onchange="game.updateEntity(${entity.id}, 'duration', this.value)" class="stat-input">
+                    </div>
+                    
+                    <button class="btn btn-danger btn-small" onclick="game.removeEntity(${entity.id})">Remove Effect</button>
+                `;
+                
+                document.getElementById('gameBoard').appendChild(panel);
             },
             
             // Helper function to determine if entities should interact on click
@@ -4488,120 +5157,137 @@
                     <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
                     <h3 style="color: #fbbf24; margin-bottom: 15px;">${entity.name}</h3>
                     
-                    <div class="stat-row">
-                        <span>Name:</span>
-                        <input type="text" value="${entity.name}" onchange="game.updateEntity(${entity.id}, 'name', this.value)" class="stat-input" style="width: 120px;">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Type:</span>
-                        <span>${entity.type === 'container' ? 'Container' : 'Item'}</span>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Description:</span>
-                        <input type="text" value="${entity.description || ''}" onchange="game.updateEntity(${entity.id}, 'description', this.value)" class="stat-input" style="width: 200px;">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Value (gp):</span>
-                        <input type="number" value="${entity.value || 0}" onchange="game.updateEntity(${entity.id}, 'value', this.value)" class="stat-input">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Weight (lbs):</span>
-                        <input type="number" step="0.1" value="${entity.weight || 0}" onchange="game.updateEntity(${entity.id}, 'weight', this.value)" class="stat-input">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Consumable:</span>
-                        <input type="checkbox" ${entity.consumable ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'consumable', this.checked)">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Healing:</span>
-                        <input type="text" value="${entity.healing || ''}" onchange="game.updateEntity(${entity.id}, 'healing', this.value)" class="stat-input" placeholder="e.g., 2d4+2">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Damage:</span>
-                        <input type="text" value="${entity.damage || ''}" onchange="game.updateEntity(${entity.id}, 'damage', this.value)" class="stat-input" placeholder="e.g., 1d8+2">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Damage Type:</span>
-                        <input type="text" value="${entity.damageType || ''}" onchange="game.updateEntity(${entity.id}, 'damageType', this.value)" class="stat-input" placeholder="e.g., slashing">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>AC Bonus:</span>
-                        <input type="number" value="${entity.ac || 0}" onchange="game.updateEntity(${entity.id}, 'ac', this.value)" class="stat-input">
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Rarity:</span>
-                        <select onchange="game.updateEntity(${entity.id}, 'rarity', this.value)" class="stat-input">
-                            <option value="common" ${entity.rarity === 'common' ? 'selected' : ''}>Common</option>
-                            <option value="uncommon" ${entity.rarity === 'uncommon' ? 'selected' : ''}>Uncommon</option>
-                            <option value="rare" ${entity.rarity === 'rare' ? 'selected' : ''}>Rare</option>
-                            <option value="very rare" ${entity.rarity === 'very rare' ? 'selected' : ''}>Very Rare</option>
-                            <option value="legendary" ${entity.rarity === 'legendary' ? 'selected' : ''}>Legendary</option>
-                            <option value="artifact" ${entity.rarity === 'artifact' ? 'selected' : ''}>Artifact</option>
-                        </select>
-                    </div>
-                    
-                    <div class="stat-row">
-                        <span>Sound:</span>
-                        <input type="file" accept=".mp3" onchange="game.setItemSound(${entity.id}, this.files[0])">
+                    <div class="item-property-group">
+                        <h4>Basic Properties</h4>
+                        <div class="property-row">
+                            <span class="property-label">Name:</span>
+                            <input type="text" value="${entity.name}" onchange="game.updateEntity(${entity.id}, 'name', this.value)" class="property-input">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">Type:</span>
+                            <span>${entity.type === 'container' ? 'Container' : 'Item'}</span>
+                        </div>
                     </div>
                 `;
                 
-                if (entity.type === 'container') {
+                if (entity.type === 'item') {
                     html += `
-                        <div class="stat-row">
-                            <span>Is Mimic:</span>
-                            <input type="checkbox" ${entity.isMimic ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'isMimic', this.checked)">
+                        <div class="item-property-group">
+                            <h4>Item Details</h4>
+                            <div class="property-row">
+                                <span class="property-label">Description:</span>
+                                <input type="text" value="${entity.description || ''}" onchange="game.updateEntity(${entity.id}, 'description', this.value)" class="property-input">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Value (gp):</span>
+                                <input type="number" value="${entity.value || 0}" onchange="game.updateEntity(${entity.id}, 'value', this.value)" class="property-input">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Weight (lbs):</span>
+                                <input type="number" step="0.1" value="${entity.weight || 0}" onchange="game.updateEntity(${entity.id}, 'weight', this.value)" class="property-input">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Consumable:</span>
+                                <input type="checkbox" ${entity.consumable ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'consumable', this.checked)">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Rarity:</span>
+                                <select onchange="game.updateEntity(${entity.id}, 'rarity', this.value)" class="property-input">
+                                    <option value="common" ${entity.rarity === 'common' ? 'selected' : ''}>Common</option>
+                                    <option value="uncommon" ${entity.rarity === 'uncommon' ? 'selected' : ''}>Uncommon</option>
+                                    <option value="rare" ${entity.rarity === 'rare' ? 'selected' : ''}>Rare</option>
+                                    <option value="very rare" ${entity.rarity === 'very rare' ? 'selected' : ''}>Very Rare</option>
+                                    <option value="legendary" ${entity.rarity === 'legendary' ? 'selected' : ''}>Legendary</option>
+                                    <option value="artifact" ${entity.rarity === 'artifact' ? 'selected' : ''}>Artifact</option>
+                                </select>
+                            </div>
                         </div>
                         
-                        <h4 style="margin-top: 15px;">Container Contents</h4>
-                        <div style="margin-bottom: 10px; max-height: 200px; overflow-y: auto;">
-                            ${entity.inventory && entity.inventory.length > 0 ? 
-                                entity.inventory.map(item => `
-                                    <div style="padding: 4px; background: rgba(0,0,0,0.2); margin: 2px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-                                        <span>${item.name}</span>
-                                        <button onclick="game.removeItemFromContainer(${entity.id}, '${item.name}')" style="background: #ef4444; border: none; color: white; padding: 2px 6px; border-radius: 3px; cursor: pointer;">Remove</button>
-                                    </div>
-                                `).join('') : 
-                                '<p style="color: #9ca3af; text-align: center; padding: 10px;">Empty</p>'
-                            }
+                        <div class="item-property-group">
+                            <h4>Combat Properties</h4>
+                            <div class="property-row">
+                                <span class="property-label">Healing:</span>
+                                <input type="text" value="${entity.healing || ''}" onchange="game.updateEntity(${entity.id}, 'healing', this.value)" class="property-input" placeholder="e.g., 2d4+2">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Damage:</span>
+                                <input type="text" value="${entity.damage || ''}" onchange="game.updateEntity(${entity.id}, 'damage', this.value)" class="property-input" placeholder="e.g., 1d8+2">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">Damage Type:</span>
+                                <input type="text" value="${entity.damageType || ''}" onchange="game.updateEntity(${entity.id}, 'damageType', this.value)" class="property-input" placeholder="e.g., slashing">
+                            </div>
+                            <div class="property-row">
+                                <span class="property-label">AC Bonus:</span>
+                                <input type="number" value="${entity.ac || 0}" onchange="game.updateEntity(${entity.id}, 'ac', this.value)" class="property-input">
+                            </div>
+                        </div>
+                        
+                        <div class="item-property-group">
+                            <h4>Audio & Visual Effects</h4>
+                            <div class="property-row">
+                                <span class="property-label">Sound Effect URL:</span>
+                            </div>
+                            <input type="text" value="${entity.soundEffect || ''}" onchange="game.updateEntity(${entity.id}, 'soundEffect', this.value)" class="sound-field" placeholder="MP3/WAV URL for when item is used">
+                            
+                            <div class="property-row">
+                                <span class="property-label">Visual Effect URL:</span>
+                            </div>
+                            <input type="text" value="${entity.visualEffect || ''}" onchange="game.updateEntity(${entity.id}, 'visualEffect', this.value)" class="effect-field" placeholder="PNG/GIF URL for visual effect">
+                        </div>
+                    `;
+                } else if (entity.type === 'container') {
+                    html += `
+                        <div class="item-property-group">
+                            <h4>Container Properties</h4>
+                            <div class="property-row">
+                                <span class="property-label">Is Mimic:</span>
+                                <input type="checkbox" ${entity.isMimic ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'isMimic', this.checked)">
+                            </div>
+                        </div>
+                        
+                        <div class="item-property-group">
+                            <h4>Container Contents</h4>
+                            <div style="margin-bottom: 10px; max-height: 200px; overflow-y: auto;">
+                                ${entity.inventory && entity.inventory.length > 0 ? 
+                                    entity.inventory.map(item => `
+                                        <div style="padding: 4px; background: rgba(0,0,0,0.2); margin: 2px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                                            <span>${item.name}</span>
+                                            <button onclick="game.removeItemFromContainer(${entity.id}, '${item.name}')" style="background: #ef4444; border: none; color: white; padding: 2px 6px; border-radius: 3px; cursor: pointer;">Remove</button>
+                                        </div>
+                                    `).join('') : 
+                                    '<p style="color: #9ca3af; text-align: center; padding: 10px;">Empty</p>'
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="item-property-group">
+                            <h4>Audio & Visual Effects</h4>
+                            <div class="property-row">
+                                <span class="property-label">Sound Effect URL:</span>
+                            </div>
+                            <input type="text" value="${entity.soundEffect || ''}" onchange="game.updateEntity(${entity.id}, 'soundEffect', this.value)" class="sound-field" placeholder="MP3/WAV URL for when container is opened">
                         </div>
                     `;
                 }
                 
                 html += `
-                    <div class="stat-row">
-                        <span>Image URL:</span>
-                        <input type="text" value="${entity.image || ''}" onchange="game.updateEntity(${entity.id}, 'image', this.value)" class="stat-input" style="width: 200px;">
+                    <div class="item-property-group">
+                        <h4>Appearance</h4>
+                        <div class="property-row">
+                            <span class="property-label">Image URL:</span>
+                        </div>
+                        <input type="text" value="${entity.image || ''}" onchange="game.updateEntity(${entity.id}, 'image', this.value)" class="property-input" style="width: 100%;" placeholder="Token image URL">
                     </div>
                     
-                    <button class="btn btn-danger btn-small" onclick="game.removeEntity(${entity.id})">Remove</button>
-                    <button class="btn btn-success btn-small" onclick="game.saveToLibrary(${entity.id})">Save to Library</button>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-danger btn-small" onclick="game.removeEntity(${entity.id})">Remove</button>
+                        <button class="btn btn-success btn-small" onclick="game.saveToLibrary(${entity.id})">Save to Library</button>
+                    </div>
                 `;
                 
                 panel.innerHTML = html;
                 document.getElementById('gameBoard').appendChild(panel);
-            },
-            
-            setItemSound(id, file) {
-                const entity = this.getEntity(id);
-                if (entity && file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        entity.sound = e.target.result;
-                        this.render();
-                    };
-                    reader.readAsDataURL(file);
-                }
             },
             
             showItemActionMenu(entity) {
@@ -4619,13 +5305,13 @@
                     html += '<div class="action-section"><div class="action-section-title">Item Actions</div>';
                     
                     if (entity.healing) {
-                        html += `<button class="action-btn" onclick="game.startTargeting(game.getEntity(${entity.id}), {name: 'Use ${entity.name}', healing: '${entity.healing}', consumable: ${entity.consumable}})">
+                        html += `<button class="action-btn" onclick="game.startTargeting(game.getEntity(${entity.id}), {name: 'Use ${entity.name}', healing: '${entity.healing}', consumable: ${entity.consumable}, soundEffect: '${entity.soundEffect || ''}', visualEffect: '${entity.visualEffect || ''}'})">
                             💊 Use for Healing (${entity.healing})
                         </button>`;
                     }
                     
                     if (entity.damage) {
-                        html += `<button class="action-btn" onclick="game.startTargeting(game.getEntity(${entity.id}), {name: 'Attack with ${entity.name}', damage: '${entity.damage}', damageType: '${entity.damageType || 'bludgeoning'}'})">
+                        html += `<button class="action-btn" onclick="game.startTargeting(game.getEntity(${entity.id}), {name: 'Attack with ${entity.name}', damage: '${entity.damage}', damageType: '${entity.damageType || 'bludgeoning'}', soundEffect: '${entity.soundEffect || ''}', visualEffect: '${entity.visualEffect || ''}'})">
                             ⚔️ Attack with Item (${entity.damage} ${entity.damageType || 'bludgeoning'})
                         </button>`;
                     }
@@ -4688,6 +5374,12 @@
             openContainer(containerId) {
                 const container = this.getEntity(containerId);
                 if (container) {
+                    // Play container sound effect
+                    if (container.soundEffect) {
+                        this.playIndividualSound(container.soundEffect);
+                    } else {
+                        this.playSound('open');
+                    }
                     this.spillContainerContents(containerId);
                 }
             },
@@ -4710,9 +5402,9 @@
                     });
                     
                     this.addLog(`${container.name} contents spilled! ${container.inventory.length} items.`, 'info');
+                    this.showActionDisplay('info', 'Container Opened', `${container.inventory.length} items spilled from ${container.name}`);
                     container.inventory = [];
                     container.color = '#6b7280'; // Grey for empty
-                    this.playSound('open');
                     this.render();
                 }
             },
@@ -4724,6 +5416,7 @@
                     if (spell) {
                         // For now, just log that the spell would be cast
                         this.addLog(`${item.name} scroll activates ${spell.name}!`, 'info');
+                        this.showActionDisplay('spell', 'Spell Scroll', `${item.name} activates ${spell.name}`);
                         if (item.consumable) {
                             this.removeEntity(itemId);
                         }
@@ -4878,6 +5571,24 @@
                 let html = `<h4 style="color: #fbbf24;">⭐ Actions for ${entity.name}</h4>
                            <p style="font-size: 11px; color: #9ca3af; margin: 5px 0;">Click an action, then click target</p>`;
                 
+                // Base Combat Actions
+                if (entity.baseActions && entity.baseActions.length > 0) {
+                    html += '<div class="action-section"><div class="action-section-title">Basic Actions</div>';
+                    entity.baseActions.forEach((action, index) => {
+                        const disabled = entity.actionUsed && action.actionType === 'action' ? 'disabled' : '';
+                        if (action.type === 'attack' || action.type === 'special' || action.type === 'skill') {
+                            html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
+                                ${this.getActionIcon(action.type)} ${action.name}
+                            </button>`;
+                        } else {
+                            html += `<button class="action-btn ${disabled}" onclick="game.performBaseAction(game.getEntity(${entity.id}), game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
+                                ${this.getActionIcon(action.type)} ${action.name}
+                            </button>`;
+                        }
+                    });
+                    html += '</div>';
+                }
+                
                 // Attacks
                 if (entity.attacks && entity.attacks.length > 0) {
                     html += '<div class="action-section"><div class="action-section-title">Attacks</div>';
@@ -4931,11 +5642,11 @@
                     const activeAbilities = entity.abilities.filter(a => a.actionType !== 'passive');
                     if (activeAbilities.length > 0) {
                         html += '<div class="action-section"><div class="action-section-title">Special Abilities</div>';
-                        activeAbilities.forEach((ability, index) => {
+                        activeAbilities.forEach(ability => {
                             const disabled = (ability.actionType === 'action' && entity.actionUsed) ||
                                            (ability.actionType === 'bonus' && entity.bonusActionUsed) ||
                                            (ability.actionType === 'reaction' && entity.reactionUsed) ? 'disabled' : '';
-                            html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).abilities[${index}])" title="${ability.description}">
+                            html += `<button class="action-btn ${disabled}" title="${ability.description}">
                                 💫 ${ability.name}
                             </button>`;
                         });
@@ -4958,6 +5669,19 @@
                 
                 elem.appendChild(menu);
             },
+
+            // Get Action Icon
+            getActionIcon(actionType) {
+                const icons = {
+                    attack: '⚔️',
+                    special: '⭐',
+                    skill: '🎯',
+                    movement: '👣',
+                    defense: '🛡️',
+                    support: '🤝'
+                };
+                return icons[actionType] || '⚡';
+            },
             
             // Managers
             openSpellManager(entityId) {
@@ -4977,9 +5701,6 @@
                                 <div class="item-card">
                                     <strong>${s.name}</strong> (Level ${s.level})<br>
                                     <small>${s.description}</small><br>
-                                    <input type="file" accept=".mp3" onchange="game.setSpellSound(${entityId}, ${i}, this.files[0])"><br>
-                                    <input type="text" value="${s.visualEffect.url || ''}" placeholder="Visual Effect URL" onchange="game.setSpellVisual(${entityId}, ${i}, this.value, document.querySelector('#loop${i}').checked)"><br>
-                                    <label><input type="checkbox" id="loop${i}" ${s.visualEffect.loop ? 'checked' : ''} onchange="game.setSpellVisual(${entityId}, ${i}, document.querySelector('#vis${i}').value, this.checked)"> Loop</label><br>
                                     <button class="btn btn-small btn-danger" onclick="game.removeSpell(${entityId}, ${i}); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openSpellManager(${entityId});">Remove</button>
                                 </div>
                             `).join('')}
@@ -4998,24 +5719,6 @@
                 `;
                 modal.innerHTML = html;
                 document.body.appendChild(modal);
-            },
-            
-            setSpellSound(entityId, index, file) {
-                const entity = this.getEntity(entityId);
-                if (entity && entity.spells[index] && file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        entity.spells[index].sound = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            },
-            
-            setSpellVisual(entityId, index, url, loop) {
-                const entity = this.getEntity(entityId);
-                if (entity && entity.spells[index]) {
-                    entity.spells[index].visualEffect = {url, loop};
-                }
             },
             
             openInventoryManager(entityId) {
@@ -5045,7 +5748,6 @@
                                 <div class="item-card">
                                     <strong>${item.name}</strong><br>
                                     <small>${item.description || ''}</small><br>
-                                    <input type="file" accept=".mp3" onchange="game.setInventorySound(${entityId}, ${i}, this.files[0])"><br>
                                     <button class="btn btn-small btn-danger" onclick="game.removeInventoryItem(${entityId}, ${i}); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openInventoryManager(${entityId});">Remove</button>
                                     ${item.equipSlot ? `<button class="btn btn-small btn-primary" onclick="game.equipItem(game.getEntity(${entityId}), game.getEntity(${entityId}).inventory[${i}]); this.parentElement.parentElement.parentElement.parentElement.remove(); game.openInventoryManager(${entityId});">Equip</button>` : ''}
                                 </div>
@@ -5065,17 +5767,6 @@
                 `;
                 modal.innerHTML = html;
                 document.body.appendChild(modal);
-            },
-            
-            setInventorySound(entityId, index, file) {
-                const entity = this.getEntity(entityId);
-                if (entity && entity.inventory[index] && file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        entity.inventory[index].sound = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
             },
             
             // Helper functions for managers
@@ -5124,8 +5815,8 @@
                 const entity = this.getEntity(id);
                 if (!entity) return;
                 
-                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp'];
-                const booleanProps = ['isMimic', 'consumable'];
+                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level', 'width', 'height', 'duration'];
+                const booleanProps = ['isMimic'];
                 
                 if (numericProps.includes(prop)) {
                     entity[prop] = parseInt(value) || 0;
@@ -5642,18 +6333,6 @@
                 setTimeout(() => effect.remove(), 1000);
             },
             
-            // Visual Effects
-            applyVisualEffect(target, visualEffect) {
-                if (visualEffect && visualEffect.url) {
-                    const effectEntity = this.createEntity('effect', 'Visual Effect', target.x, target.y);
-                    effectEntity.url = visualEffect.url;
-                    effectEntity.loop = visualEffect.loop;
-                    effectEntity.playOnce = !visualEffect.loop;
-                    this.entities.push(effectEntity);
-                    this.render();
-                }
-            },
-            
             // Save/Load
             saveGameState() {
                 const state = {
@@ -5663,7 +6342,8 @@
                     roundNumber: this.roundNumber,
                     nextId: this.nextId,
                     editMode: this.editMode,
-                    backgroundUrl: this.backgroundUrl
+                    backgroundUrl: this.backgroundUrl,
+                    quickSlots: this.quickSlots
                 };
                 
                 localStorage.setItem('dndGameState', JSON.stringify(state));
@@ -5682,6 +6362,7 @@
                         this.nextId = state.nextId || 1;
                         this.editMode = state.editMode || false;
                         this.backgroundUrl = state.backgroundUrl || '';
+                        this.quickSlots = state.quickSlots || [];
                         const bgInput = document.getElementById('bgUrl');
                         if (bgInput) bgInput.value = this.backgroundUrl;
                         this.changeBackground();
@@ -5777,73 +6458,42 @@
                 const grid = document.getElementById('quickAddGrid');
                 if (!grid) return;
                 
+                grid.innerHTML = '';
+                
                 this.quickSlots.forEach((slot, index) => {
                     const btn = document.createElement('button');
-                    btn.className = 'quick-add-btn';
-                    btn.textContent = slot ? slot.name : `Slot ${index + 1}`;
+                    btn.className = 'quick-add-btn customizable';
+                    btn.innerHTML = `
+                        ${slot.name}
+                        <button class="remove-quick" onclick="event.stopPropagation(); game.removeQuickSlot(${index})">×</button>
+                    `;
                     btn.onclick = () => {
-                        if (slot) {
-                            const type = slot.type || (slot.class ? 'player' : 'monster');
-                            const entity = this.createEntity(type, slot.name, 300 + Math.random() * 200, 200 + Math.random() * 200);
-                            if (slot.image) entity.image = slot.image;
-                            this.entities.push(entity);
-                            this.updateTurnOrder();
-                            this.render();
+                        const entity = this.createEntity(slot.type, slot.name, 300 + Math.random() * 200, 200 + Math.random() * 200);
+                        const libItem = [...this.library.monsters, ...this.library.players, ...this.library.items, ...this.library.equipment].find(i => i.name === slot.name);
+                        if (libItem && libItem.image) {
+                            entity.image = libItem.image;
                         }
+                        this.entities.push(entity);
+                        this.updateTurnOrder();
+                        this.render();
                     };
                     grid.appendChild(btn);
                 });
-            },
-            
-            customizeQuickSlots() {
-                const modal = document.createElement('div');
-                modal.className = 'modal-overlay';
-                let html = `
-                    <div class="modal">
-                        <button class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</button>
-                        <h2>⚙️ Customize Quick Slots</h2>
-                        
-                        <div class="item-list">
-                            ${this.quickSlots.map((slot, i) => `
-                                <div class="item-card">
-                                    <strong>Slot ${i+1}:</strong> ${slot ? slot.name : 'Empty'}<br>
-                                    <select onchange="game.setQuickSlot(${i}, this.value)">
-                                        <option value="">Empty</option>
-                                        ${[...this.library.monsters, ...this.library.players].map(item => `<option value="${item.name}" ${slot && slot.name === item.name ? 'selected' : ''}>${item.name}</option>`).join('')}
-                                    </select>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                modal.innerHTML = html;
-                document.body.appendChild(modal);
-            },
-            
-            setQuickSlot(index, name) {
-                if (name) {
-                    const item = [...this.library.monsters, ...this.library.players].find(i => i.name === name);
-                    if (item) {
-                        this.quickSlots[index] = item;
-                    }
-                } else {
-                    this.quickSlots[index] = null;
+                
+                // Add empty slots up to 8
+                for (let i = this.quickSlots.length; i < 8; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'quick-add-btn';
+                    btn.textContent = 'Empty';
+                    btn.onclick = () => this.customizeQuickSlots();
+                    grid.appendChild(btn);
                 }
+            },
+
+            removeQuickSlot(index) {
+                this.quickSlots.splice(index, 1);
                 this.saveQuickSlots();
                 this.setupQuickAdd();
-            },
-            
-            saveQuickSlots() {
-                localStorage.setItem('dndQuickSlots', JSON.stringify(this.quickSlots));
-            },
-            
-            loadQuickSlots() {
-                const saved = localStorage.getItem('dndQuickSlots');
-                if (saved) {
-                    this.quickSlots = JSON.parse(saved);
-                } else {
-                    this.quickSlots = Array(6).fill(null);
-                }
             },
             
             // Enhanced character sheet functions
@@ -6250,7 +6900,7 @@
                 const character = this.getEntity(characterId);
                 if (!character) return;
                 
-                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level'];
+                const numericProps = ['hp', 'maxHp', 'ac', 'speed', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'tempHp', 'level', 'proficiencyBonus'];
                 
                 if (numericProps.includes(property)) {
                     character[property] = parseInt(value) || 0;
@@ -6270,72 +6920,10 @@
                 if (document.getElementById('characters-tab').classList.contains('active')) {
                     this.updateCharacterList();
                 }
-            },
-            
-            // Base Action Implementations
-            performShove(attacker, target) {
-                const attackRoll = this.rollDice('1d20') + this.getAbilityModifier(attacker.str) + attacker.proficiencyBonus;
-                const defenseRoll = this.rollDice('1d20') + Math.max(this.getAbilityModifier(target.str), this.getAbilityModifier(target.dex));
-                
-                if (attackRoll >= defenseRoll) {
-                    const choice = confirm('Choose effect: OK for Push, Cancel for Prone');
-                    if (choice) {
-                        // Push 5ft away
-                        const dx = target.x - attacker.x;
-                        const dy = target.y - attacker.y;
-                        const dist = Math.hypot(dx, dy);
-                        const pushX = target.x + (dx / dist) * 25; // 5ft = 25 pixels?
-                        const pushY = target.y + (dy / dist) * 25;
-                        target.x = pushX;
-                        target.y = pushY;
-                        this.addLog(`${attacker.name} shoves ${target.name} back 5ft!`, 'info');
-                    } else {
-                        this.addCondition(target, 'prone');
-                        this.addLog(`${attacker.name} shoves ${target.name} prone!`, 'info');
-                    }
-                } else {
-                    this.addLog(`${attacker.name} fails to shove ${target.name}!`, 'info');
-                }
-                attacker.actionUsed = true;
-                this.render();
-            },
-            
-            performHide(entity) {
-                const roll = this.rollDice('1d20') + this.getAbilityModifier(entity.dex) + (entity.skills.stealth || 0);
-                this.addLog(`${entity.name} attempts to hide (Stealth: ${roll})`, 'info');
-                // Would need DM to note the roll for perception checks
-                entity.actionUsed = true;
-            },
-            
-            performDisengage(entity) {
-                // Flag for no opportunity attacks, but need to implement opportunity attacks first
-                this.addLog(`${entity.name} disengages!`, 'info');
-                entity.actionUsed = true;
-            },
-            
-            performDash(entity) {
-                entity.movement += entity.speed;
-                this.addLog(`${entity.name} dashes! Extra ${entity.speed}ft movement.`, 'info');
-                entity.actionUsed = true;
-                this.render();
-            },
-            
-            performHelp(helper, target) {
-                // Give advantage to target's next ability check or attack
-                if (!target.advantages) target.advantages = {};
-                target.advantages['nextRoll'] = true;
-                this.addLog(`${helper.name} helps ${target.name}! Advantage on next roll.`, 'info');
-                helper.actionUsed = true;
-            },
-            
-            performReady(entity) {
-                // Would need to set up trigger and reaction
-                this.addLog(`${entity.name} readies an action!`, 'info');
-                entity.actionUsed = true;
-            },
+            }
         };
         
-        // Global tab switchingfunction
+        // Global tab switching function
         function switchTab(event, tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
