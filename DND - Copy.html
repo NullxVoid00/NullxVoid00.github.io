@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Branching Narrative Weaver - Enhanced Edition</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --accent: #16213e;
+            --text-primary: #f0f4f8;
+            --text-secondary: #a8b2d1;
+            --highlight: #e94560;
+            --success: #4ecdc4;
+            --warning: #ffe66d;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --border: #2d3748;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --glow: 0 0 20px rgba(233, 69, 96, 0.5);
+            --glow-success: 0 0 20px rgba(78, 205, 196, 0.5);
+            --glow-warning: 0 0 20px rgba(255, 230, 109, 0.5);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            height: 100vh;
+        }
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px var(--glow);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        h2 {
+            color: var(--highlight);
+            border-bottom: 2px solid var(--success);
+            padding-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3 {
+            color: var(--info);
+            margin-top: 20px;
+        }
+        .section {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            overflow-y: auto;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow), var(--shadow);
+        }
+        textarea, input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--accent);
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: var(--highlight);
+            box-shadow: var(--glow);
+            transform: scale(1.02);
+        }
+        button {
+            background: linear-gradient(135deg, var(--highlight), #ff6b6b);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        }
+        button.secondary {
+            background: linear-gradient(135deg, var(--success), #45b7d1);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        button.warning {
+            background: linear-gradient(135deg, var(--warning), #f39c12);
+            box-shadow: 0 4px 15px rgba(255, 230, 109, 0.3);
+        }
+        button.danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        button.info {
+            background: linear-gradient(135deg, var(--info), #2980b9);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        .npc-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        @media (min-width: 600px) {
+            .npc-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .npc-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .npc-item {
+            background: var(--accent);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .npc-item:nth-child(even) { animation-delay: 0.1s; }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .npc-item:hover {
+            transform: scale(1.02);
+            box-shadow: var(--glow);
+        }
+        /* Mind Map Tree */
+        .mindmap-container {
+            flex: 1;
+            position: relative;
+            background: rgba(15, 15, 35, 0.9);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: grab;
+            transition: all 0.3s;
+            min-height: 600px;
+        }
+        @media (max-width: 1024px) {
+            .mindmap-container {
+                order: -1;
+                height: 500px;
+            }
+        }
+        .mindmap-container:active {
+            cursor: grabbing;
+        }
+        .mindmap-viewport {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: top left;
+            transition: transform 0.1s ease-out;
+        }
+        .mindmap-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .mindmap-node {
+            position: absolute;
+            background: linear-gradient(135deg, var(--accent), var(--bg-secondary));
+            border: 2px solid var(--highlight);
+            border-radius: 16px;
+            padding: 12px 16px;
+            min-width: 200px;
+            max-width: 300px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+            user-select: none;
+            animation: nodePop 0.5s ease-out;
+        }
+        @keyframes nodePop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .mindmap-node:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: var(--glow), var(--shadow);
+            border-color: var(--success);
+        }
+        .mindmap-node.dragging {
+            opacity: 0.8;
+            z-index: 10;
+        }
+        .mindmap-node.combat { border-color: var(--danger); background: linear-gradient(135deg, rgba(231,76,60,0.2), var(--accent)); }
+        .mindmap-node.social { border-color: var(--success); background: linear-gradient(135deg, rgba(78,205,196,0.2), var(--accent)); }
+        .mindmap-node.exploration { border-color: var(--info); background: linear-gradient(135deg, rgba(52,152,219,0.2), var(--accent)); }
+        .mindmap-node.collapsed .node-children { display: none; }
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--highlight);
+        }
+        .node-content {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            cursor: text;
+        }
+        .node-content.editing {
+            border: 1px solid var(--highlight);
+            background: var(--bg-secondary);
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .node-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .node-children {
+            margin-top: 10px;
+            position: relative;
+        }
+        .input-next-form {
+            display: none;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+        .input-next-form.active {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { height: 0; opacity: 0; }
+            to { height: auto; opacity: 1; }
+        }
+        .perspective-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        .progress {
+            text-align: center;
+            font-style: italic;
+            color: var(--success);
+            padding: 10px;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .stats-panel {
+            background: var(--accent);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        .search-bar {
+            margin: 10px 0;
+        }
+        .search-bar input {
+            background: var(--bg-secondary);
+        }
+        .highlighted {
+            box-shadow: var(--glow-success);
+            border-color: var(--success) !important;
+        }
+        /* Pan/Zoom */
+        .zoom-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 3;
+            display: flex;
+            gap: 5px;
+        }
+        .zoom-btn {
+            background: var(--success);
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { gap: 10px; }
+            .mindmap-node { min-width: 150px; max-width: 250px; padding: 10px; font-size: 0.9em; }
+            h1 { font-size: 2em; }
+        }
+        /* Export/Import */
+        .file-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .file-controls input[type="file"] {
+            display: none;
+        }
+        .file-label {
+            padding: 10px 15px;
+            background: var(--info);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .file-label:hover {
+            background: #2980b9;
+        }
+        /* Dice Roller */
+        .dice-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .dice-result {
+            background: var(--warning);
+            color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h1>🧠 Narrative Mind Weaver - Ultimate</h1>
+            <p class="progress" id="progress">Unleash infinite D&D paths with full context awareness...</p>
+
+            <!-- Scene Setup -->
+            <div class="section">
+                <h2>🌟 Core Scene Weaver</h2>
+                <textarea id="rootContext" rows="4" placeholder="Craft deeply: Bustling tavern with torchlight flickering on a cursed dagger at the bar. Disguised goblin spy eyes the fugitive party from shadows. Barkeep Grimgor owes rogue a favor amid rival guard tensions. Weather: stormy night, thunder rumbling."></textarea>
+                <div class="perspective-toggle">
+                    <label>🌿 Focus:</label>
+                    <select id="perspective">
+                        <option value="party">Party's Choices 🎲</option>
+                        <option value="npc">NPC Whims 🧙</option>
+                        <option value="mixed">Mixed Dynamics ⚡</option>
+                    </select>
+                </div>
+                <button onclick="generateInitialBranches()">Ignite Weaver ✨</button>
+            </div>
+
+            <!-- NPCs Enhanced -->
+            <div class="section">
+                <h2>👥 Story Souls (Enhanced NPCs)</h2>
+                <div class="npc-form">
+                    <input type="text" id="npcName" placeholder="Name: Grimgor Barkeep">
+                    <input type="text" id="npcTraits" placeholder="Traits: Greedy, favor-owed, cowardly, charismatic">
+                    <input type="text" id="npcStats" placeholder="Stats: STR 8, DEX 12, CON 10, INT 14, WIS 13, CHA 16; Skills: Deception +5, Insight +3">
+                    <input type="text" id="npcInventory" placeholder="Inventory: Ale mugs, hidden ledger, minor illusion scroll">
+                    <input type="text" id="npcRelationships" placeholder="Relationships: Ally to rogue (favor), enemy to goblins (betrayal), neutral to guards">
+                </div>
+                <button class="secondary" onclick="addNPC()">Summon Soul 🔮</button>
+                <ul class="npc-list" id="npcList"></ul>
+            </div>
+
+            <!-- File Controls -->
+            <div class="section">
+                <h2>💾 Session Vault</h2>
+                <div class="file-controls">
+                    <button class="info" onclick="exportTree()">Export JSON 📤</button>
+                    <label for="importFile" class="file-label">Import JSON 📥</label>
+                    <input type="file" id="importFile" accept=".json" onchange="importTree(event)">
+                    <button class="warning" onclick="clearTree()">New Session 🗑️</button>
+                    <button class="secondary" onclick="saveToStorage()">Auto-Save 💾</button>
+                    <button class="secondary" onclick="loadFromStorage()">Load 💿</button>
+                </div>
+            </div>
+
+            <!-- Search & Stats -->
+            <div class="section">
+                <h2>🔍 Pathfinder Tools</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search nodes (e.g., 'goblin' or 'fight')..." oninput="searchNodes()">
+                </div>
+                <div class="stats-panel" id="statsPanel">
+                    Total Nodes: 0 | Max Depth: 0 | Branches: 0 | Collapsed: 0
+                </div>
+            </div>
+
+            <!-- Dice Integration -->
+            <div class="section dice-section">
+                <h2>🎲 Fate Dice</h2>
+                <p>Roll to select a random branch (d20 + modifiers from probs).</p>
+                <button class="warning" onclick="rollRandomBranch()">Roll & Traverse 🎯</button>
+                <div class="dice-result" id="diceResult"></div>
+            </div>
+        </div>
+
+        <!-- Mind Map -->
+        <div class="mindmap-container" id="mindmapContainer">
+            <svg class="mindmap-svg" id="mindmapSvg"></svg>
+            <div class="mindmap-viewport" id="mindmapViewport"></div>
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+                <button class="zoom-btn" onclick="zoomOut()">−</button>
+                <button class="zoom-btn" onclick="resetView()">↻</button>
+                <button class="zoom-btn danger" onclick="toggleTheme()" title="Dark/Light">🌙</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL STATE ====================
+        let rootContext = '';
+        let npcs = []; // Enhanced with inventory, relationships
+        let treeData = { id: 'root', text: '', children: [], context: '', x: 0, y: 0, type: 'root', collapsed: false };
+        let nodePositions = new Map();
+        let nodeTypes = new Map(); // For coloring: 'combat', 'social', 'exploration'
+        let scale = 1;
+        let panX = 0, panY = 0;
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let currentNodeId = null;
+        let history = []; // For undo/redo
+        let historyIndex = -1;
+        let searchHighlights = new Set();
+        let isDarkMode = true; // Default dark
+
+        // ==================== ENHANCED NPC MANAGEMENT ====================
+        function addNPC() {
+            const name = document.getElementById('npcName').value.trim();
+            const traits = document.getElementById('npcTraits').value.trim();
+            const stats = document.getElementById('npcStats').value.trim();
+            const inventory = document.getElementById('npcInventory').value.trim();
+            const relationships = document.getElementById('npcRelationships').value.trim();
+            if (name) {
+                npcs.push({ 
+                    name, 
+                    traits, 
+                    stats, 
+                    inventory: inventory.split(',').map(i => i.trim()), 
+                    relationships: relationships.split(',').map(r => r.trim()) 
+                });
+                clearNPCInputs();
+                renderNPCList();
+                updateProgress('Enhanced soul summoned – inventory & bonds influence paths! 🔮');
+                saveToStorage(); // Auto-save
+            }
+        }
+
+        function clearNPCInputs() {
+            ['npcName', 'npcTraits', 'npcStats', 'npcInventory', 'npcRelationships'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
+        function renderNPCList() {
+            const list = document.getElementById('npcList');
+            list.innerHTML = npcs.map((npc, i) => `
+                <li class="npc-item">
+                    <div>
+                        <strong>${npc.name}</strong><br>
+                        <small>${npc.traits} | Stats: ${npc.stats}</small><br>
+                        <small>Inv: ${npc.inventory.join(', ')}</small><br>
+                        <small>Bonds: ${npc.relationships.join(', ')}</small>
+                    </div>
+                    <button class="danger" onclick="removeNPC(${i})">✕</button>
+                </li>
+            `).join('');
+        }
+
+        function removeNPC(index) {
+            npcs.splice(index, 1);
+            renderNPCList();
+            updateTreeWithNPCChanges(); // Re-gen branches if tree exists
+            saveToStorage();
+        }
+
+        // ==================== ADVANCED CONTEXT PARSING ====================
+        // Expanded keywords for fuller coverage
+        function parseContextForElements(fullContext) {
+            const lower = fullContext.toLowerCase();
+            return {
+                environments: (lower.match(/(tavern|bar|inn|forest|cave|castle|street|dungeon|wilderness|city|ruins|temple|ship|mountain)/g) || []).map(m => m),
+                threats: (lower.match(/(goblin|spy|guard|monster|rival|thief|dragon|orc|undead|beast|assassin|cultist|bandit)/g) || []).map(m => m),
+                items: (lower.match(/(dagger|sword|potion|trap|artifact|key|map|scroll|amulet|ring|armor|shield|wand|staff)/g) || []).map(m => m),
+                relationships: (lower.match(/(favor|debt|rivalry|ally|enemy|lover|betrayal|oath|curse|alliance|feud|romance)/g) || []).map(m => m),
+                actions: (lower.match(/(chat|investigate|fight|steal|sneak|negotiate|brawl|escape|explore|cast|attack|defend|persuade|intimidate|deceive)/g) || []).map(m => m),
+                moods: (lower.match(/(tense|calm|chaotic|peaceful|hostile|friendly|suspicious|trusting|frenzied|serene)/g) || []).map(m => m),
+                weather: (lower.match(/(stormy|sunny|foggy|rainy|windy|clear|dark|dawn|dusk|night)/g) || []).map(m => m),
+                npcs: npcs.map(n => n.name.toLowerCase()),
+                inventories: npcs.flatMap(n => n.inventory.map(i => i.toLowerCase())),
+                bonds: npcs.flatMap(n => n.relationships.map(r => r.toLowerCase()))
+            };
+        }
+
+        // Determine node type for coloring
+        function determineNodeType(branchText, elements) {
+            const lowerText = branchText.toLowerCase();
+            if (lowerText.includes('fight') || lowerText.includes('attack') || lowerText.includes('brawl') || elements.threats.length > 0) return 'combat';
+            if (lowerText.includes('chat') || lowerText.includes('negotiate') || lowerText.includes('persuade') || elements.relationships.length > 0) return 'social';
+            return 'exploration';
+        }
+
+        // ==================== ENHANCED BRANCH GENERATION ====================
+        // More templates for comprehensive coverage
+        function generateBranches(parentText, fullContext, numBranches = 4) { // Increased for fuller tree
+            const perspective = document.getElementById('perspective').value;
+            const elements = parseContextForElements(fullContext);
+            const branches = [];
+
+            // Expanded templates with more variations
+            const partyTemplates = [
+                { base: 'Party ${action}s boldly with ${target} in the ${env}, under ${mood} skies', prob: 0.25, needs: ['actions', 'npcs', 'environments', 'moods'] },
+                { base: 'Uncover ${item} hidden by ${threat}, leading to ${action} amid ${weather}', prob: 0.2, needs: ['items', 'threats', 'actions', 'weather'] },
+                { base: '${threat} ambushes over ${relation}, forcing ${action} in ${env}', prob: 0.25, needs: ['threats', 'relationships', 'actions', 'environments'] },
+                { base: 'Whispers of ${relation} draw party to ${npc}\'s ${inventory} offer', prob: 0.3, needs: ['relationships', 'npcs', 'inventories'] }
+            ];
+
+            const npcTemplates = [
+                { base: '${npc} stirs ${relation} with party, wielding ${item} in ${mood} ${env}', prob: 0.25, needs: ['npcs', 'relationships', 'items', 'moods', 'environments'] },
+                { base: '${threat} lurks, using ${bond} to ${action} against intruders', prob: 0.25, needs: ['threats', 'bonds', 'actions'] },
+                { base: 'In ${weather}-lashed ${env}, ${npc} betrays via ${relation}', prob: 0.25, needs: ['weather', 'environments', 'npcs', 'relationships'] },
+                { base: '${npc}\'s ${inventory} tempts a ${action} under ${mood} tension', prob: 0.25, needs: ['npcs', 'inventories', 'actions', 'moods'] }
+            ];
+
+            const mixedTemplates = [
+                { base: 'Chaos erupts: Party ${action}s as ${npc} reacts with ${relation} to ${threat}', prob: 0.3, needs: ['actions', 'npcs', 'relationships', 'threats'] },
+                { base: '${item} activates in ${env}, blending ${weather} and ${bond} drama', prob: 0.2, needs: ['items', 'environments', 'weather', 'bonds'] },
+                { base: '${mood} ${env} hosts ${action} between ${target} and lurking ${threat}', prob: 0.25, needs: ['moods', 'environments', 'actions', 'npcs', 'threats'] },
+                { base: 'Fate twists: ${relation} ${inventory} sparks ${action} in stormy ${weather}', prob: 0.25, needs: ['relationships', 'inventories', 'actions', 'weather'] }
+            ];
+
+            const templates = perspective === 'party' ? partyTemplates : perspective === 'npc' ? npcTemplates : mixedTemplates;
+            const availableTemplates = templates.filter(t => t.needs.every(need => elements[need] && elements[need].length > 0));
+
+            for (let i = 0; i < numBranches; i++) {
+                let template = availableTemplates[i % availableTemplates.length] || templates[Math.floor(Math.random() * templates.length)];
+                let branchText = template.base;
+
+                // Fill with random selections for variety
+                ['action', 'target', 'item', 'threat', 'relation', 'env', 'mood', 'weather', 'npc', 'inventory', 'bond'].forEach(key => {
+                    const arr = elements[key + 's'] || elements[key];
+                    if (arr && arr.length > 0) {
+                        const val = arr[Math.floor(Math.random() * arr.length)];
+                        branchText = branchText.replace(new RegExp('\\${' + key + '}', 'g'), val);
+                    } else {
+                        branchText = branchText.replace(new RegExp('\\${' + key + '}', 'g'), getFallback(key));
+                    }
+                });
+
+                let prob = template.prob;
+                // Advanced NPC influence
+                npcs.forEach(npc => {
+                    const traitsLower = npc.traits.toLowerCase();
+                    const nameLower = npc.name.toLowerCase();
+                    if (branchText.toLowerCase().includes(nameLower)) {
+                        // Trait modifiers
+                        if (traitsLower.includes('cowardly') && (branchText.toLowerCase().includes('fight') || branchText.toLowerCase().includes('ambush'))) prob *= 0.5;
+                        if (traitsLower.includes('aggressive') && (branchText.toLowerCase().includes('fight') || branchText.toLowerCase().includes('ambush'))) prob *= 1.5;
+                        if (traitsLower.includes('greedy') && (branchText.toLowerCase().includes('offer') || branchText.toLowerCase().includes('tempts'))) prob *= 1.4;
+                        // Relationship boosts
+                        npc.relationships.forEach(rel => {
+                            if (branchText.toLowerCase().includes(rel.toLowerCase())) prob *= 1.2;
+                        });
+                        // Inventory ties
+                        npc.inventory.forEach(inv => {
+                            if (branchText.toLowerCase().includes(inv.toLowerCase())) prob *= 1.1;
+                        });
+                    }
+                });
+
+                // Mood/weather modifiers
+                if (elements.moods.some(m => m.includes('hostile') || m.includes('tense'))) prob *= 1.1; // Higher conflict
+                if (elements.weather.some(w => w.includes('stormy') || w.includes('dark'))) prob *= 1.05; // Subtle chaos
+
+                prob = Math.min(1, Math.max(0.05, prob)); // Wider range
+
+                const type = determineNodeType(branchText, elements);
+
+                branches.push({
+                    id: Date.now() + i + Math.random().toString(36),
+                    text: branchText,
+                    prob,
+                    children: [],
+                    context: fullContext + ' | ' + parentText,
+                    x: 0, y: 0,
+                    type,
+                    collapsed: false
+                });
+            }
+            return branches;
+        }
+
+        function getFallback(key) {
+            const fallbacks = {
+                action: 'engages',
+                target: 'locals',
+                item: 'relic',
+                threat: 'foe',
+                relation: 'grudge',
+                env: 'scene',
+                mood: 'tense',
+                weather: 'stormy',
+                npc: 'Figure',
+                inventory: 'treasure',
+                bond: 'tie'
+            };
+            return fallbacks[key] || 'element';
+        }
+
+        // ==================== TREE OPERATIONS ====================
+        function generateInitialBranches() {
+            rootContext = document.getElementById('rootContext').value.trim();
+            if (!rootContext) return alert('Infuse the scene with life first! 🌟');
+            const newTree = { id: 'root', text: rootContext, prob: 1, children: generateBranches('', rootContext), context: rootContext, x: 0, y: 0, type: 'root', collapsed: false };
+            pushHistory(treeData);
+            treeData = newTree;
+            renderMindMap();
+            updateStats();
+            updateProgress('Epic mindscape ignited! Drag, branch, roll fate endlessly... 🌀');
+            document.getElementById('rootContext').disabled = true;
+            saveToStorage();
+        }
+
+        function pushHistory(state) {
+            history = history.slice(0, historyIndex + 1);
+            history.push(JSON.parse(JSON.stringify(state))); // Deep copy
+            historyIndex = history.length - 1;
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                treeData = JSON.parse(JSON.stringify(history[historyIndex]));
+                renderMindMap();
+                updateStats();
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                treeData = JSON.parse(JSON.stringify(history[historyIndex]));
+                renderMindMap();
+                updateStats();
+            }
+        }
+
+        function clearTree() {
+            if (confirm('Erase the weave? This starts anew.')) {
+                pushHistory(treeData);
+                treeData = { id: 'root', text: '', children: [], context: '', x: 0, y: 0, type: 'root', collapsed: false };
+                document.getElementById('mindmapViewport').innerHTML = '';
+                document.getElementById('mindmapSvg').innerHTML = '';
+                nodePositions.clear();
+                updateStats();
+                document.getElementById('rootContext').disabled = false;
+                document.getElementById('rootContext').value = '';
+                updateProgress('Canvas cleared – new tale awaits! ✨');
+                saveToStorage();
+            }
+        }
+
+        // ==================== POSITIONING & RENDERING ====================
+        function calculatePositions(node, level = 0) {
+            if (level === 0) {
+                node.x = 400;
+                node.y = 200;
+            }
+            nodePositions.set(node.id, { x: node.x, y: node.y });
+
+            const numChildren = node.children.length;
+            if (numChildren > 0) {
+                const angleStep = 2 * Math.PI / numChildren;
+                const radius = 250 + (level * 30); // Tighter for deeper levels
+                node.children.forEach((child, i) => {
+                    const angle = (i * angleStep) + (Math.random() * 0.5 - 0.25); // Slight random for organic
+                    child.x = node.x + Math.cos(angle) * radius;
+                    child.y = node.y + Math.sin(angle) * radius;
+                    calculatePositions(child, level + 1);
+                });
+            }
+        }
+
+        function renderMindMap() {
+            const viewport = document.getElementById('mindmapViewport');
+            const svg = document.getElementById('mindmapSvg');
+            viewport.innerHTML = '';
+            svg.innerHTML = '';
+            nodePositions.clear();
+            nodeTypes.clear();
+            searchHighlights.clear();
+
+            calculatePositions(treeData);
+
+            renderNode(treeData, viewport, 0);
+            drawConnections(treeData, svg);
+            updateTransform();
+            updateStats();
+        }
+
+        function renderNode(node, viewport, level = 0) {
+            const nodeEl = document.createElement('div');
+            nodeEl.className = `mindmap-node ${node.type}`;
+            if (node.collapsed) nodeEl.classList.add('collapsed');
+            nodeEl.id = `node-${node.id}`;
+            nodeEl.style.left = node.x + 'px';
+            nodeEl.style.top = node.y + 'px';
+            nodeEl.draggable = true;
+            nodeEl.dataset.nodeId = node.id;
+            nodeTypes.set(node.id, node.type);
+
+            // Editable content
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'node-content';
+            contentDiv.textContent = node.text;
+            contentDiv.contentEditable = true;
+            contentDiv.addEventListener('input', (e) => updateNodeText(node.id, e.target.textContent));
+            contentDiv.addEventListener('dblclick', (e) => { e.target.classList.add('editing'); });
+
+            nodeEl.innerHTML = `
+                <div class="node-header">
+                    <span>${level === 0 ? '🌟 Epic Root' : `🛤️ Branch ${level}`}</span>
+                    <span class="probability">(${Math.round(node.prob * 100)}% 🌿)</span>
+                </div>
+                ${contentDiv.outerHTML}
+                <div class="node-buttons">
+                    <button class="secondary" onclick="generateSubBranches('${node.id}', event)">🌿 Branch +</button>
+                    <button class="secondary" onclick="showInputNext('${node.id}', event)">✏️ Twist</button>
+                    <button class="info" onclick="toggleCollapse('${node.id}', event)">${node.collapsed ? '📂 Expand' : '📁 Collapse'}</button>
+                    <button class="warning" onclick="rollFromNode('${node.id}', event)">🎲 Roll Here</button>
+                    <button class="danger" onclick="deleteNode('${node.id}', event)">🗑️ Prune</button>
+                </div>
+                <div class="input-next-form" id="input-${node.id}">
+                    <textarea id="nextInput_${node.id}" rows="2" placeholder="Craft the next saga thread... (e.g., Rogue invokes favor, goblin spies move)"></textarea>
+                    <button onclick="processNextEvent('${node.id}')">🔗 Weave In</button>
+                    <button class="secondary" onclick="hideInputNext('${node.id}')">❌</button>
+                </div>
+                <div class="node-children" id="children-${node.id}"></div>
+            `;
+
+            // Event listeners
+            nodeEl.addEventListener('dragstart', startDrag);
+            nodeEl.addEventListener('drag', dragNode);
+            nodeEl.addEventListener('dragend', endDrag);
+            nodeEl.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                if (!e.target.closest('button') && !e.target.closest('.node-content')) focusNode(node.id); 
+            });
+
+            viewport.appendChild(nodeEl);
+
+            // Render children
+            if (!node.collapsed) {
+                node.children.forEach(child => renderNode(child, viewport, level + 1));
+            }
+        }
+
+        function updateNodeText(nodeId, newText) {
+            const node = findNodeById(treeData, nodeId);
+            if (node) {
+                pushHistory(treeData);
+                node.text = newText;
+                node.context += ' | Updated: ' + newText;
+                renderMindMap();
+                saveToStorage();
+            }
+        }
+
+        function toggleCollapse(nodeId, event) {
+            event.stopPropagation();
+            const node = findNodeById(treeData, nodeId);
+            if (node) {
+                node.collapsed = !node.collapsed;
+                renderMindMap();
+                updateStats();
+            }
+        }
+
+        function deleteNode(nodeId, event) {
+            event.stopPropagation();
+            if (confirm('Prune this branch forever?')) {
+                const parent = findParentNode(treeData, nodeId);
+                if (parent) {
+                    pushHistory(treeData);
+                    parent.children = parent.children.filter(child => child.id !== nodeId);
+                    renderMindMap();
+                    updateStats();
+                    saveToStorage();
+                }
+            }
+        }
+
+        function findParentNode(node, targetId) {
+            for (let child of node.children) {
+                if (child.id === targetId) return node;
+                const found = findParentNode(child, targetId);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        // ==================== CONNECTIONS & INTERACTIONS ====================
+        function drawConnections(node, svg) {
+            node.children.forEach(child => {
+                if (node.collapsed) return; // Skip if collapsed
+                const parentPos = nodePositions.get(node.id);
+                const childPos = nodePositions.get(child.id);
+                if (parentPos && childPos) {
+                    // Color lines by child type
+                    const lineColor = child.type === 'combat' ? 'var(--danger)' : child.type === 'social' ? 'var(--success)' : 'var(--info)';
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const midX = (parentPos.x + childPos.x) / 2;
+                    const controlY = (parentPos.y + childPos.y) / 2 + (Math.random() * 50 - 25); // Wavy for fun
+                    const curve = `M ${parentPos.x} ${parentPos.y} Q ${midX} ${controlY} ${childPos.x} ${childPos.y}`;
+                    path.setAttribute('d', curve);
+                    path.setAttribute('stroke', lineColor);
+                    path.setAttribute('stroke-width', '3');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('opacity', '0.7');
+                    svg.appendChild(path);
+                }
+                drawConnections(child, svg);
+            });
+        }
+
+        // Branching functions (with history)
+        function generateSubBranches(nodeId, event) {
+            event.stopPropagation();
+            const node = findNodeById(treeData, nodeId);
+            if (node && node.children.length === 0) {
+                pushHistory(treeData);
+                node.children = generateBranches(node.text, node.context);
+                node.collapsed = false; // Expand on new branches
+                renderMindMap();
+                updateProgress(`Verdant branches bloomed: ${node.children.length} paths from "${node.text.substring(0, 30)}..." 🌸`);
+                saveToStorage();
+            } else if (node) {
+                alert('Branch further by adding a twist or rolling fate first!');
+            }
+        }
+
+        function showInputNext(nodeId, event) {
+            event.stopPropagation();
+            const inputEl = document.getElementById(`input-${nodeId}`);
+            if (inputEl) inputEl.classList.add('active');
+        }
+
+        function hideInputNext(nodeId) {
+            const inputEl = document.getElementById(`input-${nodeId}`);
+            if (inputEl) inputEl.classList.remove('active');
+        }
+
+        function processNextEvent(nodeId) {
+            const textarea = document.getElementById(`nextInput_${nodeId}`);
+            const nextEvent = textarea.value.trim();
+            if (nextEvent) {
+                const node = findNodeById(treeData, nodeId);
+                pushHistory(treeData);
+                const newNode = {
+                    id: Date.now() + Math.random().toString(36),
+                    text: nextEvent,
+                    prob: 1.0,
+                    children: generateBranches(nextEvent, node.context + ' | ' + nextEvent),
+                    context: node.context + ' | ' + nextEvent,
+                    x: 0, y: 0,
+                    type: determineNodeType(nextEvent, parseContextForElements(node.context)),
+                    collapsed: false
+                };
+                node.children.push(newNode);
+                renderMindMap();
+                textarea.value = '';
+                hideInputNext(nodeId);
+                updateProgress(`Saga twist woven: "${nextEvent.substring(0, 30)}..." – sub-paths emerge! ♾️`);
+                saveToStorage();
+            }
+        }
+
+        // ==================== SEARCH & HIGHLIGHT ====================
+        function searchNodes() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            searchHighlights.clear();
+            if (!query) {
+                document.querySelectorAll('.mindmap-node').forEach(n => n.classList.remove('highlighted'));
+                return;
+            }
+            traverseTree(treeData, (node) => {
+                if (node.text.toLowerCase().includes(query)) {
+                    searchHighlights.add(node.id);
+                    const el = document.getElementById(`node-${node.id}`);
+                    if (el) el.classList.add('highlighted');
+                }
+            });
+            focusNode(Array.from(searchHighlights)[0] || treeData.id);
+        }
+
+        function traverseTree(node, callback) {
+            callback(node);
+            node.children.forEach(child => traverseTree(child, callback));
+        }
+
+        // ==================== DICE & RANDOM ====================
+        function rollRandomBranch() {
+            const leaves = getLeafNodes(treeData);
+            if (leaves.length === 0) return alert('No branches to roll!');
+            const roll = Math.floor(Math.random() * 20) + 1; // d20
+            const selected = leaves[Math.floor(Math.random() * leaves.length)]; // Or weighted by prob
+            document.getElementById('diceResult').innerHTML = `Rolled ${roll}! Traversed to: <strong>${selected.text.substring(0, 50)}...</strong>`;
+            focusNode(selected.id);
+            updateProgress(`Fate rolled: Path ${selected.type} activated! 🎲`);
+        }
+
+        function rollFromNode(nodeId, event) {
+            event.stopPropagation();
+            const node = findNodeById(treeData, nodeId);
+            if (node.children.length > 0) {
+                const weights = node.children.map(c => c.prob);
+                const total = weights.reduce((a, b) => a + b, 0);
+                let rand = Math.random() * total;
+                let chosen;
+                for (let child of node.children) {
+                    rand -= child.prob;
+                    if (rand <= 0) {
+                        chosen = child;
+                        break;
+                    }
+                }
+                if (chosen) {
+                    node.collapsed = false;
+                    focusNode(chosen.id);
+                    document.getElementById('diceResult').innerHTML = `d20 Fate: Selected "${chosen.text.substring(0, 30)}..." (${Math.round(chosen.prob * 100)}%)`;
+                }
+                renderMindMap();
+            }
+        }
+
+        function getLeafNodes(node) {
+            let leaves = [];
+            if (node.children.length === 0) leaves.push(node);
+            node.children.forEach(child => leaves = leaves.concat(getLeafNodes(child)));
+            return leaves;
+        }
+
+        // ==================== FILE I/O ====================
+        function exportTree() {
+            const dataStr = JSON.stringify(treeData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dnd-weave.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importTree(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        pushHistory(treeData);
+                        treeData = imported;
+                        renderMindMap();
+                        updateStats();
+                        updateProgress('Ancient weave imported – continue the legend! 📜');
+                        saveToStorage();
+                    } catch (err) {
+                        alert('Corrupted scroll! Invalid JSON.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('dndWeaver', JSON.stringify({ treeData, npcs, rootContext }));
+            updateProgress('Weave archived in the ether... 💾');
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('dndWeaver');
+            if (saved) {
+                const { treeData: savedTree, npcs: savedNpcs, rootContext: savedContext } = JSON.parse(saved);
+                pushHistory(treeData);
+                treeData = savedTree;
+                npcs = savedNpcs;
+                rootContext = savedContext;
+                document.getElementById('rootContext').value = rootContext;
+                renderNPCList();
+                renderMindMap();
+                updateStats();
+                updateProgress('Echoes from past sessions restored! 🕰️');
+            }
+        }
+
+        // ==================== STATS & THEME ====================
+        function updateStats() {
+            const { totalNodes, maxDepth, numBranches, collapsedCount } = calculateTreeStats(treeData);
+            document.getElementById('statsPanel').innerHTML = `
+                Total Nodes: ${totalNodes} | Max Depth: ${maxDepth} | Branches: ${numBranches} | Collapsed: ${collapsedCount}
+            `;
+        }
+
+        function calculateTreeStats(node, depth = 0) {
+            let total = 1;
+            let maxD = depth;
+            let branches = node.children.length;
+            let collapsed = node.collapsed ? 1 : 0;
+            node.children.forEach(child => {
+                const childStats = calculateTreeStats(child, depth + 1);
+                total += childStats.total;
+                maxD = Math.max(maxD, childStats.maxD);
+                branches += childStats.branches;
+                collapsed += childStats.collapsed;
+            });
+            return { totalNodes: total, maxDepth: maxD, numBranches: branches, collapsedCount: collapsed };
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.style.filter = isDarkMode ? 'none' : 'invert(1) hue-rotate(180deg)';
+            updateProgress(isDarkMode ? 'Shadows embrace' : 'Light dawns');
+        }
+
+        // ==================== DRAG, PAN, ZOOM (Enhanced) ====================
+        function startDrag(e) {
+            isDragging = true;
+            currentNodeId = e.target.closest('.mindmap-node').dataset.nodeId;
+            dragStart.x = e.clientX;
+            dragStart.y = e.clientY;
+            e.target.closest('.mindmap-node').classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function dragNode(e) {
+            if (currentNodeId && isDragging) {
+                e.preventDefault();
+                const deltaX = (e.clientX - dragStart.x) / scale;
+                const deltaY = (e.clientY - dragStart.y) / scale;
+                const pos = nodePositions.get(currentNodeId);
+                if (pos) {
+                    pos.x += deltaX;
+                    pos.y += deltaY;
+                    const nodeEl = document.getElementById(`node-${currentNodeId}`);
+                    if (nodeEl) {
+                        nodeEl.style.left = pos.x + 'px';
+                        nodeEl.style.top = pos.y + 'px';
+                    }
+                    dragStart.x = e.clientX;
+                    dragStart.y = e.clientY;
+                    updateChildPositions(findNodeById(treeData, currentNodeId));
+                    document.getElementById('mindmapSvg').innerHTML = '';
+                    drawConnections(treeData, document.getElementById('mindmapSvg'));
+                }
+            }
+        }
+
+        function endDrag(e) {
+            if (currentNodeId) {
+                const nodeEl = document.getElementById(`node-${currentNodeId}`);
+                if (nodeEl) nodeEl.classList.remove('dragging');
+                currentNodeId = null;
+            }
+            isDragging = false;
+            saveToStorage(); // Save position changes
+        }
+
+        function updateChildPositions(node) {
+            const parentPos = nodePositions.get(node.id);
+            if (!parentPos || node.children.length === 0) return;
+            const numChildren = node.children.length;
+            const angleStep = 2 * Math.PI / numChildren;
+            const radius = 250;
+            node.children.forEach((child, i) => {
+                const angle = i * angleStep;
+                child.x = parentPos.x + Math.cos(angle) * radius;
+                child.y = parentPos.y + Math.sin(angle) * radius;
+                nodePositions.set(child.id, { x: child.x, y: child.y });
+                const childEl = document.getElementById(`node-${child.id}`);
+                if (childEl) {
+                    childEl.style.left = child.x + 'px';
+                    childEl.style.top = child.y + 'px';
+                }
+                updateChildPositions(child);
+            });
+        }
+
+        // Pan setup
+        const container = document.getElementById('mindmapContainer');
+        let panStart = { x: 0, y: 0 };
+        container.addEventListener('mousedown', (e) => {
+            if (!e.target.closest('.mindmap-node')) {
+                isDragging = true;
+                panStart.x = panX;
+                panStart.y = panY;
+                dragStart.x = e.clientX;
+                dragStart.y = e.clientY;
+            }
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && !currentNodeId) {
+                panX = panStart.x + (e.clientX - dragStart.x);
+                panY = panStart.y + (e.clientY - dragStart.y);
+                updateTransform();
+            }
+        });
+        document.addEventListener('mouseup', () => { 
+            isDragging = false; 
+        });
+
+        function updateTransform() {
+            const viewport = document.getElementById('mindmapViewport');
+            const svg = document.getElementById('mindmapSvg');
+            viewport.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+            svg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        }
+
+        function zoomIn() { 
+            scale = Math.min(scale * 1.2, 3); 
+            updateTransform(); 
+        }
+        function zoomOut() { 
+            scale = Math.max(scale / 1.2, 0.5); 
+            updateTransform(); 
+        }
+        function resetView() { 
+            scale = 1; 
+            panX = 0; 
+            panY = 0; 
+            updateTransform(); 
+        }
+
+        function focusNode(nodeId) {
+            const nodeEl = document.getElementById(`node-${nodeId}`);
+            if (nodeEl) {
+                const rect = nodeEl.getBoundingClientRect();
+                const containerRect = document.getElementById('mindmapContainer').getBoundingClientRect();
+                panX = - (rect.left - containerRect.left + rect.width / 2 - containerRect.width / 2) / scale;
+                panY = - (rect.top - containerRect.top + rect.height / 2 - containerRect.height / 2) / scale;
+                updateTransform();
+                nodeEl.style.boxShadow = nodeTypes.get(nodeId) === 'combat' ? '0 0 30px var(--danger)' : 
+                                          nodeTypes.get(nodeId) === 'social' ? '0 0 30px var(--success)' : '0 0 30px var(--info)';
+                setTimeout(() => { nodeEl.style.boxShadow = 'var(--shadow)'; }, 2000);
+            }
+        }
+
+        // ==================== UTILS ====================
+        function findNodeById(node, id) {
+            if (node.id === id) return node;
+            for (let child of node.children) {
+                const found = findNodeById(child, id);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function updateTreeWithNPCChanges() {
+            if (treeData.children.length > 0) {
+                renderMindMap(); // Re-gen visuals if needed
+            }
+        }
+
+        function updateProgress(msg) {
+            const prog = document.getElementById('progress');
+            prog.textContent = msg;
+            prog.style.opacity = '1';
+            setTimeout(() => { prog.style.opacity = '0'; }, 5000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'z': e.shiftKey ? redo() : undo(); break;
+                    case 's': e.preventDefault(); saveToStorage(); break;
+                    case 'o': loadFromStorage(); break;
+                }
+            }
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.input-next-form.active').forEach(f => f.classList.remove('active'));
+            }
+        });
+
+        // Init
+        renderNPCList();
+        loadFromStorage(); // Try load on start
+        if (treeData.text) renderMindMap(); // If loaded, render
+    </script>
+</body>
+</html>
