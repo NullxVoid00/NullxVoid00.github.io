@@ -2074,7 +2074,8 @@
                     </button>
                     
                     <div class="section-title">Background Music</div>
-                    <input type="text" class="sound-input" id="backgroundMusic" placeholder="Background Music URL" onchange="game.setBackgroundMusic(this.value)">
+                    <input type="file" id="backgroundMusicFile" accept="audio/mp3,audio/mp4,video/mp4" onchange="game.setBackgroundMusicFromFile(this.files[0])">
+                    <input type="text" class="sound-input" id="backgroundMusic" placeholder="Background Music URL or File" onchange="game.setBackgroundMusic(this.value)">
                     <div class="music-controls">
                         <button class="music-btn" id="playBtn" onclick="game.playBackgroundMusic()">▶️ Play</button>
                         <button class="music-btn" id="pauseBtn" onclick="game.pauseBackgroundMusic()">⏸️ Pause</button>
@@ -2135,9 +2136,18 @@
                 <button class="btn btn-small" onclick="game.filterSidebarLibrary('monster')">Monsters</button>
                 <button class="btn btn-small" onclick="game.filterSidebarLibrary('spell')">Spells</button>
                 <button class="btn btn-small" onclick="game.filterSidebarLibrary('item')">Items</button>
+                <button class="btn btn-small" onclick="game.filterSidebarLibrary('equipment')">Equipment</button>
+                <button class="btn btn-small" onclick="game.filterSidebarLibrary('sfx')">SFX</button>
             </div>
             
-            <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="game.saveCurrentEntity()">
+            <div class="section-title">Content Management</div>
+            <button class="btn btn-primary" onclick="game.showMonsterEditor()">Create Monster</button>
+            <button class="btn btn-primary" onclick="game.showSpellEditor()">Create Spell</button>
+            <button class="btn btn-primary" onclick="game.showItemEditor()">Create Item</button>
+            <button class="btn btn-primary" onclick="game.showEquipmentEditor()">Create Equipment</button>
+            <button class="btn btn-primary" onclick="game.showSFXEditor()">Upload SFX</button>
+            
+            <button class="btn btn-primary" style="margin-top: 15px;" onclick="game.saveCurrentEntity()">
                 💾 Save Selected Entity
             </button>
             
@@ -2356,15 +2366,111 @@
                         hp: 7, maxHp: 7, ac: 15, speed: 30,
                         str: 8, dex: 14, con: 10, int: 10, wis: 8, cha: 8,
                         proficiencyBonus: 2,
-                        attacks: [{name: 'Scimitar', toHit: 4, damage: '1d6+2', damageType: 'slashing', range: 5, soundEffect: ''}],
-                        abilities: [{name: 'Nimble Escape', description: 'Disengage or Hide as bonus action', actionType: 'bonus', soundEffect: ''}],
+                        attacks: [{name: 'Scimitar', toHit: 4, damage: '1d6+2', damageType: 'slashing', range: 5, soundEffect: '', visualEffect: ''}],
+                        abilities: [{name: 'Nimble Escape', description: 'Disengage or Hide as bonus action', actionType: 'bonus', soundEffect: '', visualEffect: ''}],
                         skills: {stealth: 6},
                         savingThrows: {str: -1, dex: 2, con: 0, int: 0, wis: -1, cha: -1},
                         color: '#4a7c59',
                         cr: 0.25,
                         description: 'Small green-skinned humanoid, sneaky and aggressive.',
                         image: '',
-                        soundEffect: ''
+                        soundEffect: '',
+                        visualEffect: '',
+                        baseActions: [
+                            {
+                                name: 'Unarmed Strike',
+                                type: 'attack',
+                                actionType: 'action',
+                                toHit: 0,
+                                damage: '1',
+                                damageType: 'bludgeoning',
+                                range: 5,
+                                description: 'Make an unarmed attack using Strength',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Shove',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Shove a creature prone or push it 5 feet away',
+                                effect: 'shove',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Grapple',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Attempt to grapple a creature',
+                                effect: 'grapple',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Hide',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Dexterity (Stealth) check to hide',
+                                skill: 'stealth',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dash',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Double your movement speed this turn',
+                                effect: 'dash',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Disengage',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Move without provoking opportunity attacks',
+                                effect: 'disengage',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dodge',
+                                type: 'defense',
+                                actionType: 'action',
+                                description: 'Focus on avoiding attacks',
+                                effect: 'dodge',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Help',
+                                type: 'support',
+                                actionType: 'action',
+                                description: 'Help an ally with their next ability check or attack',
+                                effect: 'help',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Ready',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Prepare an action to trigger on a condition',
+                                effect: 'ready',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Search',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
+                                skill: 'perception',
+                                soundEffect: '',
+                                visualEffect: ''
+                            }
+                        ]
                     },
                     {
                         name: 'Orc',
@@ -2372,15 +2478,111 @@
                         hp: 15, maxHp: 15, ac: 13, speed: 30,
                         str: 16, dex: 12, con: 16, int: 7, wis: 11, cha: 10,
                         proficiencyBonus: 2,
-                        attacks: [{name: 'Greataxe', toHit: 5, damage: '1d12+3', damageType: 'slashing', range: 5, soundEffect: ''}],
-                        abilities: [{name: 'Aggressive', description: 'Bonus action to move up to speed toward enemy', actionType: 'bonus', soundEffect: ''}],
+                        attacks: [{name: 'Greataxe', toHit: 5, damage: '1d12+3', damageType: 'slashing', range: 5, soundEffect: '', visualEffect: ''}],
+                        abilities: [{name: 'Aggressive', description: 'Bonus action to move up to speed toward enemy', actionType: 'bonus', soundEffect: '', visualEffect: ''}],
                         skills: {intimidation: 2},
                         savingThrows: {str: 3, dex: 1, con: 3, int: -2, wis: 0, cha: 0},
                         color: '#8b4513',
                         cr: 0.5,
                         description: 'Savage humanoid warrior with gray skin and tusks.',
                         image: '',
-                        soundEffect: ''
+                        soundEffect: '',
+                        visualEffect: '',
+                        baseActions: [
+                            {
+                                name: 'Unarmed Strike',
+                                type: 'attack',
+                                actionType: 'action',
+                                toHit: 0,
+                                damage: '1',
+                                damageType: 'bludgeoning',
+                                range: 5,
+                                description: 'Make an unarmed attack using Strength',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Shove',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Shove a creature prone or push it 5 feet away',
+                                effect: 'shove',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Grapple',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Attempt to grapple a creature',
+                                effect: 'grapple',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Hide',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Dexterity (Stealth) check to hide',
+                                skill: 'stealth',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dash',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Double your movement speed this turn',
+                                effect: 'dash',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Disengage',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Move without provoking opportunity attacks',
+                                effect: 'disengage',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dodge',
+                                type: 'defense',
+                                actionType: 'action',
+                                description: 'Focus on avoiding attacks',
+                                effect: 'dodge',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Help',
+                                type: 'support',
+                                actionType: 'action',
+                                description: 'Help an ally with their next ability check or attack',
+                                effect: 'help',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Ready',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Prepare an action to trigger on a condition',
+                                effect: 'ready',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Search',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
+                                skill: 'perception',
+                                soundEffect: '',
+                                visualEffect: ''
+                            }
+                        ]
                     },
                     {
                         name: 'Mimic',
@@ -2389,12 +2591,12 @@
                         str: 17, dex: 12, con: 15, int: 5, wis: 13, cha: 8,
                         proficiencyBonus: 2,
                         attacks: [
-                            {name: 'Pseudopod', toHit: 5, damage: '1d8+3', damageType: 'bludgeoning', range: 5, soundEffect: ''},
-                            {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing', range: 5, special: 'Grapples target (escape DC 13)', soundEffect: ''}
+                            {name: 'Pseudopod', toHit: 5, damage: '1d8+3', damageType: 'bludgeoning', range: 5, soundEffect: '', visualEffect: ''},
+                            {name: 'Bite', toHit: 5, damage: '1d8+3', damageType: 'piercing', range: 5, special: 'Grapples target (escape DC 13)', soundEffect: '', visualEffect: ''}
                         ],
                         abilities: [
-                            {name: 'Shapechanger', description: 'Can polymorph into object', actionType: 'action', soundEffect: ''},
-                            {name: 'Adhesive', description: 'Adheres to anything that touches it', actionType: 'passive', soundEffect: ''}
+                            {name: 'Shapechanger', description: 'Can polymorph into object', actionType: 'action', soundEffect: '', visualEffect: ''},
+                            {name: 'Adhesive', description: 'Adheres to anything that touches it', actionType: 'passive', soundEffect: '', visualEffect: ''}
                         ],
                         skills: {stealth: 5},
                         savingThrows: {str: 3, dex: 1, con: 2, int: -3, wis: 1, cha: -1},
@@ -2403,7 +2605,103 @@
                         isMimic: true,
                         description: 'Shapeshifting predator that mimics objects.',
                         image: '',
-                        soundEffect: ''
+                        soundEffect: '',
+                        visualEffect: '',
+                        baseActions: [
+                            {
+                                name: 'Unarmed Strike',
+                                type: 'attack',
+                                actionType: 'action',
+                                toHit: 0,
+                                damage: '1',
+                                damageType: 'bludgeoning',
+                                range: 5,
+                                description: 'Make an unarmed attack using Strength',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Shove',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Shove a creature prone or push it 5 feet away',
+                                effect: 'shove',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Grapple',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Attempt to grapple a creature',
+                                effect: 'grapple',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Hide',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Dexterity (Stealth) check to hide',
+                                skill: 'stealth',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dash',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Double your movement speed this turn',
+                                effect: 'dash',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Disengage',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Move without provoking opportunity attacks',
+                                effect: 'disengage',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dodge',
+                                type: 'defense',
+                                actionType: 'action',
+                                description: 'Focus on avoiding attacks',
+                                effect: 'dodge',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Help',
+                                type: 'support',
+                                actionType: 'action',
+                                description: 'Help an ally with their next ability check or attack',
+                                effect: 'help',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Ready',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Prepare an action to trigger on a condition',
+                                effect: 'ready',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Search',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
+                                skill: 'perception',
+                                soundEffect: '',
+                                visualEffect: ''
+                            }
+                        ]
                     }
                 ],
                 spells: [
@@ -2505,7 +2803,120 @@
                         visualEffect: ''
                     }
                 ],
-                players: []
+                players: [
+                    {
+                        name: 'Fighter',
+                        type: 'player',
+                        hp: 10, maxHp: 10, ac: 10, speed: 30,
+                        str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10,
+                        proficiencyBonus: 2,
+                        attacks: [],
+                        abilities: [],
+                        skills: {},
+                        savingThrows: {str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0},
+                        color: '#3b82f6',
+                        description: 'Standard fighter template.',
+                        image: '',
+                        soundEffect: '',
+                        visualEffect: '',
+                        baseActions: [
+                            {
+                                name: 'Unarmed Strike',
+                                type: 'attack',
+                                actionType: 'action',
+                                toHit: 0,
+                                damage: '1',
+                                damageType: 'bludgeoning',
+                                range: 5,
+                                description: 'Make an unarmed attack using Strength',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Shove',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Shove a creature prone or push it 5 feet away',
+                                effect: 'shove',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Grapple',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Attempt to grapple a creature',
+                                effect: 'grapple',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Hide',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Dexterity (Stealth) check to hide',
+                                skill: 'stealth',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dash',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Double your movement speed this turn',
+                                effect: 'dash',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Disengage',
+                                type: 'movement',
+                                actionType: 'action',
+                                description: 'Move without provoking opportunity attacks',
+                                effect: 'disengage',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Dodge',
+                                type: 'defense',
+                                actionType: 'action',
+                                description: 'Focus on avoiding attacks',
+                                effect: 'dodge',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Help',
+                                type: 'support',
+                                actionType: 'action',
+                                description: 'Help an ally with their next ability check or attack',
+                                effect: 'help',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Ready',
+                                type: 'special',
+                                actionType: 'action',
+                                description: 'Prepare an action to trigger on a condition',
+                                effect: 'ready',
+                                soundEffect: '',
+                                visualEffect: ''
+                            },
+                            {
+                                name: 'Search',
+                                type: 'skill',
+                                actionType: 'action',
+                                description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
+                                skill: 'perception',
+                                soundEffect: '',
+                                visualEffect: ''
+                            }
+                        ]
+                    }
+                ],
+                sfx: []
             },
             
             // Skills list for D&D 5e
@@ -2825,7 +3236,7 @@
                         <h2>🤖 Create NPC</h2>
                         <div class="form-group">
                             <label class="form-label">Class:</label>
-                            <select id="npcClassSelect" class="form-select">
+                            <select id="npcClassSelectSelect" class="form-select">
                                 ${this.classList.map(cls => `<option value="${cls}">${cls}</option>`).join('')}
                             </select>
                             <input type="text" id="npcCustomClass" placeholder="Enter custom class name" class="custom-input">
@@ -2892,7 +3303,7 @@
                 `;
                 
                 // Add event listeners for custom option toggles
-                modal.querySelector('#npcClassSelect').addEventListener('change', (e) => {
+                modal.querySelector('#npcClassSelectSelect').addEventListener('change', (e) => {
                     const customInput = modal.querySelector('#npcCustomClass');
                     if (e.target.value === 'Custom') {
                         customInput.classList.add('show');
@@ -2915,7 +3326,7 @@
             
             createNPCFromModal(name) {
                 const modal = document.querySelector('.modal-overlay');
-                const classSelect = modal.querySelector('#npcClassSelect');
+                const classSelect = modal.querySelector('#npcClassSelectSelect');
                 const customClass = modal.querySelector('#npcCustomClass');
                 const raceSelect = modal.querySelector('#npcRaceSelect');
                 const customRace = modal.querySelector('#npcCustomRace');
@@ -3009,13 +3420,15 @@
                 const spells = this.library.spells || [];
                 const items = this.library.items || [];
                 const equipment = this.library.equipment || [];
+                const sfx = this.library.sfx || [];
                 
                 const all = [
                     ...monsters.map(m => ({...m, category: 'monster'})),
                     ...players.map(p => ({...p, category: 'player'})),
                     ...spells.map(s => ({...s, category: 'spell'})),
                     ...items.map(i => ({...i, category: 'item'})),
-                    ...equipment.map(e => ({...e, category: 'equipment'}))
+                    ...equipment.map(e => ({...e, category: 'equipment'})),
+                    ...sfx.map(s => ({...s, category: 'sfx'}))
                 ];
                 
                 all.forEach(item => {
@@ -3029,17 +3442,33 @@
                     if (item.category === 'monster' || item.category === 'player') {
                         html += `<p style="font-size: 11px; color: #9ca3af;">HP: ${item.hp}/${item.maxHp} | AC: ${item.ac}</p>`;
                         if (item.cr) html += `<p style="font-size: 10px; color: #6b7280;">CR: ${item.cr}</p>`;
+                        html += `<button class="btn btn-small btn-primary" style="width: 100%; margin-top: 8px; padding: 4px 8px; font-size: 10px;" onclick="game.addFromLibrarySidebar('${item.name}', '${item.category}')">Add to Board</button>`;
                     } else if (item.category === 'spell') {
                         html += `<p style="font-size: 11px; color: #9ca3af;">Level ${item.level} ${item.school}</p>`;
                         if (item.damage) html += `<p style="font-size: 10px; color: #6b7280;">Damage: ${item.damage}</p>`;
                         if (item.healing) html += `<p style="font-size: 10px; color: #6b7280;">Healing: ${item.healing}</p>`;
+                        html += `<button class="btn btn-small btn-primary" style="width: 100%; margin-top: 8px; padding: 4px 8px; font-size: 10px;" onclick="game.assignSpellToCharacter('${item.name}')">Assign to Character</button>`;
                     } else if (item.category === 'item' || item.category === 'equipment') {
                         if (item.damage) html += `<p style="font-size: 10px; color: #6b7280;">Damage: ${item.damage}</p>`;
                         if (item.ac) html += `<p style="font-size: 10px; color: #6b7280;">AC: ${item.ac}</p>`;
                         if (item.healing) html += `<p style="font-size: 10px; color: #6b7280;">Healing: ${item.healing}</p>`;
+                        html += `<div style="display: flex; gap: 5px; margin-top: 8px;">
+                            <button class="btn btn-small btn-primary" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.addFromLibrarySidebar('${item.name}', '${item.category}')">Add to Board</button>
+                            <button class="btn btn-small btn-success" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.addToInventory('${item.name}', '${item.category}')">Add to Inventory</button>
+                        </div>`;
+                    } else if (item.category === 'sfx') {
+                        html += `<p style="font-size: 11px; color: #9ca3af;">Category: ${item.category}</p>`;
+                        html += `<div style="display: flex; gap: 5px; margin-top: 8px;">
+                            <button class="btn btn-small btn-primary" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.previewSFX('${item.url}')">Preview</button>
+                            <button class="btn btn-small btn-success" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.assignSFX('${item.name}')">Assign</button>
+                        </div>`;
                     }
                     
-                    html += `<button class="btn btn-small btn-primary" style="width: 100%; margin-top: 8px; padding: 4px 8px; font-size: 10px;" onclick="game.addFromLibrarySidebar('${item.name}', '${item.category}')">Add to Board</button>`;
+                    html += `<div style="display: flex; gap: 5px; margin-top: 8px;">
+                        <button class="btn btn-small btn-warning" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.editLibraryItem('${item.name}', '${item.category}')">Edit</button>
+                        <button class="btn btn-small btn-danger" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.duplicateLibraryItem('${item.name}', '${item.category}')">Duplicate</button>
+                        <button class="btn btn-small btn-danger" style="flex: 1; padding: 4px 8px; font-size: 10px;" onclick="game.removeLibraryItem('${item.name}', '${item.category}')">Delete</button>
+                    </div>`;
                     
                     card.innerHTML = html;
                     grid.appendChild(card);
@@ -3050,6 +3479,64 @@
                 this.addFromLibrary(name, category);
                 // Keep sidebar open but switch to combat tab
                 switchTab({target: document.querySelector('.tab[onclick*="combat"]')}, 'combat');
+            },
+            
+            assignSpellToCharacter(spellName) {
+                const spell = this.library.spells.find(s => s.name === spellName);
+                if (!spell) return;
+                
+                // Show modal to select character
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>Assign Spell: ${spellName}</h2>
+                        <div class="item-list">
+                            ${this.entities.filter(e => e.type === 'player' || e.type === 'npc').map(e => `
+                                <div class="item-card" onclick="game.assignSpellToEntity('${spellName}', ${e.id}); this.closest('.modal-overlay').remove();">
+                                    ${e.name}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            addToInventory(itemName, category) {
+                const item = category === 'item' ? this.library.items.find(i => i.name === itemName) : 
+                            category === 'equipment' ? this.library.equipment.find(e => e.name === itemName) : null;
+                if (!item) return;
+                
+                // Show modal to select character
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>Add to Inventory: ${itemName}</h2>
+                        <div class="item-list">
+                            ${this.entities.filter(e => e.type === 'player' || e.type === 'npc').map(e => `
+                                <div class="item-card" onclick="game.assignItemToEntity('${itemName}', '${category}', ${e.id}); this.closest('.modal-overlay').remove();">
+                                    ${e.name}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            assignSFX(sfxName) {
+                const sfx = this.library.sfx.find(s => s.name === sfxName);
+                if (!sfx) return;
+                
+                // For assignment, perhaps to selected entity or global
+                if (this.selectedEntity) {
+                    this.selectedEntity.soundEffect = sfx.url;
+                    this.addLog(`Assigned SFX ${sfxName} to ${this.selectedEntity.name}`, 'info');
+                } else {
+                    alert('Select an entity first to assign SFX');
+                }
             },
             
             filterSidebarLibrary(filterType) {
@@ -3076,7 +3563,376 @@
                 });
             },
             
-            // Background Music Functions
+            // Content Editors
+            showMonsterEditor(monster = null) {
+                const isEdit = !!monster;
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>${isEdit ? 'Edit' : 'Create'} Monster</h2>
+                        <input type="text" id="monsterName" placeholder="Name" value="${monster ? monster.name : ''}">
+                        <input type="number" id="monsterHP" placeholder="HP" value="${monster ? monster.hp : ''}">
+                        <input type="number" id="monsterAC" placeholder="AC" value="${monster ? monster.ac : ''}">
+                        <input type="number" id="monsterSpeed" placeholder="Speed" value="${monster ? monster.speed : ''}">
+                        <input type="number" id="monsterStr" placeholder="Strength" value="${monster ? monster.str : ''}">
+                        <input type="number" id="monsterDex" placeholder="Dexterity" value="${monster ? monster.dex : ''}">
+                        <input type="number" id="monsterCon" placeholder="Constitution" value="${monster ? monster.con : ''}">
+                        <input type="number" id="monsterInt" placeholder="Intelligence" value="${monster ? monster.int : ''}">
+                        <input type="number" id="monsterWis" placeholder="Wisdom" value="${monster ? monster.wis : ''}">
+                        <input type="number" id="monsterCha" placeholder="Charisma" value="${monster ? monster.cha : ''}">
+                        <input type="text" id="monsterDescription" placeholder="Description" value="${monster ? monster.description : ''}">
+                        <input type="text" id="monsterImage" placeholder="Image URL" value="${monster ? monster.image : ''}">
+                        <input type="text" id="monsterSound" placeholder="Sound Effect URL" value="${monster ? monster.soundEffect : ''}">
+                        <input type="text" id="monsterVFX" placeholder="Visual Effect URL" value="${monster ? monster.visualEffect : ''}">
+                        <button class="btn btn-success" onclick="game.saveMonsterFromEditor(${isEdit ? `'${monster.name}'` : 'null'})">Save</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            saveMonsterFromEditor(originalName) {
+                const modal = document.querySelector('.modal-overlay');
+                const monster = {
+                    name: modal.querySelector('#monsterName').value,
+                    type: 'monster',
+                    hp: parseInt(modal.querySelector('#monsterHP').value) || 10,
+                    maxHp: parseInt(modal.querySelector('#monsterHP').value) || 10,
+                    ac: parseInt(modal.querySelector('#monsterAC').value) || 10,
+                    speed: parseInt(modal.querySelector('#monsterSpeed').value) || 30,
+                    str: parseInt(modal.querySelector('#monsterStr').value) || 10,
+                    dex: parseInt(modal.querySelector('#monsterDex').value) || 10,
+                    con: parseInt(modal.querySelector('#monsterCon').value) || 10,
+                    int: parseInt(modal.querySelector('#monsterInt').value) || 10,
+                    wis: parseInt(modal.querySelector('#monsterWis').value) || 10,
+                    cha: parseInt(modal.querySelector('#monsterCha').value) || 10,
+                    description: modal.querySelector('#monsterDescription').value,
+                    image: modal.querySelector('#monsterImage').value,
+                    soundEffect: modal.querySelector('#monsterSound').value,
+                    visualEffect: modal.querySelector('#monsterVFX').value,
+                    proficiencyBonus: 2,
+                    attacks: [],
+                    abilities: [],
+                    skills: {},
+                    savingThrows: {},
+                    baseActions: [...this.baseCombatActions]
+                };
+                
+                if (this.validateContent(monster, 'monster')) {
+                    if (originalName) {
+                        const index = this.library.monsters.findIndex(m => m.name === originalName);
+                        if (index > -1) this.library.monsters[index] = monster;
+                    } else {
+                        this.library.monsters.push(monster);
+                    }
+                    this.saveLibrary();
+                    this.populateLibrarySidebar();
+                    modal.remove();
+                }
+            },
+            
+            showSpellEditor(spell = null) {
+                const isEdit = !!spell;
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>${isEdit ? 'Edit' : 'Create'} Spell</h2>
+                        <input type="text" id="spellName" placeholder="Name" value="${spell ? spell.name : ''}">
+                        <input type="number" id="spellLevel" placeholder="Level" value="${spell ? spell.level : ''}">
+                        <input type="text" id="spellSchool" placeholder="School" value="${spell ? spell.school : ''}">
+                        <input type="text" id="spellDamage" placeholder="Damage (e.g., 8d6)" value="${spell ? spell.damage : ''}">
+                        <input type="text" id="spellDamageType" placeholder="Damage Type" value="${spell ? spell.damageType : ''}">
+                        <input type="text" id="spellHealing" placeholder="Healing (e.g., 1d8+3)" value="${spell ? spell.healing : ''}">
+                        <input type="text" id="spellDescription" placeholder="Description" value="${spell ? spell.description : ''}">
+                        <input type="text" id="spellSound" placeholder="Sound Effect URL" value="${spell ? spell.soundEffect : ''}">
+                        <input type="text" id="spellVFX" placeholder="Visual Effect URL" value="${spell ? spell.visualEffect : ''}">
+                        <button class="btn btn-success" onclick="game.saveSpellFromEditor(${isEdit ? `'${spell.name}'` : 'null'})">Save</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            saveSpellFromEditor(originalName) {
+                const modal = document.querySelector('.modal-overlay');
+                const spell = {
+                    name: modal.querySelector('#spellName').value,
+                    type: 'spell',
+                    level: parseInt(modal.querySelector('#spellLevel').value) || 0,
+                    school: modal.querySelector('#spellSchool').value || 'evocation',
+                    damage: modal.querySelector('#spellDamage').value,
+                    damageType: modal.querySelector('#spellDamageType').value,
+                    healing: modal.querySelector('#spellHealing').value,
+                    description: modal.querySelector('#spellDescription').value,
+                    soundEffect: modal.querySelector('#spellSound').value,
+                    visualEffect: modal.querySelector('#spellVFX').value
+                };
+                
+                if (this.validateContent(spell, 'spell')) {
+                    if (originalName) {
+                        const index = this.library.spells.findIndex(s => s.name === originalName);
+                        if (index > -1) this.library.spells[index] = spell;
+                    } else {
+                        this.library.spells.push(spell);
+                    }
+                    this.saveLibrary();
+                    this.populateLibrarySidebar();
+                    modal.remove();
+                }
+            },
+            
+            showItemEditor(item = null) {
+                const isEdit = !!item;
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>${isEdit ? 'Edit' : 'Create'} Item</h2>
+                        <input type="text" id="itemName" placeholder="Name" value="${item ? item.name : ''}">
+                        <input type="text" id="itemHealing" placeholder="Healing (e.g., 2d4+2)" value="${item ? item.healing : ''}">
+                        <input type="text" id="itemDamage" placeholder="Damage (e.g., 1d8)" value="${item ? item.damage : ''}">
+                        <input type="text" id="itemRarity" placeholder="Rarity" value="${item ? item.rarity : ''}">
+                        <input type="text" id="itemDescription" placeholder="Description" value="${item ? item.description : ''}">
+                        <input type="text" id="itemSound" placeholder="Sound Effect URL" value="${item ? item.soundEffect : ''}">
+                        <input type="text" id="itemVFX" placeholder="Visual Effect URL" value="${item ? item.visualEffect : ''}">
+                        <button class="btn btn-success" onclick="game.saveItemFromEditor(${isEdit ? `'${item.name}'` : 'null'})">Save</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            saveItemFromEditor(originalName) {
+                const modal = document.querySelector('.modal-overlay');
+                const item = {
+                    name: modal.querySelector('#itemName').value,
+                    type: 'item',
+                    healing: modal.querySelector('#itemHealing').value,
+                    damage: modal.querySelector('#itemDamage').value,
+                    rarity: modal.querySelector('#itemRarity').value || 'common',
+                    description: modal.querySelector('#itemDescription').value,
+                    soundEffect: modal.querySelector('#itemSound').value,
+                    visualEffect: modal.querySelector('#itemVFX').value,
+                    consumable: true
+                };
+                
+                if (this.validateContent(item, 'item')) {
+                    if (originalName) {
+                        const index = this.library.items.findIndex(i => i.name === originalName);
+                        if (index > -1) this.library.items[index] = item;
+                    } else {
+                        this.library.items.push(item);
+                    }
+                    this.saveLibrary();
+                    this.populateLibrarySidebar();
+                    modal.remove();
+                }
+            },
+            
+            showEquipmentEditor(equipment = null) {
+                const isEdit = !!equipment;
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>${isEdit ? 'Edit' : 'Create'} Equipment</h2>
+                        <input type="text" id="equipName" placeholder="Name" value="${equipment ? equipment.name : ''}">
+                        <input type="number" id="equipAC" placeholder="AC Bonus" value="${equipment ? equipment.ac : ''}">
+                        <input type="number" id="equipAttackBonus" placeholder="Attack Bonus" value="${equipment ? equipment.attackBonus : ''}">
+                        <input type="text" id="equipDescription" placeholder="Description" value="${equipment ? equipment.description : ''}">
+                        <input type="text" id="equipSound" placeholder="Sound Effect URL" value="${equipment ? equipment.soundEffect : ''}">
+                        <input type="text" id="equipVFX" placeholder="Visual Effect URL" value="${equipment ? equipment.visualEffect : ''}">
+                        <button class="btn btn-success" onclick="game.saveEquipmentFromEditor(${isEdit ? `'${equipment.name}'` : 'null'})">Save</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            saveEquipmentFromEditor(originalName) {
+                const modal = document.querySelector('.modal-overlay');
+                const equipment = {
+                    name: modal.querySelector('#equipName').value,
+                    type: 'equipment',
+                    ac: parseInt(modal.querySelector('#equipAC').value) || 0,
+                    attackBonus: parseInt(modal.querySelector('#equipAttackBonus').value) || 0,
+                    description: modal.querySelector('#equipDescription').value,
+                    soundEffect: modal.querySelector('#equipSound').value,
+                    visualEffect: modal.querySelector('#equipVFX').value
+                };
+                
+                if (this.validateContent(equipment, 'equipment')) {
+                    if (originalName) {
+                        const index = this.library.equipment.findIndex(e => e.name === originalName);
+                        if (index > -1) this.library.equipment[index] = equipment;
+                    } else {
+                        this.library.equipment.push(equipment);
+                    }
+                    this.saveLibrary();
+                    this.populateLibrarySidebar();
+                    modal.remove();
+                }
+            },
+            
+            showSFXEditor(sfx = null) {
+                const isEdit = !!sfx;
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h2>${isEdit ? 'Edit' : 'Upload'} SFX</h2>
+                        <input type="text" id="sfxName" placeholder="Name" value="${sfx ? sfx.name : ''}">
+                        <input type="file" id="sfxFile" accept="audio/mp3">
+                        <input type="text" id="sfxCategory" placeholder="Category (e.g., combat)" value="${sfx ? sfx.category : ''}">
+                        <button class="btn btn-success" onclick="game.saveSFXFromEditor(${isEdit ? `'${sfx.name}'` : 'null'})">Save</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            },
+            
+            saveSFXFromEditor(originalName) {
+                const modal = document.querySelector('.modal-overlay');
+                const name = modal.querySelector('#sfxName').value;
+                const category = modal.querySelector('#sfxCategory').value;
+                const fileInput = modal.querySelector('#sfxFile');
+                
+                if (fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const sfx = {
+                            name: name,
+                            category: category,
+                            url: e.target.result // base64
+                        };
+                        
+                        if (originalName) {
+                            const index = this.library.sfx.findIndex(s => s.name === originalName);
+                            if (index > -1) this.library.sfx[index] = sfx;
+                        } else {
+                            this.library.sfx.push(sfx);
+                        }
+                        this.saveLibrary();
+                        this.populateLibrarySidebar();
+                        modal.remove();
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else if (originalName) {
+                    // Update name/category only
+                    const index = this.library.sfx.findIndex(s => s.name === originalName);
+                    if (index > -1) {
+                        this.library.sfx[index].name = name;
+                        this.library.sfx[index].category = category;
+                        this.saveLibrary();
+                        this.populateLibrarySidebar();
+                        modal.remove();
+                    }
+                }
+            },
+            
+            previewSFX(url) {
+                const audio = new Audio(url);
+                audio.play();
+            },
+            
+            editLibraryItem(name, category) {
+                const item = this.library[category + 's'].find(i => i.name === name);
+                if (!item) return;
+                
+                switch (category) {
+                    case 'monster':
+                    case 'player':
+                        this.showMonsterEditor(item);
+                        break;
+                    case 'spell':
+                        this.showSpellEditor(item);
+                        break;
+                    case 'item':
+                        this.showItemEditor(item);
+                        break;
+                    case 'equipment':
+                        this.showEquipmentEditor(item);
+                        break;
+                    case 'sfx':
+                        this.showSFXEditor(item);
+                        break;
+                }
+            },
+            
+            duplicateLibraryItem(name, category) {
+                const item = this.library[category + 's'].find(i => i.name === name);
+                if (item) {
+                    const dup = {...item, name: `${item.name} (Copy)`};
+                    this.library[category + 's'].push(dup);
+                    this.saveLibrary();
+                    this.populateLibrarySidebar();
+                }
+            },
+            
+            removeLibraryItem(name, category) {
+                if (confirm(`Delete ${name}?`)) {
+                    const index = this.library[category + 's'].findIndex(i => i.name === name);
+                    if (index > -1) {
+                        this.library[category + 's'].splice(index, 1);
+                        this.saveLibrary();
+                        this.populateLibrarySidebar();
+                    }
+                }
+            },
+            
+            validateContent(content, type) {
+                // Basic validation
+                if (!content.name) {
+                    alert('Name is required');
+                    return false;
+                }
+                
+                switch (type) {
+                    case 'spell':
+                        if (content.level === undefined) {
+                            alert('Spell level is required');
+                            return false;
+                        }
+                        break;
+                    case 'monster':
+                        if (content.hp === undefined || content.ac === undefined) {
+                            alert('HP and AC are required for monsters');
+                            return false;
+                        }
+                        break;
+                    // Add more validations as needed
+                }
+                return true;
+            },
+            
+            // Assignment functions
+            assignSpellToEntity(spellName, entityId) {
+                const entity = this.getEntity(entityId);
+                const spell = this.library.spells.find(s => s.name === spellName);
+                if (entity && spell) {
+                    if (!entity.spells) entity.spells = [];
+                    entity.spells.push({...spell});
+                    this.addLog(`Assigned ${spellName} to ${entity.name}`, 'info');
+                }
+            },
+            
+            assignItemToEntity(itemName, category, entityId) {
+                const entity = this.getEntity(entityId);
+                const item = category === 'item' ? this.library.items.find(i => i.name === itemName) :
+                             this.library.equipment.find(e => e.name === itemName);
+                if (entity && item) {
+                    if (!entity.inventory) entity.inventory = [];
+                    entity.inventory.push({...item});
+                    this.addLog(`Added ${itemName} to ${entity.name}'s inventory`, 'info');
+                }
+            },
+            
+            // Audio System
+            setBackgroundMusicFromFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.setBackgroundMusic(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            },
+            
             setBackgroundMusic(url) {
                 this.backgroundMusic.url = url;
                 if (this.backgroundMusic.audio) {
@@ -3086,7 +3942,7 @@
                 
                 if (url) {
                     // Create video element for video sources, audio element for audio sources
-                    if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('.mp4') || url.includes('.webm') || url.includes('.ogg')) {
+                    if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('.mp4') || url.includes('.webm') || url.includes('.ogg') || url.startsWith('data:video')) {
                         this.backgroundMusic.audio = document.createElement('video');
                         this.backgroundMusic.audio.style.display = 'none';
                         document.body.appendChild(this.backgroundMusic.audio);
@@ -3353,7 +4209,9 @@
                         damage: '',
                         damageType: '',
                         ac: 0,
-                        rarity: 'common'
+                        rarity: 'common',
+                        soundEffect: '',
+                        visualEffect: ''
                     });
                     
                     if (type === 'container') {
@@ -4604,8 +5462,9 @@
                     elem.innerHTML = `<img src="${effect.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
                 }
                 
-                // Make effects draggable in edit mode
+                // Make effects draggable and selectable in edit mode
                 if (this.editMode) {
+                    elem.style.pointerEvents = 'auto';
                     elem.addEventListener('click', () => this.selectEntity(effect));
                     elem.draggable = true;
                     elem.addEventListener('dragstart', (e) => this.handleDragStart(e, effect));
@@ -5548,6 +6407,16 @@
                         <input type="text" value="${entity.image}" onchange="game.updateEntity(${entity.id}, 'image', this.value)" class="stat-input" style="width: 200px;">
                     </div>
                     
+                    <div class="stat-row">
+                        <span>Sound Effect:</span>
+                        <input type="text" value="${entity.soundEffect || ''}" onchange="game.updateEntity(${entity.id}, 'soundEffect', this.value)" class="stat-input" style="width: 200px;">
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span>Visual Effect:</span>
+                        <input type="text" value="${entity.visualEffect || ''}" onchange="game.updateEntity(${entity.id}, 'visualEffect', this.value)" class="stat-input" style="width: 200px;">
+                    </div>
+                    
                     <button class="btn btn-primary btn-small" onclick="game.openSpellManager(${entity.id})">Manage Spells</button>
                     <button class="btn btn-primary btn-small" onclick="game.openInventoryManager(${entity.id})">Manage Inventory</button>
                     
@@ -6062,7 +6931,7 @@
                             </div>
                         </div>
                         
-                        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                       <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
                             <button class="btn btn-danger" onclick="this.parentElement.parentElement.parentElement.remove()">Cancel</button>
                             <button class="btn btn-success" onclick="game.createChestFromModal()">Create Chest</button>
                         </div>
@@ -6409,10 +7278,22 @@
                     
                     const data = JSON.parse(importField.value);
                     
-                    // Merge libraries
-                    ['monsters', 'spells', 'items', 'equipment', 'players'].forEach(key => {
+                    // Merge libraries with backward compatibility
+                    ['monsters', 'spells', 'items', 'equipment', 'players', 'sfx'].forEach(key => {
                         if (data[key] && Array.isArray(data[key])) {
                             data[key].forEach(newItem => {
+                                // Add missing fields
+                                if (key === 'monsters' || key === 'players') {
+                                    newItem.baseActions = newItem.baseActions || [...this.baseCombatActions];
+                                    newItem.soundEffect = newItem.soundEffect || '';
+                                    newItem.visualEffect = newItem.visualEffect || '';
+                                } else if (key === 'spells') {
+                                    newItem.soundEffect = newItem.soundEffect || '';
+                                    newItem.visualEffect = newItem.visualEffect || '';
+                                } else if (key === 'items' || key === 'equipment') {
+                                    newItem.soundEffect = newItem.soundEffect || '';
+                                    newItem.visualEffect = newItem.visualEffect || '';
+                                }
                                 if (!this.library[key].some(item => item.name === newItem.name)) {
                                     this.library[key].push(newItem);
                                 }
