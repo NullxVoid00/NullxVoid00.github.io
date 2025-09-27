@@ -7,6 +7,7 @@
     <style>
         :root {
             --primary-hue: 262;
+            --background-hue: 240;
         }
 
         * {
@@ -26,8 +27,8 @@
         /* Tab System */
         .tab-container {
             display: flex;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16161f 100%);
-            border-bottom: 2px solid #2a2a3e;
+            background: linear-gradient(180deg, hsl(var(--background-hue), 20%, 14%) 0%, hsl(var(--background-hue), 33%, 8%) 100%);
+            border-bottom: 2px solid hsl(var(--background-hue), 20%, 20%);
             padding: 0 20px;
             height: 50px;
         }
@@ -74,10 +75,10 @@
         /* Sidebar */
         .sidebar {
             width: 320px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1e 100%);
+            background: linear-gradient(180deg, hsl(var(--background-hue), 20%, 14%) 0%, hsl(var(--background-hue), 33%, 6%) 100%);
             padding: 20px;
             overflow-y: auto;
-            border-right: 1px solid #2a2a3e;
+            border-right: 1px solid hsl(var(--background-hue), 20%, 20%);
         }
       
         .sidebar h2 {
@@ -120,12 +121,12 @@
         }
       
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, hsl(var(--primary-hue), 83%, 58%), hsl(var(--primary-hue), 83%, 53%));
             color: white;
         }
       
         .btn-primary:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, hsl(var(--primary-hue), 83%, 53%), hsl(var(--primary-hue), 83%, 48%));
             transform: translateY(-2px);
         }
       
@@ -366,7 +367,7 @@
         .game-board {
             flex: 1;
             position: relative;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            background: linear-gradient(135deg, hsl(var(--background-hue), 20%, 14%) 0%, hsl(var(--background-hue), 33%, 8%) 100%);
             overflow: hidden;
             background-size: cover;
             background-position: center;
@@ -473,6 +474,11 @@
                 transform: scale(1.08);
                 filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8));
             }
+        }
+      
+        .entity.hidden {
+            opacity: 0.5;
+            filter: grayscale(100%);
         }
       
         .entity-circle {
@@ -845,7 +851,7 @@
             padding: 20px;
             height: 100%;
             overflow-y: auto;
-            background: #0f0f1e;
+            background: hsl(var(--background-hue), 33%, 6%);
         }
       
         .character-list {
@@ -1358,7 +1364,7 @@
             padding: 20px;
             height: 100%;
             overflow-y: auto;
-            background: #0f0f1e;
+            background: hsl(var(--background-hue), 33%, 6%);
         }
       
         .background-list {
@@ -1581,8 +1587,8 @@
             right: -400px;
             width: 400px;
             height: 100vh;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1e 100%);
-            border-left: 2px solid #2a2a3e;
+            background: linear-gradient(180deg, hsl(var(--background-hue), 20%, 14%) 0%, hsl(var(--background-hue), 33%, 6%) 100%);
+            border-left: 2px solid hsl(var(--background-hue), 20%, 20%);
             transition: right 0.3s ease-out;
             z-index: 999;
             display: flex;
@@ -1595,7 +1601,7 @@
       
         .expandable-library-header {
             padding: 20px;
-            border-bottom: 1px solid #2a2a3e;
+            border-bottom: 1px solid hsl(var(--background-hue), 20%, 20%);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -2158,7 +2164,7 @@
   
     <!-- Saved Media Tab -->
     <div id="media-tab" class="tab-content">
-        <div style="padding: 20px; height: 100%; overflow-y: auto; background: #0f0f1e;">
+        <div style="padding: 20px; height: 100%; overflow-y: auto; background: hsl(var(--background-hue), 33%, 6%);">
             <h2 style="color: #fbbf24; margin-bottom: 20px;">🎵 Saved Media</h2>
           
             <div class="section">
@@ -2208,13 +2214,19 @@
 
     <!-- Customization Tab -->
     <div id="customization-tab" class="tab-content">
-        <div style="padding: 20px; height: 100%; overflow-y: auto; background: #0f0f1e;">
+        <div style="padding: 20px; height: 100%; overflow-y: auto; background: hsl(var(--background-hue), 33%, 6%);">
             <h2 style="color: #fbbf24; margin-bottom: 20px;">🎨 UI Customization</h2>
 
             <div class="section">
                 <div class="section-title">UI Hue Shift</div>
                 <input type="range" min="0" max="360" value="262" id="hueSlider" oninput="game.setUIHue(this.value)" style="width: 100%;">
                 <p style="text-align: center; color: #9ca3af; margin-top: 10px;">Current hue: <span id="currentHue">262</span>° (Default Purple)</p>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Background Hue Shift</div>
+                <input type="range" min="0" max="360" value="240" id="backgroundHueSlider" oninput="game.setBackgroundHue(this.value)" style="width: 100%;">
+                <p style="text-align: center; color: #9ca3af; margin-top: 10px;">Current background hue: <span id="currentBackgroundHue">240</span>° (Default Blue)</p>
             </div>
 
             <div class="section">
@@ -2226,6 +2238,9 @@
                     <option value="'Courier New', monospace">Courier New</option>
                     <option value="Georgia, serif">Georgia</option>
                 </select>
+                <div style="margin-top: 10px;">
+                    <input type="file" accept=".otf,.ttf" id="customFontUpload" onchange="game.uploadCustomFont(this.files[0])" style="width: 100%;">
+                </div>
             </div>
         </div>
     </div>
@@ -3053,6 +3068,10 @@
                 unconscious: {
                     description: 'Incapacitated, cannot move or speak, unaware. Drop items, fall prone. Auto-fail Str and Dex saves. Attacks have advantage. Hits within 5ft are crits.',
                     effects: {noActions: true, noReactions: true, speed: 0, prone: true, defenseAdvantage: true, autoFailSaves: ['str', 'dex'], meleeCritical: true}
+                },
+                hidden: {
+                    description: 'Hidden from view.',
+                    effects: {}
                 }
             },
           
@@ -3069,6 +3088,7 @@
                 this.populateLibrarySidebar();
                 this.render();
                 this.updateTurnOrder();
+                this.loadCustomFonts();
               
                 // Add starting entities if none exist
                 if (this.entities.length === 0) {
@@ -3081,6 +3101,10 @@
                 const savedHue = localStorage.getItem('dndUIHue');
                 if (savedHue) {
                     this.setUIHue(savedHue);
+                }
+                const savedBackgroundHue = localStorage.getItem('dndBackgroundHue');
+                if (savedBackgroundHue) {
+                    this.setBackgroundHue(savedBackgroundHue);
                 }
                 const savedFont = localStorage.getItem('dndUIFont');
                 if (savedFont) {
@@ -4306,7 +4330,8 @@
                         hitDice: '1d10',
                         hitDiceRemaining: 1,
                         baseActions: [...this.baseCombatActions], // Add base combat actions
-                        inspiration: 0
+                        inspiration: 0,
+                        disengaged: false
                     });
                   
                     if (type === 'player' || type === 'npc') {
@@ -4514,6 +4539,7 @@
                     current.actionUsed = false;
                     current.bonusActionUsed = false;
                     current.movement = current.speed;
+                    current.disengaged = false;
                 }
             },
           
@@ -5444,6 +5470,8 @@
                         elem.classList.add('dead');
                     } else if (entity.conditions && entity.conditions.includes('unconscious')) {
                         elem.classList.add('unconscious');
+                    } else if (entity.conditions && entity.conditions.includes('hidden')) {
+                        elem.classList.add('hidden');
                     }
                   
                     if (this.selectedEntity && this.selectedEntity.id === entity.id) {
@@ -5875,6 +5903,17 @@
                             }
                           
                             if (this.draggingEntity.movement !== undefined && movementCost <= this.draggingEntity.movement) {
+                                // Check for opportunity attacks
+                                const opportunityAttackers = this.checkForOpportunityAttacks(this.draggingEntity, this.dragStartPos, {x, y});
+                                if (opportunityAttackers.length > 0 && !this.draggingEntity.disengaged) {
+                                    opportunityAttackers.forEach(attacker => {
+                                        if (!attacker.reactionUsed && attacker.attacks.length > 0) {
+                                            this.performAttack(attacker, this.draggingEntity, attacker.attacks[0]);
+                                            attacker.reactionUsed = true;
+                                            this.addLog(`${attacker.name} takes an opportunity attack!`, 'damage');
+                                        }
+                                    });
+                                }
                                 this.draggingEntity.x = x;
                                 this.draggingEntity.y = y;
                                 this.draggingEntity.movement -= movementCost;
@@ -5906,6 +5945,30 @@
                     if (e.key === 'Enter') this.nextTurn();
                     if (e.key === 'Delete' && this.selectedEntity) this.removeEntity(this.selectedEntity.id);
                 });
+            },
+          
+            // Check for opportunity attacks
+            checkForOpportunityAttacks(movingEntity, startPos, endPos) {
+                const attackers = [];
+                const threatRange = 50; // 5ft = 50px assuming 10px/ft? Wait, grid 50px=5ft? Wait, pattern width=50, so 50px=5ft, 10px/ft.
+                // Wait, to be accurate, 5ft = 50px, no, pattern id="grid" width="50", path M 50 0 L 0 0 0 50, so lines every 50px, each square 50px = 5ft, so 10px/ft.
+                // So 5ft = 50px.
+                const enemies = this.entities.filter(e => 
+                    (e.type === 'monster' && movingEntity.type === 'player') ||
+                    (e.type === 'player' && movingEntity.type === 'monster') ||
+                    (e.type === 'npc' && movingEntity.type === 'monster') || // Assume NPCs allied with players
+                    (e.type === 'monster' && movingEntity.type === 'npc')
+                );
+              
+                enemies.forEach(enemy => {
+                    const startDist = Math.hypot(startPos.x - enemy.x, startPos.y - enemy.y);
+                    const endDist = Math.hypot(endPos.x - enemy.x, endPos.y - enemy.y);
+                    if (startDist <= threatRange && endDist > threatRange) {
+                        attackers.push(enemy);
+                    }
+                });
+              
+                return attackers;
             },
           
             // Targeting system
@@ -5961,11 +6024,19 @@
                         const shoveRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
                         const shoveTarget = Math.max(target.ac, 8 + this.getAbilityModifier(target.str));
                         if (shoveRoll >= shoveTarget) {
-                            this.addCondition(target, 'prone');
-                            this.addLog(`${performer.name} shoves ${target.name} prone!`, 'info');
-                            this.showActionDisplay('info', 'Shove Success', `${target.name} is knocked prone`);
+                            // Push away
+                            const dx = target.x - performer.x;
+                            const dy = target.y - performer.y;
+                            const dist = Math.hypot(dx, dy);
+                            if (dist > 0) {
+                                const pushDist = 50; // 5ft = 50px
+                                target.x += (dx / dist) * pushDist;
+                                target.y += (dy / dist) * pushDist;
+                            }
+                            this.addLog(`${performer.name} shoves ${target.name} away!`, 'info');
+                            this.showActionDisplay('info', 'Shove Success', `${target.name} is pushed 5 feet away`);
                         } else {
-                            this.addLog(`${performer.name} fails to shove${target.name}`, 'info');
+                            this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
                             this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
                         }
                         break;
@@ -5987,6 +6058,7 @@
                         this.showActionDisplay('info', 'Dash', `${performer.name} gains extra movement`, `Total movement: ${performer.movement} feet`);
                         break;
                     case 'disengage':
+                        performer.disengaged = true;
                         this.addLog(`${performer.name} disengages from combat.`, 'info');
                         this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
                         break;
@@ -6381,7 +6453,7 @@
                 if (container && container.inventory && container.inventory.length > 0) {
                     container.inventory.forEach((item, index) => {
                         const angle = (index / container.inventory.length) * Math.PI * 2;
-                        const distance = 80 + (index * 20);
+                        const distance = 80 + (index * 20); // Spread items in a circle
                         const newX = container.x + Math.cos(angle) * distance;
                         const newY = container.y + Math.sin(angle) * distance;
                       
@@ -6647,7 +6719,7 @@
                             const disabled = (ability.actionType === 'action' && entity.actionUsed) ||
                                            (ability.actionType === 'bonus' && entity.bonusActionUsed) ||
                                            (ability.actionType === 'reaction' && entity.reactionUsed) ? 'disabled' : '';
-                            html += `<button class="action-btn ${disabled}" title="${ability.description}">
+                           html += `<button class="action-btn ${disabled}" title="${ability.description}">
                                 💫 ${ability.name}
                             </button>`;
                         });
@@ -8082,9 +8154,49 @@
                     document.getElementById('hueSlider').value = hue;
                 }
             },
+            setBackgroundHue(hue) {
+                document.documentElement.style.setProperty('--background-hue', hue);
+                localStorage.setItem('dndBackgroundHue', hue);
+                if (document.getElementById('currentBackgroundHue')) {
+                    document.getElementById('currentBackgroundHue').textContent = hue;
+                }
+                if (document.getElementById('backgroundHueSlider')) {
+                    document.getElementById('backgroundHueSlider').value = hue;
+                }
+            },
             setUIFont(font) {
                 document.body.style.fontFamily = font;
                 localStorage.setItem('dndUIFont', font);
+            },
+            loadCustomFonts() {
+                const savedFonts = localStorage.getItem('dndCustomFonts');
+                if (savedFonts) {
+                    const fonts = JSON.parse(savedFonts);
+                    fonts.forEach(font => {
+                        const style = document.createElement('style');
+                        style.textContent = `@font-face { font-family: '${font.name}'; src: url('${font.url}') format('opentype'); }`;
+                        document.head.appendChild(style);
+                    });
+                }
+            },
+            uploadCustomFont(file) {
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const name = prompt('Enter font name:');
+                        if (name) {
+                            const fontUrl = e.target.result;
+                            const style = document.createElement('style');
+                            style.textContent = `@font-face { font-family: '${name}'; src: url('${fontUrl}') format('opentype'); }`;
+                            document.head.appendChild(style);
+                            this.setUIFont(`'${name}', sans-serif`);
+                            let savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                            savedFonts.push({name, url: fontUrl});
+                            localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         };
       
