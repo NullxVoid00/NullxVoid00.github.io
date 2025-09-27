@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Character Interaction Studio</title>
+    <style>
+        :root {
+            --bg-primary: #1a1625;
+            --bg-secondary: #2d2438;
+            --bg-tertiary: #3d3350;
+            --accent: #6b46c1;
+            --accent-light: #8b5cf6;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dialogue-bg: rgba(0, 0, 0, 0.85);
+            --choice-bg: rgba(107, 70, 193, 0.2);
+            --choice-hover: rgba(107, 70, 193, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Scene */
+        .scene-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(26, 22, 37, 0.7) 0%, 
+                rgba(26, 22, 37, 0.9) 70%, 
+                rgba(26, 22, 37, 1) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="%23401a4c"/><circle cx="200" cy="150" r="3" fill="%23fbbf24" opacity="0.6"/><circle cx="800" cy="100" r="2" fill="%23fbbf24" opacity="0.4"/><circle cx="1000" cy="200" r="2" fill="%23fbbf24" opacity="0.5"/></svg>');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Character Portrait Area */
+        .character-stage {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            right: 0;
+            bottom: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 5;
+            padding: 0 50px;
+        }
+
+        .character-portrait {
+            width: 400px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--accent));
+            border-radius: 20px;
+            border: 3px solid var(--accent-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-portrait::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .character-portrait:hover::before {
+            transform: translateX(100%);
+        }
+
+        .character-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .character-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .character-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+        }
+
+        .character-mood {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Dialogue Interface */
+        .dialogue-interface {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--dialogue-bg);
+            backdrop-filter: blur(15px);
+            border-top: 2px solid var(--accent);
+            z-index: 10;
+        }
+
+        .dialogue-content {
+            padding: 20px 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .speaker-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .speaker-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-light);
+            margin-right: 15px;
+        }
+
+        .typing-indicator {
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .dialogue-text {
+            flex: 1;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dialogue-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Player Choices */
+        .choices-panel {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 350px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            padding: 20px;
+            z-index: 8;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .choices-panel.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50%) translateX(20px); }
+            to { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+
+        .choices-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent-light);
+            text-align: center;
+        }
+
+        .choice-option {
+            background: var(--choice-bg);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .choice-option:hover {
+            background: var(--choice-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 70, 193, 0.3);
+        }
+
+        .choice-option:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Character Setup Panel */
+        .setup-panel {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            padding: 25px;
+            z-index: 8;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .setup-panel h3 {
+            color: var(--accent-light);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(107, 70, 193, 0.3);
+        }
+
+        .btn.btn-secondary {
+            background: var(--success);
+        }
+
+        .btn.btn-secondary:hover {
+            background: #059669;
+        }
+
+        .btn.btn-warning {
+            background: var(--warning);
+        }
+
+        .btn.btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn.btn-danger {
+            background: var(--danger);
+        }
+
+        .btn.btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Conversation History */
+        .history-panel {
+            position: absolute;
+            top: 100px;
+            left: 30px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 6;
+            display: none;
+        }
+
+        .history-panel.visible {
+            display: block;
+        }
+
+        .history-entry {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .history-speaker {
+            font-weight: 600;
+            color: var(--accent-light);
+            margin-bottom: 5px;
+        }
+
+        /* Emotional States */
+        .emotion-happy { color: #fbbf24; }
+        .emotion-sad { color: #60a5fa; }
+        .emotion-angry { color: #f87171; }
+        .emotion-surprised { color: #a78bfa; }
+        .emotion-disgusted { color: #34d399; }
+        .emotion-fearful { color: #fb7185; }
+        .emotion-neutral { color: var(--text-secondary); }
+
+        /* Expression Changes */
+        .character-portrait.happy .character-image { 
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            animation: bounce 0.5s ease;
+        }
+        .character-portrait.sad .character-image { 
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        }
+        .character-portrait.angry .character-image { 
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            animation: shake 0.5s ease;
+        }
+        .character-portrait.surprised .character-image { 
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            animation: pulse 0.5s ease;
+        }
+        .character-portrait.fearful .character-image { 
+            background: linear-gradient(135deg, #fb7185, #f43f5e);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Scene Settings */
+        .scene-selector {
+            position: absolute;
+            top: 100px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            padding: 15px;
+            z-index: 6;
+        }
+
+        .scene-option {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: var(--choice-bg);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .scene-option:hover {
+            background: var(--choice-hover);
+        }
+
+        .scene-option.active {
+            background: var(--accent);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .character-portrait {
+                width: 300px;
+                height: 400px;
+            }
+            
+            .character-image {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+            
+            .choices-panel, .setup-panel {
+                width: 280px;
+            }
+            
+            .history-panel {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .character-stage {
+                padding: 0 20px;
+            }
+            
+            .dialogue-content {
+                padding: 15px 20px;
+            }
+            
+            .setup-panel, .choices-panel, .history-panel {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90vw;
+                max-width: 400px;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--text-primary);
+            z-index: 100;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { border-color: var(--success); }
+        .notification.warning { border-color: var(--warning); }
+        .notification.error { border-color: var(--danger); }
+    </style>
+</head>
+<body>
+    <!-- Background Scene -->
+    <div class="scene-background" id="sceneBackground"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>🎭 Character Interaction Studio</h1>
+        <div class="header-controls">
+            <button class="btn btn-small" onclick="window.location.href='DND.html'">
+                ⚔️ Back to Combat Manager
+            </button>
+            <button class="btn btn-small btn-secondary" onclick="togglePanel('setup')">
+                👤 Character Setup
+            </button>
+            <button class="btn btn-small btn-warning" onclick="togglePanel('history')">
+                📜 History
+            </button>
+            <button class="btn btn-small" onclick="exportConversation()">
+                💾 Export Log
+            </button>
+            <button class="btn btn-small btn-danger" onclick="resetConversation()">
+                🔄 Reset
+            </button>
+        </div>
+    </header>
+
+    <!-- Character Portrait Area -->
+    <div class="character-stage">
+        <div class="character-portrait" id="characterPortrait">
+            <div class="character-mood" id="characterMood">Neutral</div>
+            <div class="character-image" id="characterImage">🧙‍♂️</div>
+            <div class="character-name" id="characterName">Mysterious Wizard</div>
+            <div class="character-title" id="characterTitle">Keeper of Ancient Secrets</div>
+        </div>
+    </div>
+
+    <!-- Scene Selector -->
+    <div class="scene-selector">
+        <div class="scene-option active" onclick="changeScene('tavern')">🍺 Tavern</div>
+        <div class="scene-option" onclick="changeScene('forest')">🌲 Forest</div>
+        <div class="scene-option" onclick="changeScene('castle')">🏰 Castle</div>
+        <div class="scene-option" onclick="changeScene('dungeon')">🕳️ Dungeon</div>
+        <div class="scene-option" onclick="changeScene('temple')">⛪ Temple</div>
+    </div>
+
+    <!-- Dialogue Interface -->
+    <div class="dialogue-interface">
+        <div class="dialogue-content">
+            <div class="speaker-info">
+                <div class="speaker-name" id="speakerName">Mysterious Wizard</div>
+                <div class="typing-indicator" id="typingIndicator"></div>
+            </div>
+            <div class="dialogue-text" id="dialogueText">
+                Welcome, travelers. I sense you have questions that burn within you like flames in the darkness. Speak, and I shall listen with the wisdom of ages.
+            </div>
+            <div class="dialogue-controls">
+                <button class="btn btn-small" onclick="generateResponse()">💬 Continue</button>
+                <button class="btn btn-small btn-secondary" onclick="showChoices()">🔀 Player Response</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Choices Panel -->
+    <div class="choices-panel" id="choicesPanel">
+        <div class="choices-title">Choose Your Response</div>
+        <div class="choice-option" onclick="selectChoice('respectful')">
+            "Greetings, wise one. We seek knowledge about the ancient ruins to the north."
+        </div>
+        <div class="choice-option" onclick="selectChoice('direct')">
+            "Cut to the chase. What do you know about the missing artifact?"
+        </div>
+        <div class="choice-option" onclick="selectChoice('suspicious')">
+            "You seem to know more than you're letting on. What aren't you telling us?"
+        </div>
+        <div class="choice-option" onclick="selectChoice('friendly')">
+            "You look like someone with fascinating stories. Care to share one?"
+        </div>
+    </div>
+
+    <!-- Character Setup Panel -->
+    <div class="setup-panel" id="setupPanel">
+        <h3>Character Configuration</h3>
+        <div class="form-group">
+            <label class="form-label">Character Name</label>
+            <input type="text" id="npcName" class="form-input" placeholder="e.g., Elara Moonwhisper" value="Mysterious Wizard">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Title/Role</label>
+            <input type="text" id="npcTitle" class="form-input" placeholder="e.g., Court Wizard, Tavern Owner" value="Keeper of Ancient Secrets">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Character Icon</label>
+            <select id="npcIcon" class="form-select">
+                <option value="🧙‍♂️">🧙‍♂️ Wizard</option>
+                <option value="👑">👑 Noble</option>
+                <option value="🗡️">🗡️ Warrior</option>
+                <option value="🏹">🏹 Ranger</option>
+                <option value="🛡️">🛡️ Paladin</option>
+                <option value="🎭">🎭 Bard</option>
+                <option value="🕯️">🕯️ Cleric</option>
+                <option value="🔮">🔮 Sorcerer</option>
+                <option value="👤">👤 Commoner</option>
+                <option value="👨‍💼">👨‍💼 Merchant</option>
+                <option value="🎪">🎪 Entertainer</option>
+                <option value="⚗️">⚗️ Alchemist</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Personality Traits</label>
+            <textarea id="npcPersonality" class="form-textarea" placeholder="e.g., Wise but cryptic, speaks in riddles, has a dry sense of humor, protective of ancient knowledge...">Wise but cryptic, speaks in riddles, protective of ancient knowledge, has lived for centuries and seen the rise and fall of kingdoms.</textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Current Goals</label>
+            <textarea id="npcGoals" class="form-textarea" placeholder="What does this character want? What are they trying to achieve?">Seeks to test the worthiness of adventurers before sharing powerful secrets. Wants to ensure ancient knowledge doesn't fall into wrong hands.</textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Secrets & Knowledge</label>
+            <textarea id="npcSecrets" class="form-textarea" placeholder="What does this character know that others don't?">Knows the location of three hidden artifacts that could reshape the kingdom. Aware of an approaching threat that the rulers refuse to acknowledge.</textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Relationship to Party</label>
+            <select id="npcRelationship" class="form-select">
+                <option value="neutral">Neutral - First Meeting</option>
+                <option value="friendly">Friendly - Positive</option>
+                <option value="hostile">Hostile - Negative</option>
+                <option value="suspicious">Suspicious - Wary</option>
+                <option value="ally">Allied - Trusted</option>
+                <option value="romantic">Romantic Interest</option>
+                <option value="mentor">Mentor Figure</option>
+                <option value="rival">Rival - Competitive</option>
+            </select>
+        </div>
+        <button class="btn" onclick="applyCharacterSettings()">✨ Apply Settings</button>
+    </div>
+
+    <!-- Conversation History Panel -->
+    <div class="history-panel" id="historyPanel">
+        <h3 style="color: var(--accent-light); margin-bottom: 15px; text-align: center;">Conversation Log</h3>
+        <div id="conversationHistory">
+            <div class="history-entry">
+                <div class="history-speaker">Mysterious Wizard</div>
+                <div>Welcome, travelers. I sense you have questions that burn within you like flames in the darkness.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ==================== APPLICATION STATE ====================
+        
+        class NPCCharacter {
+            constructor(options = {}) {
+                this.name = options.name || 'Mysterious Character';
+                this.title = options.title || 'Unknown';
+                this.icon = options.icon || '👤';
+                this.personality = options.personality || 'A mysterious individual with secrets to share.';
+                this.goals = options.goals || 'Wants to help the party on their quest.';
+                this.secrets = options.secrets || 'Holds knowledge that could change everything.';
+                this.relationship = options.relationship || 'neutral';
+                this.currentMood = 'neutral';
+                this.conversationMemory = [];
+                this.emotionalState = 0; // -5 to +5, negative = hostile, positive = friendly
+                this.trustLevel = 0; // 0 to 100
+                this.topicsDiscussed = new Set();
+                this.characterTraits = this.parsePersonality(this.personality);
+            }
+
+            parsePersonality(personality) {
+                const traits = {
+                    wise: personality.toLowerCase().includes('wise'),
+                    cryptic: personality.toLowerCase().includes('cryptic') || personality.toLowerCase().includes('riddle'),
+                    friendly: personality.toLowerCase().includes('friendly') || personality.toLowerCase().includes('warm'),
+                    suspicious: personality.toLowerCase().includes('suspicious') || personality.toLowerCase().includes('wary'),
+                    helpful: personality.toLowerCase().includes('helpful') || personality.toLowerCase().includes('aid'),
+                    secretive: personality.toLowerCase().includes('secretive') || personality.toLowerCase().includes('guarded'),
+                    humorous: personality.toLowerCase().includes('humor') || personality.toLowerCase().includes('funny'),
+                    serious: personality.toLowerCase().includes('serious') || personality.toLowerCase().includes('stern'),
+                    ancient: personality.toLowerCase().includes('ancient') || personality.toLowerCase().includes('old'),
+                    knowledgeable: personality.toLowerCase().includes('knowledge') || personality.toLowerCase().includes('learned')
+                };
+                return traits;
+            }
+
+            updateMood(playerChoice) {
+                let moodChange = 0;
+                
+                switch (playerChoice) {
+                    case 'respectful':
+                        moodChange = this.characterTraits.wise ? 2 : 1;
+                        break;
+                    case 'direct':
+                        moodChange = this.characterTraits.serious ? 1 : -1;
+                        break;
+                    case 'suspicious':
+                        moodChange = this.characterTraits.secretive ? -2 : -1;
+                        break;
+                    case 'friendly':
+                        moodChange = this.characterTraits.friendly ? 2 : 0;
+                        break;
+                }
+
+                this.emotionalState = Math.max(-5, Math.min(5, this.emotionalState + moodChange));
+                this.updateCurrentMood();
+                return moodChange;
+            }
+
+            updateCurrentMood() {
+                if (this.emotionalState >= 3) this.currentMood = 'happy';
+                else if (this.emotionalState <= -3) this.currentMood = 'angry';
+                else if (this.emotionalState >= 1) this.currentMood = 'pleased';
+                else if (this.emotionalState <= -1) this.currentMood = 'displeased';
+                else this.currentMood = 'neutral';
+            }
+
+            addToMemory(speaker, text, playerChoice = null) {
+                this.conversationMemory.push({
+                    speaker: speaker,
+                    text: text,
+                    playerChoice: playerChoice,
+                    mood: this.currentMood,
+                    timestamp: Date.now()
+                });
+
+                // Keep memory manageable
+                if (this.conversationMemory.length > 20) {
+                    this.conversationMemory.shift();
+                }
+            }
+
+            getRecentContext() {
+                return this.conversationMemory.slice(-5).map(entry => 
+                    `${entry.speaker}: ${entry.text}`
+                ).join('\n');
+            }
+        }
+
+        class ConversationEngine {
+            constructor() {
+                this.responseTemplates = this.initializeTemplates();
+                this.moodModifiers = this.initializeMoodModifiers();
+            }
+
+            initializeTemplates() {
+                return {
+                    greetings: [
+                        "Welcome, {player_address}. What brings you to seek me out?",
+                        "Ah, {player_address}, I have been expecting someone like you.",
+                        "You approach with {mood_descriptor} in your step. Speak your purpose.",
+                        "The winds whispered of your coming, {player_address}."
+                    ],
+                    
+                    knowledge_sharing: [
+                        "What you seek lies {knowledge_hint}, but the path is treacherous.",
+                        "I have seen much in my years, and I can tell you this: {wisdom_nugget}.",
+                        "The secrets you pursue are {secret_descriptor}, but perhaps you are ready to hear them.",
+                        "Knowledge is a burden as much as a gift. Are you prepared for what you might learn?"
+                    ],
+
+                    reactions: {
+                        respectful: [
+                            "Your respect honors the old ways. I appreciate such courtesy.",
+                            "Politeness is rare these days. You have my attention.",
+                            "Well-spoken, {player_address}. Wisdom recognizes wisdom."
+                        ],
+                        direct: [
+                            "Straight to the point, I see. Very well, I shall be equally direct.",
+                            "Blunt words, but I respect efficiency. Let us speak plainly.",
+                            "No time for pleasantries? That suggests urgency."
+                        ],
+                        suspicious: [
+                            "Suspicion serves you well, but not all secrets are born of malice.",
+                            "Your distrust wounds me, though perhaps it is justified.",
+                            "Caution is wise, but paranoia will cloud your judgment."
+                        ],
+                        friendly: [
+                            "Your warmth is refreshing in these dark times.",
+                            "A friendly soul brightens even the gloomiest day.",
+                            "Such openness is either great wisdom or great folly."
+                        ]
+                    },
+
+                    mood_responses: {
+                        happy: [
+                            "Your company brings me joy, truly.",
+                            "It has been too long since I've had such pleasant conversation.",
+                            "You restore my faith in the younger generation."
+                        ],
+                        angry: [
+                            "Your words try my patience, traveler.",
+                            "I begin to question whether you deserve my assistance.",
+                            "Perhaps you should return when you learn some manners."
+                        ],
+                        neutral: [
+                            "I remain uncommitted to your cause, but I will listen.",
+                            "You have neither impressed nor disappointed me thus far.",
+                            "Continue. I am still deciding whether to trust you."
+                        ]
+                    },
+
+                    topic_responses: {
+                        quest: [
+                            "The path ahead is fraught with challenges beyond your imagination.",
+                            "Your quest intertwines with forces greater than you know.",
+                            "I have seen many heroes begin this journey. Few complete it."
+                        ],
+                        artifacts: [
+                            "Ancient artifacts choose their wielders as much as they are chosen.",
+                            "The power you seek comes with a price few are willing to pay.",
+                            "Such items are not mere tools, but living vessels of forgotten magic."
+                        ],
+                        danger: [
+                            "The threats you face are both ancient and immediate.",
+                            "Danger stalks those who delve too deeply into forgotten lore.",
+                            "What lurks in the shadows is far worse than what walks in the light."
+                        ]
+                    }
+                };
+            }
+
+            initializeMoodModifiers() {
+                return {
+                    happy: {
+                        prefix: ["cheerfully", "with a warm smile", "enthusiastically"],
+                        suffix: ["I'm delighted to help.", "Your presence brightens my day.", "Together we shall succeed."]
+                    },
+                    angry: {
+                        prefix: ["coldly", "with narrowed eyes", "in a stern tone"],
+                        suffix: ["Think carefully before you speak again.", "You test my patience.", "I suggest you reconsider your approach."]
+                    },
+                    surprised: {
+                        prefix: ["with raised eyebrows", "startled", "unexpectedly"],
+                        suffix: ["That was not what I expected.", "You continue to surprise me.", "Interesting indeed."]
+                    },
+                    neutral: {
+                        prefix: ["calmly", "thoughtfully", "with measured words"],
+                        suffix: ["Consider this carefully.", "The choice is yours.", "Time will tell."]
+                    }
+                };
+            }
+
+            generateResponse(character, playerChoice, conversationContext) {
+                let response = '';
+                let templates;
+
+                // Determine response type based on context and choice
+                if (character.conversationMemory.length === 0) {
+                    templates = this.responseTemplates.greetings;
+                } else if (playerChoice && this.responseTemplates.reactions[playerChoice]) {
+                    templates = this.responseTemplates.reactions[playerChoice];
+                } else {
+                    // Analyze conversation for topic
+                    const recentText = character.getRecentContext().toLowerCase();
+                    if (recentText.includes('quest') || recentText.includes('mission')) {
+                        templates = this.responseTemplates.topic_responses.quest;
+                    } else if (recentText.includes('artifact') || recentText.includes('item') || recentText.includes('treasure')) {
+                        templates = this.responseTemplates.topic_responses.artifacts;
+                    } else if (recentText.includes('danger') || recentText.includes('threat') || recentText.includes('enemy')) {
+                        templates = this.responseTemplates.topic_responses.danger;
+                    } else {
+                        templates = this.responseTemplates.knowledge_sharing;
+                    }
+                }
+
+                // Select random template
+                const template = templates[Math.floor(Math.random() * templates.length)];
+                response = this.fillTemplate(template, character, playerChoice);
+
+                // Add mood-based modifications
+                response = this.applyMoodModifiers(response, character.currentMood);
+
+                // Add personality-specific touches
+                response = this.applyPersonalityModifiers(response, character);
+
+                return response;
+            }
+
+            fillTemplate(template, character, playerChoice) {
+                let filled = template;
+
+                // Player address based on relationship
+                const addresses = {
+                    friendly: ['dear friend', 'friend', 'companion'],
+                    hostile: ['stranger', 'intruder', 'you'],
+                    neutral: ['traveler', 'seeker', 'visitor'],
+                    ally: ['trusted ally', 'friend', 'partner'],
+                    mentor: ['young one', 'student', 'child'],
+                    romantic: ['dear one', 'beloved', 'my heart'],
+                    rival: ['competitor', 'challenger', 'rival']
+                };
+
+                const addressOptions = addresses[character.relationship] || addresses.neutral;
+                const playerAddress = addressOptions[Math.floor(Math.random() * addressOptions.length)];
+
+                // Mood descriptors
+                const moodDescriptors = {
+                    respectful: 'purpose and respect',
+                    direct: 'determination and haste',
+                    suspicious: 'doubt and wariness',
+                    friendly: 'warmth and openness'
+                };
+
+                // Knowledge hints based on secrets
+                const knowledgeHints = [
+                    'hidden in ancient texts',
+                    'guarded by those who came before',
+                    'scattered across the realms',
+                    'within the heart of danger itself'
+                ];
+
+                // Wisdom nuggets
+                const wisdomNuggets = [
+                    'power without wisdom leads to ruin',
+                    'the greatest treasures often bear the greatest costs',
+                    'trust must be earned, not freely given',
+                    'darkness and light are often closer than they appear'
+                ];
+
+                // Secret descriptors
+                const secretDescriptors = [
+                    'dangerous beyond measure',
+                    'coveted by powerful forces',
+                    'key to understanding greater truths',
+                    'both blessing and curse'
+                ];
+
+                // Replace placeholders
+                filled = filled.replace(/{player_address}/g, playerAddress);
+                filled = filled.replace(/{mood_descriptor}/g, moodDescriptors[playerChoice] || 'purpose');
+                filled = filled.replace(/{knowledge_hint}/g, knowledgeHints[Math.floor(Math.random() * knowledgeHints.length)]);
+                filled = filled.replace(/{wisdom_nugget}/g, wisdomNuggets[Math.floor(Math.random() * wisdomNuggets.length)]);
+                filled = filled.replace(/{secret_descriptor}/g, secretDescriptors[Math.floor(Math.random() * secretDescriptors.length)]);
+
+                return filled;
+            }
+
+            applyMoodModifiers(response, mood) {
+                const modifiers = this.moodModifiers[mood] || this.moodModifiers.neutral;
+                
+                // Sometimes add a prefix
+                if (Math.random() < 0.3) {
+                    const prefix = modifiers.prefix[Math.floor(Math.random() * modifiers.prefix.length)];
+                    response = `*${prefix}* ${response}`;
+                }
+
+                // Sometimes add a suffix
+                if (Math.random() < 0.4) {
+                    const suffix = modifiers.suffix[Math.floor(Math.random() * modifiers.suffix.length)];
+                    response += ` ${suffix}`;
+                }
+
+                return response;
+            }
+
+            applyPersonalityModifiers(response, character) {
+                // Add cryptic elements for cryptic characters
+                if (character.characterTraits.cryptic && Math.random() < 0.4) {
+                    const crypticAdditions = [
+                        ' ...though perhaps I have said too much.',
+                        ' The wise will understand my meaning.',
+                        ' Riddles within riddles, as always.',
+                        ' But that is a tale for another time.'
+                    ];
+                    response += crypticAdditions[Math.floor(Math.random() * crypticAdditions.length)];
+                }
+
+                // Add ancient references for ancient characters
+                if (character.characterTraits.ancient && Math.random() < 0.3) {
+                    const ancientRefs = [
+                        ' In my long years, I have seen this before.',
+                        ' The old ways teach us much about such matters.',
+                        ' Time has shown me the truth of these things.',
+                        ' I remember when the world was younger.'
+                    ];
+                    response += ancientRefs[Math.floor(Math.random() * ancientRefs.length)];
+                }
+
+                // Add humor for humorous characters
+                if (character.characterTraits.humorous && Math.random() < 0.2) {
+                    const humorAdditions = [
+                        ' *chuckles softly*',
+                        ' Though I suppose that\'s rather amusing, isn\'t it?',
+                        ' You\'d laugh if you knew what I was thinking.',
+                        ' Ah, the irony is not lost on me.'
+                    ];
+                    response += humorAdditions[Math.floor(Math.random() * humorAdditions.length)];
+                }
+
+                return response;
+            }
+        }
+
+        // ==================== GLOBAL STATE ====================
+        
+        let currentCharacter;
+        let conversationEngine;
+        let conversationHistory = [];
+        let currentScene = 'tavern';
+        let panelsVisible = {
+            setup: false,
+            history: false,
+            choices: false
+        };
+
+        // ==================== INITIALIZATION ====================
+        
+        function initializeApp() {
+            conversationEngine = new ConversationEngine();
+            
+            // Initialize with default character
+            currentCharacter = new NPCCharacter({
+                name: 'Mysterious Wizard',
+                title: 'Keeper of Ancient Secrets',
+                icon: '🧙‍♂️',
+                personality: 'Wise but cryptic, speaks in riddles, protective of ancient knowledge, has lived for centuries and seen the rise and fall of kingdoms.',
+                goals: 'Seeks to test the worthiness of adventurers before sharing powerful secrets. Wants to ensure ancient knowledge doesn\'t fall into wrong hands.',
+                secrets: 'Knows the location of three hidden artifacts that could reshape the kingdom. Aware of an approaching threat that the rulers refuse to acknowledge.',
+                relationship: 'neutral'
+            });
+
+            updateCharacterDisplay();
+            addToHistory('System', 'Conversation started');
+            addToHistory(currentCharacter.name, document.getElementById('dialogueText').textContent);
+        }
+
+        // ==================== CHARACTER MANAGEMENT ====================
+        
+        function applyCharacterSettings() {
+            const name = document.getElementById('npcName').value || 'Mysterious Character';
+            const title = document.getElementById('npcTitle').value || 'Unknown';
+            const icon = document.getElementById('npcIcon').value || '👤';
+            const personality = document.getElementById('npcPersonality').value || 'A mysterious individual.';
+            const goals = document.getElementById('npcGoals').value || 'Wants to help the party.';
+            const secrets = document.getElementById('npcSecrets').value || 'Holds important knowledge.';
+            const relationship = document.getElementById('npcRelationship').value || 'neutral';
+
+            currentCharacter = new NPCCharacter({
+                name, title, icon, personality, goals, secrets, relationship
+            });
+
+            updateCharacterDisplay();
+            showNotification(`Character updated: ${name}`, 'success');
+            
+            // Generate new greeting
+            const greeting = conversationEngine.generateResponse(currentCharacter, null, '');
+            updateDialogue(greeting);
+            addToHistory(currentCharacter.name, greeting);
+        }
+
+        function updateCharacterDisplay() {
+            document.getElementById('characterName').textContent = currentCharacter.name;
+            document.getElementById('characterTitle').textContent = currentCharacter.title;
+            document.getElementById('characterImage').textContent = currentCharacter.icon;
+            document.getElementById('speakerName').textContent = currentCharacter.name;
+            document.getElementById('characterMood').textContent = capitalizeFirst(currentCharacter.currentMood);
+            
+            // Update portrait mood class
+            const portrait = document.getElementById('characterPortrait');
+            portrait.className = `character-portrait ${currentCharacter.currentMood}`;
+        }
+
+        // ==================== CONVERSATION SYSTEM ====================
+        
+        function generateResponse() {
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                const response = conversationEngine.generateResponse(
+                    currentCharacter, 
+                    null, 
+                    currentCharacter.getRecentContext()
+                );
+                
+                updateDialogue(response);
+                currentCharacter.addToMemory(currentCharacter.name, response);
+                addToHistory(currentCharacter.name, response);
+                updateCharacterDisplay();
+                hideTypingIndicator();
+            }, 1000 + Math.random() * 2000); // Realistic typing delay
+        }
+
+        function selectChoice(choiceType) {
+            const choiceTexts = {
+                respectful: "Greetings, wise one. We seek knowledge about the ancient ruins to the north.",
+                direct: "Cut to the chase. What do you know about the missing artifact?", 
+                suspicious: "You seem to know more than you're letting on. What aren't you telling us?",
+                friendly: "You look like someone with fascinating stories. Care to share one?"
+            };
+
+            const playerText = choiceTexts[choiceType];
+            
+            // Add player choice to history
+            addToHistory('Player', playerText);
+            currentCharacter.addToMemory('Player', playerText, choiceType);
+            
+            // Update character mood based on choice
+            const moodChange = currentCharacter.updateMood(choiceType);
+            
+            // Generate NPC response
+            showTypingIndicator();
+            hidePanel('choices');
+            
+            setTimeout(() => {
+                const response = conversationEngine.generateResponse(currentCharacter, choiceType, currentCharacter.getRecentContext());
+                updateDialogue(response);
+                currentCharacter.addToMemory(currentCharacter.name, response);
+                addToHistory(currentCharacter.name, response);
+                updateCharacterDisplay();
+                hideTypingIndicator();
+                
+                if (moodChange !== 0) {
+                    showNotification(`Mood shift: ${moodChange > 0 ? 'Positive' : 'Negative'} (${moodChange > 0 ? '+' : ''}${moodChange})`, 
+                                   moodChange > 0 ? 'success' : 'warning');
+                }
+            }, 1500 + Math.random() * 2000);
+        }
+
+        function updateDialogue(text) {
+            const dialogueEl = document.getElementById('dialogueText');
+            
+            // Clear current text
+            dialogueEl.textContent = '';
+            
+            // Typewriter effect
+            let charIndex = 0;
+            const typeInterval = setInterval(() => {
+                if (charIndex < text.length) {
+                    dialogueEl.textContent += text.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 30);
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // ==================== CONVERSATION HISTORY ====================
+        
+        function addToHistory(speaker, text) {
+            conversationHistory.push({
+                speaker: speaker,
+                text: text,
+                timestamp: new Date().toLocaleTimeString(),
+                mood: currentCharacter.currentMood
+            });
+
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyEl = document.getElementById('conversationHistory');
+            historyEl.innerHTML = conversationHistory.slice(-10).map(entry => `
+                <div class="history-entry">
+                    <div class="history-speaker emotion-${entry.mood}">${entry.speaker}</div>
+                    <div>${entry.text}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">${entry.timestamp}</div>
+                </div>
+            `).join('');
+            
+            historyEl.scrollTop = historyEl.scrollHeight;
+        }
+
+        // ==================== SCENE MANAGEMENT ====================
+        
+        function changeScene(scene) {
+            currentScene = scene;
+            
+            // Update active scene button
+            document.querySelectorAll('.scene-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update background
+            const backgrounds = {
+                tavern: 'linear-gradient(to bottom, rgba(26, 22, 37, 0.7), rgba(26, 22, 37, 1)), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'><rect width=\'1200\' height=\'800\' fill=\'%23654321\'/><rect x=\'100\' y=\'600\' width=\'1000\' height=\'100\' fill=\'%238B4513\'/></svg>")',
+                forest: 'linear-gradient(to bottom, rgba(26, 22, 37, 0.7), rgba(26, 22, 37, 1)), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'><rect width=\'1200\' height=\'800\' fill=\'%232d5016\'/><circle cx=\'200\' cy=\'700\' r=\'50\' fill=\'%23228B22\'/></svg>")',
+                castle: 'linear-gradient(to bottom, rgba(26, 22, 37, 0.7), rgba(26, 22, 37, 1)), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'><rect width=\'1200\' height=\'800\' fill=\'%232F4F4F\'/><rect x=\'500\' y=\'200\' width=\'200\' height=\'400\' fill=\'%23696969\'/></svg>")',
+                dungeon: 'linear-gradient(to bottom, rgba(26, 22, 37, 0.7), rgba(26, 22, 37, 1)), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'><rect width=\'1200\' height=\'800\' fill=\'%231C1C1C\'/></svg>")',
+                temple: 'linear-gradient(to bottom, rgba(26, 22, 37, 0.7), rgba(26, 22, 37, 1)), url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1200 800\'><rect width=\'1200\' height=\'800\' fill=\'%23F5F5DC\'/><rect x=\'400\' y=\'100\' width=\'400\' height=\'300\' fill=\'%23D2B48C\'/></svg>")'
+            };
+            
+            document.getElementById('sceneBackground').style.background = backgrounds[scene];
+            
+            showNotification(`Scene changed to ${capitalizeFirst(scene)}`, 'info');
+        }
+
+        // ==================== UI MANAGEMENT ====================
+        
+        function togglePanel(panelName) {
+            const panel = document.getElementById(panelName + 'Panel');
+            const isVisible = panelsVisible[panelName];
+            
+            // Hide all panels first
+            Object.keys(panelsVisible).forEach(name => {
+                hidePanel(name);
+            });
+            
+            // Show the requested panel if it wasn't visible
+            if (!isVisible) {
+                panel.style.display = 'block';
+                panelsVisible[panelName] = true;
+                setTimeout(() => {
+                    panel.classList.add('visible');
+                }, 10);
+            }
+        }
+
+        function hidePanel(panelName) {
+            const panel = document.getElementById(panelName + 'Panel');
+            panel.classList.remove('visible');
+            panelsVisible[panelName] = false;
+            setTimeout(() => {
+                panel.style.display = 'none';
+            }, 300);
+        }
+
+        function showChoices() {
+            const choicesPanel = document.getElementById('choicesPanel');
+            choicesPanel.classList.add('visible');
+            panelsVisible.choices = true;
+        }
+
+        function showNotification(message, type = 'info', duration = 3000) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        // ==================== EXPORT/IMPORT ====================
+        
+        function exportConversation() {
+            const exportData = {
+                character: {
+                    name: currentCharacter.name,
+                    title: currentCharacter.title,
+                    icon: currentCharacter.icon,
+                    personality: currentCharacter.personality,
+                    goals: currentCharacter.goals,
+                    secrets: currentCharacter.secrets,
+                    relationship: currentCharacter.relationship
+                },
+                conversation: conversationHistory,
+                scene: currentScene,
+                timestamp: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `conversation_${currentCharacter.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            URL.revokeObjectURL(url);
+            showNotification('Conversation exported successfully!', 'success');
+        }
+
+        function resetConversation() {
+            if (confirm('Reset the entire conversation? This cannot be undone.')) {
+                conversationHistory = [];
+                currentCharacter.conversationMemory = [];
+                currentCharacter.emotionalState = 0;
+                currentCharacter.currentMood = 'neutral';
+                
+                updateHistoryDisplay();
+                updateCharacterDisplay();
+                
+                const greeting = conversationEngine.generateResponse(currentCharacter, null, '');
+                updateDialogue(greeting);
+                addToHistory(currentCharacter.name, greeting);
+                
+                showNotification('Conversation reset', 'info');
+            }
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    Object.keys(panelsVisible).forEach(hidePanel);
+                }
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    generateResponse();
+                }
+                if (e.key === ' ' && e.ctrlKey) {
+                    showChoices();
+                    e.preventDefault();
+                }
+            });
+            
+            // Click outside to close panels
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.setup-panel, .history-panel, .choices-panel') &&
+                    !e.target.closest('.header-controls')) {
+                    Object.keys(panelsVisible).forEach(hidePanel);
+                }
+            });
+        });
+
+        // ==================== ADVANCED FEATURES ====================
+        
+        function generateRandomConversationPrompt() {
+            const prompts = [
+                "Ask about a mysterious rumor they've heard",
+                "Inquire about their past adventures", 
+                "Question them about local dangers",
+                "Request information about important people",
+                "Ask for advice about your quest",
+                "Probe about hidden treasures or secrets",
+                "Discuss recent strange events",
+                "Ask about their magical knowledge",
+                "Inquire about safe places to rest",
+                "Question them about their motivations"
+            ];
+            
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            showNotification(`Conversation idea: ${randomPrompt}`, 'info', 5000);
+        }
+
+        // Auto-generate conversation suggestions
+        setInterval(() => {
+            if (conversationHistory.length > 5 && Math.random() < 0.1) {
+                generateRandomConversationPrompt();
+            }
+        }, 30000); // Every 30 seconds
+
+    </script>
+</body>
+</html>
