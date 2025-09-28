@@ -651,7 +651,7 @@
             </div>
             <div class="dialogue-controls">
                 <button class="btn btn-small" onclick="generateResponse()">💬 Continue</button>
-                <button class="btn btn-small btn-secondary" onclick="showChoices()">🔀 Player Response</button>
+                <button class="btn btn-small btn-secondary" onclick="showChoices(event)">🔀 Player Response</button>
             </div>
         </div>
     </div>
@@ -1321,7 +1321,10 @@
 
         function showChoices() {
             const choicesPanel = document.getElementById('choicesPanel');
-            choicesPanel.classList.add('visible');
+            choicesPanel.style.display = 'block';
+            setTimeout(() => {
+                choicesPanel.classList.add('visible');
+            }, 10);
             panelsVisible.choices = true;
         }
 
