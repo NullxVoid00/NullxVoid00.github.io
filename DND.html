@@ -4492,6 +4492,16 @@
                 return this.entities.find(e => e.id === id);
             },
 
+            // Update Entity Property
+            updateEntity(id, property, value) {
+                const entity = this.getEntity(id);
+                if (entity) {
+                    entity[property] = value;
+                    this.render();
+                    this.addLog(`${entity.name} ${property} updated`, 'info');
+                }
+            },
+
             // Update Turn Order with proper tiebreaking
             updateTurnOrder() {
                 this.turnOrder = this.entities
@@ -5455,15 +5465,16 @@
                 }
               
                 // Render entities
-                this.entities.forEach(entity => {
-                    if (entity.type === 'visualEffect') {
-                        this.renderVisualEffect(entity, canvas);
-                        return;
-                    }
-                  
-                    const elem = document.createElement('div');
-                    elem.className = 'entity';
-                    elem.dataset.id = entity.id;
+                if (entity.type === 'visualEffect') {
+                    this.renderVisualEffect(entity, canvas);
+                    return;
+                }
+
+                if (entity.hidden && !this.editMode) {
+                    return;
+                }
+
+                const elem = document.createElement('div');
                   
                     // Add type-specific classes
                     if (entity.type === 'npc') {
@@ -6085,11 +6096,44 @@
                     const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
                     this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
                     this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
+            }
+
+            if (action.skill) {
+                const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
+                this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
+                this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
+
+                if (action.skill === 'perception') {
+                    let foundSomething = false;
+                    if (skillRoll >= 15) {
+                        this.entities.forEach(e => {
+                            if (e.hidden && e.id !== performer.id) {
+                                const dist = Math.hypot(e.x - performer.x, e.y - performer.y);
+                                if (dist <= 300) {
+                                    e.hidden = false;
+                                    if (e.conditions && e.conditions.includes('hidden')) {
+                                        this.removeCondition(e, 'hidden');
+                                    }
+                                    this.addLog(`Found hidden ${e.name}!`, 'info');
+                                    this.showActionDisplay('info', 'Hidden Object Found', `${performer.name} discovers ${e.name}!`);
+                                    foundSomething = true;
+                                }
+                            }
+                        });
+                    }
+
+                    if (!foundSomething && skillRoll >= 15) {
+                        this.addLog(`${performer.name} searches but finds nothing hidden nearby.`, 'info');
+                        this.showActionDisplay('info', 'Search Complete', `${performer.name} finds nothing hidden within range`);
+                    } else if (skillRoll < 15) {
+                        this.showActionDisplay('info', 'Search Failed', `${performer.name}'s search was unsuccessful`, `Rolled ${skillRoll} vs DC 15`);
+                    }
                 }
-              
-                // Mark action used
-                performer.actionUsed = true;
-                this.updateTurnOrder();
+            }
+
+            // Mark action used
+            performer.actionUsed = true;
+            this.updateTurnOrder();
             },
           
             cancelTargeting() {
