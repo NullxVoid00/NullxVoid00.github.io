@@ -6650,14 +6650,19 @@
                     html += '<div class="action-section"><div class="action-section-title">Basic Actions</div>';
                     entity.baseActions.forEach((action, index) => {
                         const disabled = entity.actionUsed && action.actionType === 'action' ? 'disabled' : '';
-                        if (action.type === 'attack' || action.type === 'special' || action.type === 'skill') {
+
+                        // Actions that need targeting
+                        if (action.name === 'Unarmed Strike' || action.name === 'Shove' ||
+                            action.name === 'Grapple' || action.name === 'Help') {
                             html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
-                                ${this.getActionIcon(action.type)} ${action.name}
-                            </button>`;
-                        } else {
+                ${this.getActionIcon(action.type)} ${action.name}
+            </button>`;
+                        }
+                        // Actions that execute immediately without targeting
+                        else {
                             html += `<button class="action-btn ${disabled}" onclick="game.performBaseAction(game.getEntity(${entity.id}), game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
-                                ${this.getActionIcon(action.type)} ${action.name}
-                            </button>`;
+                ${this.getActionIcon(action.type)} ${action.name}
+            </button>`;
                         }
                     });
                     html += '</div>';
