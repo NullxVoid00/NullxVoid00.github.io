@@ -4586,6 +4586,21 @@
                 }
             },
 
+            // Adjust HP manually
+            adjustHP(id, amount) {
+                const entity = this.getEntity(id);
+                if (entity) {
+                    entity.hp = Math.max(0, Math.min(entity.maxHp, entity.hp + amount));
+                    this.render();
+
+                    if (entity.hp === 0 && (entity.type === 'player' || entity.type === 'npc')) {
+                        if (!entity.conditions.includes('unconscious')) {
+                            this.addCondition(entity, 'unconscious');
+                        }
+                    }
+                }
+            },
+
             // Remove Entity
             removeEntity(id) {
                 const entity = this.getEntity(id);
@@ -5662,10 +5677,14 @@
                         const hpPercent = entity.hp / entity.maxHp * 100;
                         const hpClass = hpPercent > 75 ? 'high' : hpPercent > 25 ? 'medium' : 'low';
                         hpBar = `
-                            <div class="hp-bar">
-                                <div class="hp-fill ${hpClass}" style="width: ${hpPercent}%"></div>
-                            </div>
-                        `;
+        <div class="hp-bar">
+            <div class="hp-fill ${hpClass}" style="width: ${hpPercent}%"></div>
+            ${this.editMode ? `
+                <button class="hp-adjust-btn hp-minus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, -1)" style="position: absolute; left: -20px; top: -2px; width: 18px; height: 18px; background: #ef4444; border: none; border-radius: 3px; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">−</button>
+                <button class="hp-adjust-btn hp-plus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, 1)" style="position: absolute; right: -20px; top: -2px; width: 18px; height: 18px; background: #10b981; border: none; border-radius: 3px; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">+</button>
+            ` : ''}
+        </div>
+    `;
                     }
                   
                     let deathSaves = '';
