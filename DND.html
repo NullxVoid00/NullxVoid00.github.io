@@ -4871,15 +4871,25 @@
                         this.applySpecialAttackEffect(target, attack.special);
                     }
                   
-                    // Play sound and visual effects
-                    if (attack.soundEffect) {
-                        this.playIndividualSound(attack.soundEffect);
+                    // Play sound and visual effects - prioritize equipped weapon's effects
+                    let effectSound = attack.soundEffect;
+                    let effectVisual = attack.visualEffect;
+
+                    // Check if attacker has an equipped weapon with effects
+                    if (attacker.equipment && attacker.equipment.mainHand) {
+                        const weapon = attacker.equipment.mainHand;
+                        if (weapon.soundEffect) effectSound = weapon.soundEffect;
+                        if (weapon.visualEffect) effectVisual = weapon.visualEffect;
+                    }
+
+                    if (effectSound) {
+                        this.playIndividualSound(effectSound);
                     } else {
                         this.playSound('attack');
                     }
-                  
-                    if (attack.visualEffect) {
-                        this.playVisualEffect(attack.visualEffect, target.x, target.y);
+
+                    if (effectVisual) {
+                        this.playVisualEffect(effectVisual, target.x, target.y);
                     }
                 } else {
                     this.addLog(`${attacker.name} misses ${target.name}! (${totalHit} vs AC ${targetAC})`, 'info');
