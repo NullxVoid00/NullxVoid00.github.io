@@ -4492,6 +4492,28 @@
                 return this.entities.find(e => e.id === id);
             },
 
+            // Update Entity Property
+            updateEntity(id, property, value) {
+                const entity = this.getEntity(id);
+                if (entity) {
+                    // Handle boolean values
+                    if (value === 'true' || value === true) value = true;
+                    if (value === 'false' || value === false) value = false;
+
+                    entity[property] = value;
+
+                    // Re-render to show changes
+                    this.render();
+
+                    // If updating character sheet properties, refresh the sheet
+                    if (document.getElementById('characters-tab').classList.contains('active')) {
+                        this.showCharacterSheet(entity);
+                    }
+
+                    this.addLog(`${entity.name} ${property} updated`, 'info');
+                }
+            },
+
             // Remove Entity
             removeEntity(id) {
                 const entity = this.getEntity(id);
