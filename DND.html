@@ -5483,11 +5483,11 @@
 
                 canvas.innerHTML = '';
 
-                // Apply zoom and pan transform
-                const container = document.getElementById('boardContainer');
-                if (container) {
-                    container.style.transform = `scale(${this.zoom}) translate(${this.panX}px, ${this.panY}px)`;
-                    container.style.transformOrigin = '0 0';
+                // Apply zoom and pan transform to game board (which has the background)
+                const gameBoard = document.getElementById('gameBoard');
+                if (gameBoard) {
+                    gameBoard.style.transform = `scale(${this.zoom}) translate(${this.panX}px, ${this.panY}px)`;
+                    gameBoard.style.transformOrigin = '0 0';
                 }
               
                 // Draw movement range for current turn
@@ -7481,9 +7481,12 @@
             changeBackground() {
                 const url = document.getElementById('bgUrl').value;
                 this.backgroundUrl = url;
-                const board = document.getElementById('gameBoard');
+                const container = document.getElementById('boardContainer');
                 if (url) {
-                    board.style.backgroundImage = `url(${url})`;
+                    container.style.backgroundImage = `url(${url})`;
+                    container.style.backgroundSize = 'cover';
+                    container.style.backgroundPosition = 'center';
+                    container.style.backgroundRepeat = 'no-repeat';
                 }
             },
           
