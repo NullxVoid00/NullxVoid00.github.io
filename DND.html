@@ -2054,7 +2054,7 @@
                         Draw Mode
                     </button>
                     <input type="text" class="input-field" id="bgUrl" placeholder="Background Image URL" onchange="game.changeBackground()">
-                  
+
                     <div class="section-title">Drawing Tools</div>
                     <button class="btn btn-danger" id="eraseToggle" onclick="game.toggleEraseMode()">
                         🧽 Erase Mode
@@ -2062,7 +2062,7 @@
                     <button class="btn btn-warning" onclick="game.clearDrawing()">
                         🗑️ Clear Drawing
                     </button>
-                  
+
                     <div class="section-title">Background Music</div>
                     <input type="file" id="backgroundMusicFile" accept="audio/mp3,audio/mp4,video/mp4" onchange="game.setBackgroundMusicFromFile(this.files[0])">
                     <input type="text" class="sound-input" id="backgroundMusic" placeholder="Background Music URL or File" onchange="game.setBackgroundMusic(this.value)">
@@ -2071,25 +2071,29 @@
                         <button class="music-btn" id="pauseBtn" onclick="game.pauseBackgroundMusic()">⏸️ Pause</button>
                         <button class="music-btn" id="bgmModeBtn" onclick="game.toggleBGMMode()">Mode: Loop</button>
                     </div>
-                </div>
-              
-                <!-- Combat Log Section -->
-                <div class="section">
-                    <div class="section-title">Combat Log</div>
-                    <div class="combat-log" id="combatLog">
-                        <div class="log-entry info">Ready for combat...</div>
+                    <div style="margin-top: 10px;">
+                        <label style="color: #9ca3af; font-size: 12px; display: block; margin-bottom: 5px;">Volume</label>
+                        <input type="range" min="0" max="100" value="30" id="bgmVolume" oninput="game.setVolume(this.value)" style="width: 100%;">
+                        <div style="text-align: center; color: #9ca3af; font-size: 11px; margin-top: 3px;"><span id="volumeDisplay">30</span>%</div>
+                    </div>
+
+                    <!-- Combat Log Section -->
+                    <div class="section">
+                        <div class="section-title">Combat Log</div>
+                        <div class="combat-log" id="combatLog">
+                            <div class="log-entry info">Ready for combat...</div>
+                        </div>
+                    </div>
+
+                    <!-- Game Controls -->
+                    <div class="section">
+                        <div class="section-title">Game Controls</div>
+                        <button class="btn btn-primary" onclick="game.saveGameState()">💾 Save Game</button>
+                        <button class="btn btn-primary" onclick="game.loadGameState()">📂 Load Game</button>
+                        <button class="btn btn-danger" onclick="game.clearBoard()">🗑️ Clear Board</button>
+                        <button class="btn btn-primary" onclick="game.resetView()">🔍 Reset View</button>
                     </div>
                 </div>
-              
-                <!-- Game Controls -->
-                <div class="section">
-                    <div class="section-title">Game Controls</div>
-                    <button class="btn btn-primary" onclick="game.saveGameState()">💾 Save Game</button>
-                    <button class="btn btn-primary" onclick="game.loadGameState()">📂 Load Game</button>
-                    <button class="btn btn-danger" onclick="game.clearBoard()">🗑️ Clear Board</button>
-                    <button class="btn btn-primary" onclick="game.resetView()">🔍 Reset View</button>
-                </div>
-            </div>
           
             <!-- Game Board -->
             <div class="game-board" id="gameBoard">
@@ -4038,6 +4042,11 @@
                     this.backgroundMusic.audio.pause();
                     this.backgroundMusic.audio = null;
                 }
+
+                setBackgroundMusicAndPlay(url) {
+                    this.setBackgroundMusic(url);
+                    this.playBackgroundMusic();
+                },
               
                 if (url) {
                     // Create video element for video sources, audio element for audio sources
@@ -4059,7 +4068,19 @@
               
                 localStorage.setItem('dndBackgroundMusic', url);
             },
-          
+
+            setVolume(value) {
+                const volume = parseInt(value) / 100;
+                if (this.backgroundMusic.audio) {
+                    this.backgroundMusic.audio.volume = volume;
+                }
+                if (this.backgroundMusic.audios) {
+                    this.backgroundMusic.audios.forEach(audio => audio.volume = volume);
+                }
+                document.getElementById('volumeDisplay').textContent = value;
+                localStorage.setItem('dndBGMVolume', value);
+            },
+
             playBackgroundMusic() {
                 if (this.backgroundMusic.mode === 'loop') {
                     if (!this.backgroundMusic.audio && this.backgroundMusic.url) {
@@ -5270,6 +5291,16 @@
                         }
                     });
                 }
+
+                // Load saved volume
+                const savedVolume = localStorage.getItem('dndBGMVolume');
+                if (savedVolume) {
+                    const slider = document.getElementById('bgmVolume');
+                    if (slider) {
+                        slider.value = savedVolume;
+                        this.setVolume(savedVolume);
+                    }
+                }
               
                 // Load background music
                 const savedMusic = localStorage.getItem('dndBackgroundMusic');
@@ -5279,6 +5310,16 @@
                     this.setBackgroundMusic(savedMusic);
                 }
             },
+
+            // Load saved volume
+const savedVolume = localStorage.getItem('dndBGMVolume');
+if (savedVolume) {
+    const slider = document.getElementById('bgmVolume');
+    if (slider) {
+        slider.value = savedVolume;
+        this.setVolume(savedVolume);
+    }
+}
           
             // Equipment Management
             equipItem(entity, item) {
@@ -8211,13 +8252,13 @@
                 const list = document.getElementById('bgmList')
                 if (list) {
                     list.innerHTML = this.library.bgm.map(b => `
-                        <div class="item-card">
-                            ${b.name}
-                            <button onclick="game.setBackgroundMusic('${b.url}')">Set Current</button>
-                            <button onclick="game.previewSFX('${b.url}')">Preview</button>
-                            <button class="btn-danger" onclick="game.removeMedia('${b.name}', 'bgm')">Delete</button>
-                        </div>
-                    `).join('')
+            <div class="item-card">
+                ${b.name}
+                <button onclick="game.setBackgroundMusicAndPlay('${b.url.replace(/'/g, "\\'")}')">Set Current</button>
+                <button onclick="game.previewSFX('${b.url.replace(/'/g, "\\'")}')">Preview</button>
+                <button class="btn-danger" onclick="game.removeMedia('${b.name}', 'bgm')">Delete</button>
+            </div>
+        `).join('')
                 }
             },
             saveMedia(url, type, name=null) {
