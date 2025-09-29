@@ -4492,6 +4492,21 @@
                 return this.entities.find(e => e.id === id);
             },
 
+            // Remove Entity
+            removeEntity(id) {
+                const entity = this.getEntity(id);
+                if (entity && confirm(`Remove ${entity.name}?`)) {
+                    this.entities = this.entities.filter(e => e.id !== id);
+                    if (this.selectedEntity && this.selectedEntity.id === id) {
+                        this.selectedEntity = null;
+                    }
+                    document.querySelectorAll('.details-panel, .action-menu').forEach(el => el.remove());
+                    this.updateTurnOrder();
+                    this.render();
+                    this.addLog(`${entity.name} removed from board`, 'info');
+                }
+            },
+
             // Update Turn Order with proper tiebreaking
             updateTurnOrder() {
                 this.turnOrder = this.entities
