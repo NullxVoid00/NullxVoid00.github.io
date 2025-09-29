@@ -2396,7 +2396,7 @@
             classList: [
                 'Artificer', 'Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter',
                 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard',
-                'Blood Hunter', 'Mystic', 'Mystic', 'Custom'
+                'Blood Hunter', 'Mystic', 'Custom'
             ],
 
             raceList: [
@@ -2418,33 +2418,24 @@
                     damage: '1',
                     damageType: 'bludgeoning',
                     range: 5,
-                    description: 'Make a melee attack with fists/body (1 + STR modifier damage)',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: true,
-                    isBaseAction: true
+                    description: 'Make an unarmed attack using Strength',
+                    soundEffect: ''
                 },
                 {
                     name: 'Shove',
                     type: 'special',
                     actionType: 'action',
-                    description: 'Push target 5 feet away or knock them prone (Athletics vs Athletics/Acrobatics)',
+                    description: 'Shove a creature prone or push it 5 feet away',
                     effect: 'shove',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: true,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Grapple',
                     type: 'special',
                     actionType: 'action',
-                    description: 'Attempt to grapple a target (Athletics vs Athletics/Acrobatics)',
+                    description: 'Attempt to grapple a creature',
                     effect: 'grapple',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: true,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Hide',
@@ -2452,10 +2443,7 @@
                     actionType: 'action',
                     description: 'Make a Dexterity (Stealth) check to hide',
                     skill: 'stealth',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Dash',
@@ -2463,10 +2451,7 @@
                     actionType: 'action',
                     description: 'Double your movement speed this turn',
                     effect: 'dash',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Disengage',
@@ -2474,21 +2459,15 @@
                     actionType: 'action',
                     description: 'Move without provoking opportunity attacks',
                     effect: 'disengage',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Dodge',
                     type: 'defense',
                     actionType: 'action',
-                    description: 'All attacks against you have disadvantage until your next turn',
+                    description: 'Focus on avoiding attacks',
                     effect: 'dodge',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Help',
@@ -2496,10 +2475,7 @@
                     actionType: 'action',
                     description: 'Help an ally with their next ability check or attack',
                     effect: 'help',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: true,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Ready',
@@ -2507,10 +2483,7 @@
                     actionType: 'action',
                     description: 'Prepare an action to trigger on a condition',
                     effect: 'ready',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 },
                 {
                     name: 'Search',
@@ -2518,10 +2491,7 @@
                     actionType: 'action',
                     description: 'Make a Wisdom (Perception) or Intelligence (Investigation) check',
                     skill: 'perception',
-                    soundEffect: '',
-                    visualEffect: '',
-                    needsTarget: false,
-                    isBaseAction: true
+                    soundEffect: ''
                 }
             ],
 
@@ -3185,6 +3155,10 @@
                 hidden: {
                     description: 'Hidden from view.',
                     effects: {}
+                },
+                dodge: {
+                    description: 'All attacks against you have disadvantage until your next turn.',
+                    effects: {}
                 }
             },
 
@@ -3194,7 +3168,6 @@
                 this.loadLibrary();
                 this.loadSounds();
                 this.loadSavedBackgrounds();
-                this.loadQuickSlots();
                 this.setupDrawingCanvas();
                 this.setupEventListeners();
                 this.setupQuickAdd();
@@ -3673,7 +3646,7 @@
             addFromLibrarySidebar(name, category) {
                 this.addFromLibrary(name, category);
                 // Keep sidebar open but switch to combat tab
-                switchTab({ target: document.getElementById('combat-tab') }, 'combat');
+                switchTab({ target: document.querySelector('.tab[onclick*="combat"]') }, 'combat');
             },
 
             assignSpellToCharacter(spellName) {
@@ -4392,7 +4365,8 @@
                             type === 'monster' ? '#ef4444' : '#fbbf24',
                     image: '',
                     soundEffect: '',
-                    visualEffect: ''
+                    visualEffect: '',
+                    hidden: false
                 };
 
                 // Only add full character attributes for players, monsters, and NPCs
@@ -4739,6 +4713,15 @@
                 if (entity.hp === 0 && !entity.conditions.includes('stable')) {
                     this.rollDeathSave(entity);
                 }
+
+                // Decrement condition turn counters
+                Object.keys(entity.conditionTurns).forEach(condition => {
+                    entity.conditionTurns[condition]--;
+                    if (entity.conditionTurns[condition] <= 0) {
+                        this.removeCondition(entity, condition);
+                        delete entity.conditionTurns[condition];
+                    }
+                });
             },
 
             // Handle End of Turn
@@ -4786,7 +4769,7 @@
             },
 
             // Perform Attack
-            performAttack(attacker, target, attack, level = null, pos = null) {
+            performAttack(attacker, target, attack) {
                 if (attacker.id === target.id) {
                     this.addLog('Cannot target self!', 'info');
                     return;
@@ -4827,6 +4810,7 @@
                 if (target.conditions.includes('paralyzed')) hasAdvantage = true;
                 if (target.conditions.includes('stunned')) hasAdvantage = true;
                 if (target.conditions.includes('unconscious')) hasAdvantage = true;
+                if (target.conditions.includes('dodge')) hasDisadvantage = true;
 
                 let roll = d20;
                 if (hasAdvantage && !hasDisadvantage) {
@@ -4851,6 +4835,9 @@
                 } else if (roll === 20 || totalHit >= targetAC) {
                     // Calculate damage
                     let damage = this.rollDice(attack.damage);
+                    if (attack.name === 'Unarmed Strike') {
+                        damage += this.getAbilityModifier(attacker.str);
+                    }
 
                     if (roll === 20) {
                         damage *= 2;
@@ -5013,14 +5000,14 @@
             },
 
             // Cast Spell
-            castSpell(caster, target, spell, level, pos = null) {
+            castSpell(caster, target, spell, spellLevel = null, pos = null) {
                 if (caster.id === target?.id && spell.name !== 'Shield' && spell.name !== 'Misty Step') {
                     this.addLog('Cannot target self with this spell!', 'info');
                     return;
                 }
 
                 // Check spell slots
-                const actualLevel = level || spell.level;
+                const actualLevel = spellLevel || spell.level;
                 if (spell.level > 0) {
                     if (!caster.spellSlots || caster.spellSlots[actualLevel] <= caster.spellSlotsUsed[actualLevel]) {
                         this.addLog(`${caster.name} has no level ${actualLevel} spell slots remaining!`, 'info');
@@ -5479,18 +5466,6 @@
                     if (item.visualEffect) {
                         this.playVisualEffect(item.visualEffect, target.x, target.y);
                     }
-                } else if (item.damage) {
-                    const damage = this.rollDice(item.damage);
-                    this.dealDamage(target, damage, item.damageType);
-                    this.createFloatingText(`-${damage}`, target.x, target.y - 30, '#ff0000');
-                    this.addLog(`${user.name} uses ${item.name} on ${target.name}, dealing ${damage} ${item.damageType} damage!`, 'damage');
-                    this.showActionDisplay('damage', 'Item Used', `${target.name} takes ${damage} ${item.damageType} damage from ${item.name}`);
-                    if (item.soundEffect) {
-                        this.playIndividualSound(item.soundEffect);
-                    }
-                    if (item.visualEffect) {
-                        this.playVisualEffect(item.visualEffect, target.x, target.y);
-                    }
                 } else if (item.effect) {
                     this.applyItemEffect(target, item.effect);
                     this.addLog(`${user.name} uses ${item.name} on ${target.name}!`, 'info');
@@ -5578,6 +5553,10 @@
                 this.entities.forEach(entity => {
                     if (entity.type === 'visualEffect') {
                         this.renderVisualEffect(entity, canvas);
+                        return;
+                    }
+
+                    if (entity.hidden && !this.editMode && (entity.type === 'item' || entity.type === 'container')) {
                         return;
                     }
 
@@ -5968,6 +5947,7 @@
                 return actionPerformed;
             },
 
+            // Setup event listeners
             setupEventListeners() {
                 const canvas = document.getElementById('boardCanvas');
                 const gameBoard = document.getElementById('gameBoard');
@@ -6075,7 +6055,7 @@
             checkForOpportunityAttacks(movingEntity, startPos, endPos) {
                 const attackers = [];
                 const threatRange = 50; // 5ft = 50px assuming 10px/ft? Wait, grid 50px=5ft? Wait, pattern width=50, path M 50 0 L 0 0 0 50, so lines every 50px, each square 50px = 5ft, so 10px/ft.
-                // Wait, pattern id="grid" width="50", path M 50 0 L 0 0 0 50, so 50px per 5ft, 10px/ft.
+                // Wait, to be accurate, 5ft = 50px, no, pattern id="grid" width="50", path M 50 0 L 0 0 0 50, so lines every 50px, each square 50px = 5ft, so 10px/ft.
                 // So 5ft = 50px.
                 const enemies = this.entities.filter(e =>
                     (e.type === 'monster' && movingEntity.type === 'player') ||
@@ -6124,42 +6104,37 @@
                 const { source, action } = this.targetingMode;
 
                 if (action.level !== undefined) {
-                    this.castSpell(source, target, action, action.level, pos);
+                    // It's a spell
+                    this.castSpell(source, target, action, null, pos);
                 } else if (action.toHit !== undefined) {
+                    // It's an attack
                     this.performAttack(source, target, action);
-                } else if (action.isBaseAction) {
-                    this.performBaseAction(source, target, action);
-                } else if (action.healing || action.effect || action.spell || action.damage) {
+                } else if (action.healing || action.effect) {
+                    // It's an item
                     this.useItem(source, action, target);
+                } else if (action.type === 'special') {
+                    // It's a base combat action
+                    this.performBaseAction(source, target, action);
                 }
 
                 this.cancelTargeting();
             },
             // Perform Base Combat Actions
             performBaseAction(performer, target, action) {
-                document.querySelectorAll('.action-menu').forEach(el => el.remove());
                 this.showActionDisplay('info', `${action.name}`, `${performer.name} uses ${action.name}`, action.description);
 
                 switch (action.effect) {
                     case 'shove':
-                        const shoveRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
-                        const shoveTarget = Math.max(target.ac, 8 + this.getAbilityModifier(target.str));
-                        if (shoveRoll >= shoveTarget) {
-                            // Push away
-                            const dx = target.x - performer.x;
-                            const dy = target.y - performer.y;
-                            const dist = Math.hypot(dx, dy);
-                            if (dist > 0) {
-                                const pushDist = 50; // 5ft = 50px
-                                target.x += (dx / dist) * pushDist;
-                                target.y += (dy / dist) * pushDist;
-                            }
-                            this.addLog(`${performer.name} shoves ${target.name} away!`, 'info');
-                            this.showActionDisplay('info', 'Shove Success', `${target.name} is pushed 5 feet away`);
-                        } else {
-                            this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
-                            this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
+                        const dx = target.x - performer.x;
+                        const dy = target.y - performer.y;
+                        const dist = Math.hypot(dx, dy);
+                        if (dist > 0) {
+                            const pushDist = 50; // 5ft = 50px
+                            target.x += (dx / dist) * pushDist;
+                            target.y += (dy / dist) * pushDist;
                         }
+                        this.addLog(`${performer.name} shoves ${target.name} away!`, 'info');
+                        this.showActionDisplay('info', 'Shove Success', `${target.name} is pushed 5 feet away`);
                         break;
                     case 'grapple':
                         const grappleRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
@@ -6184,6 +6159,7 @@
                         this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
                         break;
                     case 'dodge':
+                        this.addCondition(performer, 'dodge', 1);
                         this.addLog(`${performer.name} focuses on dodging attacks.`, 'info');
                         this.showActionDisplay('info', 'Dodge', `${performer.name} is harder to hit until next turn`);
                         break;
@@ -6194,6 +6170,35 @@
                     case 'ready':
                         this.addLog(`${performer.name} readies an action.`, 'info');
                         this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react`);
+                        break;
+                    case 'hide':
+                        const stealthMod = this.getAbilityModifier(performer.dex) + (performer.skills.stealth || 0);
+                        const roll = this.rollDice('1d20') + stealthMod;
+                        this.addLog(`${performer.name} hides (Stealth: ${roll})`, 'info');
+                        if (roll >= 15) {
+                            performer.hidden = true;
+                            this.addCondition(performer, 'hidden');
+                            this.addLog(`${performer.name} is hidden!`, 'info');
+                        }
+                        break;
+                    case 'search':
+                        const perceptionMod = this.getAbilityModifier(performer.wis) + (performer.skills.perception || 0);
+                        const roll = this.rollDice('1d20') + perceptionMod;
+                        this.addLog(`${performer.name} searches (Perception: ${roll})`, 'info');
+                        if (roll >= 15) {
+                            this.entities.forEach(e => {
+                                if (e.hidden) {
+                                    const dist = Math.hypot(e.x - performer.x, e.y - performer.y);
+                                    if (dist <= 300) {
+                                        e.hidden = false;
+                                        if (e.conditions && e.conditions.includes('hidden')) {
+                                            this.removeCondition(e, 'hidden');
+                                        }
+                                        this.addLog(`Found hidden ${e.name}!`, 'info');
+                                    }
+                                }
+                            });
+                        }
                         break;
                 }
 
@@ -6464,6 +6469,10 @@
                             </div>
                             <input type="text" value="${entity.image || ''}" onchange="game.updateEntity(${entity.id}, 'image', this.value)" class="property-input" style="width: 100%;" placeholder="Token image URL">
                         </div>
+                        <div class="stat-row">
+                            <span>Hidden:</span>
+                            <input type="checkbox" ${entity.hidden ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'hidden', this.checked)">
+                        </div>
 
                         <div style="margin-top: 15px; display: flex; gap: 10px;">
                             <button class="btn btn-danger btn-small" onclick="game.removeEntity(${entity.id})">Remove</button>
@@ -6540,6 +6549,7 @@
                     menu.remove();
                 };
                 menu.appendChild(closeBtn);
+                menu.addEventListener('click', function (e) { e.stopPropagation(); });
 
                 elem.appendChild(menu);
             },
@@ -6741,6 +6751,10 @@
                             <span>Visual Effect:</span>
                             <input type="text" value="${entity.visualEffect || ''}" onchange="game.updateEntity(${entity.id}, 'visualEffect', this.value)" class="stat-input" style="width: 200px;">
                         </div>
+                        <div class="stat-row">
+                            <span>Hidden:</span>
+                            <input type="checkbox" ${entity.hidden ? 'checked' : ''} onchange="game.updateEntity(${entity.id}, 'hidden', this.checked)">
+                        </div>
 
                         <button class="btn btn-primary btn-small" onclick="game.openSpellManager(${entity.id})">Manage Spells</button>
                         <button class="btn btn-primary btn-small" onclick="game.openInventoryManager(${entity.id})">Manage Inventory</button>
@@ -6770,12 +6784,12 @@
                     html += '<div class="action-section"><div class="action-section-title">Basic Actions</div>';
                     entity.baseActions.forEach((action, index) => {
                         const disabled = entity.actionUsed && action.actionType === 'action' ? 'disabled' : '';
-                        if (action.needsTarget === true) {
+                        if (action.type === 'attack' || action.type === 'special' || action.type === 'skill') {
                             html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
                                     ${this.getActionIcon(action.type)} ${action.name}
                                 </button>`;
                         } else {
-                            html += `<button class="action-btn ${disabled}" onclick="game.performBaseAction(game.getEntity(${entity.id}), null, game.getEntity(${entity.id}).baseActions[${index}])">
+                            html += `<button class="action-btn ${disabled}" onclick="game.performBaseAction(game.getEntity(${entity.id}), game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
                                     ${this.getActionIcon(action.type)} ${action.name}
                                 </button>`;
                         }
@@ -6860,6 +6874,7 @@
                     menu.remove();
                 };
                 menu.appendChild(closeBtn);
+                menu.addEventListener('click', function (e) { e.stopPropagation(); });
 
                 elem.appendChild(menu);
             },
@@ -7400,7 +7415,7 @@
                     this.entities.push(entity);
                     this.updateTurnOrder();
                     this.render();
-                    switchTab({ target: document.getElementById('combat-tab') }, 'combat');
+                    switchTab({ target: document.querySelector('.tab.active') }, 'combat');
                 }
             },
 
