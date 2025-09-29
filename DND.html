@@ -5670,6 +5670,17 @@
                     elem.draggable = true;
                     elem.addEventListener('dragstart', (e) => this.handleDragStart(e, effect));
                     elem.addEventListener('dragend', (e) => this.handleDragEnd(e, effect));
+
+                    // Add wheel event for resizing visual effects
+                    elem.addEventListener('wheel', (e) => {
+                        if (this.editMode && this.selectedEntity && this.selectedEntity.id === effect.id) {
+                            e.preventDefault();
+                            const sizeChange = e.deltaY > 0 ? -10 : 10;
+                            effect.width = Math.max(20, effect.width + sizeChange);
+                            effect.height = Math.max(20, effect.height + sizeChange);
+                            this.render();
+                        }
+                    });
                 }
               
                 canvas.appendChild(elem);
