@@ -4492,16 +4492,6 @@
                 return this.entities.find(e => e.id === id);
             },
 
-            // Update Entity Property
-            updateEntity(id, property, value) {
-                const entity = this.getEntity(id);
-                if (entity) {
-                    entity[property] = value;
-                    this.render();
-                    this.addLog(`${entity.name} ${property} updated`, 'info');
-                }
-            },
-
             // Update Turn Order with proper tiebreaking
             updateTurnOrder() {
                 this.turnOrder = this.entities
@@ -6032,101 +6022,75 @@
                 this.cancelTargeting();
             },
             // Perform Base Combat Actions
-        performBaseAction(performer, target, action) {
-            this.showActionDisplay('info', `${action.name}`, `${performer.name} uses ${action.name}`, action.description);
-
-            switch (action.effect) {
-                case 'shove':
-                    const shoveRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
-                    const shoveTarget = Math.max(target.ac, 8 + this.getAbilityModifier(target.str));
-                    if (shoveRoll >= shoveTarget) {
-                        // Push away
-                        const dx = target.x - performer.x;
-                        const dy = target.y - performer.y;
-                        const dist = Math.hypot(dx, dy);
-                        if (dist > 0) {
-                            const pushDist = 50; // 5ft = 50px
-                            target.x += (dx / dist) * pushDist;
-                            target.y += (dy / dist) * pushDist;
-                        }
-                        this.addLog(`${performer.name} shoves ${target.name} away!`, 'info');
-                        this.showActionDisplay('info', 'Shove Success', `${target.name} is pushed 5 feet away`);
-                    } else {
-                        this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
-                        this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
-                    }
-                    break;
-                case 'grapple':
-                    const grappleRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
-                    const grappleTarget = Math.max(target.ac, 8 + Math.max(this.getAbilityModifier(target.str), this.getAbilityModifier(target.dex)));
-                    if (grappleRoll >= grappleTarget) {
-                        this.addCondition(target, 'grappled');
-                        this.addLog(`${performer.name} grapples ${target.name}!`, 'info');
-                        this.showActionDisplay('info', 'Grapple Success', `${target.name} is grappled`);
-                    } else {
-                        this.addLog(`${performer.name} fails to grapple ${target.name}`, 'info');
-                        this.showActionDisplay('info', 'Grapple Failed', `${target.name} escapes the grapple attempt`);
-                    }
-                    break;
-                case 'dash':
-                    performer.movement += performer.speed;
-                    this.addLog(`${performer.name} dashes! Movement doubled.`, 'info');
-                    this.showActionDisplay('info', 'Dash', `${performer.name} gains extra movement`, `Total movement: ${performer.movement} feet`);
-                    break;
-                case 'disengage':
-                    performer.disengaged = true;
-                    this.addLog(`${performer.name} disengages from combat.`, 'info');
-                    this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
-                    break;
-                case 'dodge':
-                    this.addLog(`${performer.name} focuses on dodging attacks.`, 'info');
-                    this.showActionDisplay('info', 'Dodge', `${performer.name} is harder to hit until next turn`);
-                    break;
-                case 'help':
-                    this.addLog(`${performer.name} helps ${target.name}.`, 'info');
-                    this.showActionDisplay('info', 'Help', `${target.name} gains advantage on their next roll`);
-                    break;
-                case 'ready':
-                    this.addLog(`${performer.name} readies an action.`, 'info');
-                    this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react`);
-                    break;
-            }
-
-            if (action.skill) {
-                const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
-                this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
-                this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
-            }
-
-            if (action.skill) {
-                const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
-                this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
-                this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
-
-                if (action.skill === 'perception') {
-                    let foundSomething = false;
-                    if (skillRoll >= 15) {
-                        this.entities.forEach(e => {
-                            if (e.hidden && e.id !== performer.id) {
-                                const dist = Math.hypot(e.x - performer.x, e.y - performer.y);
-                                if (dist <= 300) {
-                                    e.hidden = false;
-                                    this.addLog(`Found hidden ${e.name}!`, 'info');
-                                    foundSomething = true;
-                                }
+            performBaseAction(performer, target, action) {
+                this.showActionDisplay('info', `${action.name}`, `${performer.name} uses ${action.name}`, action.description);
+              
+                switch (action.effect) {
+                    case 'shove':
+                        const shoveRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
+                        const shoveTarget = Math.max(target.ac, 8 + this.getAbilityModifier(target.str));
+                        if (shoveRoll >= shoveTarget) {
+                            // Push away
+                            const dx = target.x - performer.x;
+                            const dy = target.y - performer.y;
+                            const dist = Math.hypot(dx, dy);
+                            if (dist > 0) {
+                                const pushDist = 50; // 5ft = 50px
+                                target.x += (dx / dist) * pushDist;
+                                target.y += (dy / dist) * pushDist;
                             }
-                        });
-                    }
-                    if (!foundSomething && skillRoll >= 15) {
-                        this.addLog(`${performer.name} finds nothing hidden nearby.`, 'info');
-                    }
+                            this.addLog(`${performer.name} shoves ${target.name} away!`, 'info');
+                            this.showActionDisplay('info', 'Shove Success', `${target.name} is pushed 5 feet away`);
+                        } else {
+                            this.addLog(`${performer.name} fails to shove ${target.name}`, 'info');
+                            this.showActionDisplay('info', 'Shove Failed', `${target.name} resists the shove`);
+                        }
+                        break;
+                    case 'grapple':
+                        const grappleRoll = this.rollDice('1d20') + this.getAbilityModifier(performer.str) + performer.proficiencyBonus;
+                        const grappleTarget = Math.max(target.ac, 8 + Math.max(this.getAbilityModifier(target.str), this.getAbilityModifier(target.dex)));
+                        if (grappleRoll >= grappleTarget) {
+                            this.addCondition(target, 'grappled');
+                            this.addLog(`${performer.name} grapples ${target.name}!`, 'info');
+                            this.showActionDisplay('info', 'Grapple Success', `${target.name} is grappled`);
+                        } else {
+                            this.addLog(`${performer.name} fails to grapple ${target.name}`, 'info');
+                            this.showActionDisplay('info', 'Grapple Failed', `${target.name} escapes the grapple attempt`);
+                        }
+                        break;
+                    case 'dash':
+                        performer.movement += performer.speed;
+                        this.addLog(`${performer.name} dashes! Movement doubled.`, 'info');
+                        this.showActionDisplay('info', 'Dash', `${performer.name} gains extra movement`, `Total movement: ${performer.movement} feet`);
+                        break;
+                    case 'disengage':
+                        performer.disengaged = true;
+                        this.addLog(`${performer.name} disengages from combat.`, 'info');
+                        this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
+                        break;
+                    case 'dodge':
+                        this.addLog(`${performer.name} focuses on dodging attacks.`, 'info');
+                        this.showActionDisplay('info', 'Dodge', `${performer.name} is harder to hit until next turn`);
+                        break;
+                    case 'help':
+                        this.addLog(`${performer.name} helps ${target.name}.`, 'info');
+                        this.showActionDisplay('info', 'Help', `${target.name} gains advantage on their next roll`);
+                        break;
+                    case 'ready':
+                        this.addLog(`${performer.name} readies an action.`, 'info');
+                        this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react`);
+                        break;
                 }
-            }
-        }
-
-// Mark action used
-performer.actionUsed = true;
-this.updateTurnOrder();
+              
+                if (action.skill) {
+                    const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
+                    this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
+                    this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
+                }
+              
+                // Mark action used
+                performer.actionUsed = true;
+                this.updateTurnOrder();
             },
           
             cancelTargeting() {
