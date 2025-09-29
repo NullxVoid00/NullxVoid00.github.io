@@ -1986,7 +1986,7 @@
         <div class="combat-container">
             <!-- Sidebar -->
             <div class="sidebar">
-                <h2>⚔️ Combat Control</h2>
+                <h2><img src="" id="combatHeaderLogo" style="max-height: 40px; display: none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span id="combatHeaderText" style="display: block;">⚔️ Combat Control</span></h2>
 
                 <!-- Quick Add Section -->
                 <div class="section">
@@ -2254,6 +2254,13 @@
                 <div class="section-title">Background Hue Shift</div>
                 <input type="range" min="0" max="360" value="240" id="backgroundHueSlider" oninput="game.setBackgroundHue(this.value)" style="width: 100%;">
                 <p style="text-align: center; color: #9ca3af; margin-top: 10px;">Current background hue: <span id="currentBackgroundHue">240</span>° (Default Blue)</p>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Combat Header Logo</div>
+                <input type="text" class="input-field" id="headerLogoUrl" placeholder="Logo image URL (transparent PNG recommended)" onchange="game.setHeaderLogo(this.value)">
+                <input type="file" accept="image/*" id="headerLogoFile" onchange="game.uploadHeaderLogo(this.files[0])" style="width: 100%; margin-top: 10px;">
+                <button class="btn btn-danger btn-small" onclick="game.clearHeaderLogo()" style="margin-top: 10px;">Clear Logo</button>
             </div>
 
             <div class="section">
@@ -3159,6 +3166,10 @@
                     this.setUIBackgroundOpacity(savedOpacity);
                     const slider = document.getElementById('bgOpacitySlider');
                     if (slider) slider.value = savedOpacity;
+                }
+                const savedLogo = localStorage.getItem('dndHeaderLogo');
+                if (savedLogo) {
+                    setTimeout(() => this.setHeaderLogo(savedLogo), 100);
                 }
             },
             // Quick Slots Management
@@ -8462,6 +8473,41 @@
                 }
 
                 container.innerHTML = html;
+            },
+            setHeaderLogo(url) {
+                const logo = document.getElementById('combatHeaderLogo');
+                const text = document.getElementById('combatHeaderText');
+                if (logo && url) {
+                    logo.src = url;
+                    logo.style.display = 'block';
+                    if (text) text.style.display = 'none';
+                    localStorage.setItem('dndHeaderLogo', url);
+                }
+            },
+
+            uploadHeaderLogo(file) {
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.setHeaderLogo(e.target.result);
+                        const input = document.getElementById('headerLogoUrl');
+                        if (input) input.value = 'Custom uploaded logo';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            },
+
+            clearHeaderLogo() {
+                const logo = document.getElementById('combatHeaderLogo');
+                const text = document.getElementById('combatHeaderText');
+                if (logo) {
+                    logo.style.display = 'none';
+                    logo.src = '';
+                }
+                if (text) text.style.display = 'block';
+                localStorage.removeItem('dndHeaderLogo');
+                const input = document.getElementById('headerLogoUrl');
+                if (input) input.value = '';
             },
             setUIBackground(url) {
                 if (url) {
