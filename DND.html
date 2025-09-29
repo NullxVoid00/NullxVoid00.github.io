@@ -4486,7 +4486,12 @@
                 this.addLog('🎲 Initiative rolled! Round 1 begins!', 'info');
                 this.showActionDisplay('info', 'Initiative Rolled', 'Round 1 begins! Turn order has been set.');
             },
-          
+
+            // Get Entity by ID
+            getEntity(id) {
+                return this.entities.find(e => e.id === id);
+            },
+
             // Update Turn Order with proper tiebreaking
             updateTurnOrder() {
                 this.turnOrder = this.entities
