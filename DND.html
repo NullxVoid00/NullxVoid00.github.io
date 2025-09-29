@@ -4068,6 +4068,10 @@
 
             setBackgroundMusicAndPlay(url) {
                 this.setBackgroundMusic(url);
+                const bgmInput = document.getElementById('backgroundMusic');
+                if (bgmInput) {
+                    bgmInput.value = url;
+                }
                 this.playBackgroundMusic();
             },
 
