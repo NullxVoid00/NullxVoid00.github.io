@@ -2268,13 +2268,7 @@
 
             <div class="section">
                 <div class="section-title">UI Font</div>
-                <select id="fontSelect" onchange="game.setUIFont(this.value)" style="width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; border-radius: 6px; color: white;">
-                    <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">Default System</option>
-                    <option value="Arial, sans-serif">Arial</option>
-                    <option value="'Times New Roman', serif">Times New Roman</option>
-                    <option value="'Courier New', monospace">Courier New</option>
-                    <option value="Georgia, serif">Georgia</option>
-                </select>
+                <div id="fontDropdownContainer"></div>
                 <div style="margin-top: 10px;">
                     <input type="file" accept=".otf,.ttf" id="customFontUpload" onchange="game.uploadCustomFont(this.files[0])" style="width: 100%;">
                 </div>
@@ -8377,6 +8371,44 @@
                         document.head.appendChild(style);
                     });
                 }
+                this.buildFontDropdown();
+            },
+
+            buildFontDropdown() {
+                const container = document.getElementById('fontDropdownContainer');
+                if (!container) return;
+
+                const savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                const currentFont = localStorage.getItem('dndUIFont') || "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+                let html = `
+        <select id="fontSelect" onchange="game.setUIFont(this.value)" style="width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; border-radius: 6px; color: white;">
+            <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" ${currentFont.includes('apple-system') ? 'selected' : ''}>Default System</option>
+            <option value="Arial, sans-serif" ${currentFont === 'Arial, sans-serif' ? 'selected' : ''}>Arial</option>
+            <option value="'Times New Roman', serif" ${currentFont === "'Times New Roman', serif" ? 'selected' : ''}>Times New Roman</option>
+            <option value="'Courier New', monospace" ${currentFont === "'Courier New', monospace" ? 'selected' : ''}>Courier New</option>
+            <option value="Georgia, serif" ${currentFont === 'Georgia, serif' ? 'selected' : ''}>Georgia</option>
+    `;
+
+                savedFonts.forEach(font => {
+                    html += `<option value="'${font.name}', sans-serif" ${currentFont.includes(font.name) ? 'selected' : ''}>${font.name}</option>`;
+                });
+
+                html += `</select>`;
+
+                if (savedFonts.length > 0) {
+                    html += `<div style="margin-top: 10px; font-size: 12px; color: #9ca3af;">Custom Fonts:</div>`;
+                    savedFonts.forEach((font, index) => {
+                        html += `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: rgba(0,0,0,0.3); margin-top: 5px; border-radius: 4px;">
+                    <span>${font.name}</span>
+                    <button onclick="game.removeCustomFont(${index})" style="background: #ef4444; border: none; color: white; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">✕</button>
+                </div>
+            `;
+                    });
+                }
+
+                container.innerHTML = html;
             },
             setUIBackground(url) {
                 if (url) {
@@ -8437,11 +8469,26 @@
                             document.head.appendChild(style);
                             this.setUIFont(`'${name}', sans-serif`);
                             let savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
-                            savedFonts.push({name, url: fontUrl});
+                            savedFonts.push({ name, url: fontUrl });
                             localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
+                            this.buildFontDropdown();
                         }
                     };
                     reader.readAsDataURL(file);
+                }
+            },
+
+            removeCustomFont(index) {
+                let savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                const fontName = savedFonts[index].name;
+                if (confirm(`Remove ${fontName}?`)) {
+                    savedFonts.splice(index, 1);
+                    localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
+                    this.buildFontDropdown();
+                    // Reset to default if current font was removed
+                    if (document.body.style.fontFamily.includes(fontName)) {
+                        this.setUIFont("-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+                    }
                 }
             }
         };
