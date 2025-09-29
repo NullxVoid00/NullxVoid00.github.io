@@ -5455,16 +5455,15 @@
                 }
               
                 // Render entities
-                if (entity.type === 'visualEffect') {
-                    this.renderVisualEffect(entity, canvas);
-                    return;
-                }
-
-                if (entity.hidden && !this.editMode) {
-                    return;
-                }
-
-                const elem = document.createElement('div');
+                this.entities.forEach(entity => {
+                    if (entity.type === 'visualEffect') {
+                        this.renderVisualEffect(entity, canvas);
+                        return;
+                    }
+                  
+                    const elem = document.createElement('div');
+                    elem.className = 'entity';
+                    elem.dataset.id = entity.id;
                   
                     // Add type-specific classes
                     if (entity.type === 'npc') {
