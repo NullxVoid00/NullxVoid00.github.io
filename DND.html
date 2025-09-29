@@ -6096,7 +6096,7 @@
                     const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
                     this.addLog(`${performer.name} rolls ${action.skill}: ${skillRoll}`, 'info');
                     this.showActionDisplay('roll', `${action.skill.charAt(0).toUpperCase() + action.skill.slice(1)} Check`, `${performer.name} rolled ${skillRoll}`);
-            }
+}
 
             if (action.skill) {
                 const skillRoll = this.rollDice('1d20') + this.getAbilityModifier(performer[this.skillsList[action.skill]]) + (performer.skills[action.skill] || 0);
@@ -6111,29 +6111,21 @@
                                 const dist = Math.hypot(e.x - performer.x, e.y - performer.y);
                                 if (dist <= 300) {
                                     e.hidden = false;
-                                    if (e.conditions && e.conditions.includes('hidden')) {
-                                        this.removeCondition(e, 'hidden');
-                                    }
                                     this.addLog(`Found hidden ${e.name}!`, 'info');
-                                    this.showActionDisplay('info', 'Hidden Object Found', `${performer.name} discovers ${e.name}!`);
                                     foundSomething = true;
                                 }
                             }
                         });
                     }
-
                     if (!foundSomething && skillRoll >= 15) {
-                        this.addLog(`${performer.name} searches but finds nothing hidden nearby.`, 'info');
-                        this.showActionDisplay('info', 'Search Complete', `${performer.name} finds nothing hidden within range`);
-                    } else if (skillRoll < 15) {
-                        this.showActionDisplay('info', 'Search Failed', `${performer.name}'s search was unsuccessful`, `Rolled ${skillRoll} vs DC 15`);
+                        this.addLog(`${performer.name} finds nothing hidden nearby.`, 'info');
                     }
                 }
             }
 
-            // Mark action used
-            performer.actionUsed = true;
-            this.updateTurnOrder();
+// Mark action used
+performer.actionUsed = true;
+this.updateTurnOrder();
             },
           
             cancelTargeting() {
