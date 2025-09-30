@@ -6177,14 +6177,20 @@
                 canvas.addEventListener('drop', e => {
                     e.preventDefault();
                     if (!this.draggingEntity) return;
-                  
+
                     const rect = canvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                  
-                    // Create persistent arrow from start to drop pos
-                    this.createPersistentArrow(this.dragStartPos.x, this.dragStartPos.y, x, y);
-                  
+
+                    // UPDATE POSITION FIRST (before arrows/interactions)
+                    const oldX = this.draggingEntity.x;
+                    const oldY = this.draggingEntity.y;
+                    this.draggingEntity.x = x;
+                    this.draggingEntity.y = y;
+
+                    // NOW create persistent arrow from OLD position to NEW position
+                    this.createPersistentArrow(oldX, oldY, x, y);
+
                     // Check for target entity
                     const target = this.entities.find(ent =>
                         ent.id !== this.draggingEntity.id &&
