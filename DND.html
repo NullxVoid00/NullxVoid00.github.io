@@ -6177,20 +6177,12 @@
                 canvas.addEventListener('drop', e => {
                     e.preventDefault();
                     if (!this.draggingEntity) return;
-
+                  
                     const rect = canvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-
-                    // UPDATE POSITION FIRST (before arrows/interactions)
-                    const oldX = this.draggingEntity.x;
-                    const oldY = this.draggingEntity.y;
-                    this.draggingEntity.x = x;
-                    this.draggingEntity.y = y;
-
-                    // NOW create persistent arrow from OLD position to NEW position
-                    this.createPersistentArrow(oldX, oldY, x, y);
-
+                  
+                  
                     // Check for target entity
                     const target = this.entities.find(ent =>
                         ent.id !== this.draggingEntity.id &&
@@ -6210,7 +6202,7 @@
                             actionPerformed = true;
                         }
                     } else if (target) {
-                        // Use enhanced token interaction system
+                        // For attacks, arrow will be created by performAttack with correct positions
                         actionPerformed = this.handleTokenInteraction(this.draggingEntity, target, x, y);
                     } else {
                         // Normal movement
