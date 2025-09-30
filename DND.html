@@ -6074,7 +6074,30 @@
                         actionPerformed = true;
                     }
                 }
-              
+
+                // Monster Token Interactions
+                else if (draggingEntity.type === 'monster') {
+                    // Monster placed on Player/NPC - Attack
+                    if (target.type === 'player' || target.type === 'npc') {
+                        if (draggingEntity.attacks && draggingEntity.attacks.length > 0) {
+                            this.performAttack(draggingEntity, target, draggingEntity.attacks[0]);
+                            actionPerformed = true;
+                        } else {
+                            // Create basic unarmed attack if no attacks configured
+                            const unarmedAttack = {
+                                name: 'Unarmed Strike',
+                                toHit: this.getAbilityModifier(draggingEntity.str) + draggingEntity.proficiencyBonus,
+                                damage: '1+' + this.getAbilityModifier(draggingEntity.str),
+                                damageType: 'bludgeoning',
+                                range: 5,
+                                soundEffect: ''
+                            };
+                            this.performAttack(draggingEntity, target, unarmedAttack);
+                            actionPerformed = true;
+                        }
+                    }
+                }
+
                 // Item Token Interactions
                 else if (draggingEntity.type === 'item') {
                   
