@@ -5394,6 +5394,8 @@
             playVisualEffect(url, x, y, width = 100, height = 100, duration = 2) {
                 if (!url) return;
 
+                console.log('Playing VFX:', url, 'at position', x, y);
+
                 const effect = document.createElement('div');
                 effect.className = 'spell-effect';
                 effect.style.left = `${x - width / 2}px`;
