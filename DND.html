@@ -4985,8 +4985,14 @@
                 }
               
                 // Animation
-                this.createPersistentArrow(attacker.x + 35, attacker.y + 35, target.x + 35, target.y + 35);
-                setTimeout(() => this.createArrowAnimation(attacker.x + 35, attacker.y + 35, target.x + 35, target.y + 35), 100);
+                // Animation - adjust for token center
+                const attackerCenterX = attacker.x;
+                const attackerCenterY = attacker.y;
+                const targetCenterX = target.x;
+                const targetCenterY = target.y;
+
+                this.createPersistentArrow(attackerCenterX, attackerCenterY, targetCenterX, targetCenterY);
+                setTimeout(() => this.createArrowAnimation(attackerCenterX, attackerCenterY, targetCenterX, targetCenterY), 100);
               
                 this.updateTurnOrder();
                 this.render();
