@@ -8760,45 +8760,53 @@
                     savedFonts.splice(index, 1);
                     localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
                     this.buildFontDropdown();
+                    // Reset to default if current font was removed
                     if (document.body.style.fontFamily.includes(fontName)) {
                         this.setUIFont("-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
                     }
                 }
-            },
-
-            importCharacterPDF(file) {
-                if (!file) return;
-                const self = this;
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    pdfjsLib.getDocument(e.target.result).promise.then(function (pdf) {
-                        let fullText = '';
-                        let promises = [];
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            promises.push(
-                                pdf.getPage(i).then(function (page) {
-                                    return page.getTextContent().then(function (textContent) {
-                                        return textContent.items.map(item => item.str).join(' ');
-                                    });
-                                })
-                            );
-                        }
-                        Promise.all(promises).then(function (pages) {
-                            fullText = pages.join('\n');
-                            console.log('EXTRACTED:', fullText);
-                            const data = { name: 'Test', class: 'Fighter', race: 'Human', level: 1 };
-                            const character = self.createEntity('player', data.name, 200, 200);
-                            Object.assign(character, data);
-                            self.entities.push(character);
-                            self.updateCharacterList();
-                            alert('Imported character');
-                        });
-                    }).catch(function (err) {
-                        alert('Error: ' + err.message);
-                    });
-                };
-                reader.readAsArrayBuffer(file);
             }
+            ,
+            importCharacterPDF: async function (file) {
+                if (!file) return;
+                try {
+                    const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
+                    const pdf = await loadingTask.promise;
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+                    console.log('TEXT:', fullText);
+                    const characterData = this.parseDnDBeyondPDF(fullText);
+                    console.log('DATA:', characterData);
+                    const character = this.createEntity('player', characterData.name, 200, 200);
+                    Object.assign(character, characterData);
+                    this.entities.push(character);
+                    this.updateCharacterList();
+                    this.render();
+                    alert('Imported ' + characterData.name);
+                } catch (e) {
+                    alert('Import failed: ' + e.message);
+                }
+            },
+            parseDnDBeyondPDF: function (text) {
+                const data = { name: 'Unknown', class: 'Fighter', race: 'Human', level: 1, hp: 10, maxHp: 10, ac: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, proficiencyBonus: 2, attacks: [], inventory: [], spells: [] };
+                const nameMatch = text.match(/CHARACTER NAME\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
+                if (nameMatch) data.name = nameMatch[1].trim();
+                const classMatch = text.match(/(Rogue|Fighter|Wizard|Cleric|Barbarian|Bard|Druid|Monk|Paladin|Ranger|Sorcerer|Warlock)\s+(\d+)/i);
+                if (classMatch) { data.class = classMatch[1]; data.level = parseInt(classMatch[2]); }
+                const raceMatch = text.match(/(Human|Elf|Dwarf|Orc|Halfling|Dragonborn|Gnome|Tiefling)/i);
+                if (raceMatch) data.race = raceMatch[1];
+                const hpMatch = text.match(/Max HP[^\d]*(\d+)/i);
+                if (hpMatch) { data.maxHp = parseInt(hpMatch[1]); data.hp = data.maxHp; }
+                const acMatch = text.match(/ARMOR[^\d]*CLASS[^\d]*(\d+)/i);
+                if (acMatch) data.ac = parseInt(acMatch[1]);
+                return data;
+            }
+            ,
 
             // Import D&D Beyond PDF
             async importCharacterPDF(file) {
@@ -8849,45 +8857,6 @@
                     attacks: [],
                     inventory: [],
                     spells: []
-                },
-                    importCharacterPDF: async function(file) {
-                        if (!file) return;
-                        try {
-                            const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
-                            const pdf = await loadingTask.promise;
-                            let fullText = '';
-                            for (let i = 1; i <= pdf.numPages; i++) {
-                                const page = await pdf.getPage(i);
-                                const textContent = await page.getTextContent();
-                                const pageText = textContent.items.map(item => item.str).join(' ');
-                                fullText += pageText + '\n';
-                            }
-                            console.log('TEXT:', fullText);
-                            const characterData = this.parseDnDBeyondPDF(fullText);
-                            console.log('DATA:', characterData);
-                            const character = this.createEntity('player', characterData.name, 200, 200);
-                            Object.assign(character, characterData);
-                            this.entities.push(character);
-                            this.updateCharacterList();
-                            this.render();
-                            alert('Imported ' + characterData.name);
-                        } catch (e) {
-                            alert('Import failed: ' + e.message);
-                        }
-                    },
-                parseDnDBeyondPDF: function(text) {
-                    const data = { name: 'Unknown', class: 'Fighter', race: 'Human', level: 1, hp: 10, maxHp: 10, ac: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, proficiencyBonus: 2, attacks: [], inventory: [], spells: [] };
-                    const nameMatch = text.match(/CHARACTER NAME\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
-                    if (nameMatch) data.name = nameMatch[1].trim();
-                    const classMatch = text.match(/(Rogue|Fighter|Wizard|Cleric|Barbarian|Bard|Druid|Monk|Paladin|Ranger|Sorcerer|Warlock)\s+(\d+)/i);
-                    if (classMatch) { data.class = classMatch[1]; data.level = parseInt(classMatch[2]); }
-                    const raceMatch = text.match(/(Human|Elf|Dwarf|Orc|Halfling|Dragonborn|Gnome|Tiefling)/i);
-                    if (raceMatch) data.race = raceMatch[1];
-                    const hpMatch = text.match(/Max HP[^\d]*(\d+)/i);
-                    if (hpMatch) { data.maxHp = parseInt(hpMatch[1]); data.hp = data.maxHp; }
-                    const acMatch = text.match(/ARMOR[^\d]*CLASS[^\d]*(\d+)/i);
-                    if (acMatch) data.ac = parseInt(acMatch[1]);
-                    return data;
                 };
 
                 const nameMatch = text.match(/CHARACTER NAME\s+([^\n]+)/i);
