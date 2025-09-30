@@ -8794,16 +8794,49 @@
             },
             parseDnDBeyondPDF: function (text) {
                 const data = { name: 'Unknown', class: 'Fighter', race: 'Human', level: 1, hp: 10, maxHp: 10, ac: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, proficiencyBonus: 2, attacks: [], inventory: [], spells: [] };
-                const nameMatch = text.match(/CHARACTER NAME\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
+
+                // Level and Class - "Level 1 CLASS Fighter"
+                const levelClassMatch = text.match(/Level\s+(\d+)\s+CLASS\s+(\w+)/i);
+                if (levelClassMatch) {
+                    data.level = parseInt(levelClassMatch[1]);
+                    data.class = levelClassMatch[2];
+                }
+
+                // Character name - appears before "Level"
+                const nameMatch = text.match(/CHARACTER NAME\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+Level/i);
                 if (nameMatch) data.name = nameMatch[1].trim();
-                const classMatch = text.match(/(Rogue|Fighter|Wizard|Cleric|Barbarian|Bard|Druid|Monk|Paladin|Ranger|Sorcerer|Warlock)\s+(\d+)/i);
-                if (classMatch) { data.class = classMatch[1]; data.level = parseInt(classMatch[2]); }
-                const raceMatch = text.match(/(Human|Elf|Dwarf|Orc|Halfling|Dragonborn|Gnome|Tiefling)/i);
-                if (raceMatch) data.race = raceMatch[1];
-                const hpMatch = text.match(/Max HP[^\d]*(\d+)/i);
-                if (hpMatch) { data.maxHp = parseInt(hpMatch[1]); data.hp = data.maxHp; }
-                const acMatch = text.match(/ARMOR[^\d]*CLASS[^\d]*(\d+)/i);
+
+                // HP - look for "10 / 10" pattern after "HIT POINTS"
+                const hpMatch = text.match(/(\d+)\s*\/\s*(\d+)[^A-Z]*Current/i);
+                if (hpMatch) {
+                    data.hp = parseInt(hpMatch[1]);
+                    data.maxHp = parseInt(hpMatch[2]);
+                }
+
+                // AC - number after "ARMOR CLASS"
+                const acMatch = text.match(/ARMOR CLASS[^\d]*(\d+)/i);
                 if (acMatch) data.ac = parseInt(acMatch[1]);
+
+                // Initiative
+                const initMatch = text.match(/INITIATIVE[^\d]*([+-]?\d+)/i);
+                if (initMatch) data.initiative = parseInt(initMatch[1]);
+
+                // Ability scores - look for the capitalized pattern
+                const strMatch = text.match(/STRENGTH\s+DEXTERITY\s+CONSTITUTION[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)/i);
+                if (strMatch) {
+                    data.str = parseInt(strMatch[1]);
+                    data.dex = parseInt(strMatch[2]);
+                    data.con = parseInt(strMatch[3]);
+                }
+
+                const mentalMatch = text.match(/INTELLIGENCE\s+WISDOM\s+CHARISMA[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)/i);
+                if (mentalMatch) {
+                    data.int = parseInt(mentalMatch[1]);
+                    data.wis = parseInt(mentalMatch[2]);
+                    data.cha = parseInt(mentalMatch[3]);
+                }
+
+                console.log('Successfully parsed:', data);
                 return data;
             }
             ,
