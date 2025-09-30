@@ -529,7 +529,7 @@
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
-      
+
         /* HP Bar */
         .hp-bar {
             position: absolute;
@@ -539,8 +539,48 @@
             height: 6px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 3px;
-            overflow: hidden;
+            overflow: visible;
         }
+
+        .hp-adjust-btn {
+            position: absolute;
+            top: -6px;
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            transition: all 0.2s;
+        }
+
+            .hp-adjust-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .hp-minus {
+            left: -25px;
+            background: #ef4444;
+        }
+
+            .hp-minus:hover {
+                background: #dc2626;
+            }
+
+        .hp-plus {
+            right: -25px;
+            background: #10b981;
+        }
+
+            .hp-plus:hover {
+                background: #059669;
+            }
       
         .hp-fill {
             height: 100%;
@@ -5691,8 +5731,8 @@
         <div class="hp-bar">
             <div class="hp-fill ${hpClass}" style="width: ${hpPercent}%"></div>
             ${this.editMode ? `
-                <button class="hp-adjust-btn hp-minus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, -1)" style="position: absolute; left: -20px; top: -2px; width: 18px; height: 18px; background: #ef4444; border: none; border-radius: 3px; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">−</button>
-                <button class="hp-adjust-btn hp-plus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, 1)" style="position: absolute; right: -20px; top: -2px; width: 18px; height: 18px; background: #10b981; border: none; border-radius: 3px; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">+</button>
+            <button class="hp-adjust-btn hp-minus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, -1)">−</button>
+            <button class="hp-adjust-btn hp-plus" onclick="event.stopPropagation(); game.adjustHP(${entity.id}, 1)">+</button>
             ` : ''}
         </div>
     `;
