@@ -8768,28 +8768,34 @@
 
             importCharacterPDF(file) {
                 if (!file) return;
+                const self = this;
                 const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        const loadingTask = pdfjsLib.getDocument(e.target.result);
-                        const pdf = await loadingTask.promise;
+                reader.onload = function (e) {
+                    pdfjsLib.getDocument(e.target.result).promise.then(function (pdf) {
                         let fullText = '';
+                        let promises = [];
                         for (let i = 1; i <= pdf.numPages; i++) {
-                            const page = await pdf.getPage(i);
-                            const textContent = await page.getTextContent();
-                            const pageText = textContent.items.map(item => item.str).join(' ');
-                            fullText += pageText + '\n';
+                            promises.push(
+                                pdf.getPage(i).then(function (page) {
+                                    return page.getTextContent().then(function (textContent) {
+                                        return textContent.items.map(item => item.str).join(' ');
+                                    });
+                                })
+                            );
                         }
-                        console.log('EXTRACTED:', fullText);
-                        const data = { name: 'Test', class: 'Fighter', race: 'Human', level: 1 };
-                        const character = this.createEntity('player', data.name, 200, 200);
-                        Object.assign(character, data);
-                        this.entities.push(character);
-                        this.updateCharacterList();
-                        alert('Imported character');
-                    } catch (err) {
+                        Promise.all(promises).then(function (pages) {
+                            fullText = pages.join('\n');
+                            console.log('EXTRACTED:', fullText);
+                            const data = { name: 'Test', class: 'Fighter', race: 'Human', level: 1 };
+                            const character = self.createEntity('player', data.name, 200, 200);
+                            Object.assign(character, data);
+                            self.entities.push(character);
+                            self.updateCharacterList();
+                            alert('Imported character');
+                        });
+                    }).catch(function (err) {
                         alert('Error: ' + err.message);
-                    }
+                    });
                 };
                 reader.readAsArrayBuffer(file);
             }
