@@ -8862,6 +8862,23 @@
                     const characterData = this.parseDnDBeyondPDF(fullText);
                     console.log('PARSED DATA:', characterData);
                     const character = this.createEntity('player', characterData.name, 200, 200);
+
+                    // Manually apply all parsed data
+                    character.class = characterData.class;
+                    character.race = characterData.race;
+                    character.level = characterData.level;
+                    character.hp = characterData.hp;
+                    character.maxHp = characterData.maxHp;
+                    character.ac = characterData.ac;
+                    character.speed = characterData.speed;
+                    character.str = characterData.str;
+                    character.dex = characterData.dex;
+                    character.con = characterData.con;
+                    character.int = characterData.int;
+                    character.wis = characterData.wis;
+                    character.cha = characterData.cha;
+                    character.proficiencyBonus = characterData.proficiencyBonus;
+                    if (characterData.initiative) character.initiative = characterData.initiative;
                     Object.assign(character, characterData);
 
                     this.entities.push(character);
