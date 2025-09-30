@@ -8760,39 +8760,32 @@
                     savedFonts.splice(index, 1);
                     localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
                     this.buildFontDropdown();
-                    // Reset to default if current font was removed
                     if (document.body.style.fontFamily.includes(fontName)) {
                         this.setUIFont("-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
                     }
                 }
-            }
-            ,
+            },
 
             importCharacterPDF(file) {
                 if (!file) return;
-
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     try {
                         const loadingTask = pdfjsLib.getDocument(e.target.result);
                         const pdf = await loadingTask.promise;
                         let fullText = '';
-
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
                             const textContent = await page.getTextContent();
                             const pageText = textContent.items.map(item => item.str).join(' ');
                             fullText += pageText + '\n';
                         }
-
                         console.log('EXTRACTED:', fullText);
-                        const data = { name: 'Test', class: 'Fighter', race: 'Human', level: 1, hp: 10, maxHp: 10, ac: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
-
+                        const data = { name: 'Test', class: 'Fighter', race: 'Human', level: 1 };
                         const character = this.createEntity('player', data.name, 200, 200);
                         Object.assign(character, data);
                         this.entities.push(character);
                         this.updateCharacterList();
-
                         alert('Imported character');
                     } catch (err) {
                         alert('Error: ' + err.message);
@@ -8800,7 +8793,6 @@
                 };
                 reader.readAsArrayBuffer(file);
             }
-            ,
 
             // Import D&D Beyond PDF
             async importCharacterPDF(file) {
