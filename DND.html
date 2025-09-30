@@ -8782,7 +8782,9 @@
                         fullText += pageText + '\n';
                     }
 
+                    console.log('EXTRACTED TEXT:', fullText);
                     const characterData = this.parseDnDBeyondPDF(fullText);
+                    console.log('PARSED DATA:', characterData);
                     const character = this.createEntity('player', characterData.name, 200, 200);
                     Object.assign(character, characterData);
 
