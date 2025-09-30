@@ -4916,16 +4916,30 @@
                     this.createFloatingText('CRITICAL MISS!', target.x, target.y - 30, '#808080');
                     this.showActionDisplay('info', 'Critical Miss', `${attacker.name} rolled a 1 attacking ${target.name}`);
                 } else if (roll === 20 || totalHit >= targetAC) {
-                    // Calculate damage
+                    // Calculate damage and get weapon info
                     let damage = this.rollDice(attack.damage);
-                  
+                    let weaponName = attack.name;
+                    let damageType = attack.damageType;
+
+                    // Override with equipped weapon stats
+                    if (attacker.equipment && attacker.equipment.mainHand) {
+                        const weapon = attacker.equipment.mainHand;
+                        weaponName = weapon.name;
+                        if (weapon.damageType) damageType = weapon.damageType;
+                        if (weapon.damage) damage = this.rollDice(weapon.damage);
+                    }
+
+                    if (attack.name === 'Unarmed Strike') {
+                        damage += this.getAbilityModifier(attacker.str);
+                    }
+
                     if (roll === 20) {
                         damage *= 2;
-                        this.addLog(`💥 ${attacker.name} CRITICALLY HITS ${target.name} for ${damage} ${attack.damageType} damage!`, 'damage');
-                        this.showActionDisplay('damage', 'Critical Hit!', `${attacker.name} deals ${damage} ${attack.damageType} damage to ${target.name}`, `Double damage from critical hit!`);
+                        this.addLog(`💥 ${attacker.name} CRITICALLY HITS ${target.name} with ${weaponName} for ${damage} ${damageType} damage!`, 'damage');
+                        this.showActionDisplay('damage', 'Critical Hit!', `${attacker.name} deals ${damage} ${damageType} damage to ${target.name}`, `${weaponName} - Double damage from critical hit!`);
                     } else {
-                        this.addLog(`⚔️ ${attacker.name} hits ${target.name} for ${damage} ${attack.damageType} damage!`, 'damage');
-                        this.showActionDisplay('damage', 'Attack Hit', `${attacker.name} deals ${damage} ${attack.damageType} damage to ${target.name}`, `Attack roll: ${totalHit} vs AC ${targetAC}`);
+                        this.addLog(`⚔️ ${attacker.name} hits ${target.name} with ${weaponName} for ${damage} ${damageType} damage!`, 'damage');
+                        this.showActionDisplay('damage', 'Attack Hit', `${attacker.name} deals ${damage} ${damageType} damage to ${target.name}`, `${weaponName} - Attack roll: ${totalHit} vs AC ${targetAC}`);
                     }
                   
                     // Apply damage
