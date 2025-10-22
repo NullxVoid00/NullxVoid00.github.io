@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-eval' 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data: https: blob:; worker-src blob: 'self' https://cdnjs.cloudflare.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:;">
     <title>Sprite Sheet Extractor & Animator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
     <style>
         * {
             margin: 0;
@@ -545,6 +544,13 @@
 
     <canvas id="workCanvas" style="display: none;"></canvas>
 
+    <script type="module">
+        import { GIFEncoder, quantize, applyPalette } from 'https://unpkg.com/gifenc@1.0.3?module';
+        window.GIFEncoder = GIFEncoder;
+        window.quantize = quantize;
+        window.applyPalette = applyPalette;
+    </script>
+
     <script>
         // ===== EXTRACTOR VARIABLES =====
         const fileInput = document.getElementById('fileInput');
@@ -936,60 +942,70 @@
             }
         }
 
-        function exportGif() {
+        async function exportGif() {
             if (animationFrames.length === 0) return;
+
+            if (typeof GIFEncoder === 'undefined') {
+                alert('GIF library not loaded. Please refresh the page.');
+                return;
+            }
 
             exportGifBtn.disabled = true;
             exportGifBtn.textContent = '⏳ Generating GIF...';
 
             const fps = parseInt(animFpsInput.value) || 10;
-            const delay = 1000 / fps;
+            const delay = Math.round(100 / fps); // centiseconds
 
             const maxWidth = Math.max(...animationFrames.map(f => f.width));
             const maxHeight = Math.max(...animationFrames.map(f => f.height));
 
-            const gif = new GIF({
-                workers: 0,
-                quality: 10,
-                width: maxWidth,
-                height: maxHeight
-            });
-
+            const gif = GIFEncoder();
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = maxWidth;
             tempCanvas.height = maxHeight;
             const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
+            const format = 'rgba4444'; // Supports alpha
+
             let loadedFrames = 0;
 
-            animationFrames.forEach((frame, idx) => {
-                const img = new Image();
-                img.onload = () => {
-                    tempCtx.clearRect(0, 0, maxWidth, maxHeight);
-                    const x = (maxWidth - frame.width) / 2;
-                    const y = (maxHeight - frame.height) / 2;
-                    tempCtx.drawImage(img, x, y);
+            const processFrame = (frame) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        tempCtx.clearRect(0, 0, maxWidth, maxHeight);
+                        const x = (maxWidth - frame.width) / 2;
+                        const y = (maxHeight - frame.height) / 2;
+                        tempCtx.drawImage(img, x, y);
 
-                    gif.addFrame(tempCanvas, { delay: delay, copy: true });
-                    loadedFrames++;
+                        const data = tempCtx.getImageData(0, 0, maxWidth, maxHeight).data;
+                        const palette = quantize(data, 256, { format });
+                        const index = applyPalette(data, palette, format);
+                        gif.writeFrame(index, maxWidth, maxHeight, { palette, delay });
 
-                    if (loadedFrames === animationFrames.length) {
-                        gif.render();
-                    }
-                };
-                img.src = frame.dataUrl;
-            });
+                        loadedFrames++;
+                        if (loadedFrames === animationFrames.length) {
+                            gif.finish();
+                            const buffer = gif.bytesView();
+                            const blob = new Blob([buffer], { type: 'image/gif' });
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.download = `${animNameInput.value || 'animation'}.gif`;
+                            link.href = url;
+                            link.click();
+                            URL.revokeObjectURL(url);
+                            exportGifBtn.disabled = false;
+                            exportGifBtn.textContent = '💾 Export as GIF';
+                        }
+                        resolve();
+                    };
+                    img.src = frame.dataUrl;
+                });
+            };
 
-            gif.on('finished', (blob) => {
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = `${animNameInput.value || 'animation'}.gif`;
-                link.href = url;
-                link.click();
-
-                exportGifBtn.disabled = false;
-                exportGifBtn.textContent = '💾 Export as GIF';
-            });
+            for (const frame of animationFrames) {
+                await processFrame(frame);
+            }
         }
 
         playBtn.addEventListener('click', playAnimation);
