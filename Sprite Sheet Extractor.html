@@ -1059,9 +1059,20 @@
                         tempCtx.drawImage(img, x, y);
 
                         const data = tempCtx.getImageData(0, 0, maxWidth, maxHeight).data;
-                        const palette = quantize(data, 256, { format, transparent: [0, 0, 0, 0] });
+                        const palette = quantize(data, 256, {
+                            format,
+                            oneBitAlpha: true,
+                            clearAlpha: true,
+                            clearAlphaThreshold: 0,
+                            clearAlphaColor: 0x00
+                        });
                         const index = applyPalette(data, palette, format);
-                        gif.writeFrame(index, maxWidth, maxHeight, { palette, delay });
+                        gif.writeFrame(index, maxWidth, maxHeight, {
+                            palette,
+                            delay,
+                            transparent: true,
+                            transparentIndex: 0
+                        });
 
                         loadedFrames++;
                         if (loadedFrames === animationFrames.length) {
