@@ -111,6 +111,7 @@
             padding: 20px;
             margin: 20px 0;
             display: none;
+            position: relative;
         }
 
             .preview-section.visible {
@@ -150,6 +151,29 @@
                 border-color: #ff6ec7;
                 box-shadow: 0 0 20px rgba(255, 110, 199, 0.5);
             }
+
+        #zoomPreview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6ec7;
+            border-radius: 8px;
+            display: none;
+            z-index: 10;
+        }
+
+            #zoomPreview.visible {
+                display: block;
+            }
+
+        #zoomCanvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
 
         .colors-display {
             display: flex;
@@ -497,6 +521,9 @@
                     <div id="pickerStatus" class="picker-mode"></div>
                 </div>
                 <canvas id="previewCanvas"></canvas>
+                <div id="zoomPreview">
+                    <canvas id="zoomCanvas"></canvas>
+                </div>
                 <div class="colors-display" id="colorsDisplay"></div>
             </div>
 
@@ -565,13 +592,18 @@
         const colorsDisplay = document.getElementById('colorsDisplay');
         const spritesGrid = document.getElementById('spritesGrid');
         const workCanvas = document.getElementById('workCanvas');
+        const zoomPreview = document.getElementById('zoomPreview');
+        const zoomCanvas = document.getElementById('zoomCanvas');
 
         const previewCtx = previewCanvas.getContext('2d');
         const workCtx = workCanvas.getContext('2d');
+        const zoomCtx = zoomCanvas.getContext('2d');
 
         let pickedColors = [];
         let currentImage = null;
         let extractedSprites = [];
+        let zoomScale = 10; // 10x zoom
+        let isPicking = false;
 
         // ===== ANIMATOR VARIABLES =====
         const animationCanvas = document.getElementById('animationCanvas');
@@ -632,9 +664,20 @@
             loadImage(file);
         });
 
+        // Mouse events for zoom preview
+        previewCanvas.addEventListener('mousemove', (e) => {
+            if (!isPicking) return;
+            updateZoom(e);
+        });
+
         previewCanvas.addEventListener('click', (e) => {
             if (pickedColors.length >= 2) return;
             pickColorFromCanvas(e);
+        });
+
+        // Hide zoom on mouse leave
+        previewCanvas.addEventListener('mouseleave', () => {
+            zoomPreview.classList.remove('visible');
         });
 
         extractBtn.addEventListener('click', () => {
@@ -662,12 +705,47 @@
 
                 previewSection.classList.add('visible');
                 previewCanvas.classList.add('picking');
+                isPicking = true;
                 pickedColors = [];
                 updateColorsDisplay();
                 updatePickerStatus();
                 statusDiv.innerHTML = '<div class="status">✅ Image loaded! Click on 2 background colors in the preview.</div>';
             };
             img.src = URL.createObjectURL(file);
+        }
+
+        function updateZoom(e) {
+            const rect = previewCanvas.getBoundingClientRect();
+            const scaleX = workCanvas.width / rect.width;
+            const scaleY = workCanvas.height / rect.height;
+            const x = Math.floor((e.clientX - rect.left) * scaleX);
+            const y = Math.floor((e.clientY - rect.top) * scaleY);
+
+            // Clamp to bounds
+            x = Math.max(0, Math.min(x, workCanvas.width - 1));
+            y = Math.max(0, Math.min(y, workCanvas.height - 1));
+
+            const zoomSize = zoomCanvas.width / zoomScale;
+            const startX = Math.max(0, x - zoomSize / 2);
+            const startY = Math.max(0, y - zoomSize / 2);
+
+            zoomCtx.drawImage(
+                workCanvas,
+                startX, startY, zoomSize, zoomSize,
+                0, 0, zoomCanvas.width, zoomCanvas.height
+            );
+
+            // Draw crosshair
+            zoomCtx.strokeStyle = '#ff6ec7';
+            zoomCtx.lineWidth = 1;
+            zoomCtx.beginPath();
+            zoomCtx.moveTo(zoomCanvas.width / 2, 0);
+            zoomCtx.lineTo(zoomCanvas.width / 2, zoomCanvas.height);
+            zoomCtx.moveTo(0, zoomCanvas.height / 2);
+            zoomCtx.lineTo(zoomCanvas.width, zoomCanvas.height / 2);
+            zoomCtx.stroke();
+
+            zoomPreview.classList.add('visible');
         }
 
         function pickColorFromCanvas(e) {
@@ -686,6 +764,8 @@
 
             if (pickedColors.length === 2) {
                 previewCanvas.classList.remove('picking');
+                isPicking = false;
+                zoomPreview.classList.remove('visible');
                 extractBtn.disabled = false;
                 statusDiv.innerHTML = '<div class="status">✅ Colors picked! Click "Extract Sprites" to continue.</div>';
             }
@@ -954,7 +1034,7 @@
             exportGifBtn.textContent = '⏳ Generating GIF...';
 
             const fps = parseInt(animFpsInput.value) || 10;
-            const delay = Math.round(100 / fps); // centiseconds
+            const delay = Math.round(100 / fps); // centiseconds for GIF
 
             const maxWidth = Math.max(...animationFrames.map(f => f.width));
             const maxHeight = Math.max(...animationFrames.map(f => f.height));
@@ -979,7 +1059,7 @@
                         tempCtx.drawImage(img, x, y);
 
                         const data = tempCtx.getImageData(0, 0, maxWidth, maxHeight).data;
-                        const palette = quantize(data, 256, { format });
+                        const palette = quantize(data, 256, { format, transparent: [0, 0, 0, 0] });
                         const index = applyPalette(data, palette, format);
                         gif.writeFrame(index, maxWidth, maxHeight, { palette, delay });
 
@@ -1007,6 +1087,10 @@
                 await processFrame(frame);
             }
         }
+
+        // Initialize zoom canvas
+        zoomCanvas.width = 120;
+        zoomCanvas.height = 120;
 
         playBtn.addEventListener('click', playAnimation);
         stopBtn.addEventListener('click', stopAnimation);
