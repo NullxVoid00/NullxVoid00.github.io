@@ -718,8 +718,8 @@
             const rect = previewCanvas.getBoundingClientRect();
             const scaleX = workCanvas.width / rect.width;
             const scaleY = workCanvas.height / rect.height;
-            const x = Math.floor((e.clientX - rect.left) * scaleX);
-            const y = Math.floor((e.clientY - rect.top) * scaleY);
+            let x = Math.floor((e.clientX - rect.left) * scaleX);
+            let y = Math.floor((e.clientY - rect.top) * scaleY);
 
             // Clamp to bounds
             x = Math.max(0, Math.min(x, workCanvas.width - 1));
@@ -752,8 +752,8 @@
             const rect = previewCanvas.getBoundingClientRect();
             const scaleX = workCanvas.width / rect.width;
             const scaleY = workCanvas.height / rect.height;
-            const x = Math.floor((e.clientX - rect.left) * scaleX);
-            const y = Math.floor((e.clientY - rect.top) * scaleY);
+            let x = Math.floor((e.clientX - rect.left) * scaleX);
+            let y = Math.floor((e.clientY - rect.top) * scaleY);
 
             const imageData = workCtx.getImageData(x, y, 1, 1);
             const [r, g, b] = imageData.data;
