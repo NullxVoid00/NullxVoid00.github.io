@@ -629,11 +629,11 @@
             }
 
             availableSprites.innerHTML = extractedSprites.map(sprite => `
-                        <div class="pickable-sprite" onclick="addFrame(${sprite.id})">
-                            <img src="${sprite.dataUrl}" alt="Sprite ${sprite.id}">
-                            <div class="sprite-num">#${sprite.id}</div>
-                        </div>
-                    `).join('');
+                            <div class="pickable-sprite" onclick="addFrame(${sprite.id})">
+                                <img src="${sprite.dataUrl}" alt="Sprite ${sprite.id}">
+                                <div class="sprite-num">#${sprite.id}</div>
+                            </div>
+                        `).join('');
         }
 
         // ===== TAB SWITCHING =====
@@ -684,10 +684,39 @@
             extractSprites();
         });
 
-        downloadAllBtn.addEventListener('click', () => {
-            extractedSprites.forEach((sprite, idx) => {
-                setTimeout(() => downloadSprite(sprite, idx), idx * 100);
-            });
+        downloadAllBtn.addEventListener('click', async () => {
+            if (extractedSprites.length === 0) return;
+
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                downloadAllBtn.disabled = true;
+                downloadAllBtn.textContent = '⏳ Saving to folder...';
+
+                for (let i = 0; i < extractedSprites.length; i++) {
+                    const sprite = extractedSprites[i];
+                    const fileHandle = await dirHandle.getFileHandle(`sprite_${String(i).padStart(3, '0')}.png`, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    const response = await fetch(sprite.dataUrl);
+                    const blob = await response.blob();
+                    await writable.write(blob);
+                    await writable.close();
+                }
+
+                downloadAllBtn.textContent = '✅ Saved to folder!';
+                setTimeout(() => {
+                    downloadAllBtn.textContent = '⬇️ Download All';
+                    downloadAllBtn.disabled = false;
+                }, 2000);
+            } catch (err) {
+                console.error('Folder save failed:', err);
+                if (err.name !== 'AbortError') {
+                    alert('Folder save not supported or failed. Falling back to individual downloads.');
+                }
+                // Fallback to individual downloads
+                extractedSprites.forEach((sprite, idx) => {
+                    setTimeout(() => downloadSprite(sprite, idx), idx * 100);
+                });
+            }
         });
 
         function loadImage(file) {
@@ -784,14 +813,14 @@
             colorsDisplay.innerHTML = pickedColors.map((color, i) => {
                 const rgb = `rgb(${color.r}, ${color.g}, ${color.b})`;
                 return `
-                        <div class="color-swatch">
-                            <div class="color-box dynamic-color-box" data-color="${rgb}"></div>
-                            <div class="color-info">
-                                <div class="color-label">Color ${i + 1}</div>
-                                <div class="color-value">RGB(${color.r}, ${color.g}, ${color.b})</div>
+                            <div class="color-swatch">
+                                <div class="color-box dynamic-color-box" data-color="${rgb}"></div>
+                                <div class="color-info">
+                                    <div class="color-label">Color ${i + 1}</div>
+                                    <div class="color-value">RGB(${color.r}, ${color.g}, ${color.b})</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             }).join('');
 
             // Apply styles after DOM update to avoid CSP issues
@@ -924,14 +953,14 @@
 
         function displaySprites() {
             spritesGrid.innerHTML = extractedSprites.map(sprite => `
-                        <div class="sprite-card">
-                            <div class="sprite-preview">
-                                <img src="${sprite.dataUrl}" alt="Sprite ${sprite.id}">
+                            <div class="sprite-card">
+                                <div class="sprite-preview">
+                                    <img src="${sprite.dataUrl}" alt="Sprite ${sprite.id}">
+                                </div>
+                                <div class="sprite-info">#${sprite.id} • ${sprite.width}×${sprite.height}</div>
+                                <button onclick="downloadSpriteById(${sprite.id})">⬇️ Download</button>
                             </div>
-                            <div class="sprite-info">#${sprite.id} • ${sprite.width}×${sprite.height}</div>
-                            <button onclick="downloadSpriteById(${sprite.id})">⬇️ Download</button>
-                        </div>
-                    `).join('');
+                        `).join('');
 
             // Update animator sprites
             updateAvailableSprites();
@@ -974,11 +1003,11 @@
             }
 
             framesContainer.innerHTML = animationFrames.map((frame, idx) => `
-                        <div class="frame-item">
-                            <button class="remove-frame" onclick="removeFrame(${idx})">×</button>
-                            <img src="${frame.dataUrl}" alt="Frame ${idx}">
-                        </div>
-                    `).join('');
+                            <div class="frame-item">
+                                <button class="remove-frame" onclick="removeFrame(${idx})">×</button>
+                                <img src="${frame.dataUrl}" alt="Frame ${idx}">
+                            </div>
+                        `).join('');
         }
 
         function playAnimation() {
