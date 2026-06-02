@@ -2434,6 +2434,7 @@
             showMovementRange: false,
             enforceTurns: false,
             autoAdvanceTimer: null,
+            lastCombatDisplayAt: 0,
             editMode: false,
             drawMode: false,
             eraseMode: false,
@@ -2574,7 +2575,7 @@
                     name: 'Grapple',
                     type: 'special',
                     actionType: 'action',
-                    description: 'Attempt to grapple a creature',
+                    description: 'Grab a creature within 5 ft. Make a Strength (Athletics) check contested by the target\'s Athletics or Acrobatics. On success the target gains the Grappled condition (speed 0) until you release, move out of range, or fail a subsequent contested check.',
                     effect: 'grapple',
                     soundEffect: ''
                 },
@@ -3524,6 +3525,9 @@
             },
             // Enhanced Action Display System
             showActionDisplay(type, title, description, details = '') {
+                // Stamp the time so turn notifications can yield to this display
+                this.lastCombatDisplayAt = Date.now();
+
                 // Remove any existing action displays
                 document.querySelectorAll('.action-display').forEach(el => el.remove());
               
@@ -3544,6 +3548,20 @@
                         display.parentNode.removeChild(display);
                     }
                 }, 4000);
+
+            // Turn-management variant of showActionDisplay.
+            // Waits for any active combat notification to expire before showing,
+            // so damage and attack results are never cut short.
+            showTurnDisplay(type, title, description, details = '') {
+                const elapsed = Date.now() - (this.lastCombatDisplayAt || 0);
+                const remaining = Math.max(0, 4000 - elapsed);
+                if (remaining > 0) {
+                    setTimeout(() => this.showActionDisplay(type, title, description, details), remaining);
+                } else {
+                    this.showActionDisplay(type, title, description, details);
+                }
+            },
+
             },
           
             // Enhanced Add NPC function (renamed from addNPCToken)
@@ -4890,7 +4908,7 @@
                 if (this.currentTurn === 0) {
                     this.roundNumber++;
                     this.addLog(`📜 Round ${this.roundNumber} begins!`, 'info');
-                    this.showActionDisplay('info', `Round ${this.roundNumber}`, 'A new round of combat begins!');
+                    this.showTurnDisplay('info', `Round ${this.roundNumber}`, 'A new round of combat begins!');
                   
                     // Reset reactions for all and update condition durations
                     this.entities.forEach(e => {
@@ -4926,7 +4944,7 @@
                     this.resetTurnActions();
                     this.handleStartOfTurn(newCurrent);
                     this.addLog(`➡️ ${newCurrent.name}'s turn begins!`, 'info');
-                    this.showActionDisplay('info', 'Turn Start', `${newCurrent.name}'s turn begins!`);
+                    this.showTurnDisplay('info', 'Turn Start', `${newCurrent.name}'s turn begins!`);
                 }
               
                 this.updateTurnOrder();
@@ -4952,22 +4970,6 @@
                     clearTimeout(this.autoAdvanceTimer);
                     this.autoAdvanceTimer = null;
                 }
-
-                // Peek at who is next (skip dead/unconscious to show the right name)
-                let nextIndex = (this.currentTurn + 1) % this.turnOrder.length;
-                let iterations = 0;
-                while (
-                    this.turnOrder[nextIndex] &&
-                    (this.turnOrder[nextIndex].hp <= 0 || this.turnOrder[nextIndex].conditions.includes('unconscious')) &&
-                    iterations < this.turnOrder.length
-                ) {
-                    nextIndex = (nextIndex + 1) % this.turnOrder.length;
-                    iterations++;
-                }
-                const next = this.turnOrder[nextIndex];
-                const nextName = next && next.id !== current.id ? next.name : 'next combatant';
-
-                this.showActionDisplay('info', 'Turn Ending', `${nextName}'s turn is next…`);
 
                 this.autoAdvanceTimer = setTimeout(() => {
                     this.autoAdvanceTimer = null;
