@@ -2433,6 +2433,7 @@
             showGrid: true,
             showMovementRange: false,
             enforceTurns: false,
+            autoAdvanceTimer: null,
             editMode: false,
             drawMode: false,
             eraseMode: false,
@@ -4867,6 +4868,13 @@
           
             // Next Turn
             nextTurn() {
+
+                // Cancel any pending auto-advance so manual next-turn presses don't double-fire
+                if (this.autoAdvanceTimer) {
+                    clearTimeout(this.autoAdvanceTimer);
+                    this.autoAdvanceTimer = null;
+                }
+
                 if (this.turnOrder.length === 0) return;
               
                 // Handle end of turn effects
@@ -4928,6 +4936,43 @@
             // End Current Turn
             endTurn() {
                 this.nextTurn();
+            },
+
+            // Schedule auto-advance to the next turn when enforce turns is enabled.
+            // Called whenever the current entity spends their main action.
+            scheduleAutoAdvance(actor) {
+                if (!this.enforceTurns) return;
+
+                // Only auto-advance for the entity whose turn it currently is
+                const current = this.turnOrder[this.currentTurn];
+                if (!current || current.id !== actor.id) return;
+
+                // Cancel any existing timer (e.g. action was used twice in the same turn)
+                if (this.autoAdvanceTimer) {
+                    clearTimeout(this.autoAdvanceTimer);
+                    this.autoAdvanceTimer = null;
+                }
+
+                // Peek at who is next (skip dead/unconscious to show the right name)
+                let nextIndex = (this.currentTurn + 1) % this.turnOrder.length;
+                let iterations = 0;
+                while (
+                    this.turnOrder[nextIndex] &&
+                    (this.turnOrder[nextIndex].hp <= 0 || this.turnOrder[nextIndex].conditions.includes('unconscious')) &&
+                    iterations < this.turnOrder.length
+                ) {
+                    nextIndex = (nextIndex + 1) % this.turnOrder.length;
+                    iterations++;
+                }
+                const next = this.turnOrder[nextIndex];
+                const nextName = next && next.id !== current.id ? next.name : 'next combatant';
+
+                this.showActionDisplay('info', 'Turn Ending', `${nextName}'s turn is next…`);
+
+                this.autoAdvanceTimer = setTimeout(() => {
+                    this.autoAdvanceTimer = null;
+                    this.nextTurn();
+                }, 2000);
             },
           
             // Handle Start of Turn
@@ -5128,6 +5173,7 @@
                 // Mark action used
                 if (!attack.bonusAction) {
                     attacker.actionUsed = true;
+                    this.scheduleAutoAdvance(attacker);
                 } else {
                     attacker.bonusActionUsed = true;
                 }
@@ -5386,7 +5432,7 @@
                 }
               
                 // Mark action used
-                if (spell.castingTime === 'action') caster.actionUsed = true;
+                if (spell.castingTime === 'action') { caster.actionUsed = true; this.scheduleAutoAdvance(caster); }
                 else if (spell.castingTime === 'bonus action') caster.bonusActionUsed = true;
                 else if (spell.castingTime === 'reaction') caster.reactionUsed = true;
               
@@ -6584,6 +6630,7 @@
               
                 // Mark action used
                 performer.actionUsed = true;
+                this.scheduleAutoAdvance(performer);
                 this.updateTurnOrder();
             },
           
