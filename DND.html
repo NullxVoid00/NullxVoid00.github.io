@@ -2485,6 +2485,52 @@
                 bonusAction: false,
                 reaction: true
             },
+
+            // D&D 5e Skill to Ability Score mapping (Fix: skillsList was undefined)
+            skillsList: {
+                acrobatics:    'dex',
+                animalHandling:'wis',
+                arcana:        'int',
+                athletics:     'str',
+                deception:     'cha',
+                history:       'int',
+                insight:       'wis',
+                intimidation:  'cha',
+                investigation: 'int',
+                medicine:      'wis',
+                nature:        'int',
+                perception:    'wis',
+                performance:   'cha',
+                persuasion:    'cha',
+                religion:      'int',
+                sleightOfHand: 'dex',
+                stealth:       'dex',
+                survival:      'wis'
+            },
+
+            // D&D 5e Conditions reference data (Fix: this.conditions was undefined)
+            conditions: {
+                blinded:      { description: 'Cannot see. Attacks against have advantage; your attacks have disadvantage.', effects: {} },
+                charmed:      { description: 'Cannot attack the charmer. Charmer has advantage on social checks against you.', effects: {} },
+                deafened:     { description: 'Cannot hear. Auto-fails checks requiring hearing.', effects: {} },
+                frightened:   { description: 'Disadvantage on ability checks and attacks while source is visible.', effects: {} },
+                grappled:     { description: 'Speed becomes 0.', effects: { speed: 0 } },
+                hidden:       { description: 'Cannot be seen. Your attacks have advantage; attacks against have disadvantage.', effects: {} },
+                incapacitated:{ description: 'Cannot take actions or reactions.', effects: {} },
+                invisible:    { description: 'Cannot be seen. Your attacks have advantage; attacks against have disadvantage.', effects: {} },
+                paralyzed:    { description: 'Incapacitated. Fails Str/Dex saves. Attacks against have advantage and hits within 5ft crit.', effects: {} },
+                petrified:    { description: 'Transformed to stone. Incapacitated. Resistance to all damage.', effects: {} },
+                poisoned:     { description: 'Disadvantage on attack rolls and ability checks.', effects: {} },
+                prone:        { description: 'Movement costs double. Melee attacks against have advantage; ranged have disadvantage.', effects: {} },
+                restrained:   { description: 'Speed becomes 0. Your attacks have disadvantage; attacks against have advantage.', effects: { speed: 0 } },
+                stunned:      { description: 'Incapacitated. Fails Str/Dex saves. Attacks against have advantage.', effects: {} },
+                unconscious:  { description: 'Incapacitated. Drops items, falls prone. Fails Str/Dex saves. Attacks against have advantage.', effects: { speed: 0 } },
+                dead:         { description: 'The creature is dead.', effects: { speed: 0 } },
+                stable:       { description: 'Stabilized at 0 HP; no longer making death saves.', effects: {} },
+                dodging:      { description: 'Attacks against have disadvantage while attacker is visible. Auto-pass Dex saves.', effects: {} },
+                burning:      { description: 'Takes 1d6 fire damage at end of each turn until extinguished.', effects: {} },
+                concentrating:{ description: 'Maintaining concentration on a spell.', effects: {} },
+            },
           
             // Enhanced D&D 5e Classes and Races Lists
             classList: [
@@ -2495,7 +2541,7 @@
           
             raceList: [
                 'Aarakocra', 'Aasimar', 'Bugbear', 'Centaur', 'Changeling', 'Dragonborn',
-                'Dwarf', 'Elf', 'Bugbear', 'Firbolg', 'Genasi', 'Githyanki', 'Githzerai', 'Gnome',
+                'Dwarf', 'Elf', 'Firbolg', 'Genasi', 'Githyanki', 'Githzerai', 'Gnome',
                 'Goblin', 'Goliath', 'Half-Elf', 'Halfling', 'Half-Orc', 'Hobgoblin',
                 'Human', 'Kalashtar', 'Kenku', 'Kobold', 'Lizardfolk', 'Loxodon',
                 'Minotaur', 'Orc', 'Shifter', 'Simic Hybrid', 'Tabaxi', 'Tiefling',
@@ -2595,7 +2641,7 @@
                     {
                         name: 'Goblin',
                         type: 'monster',
-                        hp: 7, maxHp: 7, maxHp: 7, ac: 15, speed: 30,
+                        hp: 7, maxHp: 7, ac: 15, speed: 30,
                         str: 8, dex: 14, con: 10, int: 10, wis: 8, cha: 8,
                         proficiencyBonus: 2,
                         attacks: [{name: 'Scimitar', toHit: 4, damage: '1d6+2', damageType: 'slashing', range: 5, soundEffect: '', visualEffect: ''}],
@@ -4113,6 +4159,25 @@
                 const audio = new Audio(url);
                 audio.play();
             },
+
+            // Preview a BGM track at the same volume as the BGM player without disrupting it
+            previewBGM(url) {
+                if (this._bgmPreview) {
+                    this._bgmPreview.pause();
+                    this._bgmPreview = null;
+                }
+                const audio = new Audio(url);
+                audio.volume = this.backgroundMusic.audio ? this.backgroundMusic.audio.volume : 0.3;
+                audio.play().catch(e => console.log('BGM preview failed:', e));
+                this._bgmPreview = audio;
+                // Auto-stop after 10 seconds
+                setTimeout(() => {
+                    if (this._bgmPreview === audio) {
+                        audio.pause();
+                        this._bgmPreview = null;
+                    }
+                }, 10000);
+            },
           
             editLibraryItem(name, category) {
                 const item = this.library[category + 's'].find(i => i.name === name);
@@ -4438,45 +4503,12 @@
             },
           
             clearDrawing() {
-                console.log('clearDrawing function called');
                 if (confirm('Clear all drawings?')) {
-                    const canvas = document.getElementById('drawingCanvas');
-                    console.log('Canvas found:', canvas);
-                    if (canvas) {
-                        console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
-                        const ctx = canvas.getContext('2d');
-                        console.log('Context:', ctx);
-                      
-                        // Try multiple clearing methods
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillStyle = 'rgba(0,0,0,0)';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                      
-                        // Reset canvas completely
-                        const parent = canvas.parentNode;
-                        const newCanvas = document.createElement('canvas');
-                        newCanvas.id = 'drawingCanvas';
-                        newCanvas.className = canvas.className;
-                        newCanvas.width = canvas.width;
-                        newCanvas.height = canvas.height;
-                      
-                        parent.replaceChild(newCanvas, canvas);
-                      
-                        // Reinitialize drawing on new canvas
-                        this.drawingCanvas = newCanvas;
-                        this.drawingCtx = newCanvas.getContext('2d');
-                      
-                        // Re-add event listeners
-                        this.drawingCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
-                        this.drawingCanvas.addEventListener('mousemove', (e) => this.draw(e));
-                        this.drawingCanvas.addEventListener('mouseup', () => this.stopDrawing());
-                        this.drawingCanvas.addEventListener('mouseout', () => this.stopDrawing());
-                      
+                    if (this.drawingCanvas && this.drawingCtx) {
+                        // Resetting canvas.width clears all content and resets the context state.
+                        this.drawingCanvas.width = this.drawingCanvas.width;
+                        this.drawingCtx = this.drawingCanvas.getContext('2d');
                         this.addLog('Drawing cleared', 'info');
-                        console.log('Drawing cleared successfully');
-                    } else {
-                        this.addLog('Drawing canvas not found', 'info');
-                        console.log('Canvas not found!');
                     }
                 }
             },
@@ -4645,6 +4677,19 @@
             getAbilityModifier(score) {
                 return Math.floor((score - 10) / 2);
             },
+
+            // Derive the spellcasting ability modifier from class
+            getSpellcastingModifier(entity) {
+                const cls = (entity.class || '').toLowerCase();
+                if (['cleric', 'druid', 'ranger', 'monk'].some(c => cls.includes(c))) {
+                    return this.getAbilityModifier(entity.wis);
+                }
+                if (['wizard', 'artificer', 'fighter', 'rogue'].some(c => cls.includes(c))) {
+                    return this.getAbilityModifier(entity.int);
+                }
+                // Default: CHA — covers Bard, Paladin, Sorcerer, Warlock
+                return this.getAbilityModifier(entity.cha);
+            },
           
             // Calculate Total AC
             calculateAC(entity) {
@@ -4768,7 +4813,8 @@
                         if (b.initiative !== a.initiative) {
                             return b.initiative - a.initiative;
                         }
-                        return b.initiativeTiebreaker - a.initiativeTiebreaker;
+                        // Use live DEX score so edits after rolling are reflected
+                        return b.dex - a.dex;
                     });
               
                 const div = document.getElementById('turnOrder');
@@ -4811,8 +4857,11 @@
                 if (current) {
                     current.actionUsed = false;
                     current.bonusActionUsed = false;
+                    current.reactionUsed = false;
                     current.movement = current.speed;
                     current.disengaged = false;
+                    current.dodging = false;
+                    current.isReadied = false;
                 }
             },
           
@@ -4903,7 +4952,13 @@
           
             // Handle End of Turn
             handleEndOfTurn(entity) {
-                // Nothing specific yet, but ready for concentration checks, etc.
+                // Burning condition: 1d6 fire damage at end of each turn until extinguished
+                if (entity.conditions && entity.conditions.includes('burning')) {
+                    const burnDamage = this.rollDice('1d6', true);
+                    this.dealDamage(entity, burnDamage, 'fire');
+                    this.addLog(`${entity.name} takes ${burnDamage} fire damage from burning!`, 'damage');
+                    this.createFloatingText(`-${burnDamage}`, entity.x, entity.y - 30, '#ff6600');
+                }
             },
           
             // Roll Death Save
@@ -5158,6 +5213,20 @@
               
                 // Then regular HP
                 target.hp = Math.max(0, target.hp - finalDamage);
+
+                // Concentration check: CON save DC = max(10, half of total damage dealt)
+                if (target.concentrating) {
+                    const concentrationDC = Math.max(10, Math.floor(amount / 2));
+                    const conSave = this.rollDice('1d20', true) + this.getAbilityModifier(target.con);
+                    if (conSave >= concentrationDC) {
+                        this.addLog(`${target.name} maintains concentration on ${target.concentrating}. (${conSave} vs DC ${concentrationDC})`, 'info');
+                    } else {
+                        this.addLog(`${target.name} loses concentration on ${target.concentrating}! (${conSave} vs DC ${concentrationDC})`, 'info');
+                        this.showActionDisplay('info', 'Concentration Broken', `${target.name} loses concentration on ${target.concentrating}`);
+                        this.removeCondition(target, 'concentrating');
+                        target.concentrating = null;
+                    }
+                }
               
                 // Check for death/unconscious
                 if (target.hp === 0) {
@@ -5262,8 +5331,10 @@
                 if (spell.concentration) {
                     if (caster.concentrating) {
                         this.addLog(`${caster.name} loses concentration on ${caster.concentrating}`, 'info');
+                        this.removeCondition(caster, 'concentrating');
                     }
                     caster.concentrating = spell.name;
+                    this.addCondition(caster, 'concentrating');
                 }
               
                 // Apply spell effects
@@ -5295,7 +5366,8 @@
                     this.dealDamage(target, damage, spell.damageType);
                     this.createFloatingText(`-${damage}`, target.x, target.y - 30, '#ff00ff');
                 } else if (spell.healing) {
-                    let healing = this.rollDice(spell.healing.replace('mod', '3'));
+                    const spellMod = this.getSpellcastingModifier(caster);
+                    let healing = this.rollDice(spell.healing.replace('mod', String(spellMod)));
                   
                     // Higher level casting
                     if (actualLevel > spell.level && spell.higherLevel) {
@@ -5351,12 +5423,15 @@
                         this.showActionDisplay('info', 'AC Bonus', `${target.name} gains +${effect.value} AC`);
                         break;
                       
-                    case 'ac_set':
+                    case 'ac_set': {
                         const dexMod = this.getAbilityModifier(target.dex);
-                        target.ac = effect.value + dexMod;
+                        // Only add Dex when the effect explicitly asks for it (e.g. Mage Armor).
+                        // Flat-minimum spells (e.g. Barkskin) should set effect.addDex = false.
+                        target.ac = (effect.addDex !== false) ? effect.value + dexMod : effect.value;
                         this.addLog(`${target.name}'s AC is now ${target.ac}!`, 'info');
                         this.showActionDisplay('info', 'AC Changed', `${target.name}'s AC is now ${target.ac}`);
                         break;
+                    }
                       
                     case 'buff':
                         this.addLog(`${target.name} is buffed: ${effect.effects.join(', ')}`, 'info');
@@ -6480,16 +6555,24 @@
                         this.showActionDisplay('info', 'Disengage', `${performer.name} can move without opportunity attacks`);
                         break;
                     case 'dodge':
-                        this.addLog(`${performer.name} focuses on dodging attacks.`, 'info');
+                        performer.dodging = true;
+                        this.addLog(`${performer.name} takes the Dodge action — attackers have disadvantage until their next turn.`, 'info');
                         this.showActionDisplay('info', 'Dodge', `${performer.name} is harder to hit until next turn`);
                         break;
                     case 'help':
-                        this.addLog(`${performer.name} helps ${target.name}.`, 'info');
-                        this.showActionDisplay('info', 'Help', `${target.name} gains advantage on their next roll`);
+                        if (target) {
+                            target.hasAdvantage = true;
+                            this.addLog(`${performer.name} helps ${target.name} — advantage on their next attack or ability check.`, 'info');
+                            this.showActionDisplay('info', 'Help', `${target.name} gains advantage on their next roll`);
+                        } else {
+                            this.addLog(`${performer.name} takes the Help action.`, 'info');
+                            this.showActionDisplay('info', 'Help', `${performer.name} prepares to assist an ally`);
+                        }
                         break;
                     case 'ready':
+                        performer.isReadied = true;
                         this.addLog(`${performer.name} readies an action.`, 'info');
-                        this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react`);
+                        this.showActionDisplay('info', 'Ready Action', `${performer.name} prepares to react to a trigger`);
                         break;
                 }
               
@@ -8460,8 +8543,8 @@
                     character[property] = value;
                 }
               
-                // Recalculate AC if ability scores change
-                if (['str', 'dex'].includes(property)) {
+                // Recalculate AC when DEX changes (STR does not affect standard AC)
+                if (property === 'dex') {
                     character.ac = this.calculateAC(character);
                 }
               
@@ -8516,7 +8599,7 @@
                         <div class="item-card">
                             ${b.name}
                             <button onclick="game.setBackgroundMusicAndPlay(\`${b.url}\`)">Set Current</button>
-                            <button onclick="game.previewSFX('${b.url}')">Preview</button>
+                            <button onclick="game.previewBGM('${b.url}')">Preview</button>
                             <button class="btn-danger" onclick="game.removeMedia('${b.name}', 'bgm')">Delete</button>
                         </div>
                     `).join('')
@@ -8560,7 +8643,9 @@
             shortRest() {
                 this.entities.filter(e => e.type === 'player' || e.type === 'npc').forEach(e => {
                     if (e.hitDiceRemaining > 0) {
-                        const roll = this.rollDice(e.hitDice);
+                        // Normalise hitDice: stored as 'd8' or '1d8' — ensure a count prefix exists
+                        const hitDiceFormula = /^\d/.test(e.hitDice) ? e.hitDice : '1' + e.hitDice;
+                        const roll = this.rollDice(hitDiceFormula);
                         e.hp = Math.min(e.maxHp, e.hp + roll + this.getAbilityModifier(e.con));
                         e.hitDiceRemaining--;
                         this.addLog(`${e.name} recovers ${roll} HP from short rest.`, 'heal');
@@ -8573,6 +8658,9 @@
                     Object.keys(e.spellSlotsUsed).forEach(level => e.spellSlotsUsed[level] = 0);
                     e.hitDiceRemaining = Math.floor(e.level / 2) || 1;
                     e.conditions = e.conditions.filter(c => !['exhaustion'].includes(c));
+                    e.actionUsed = false;
+                    e.bonusActionUsed = false;
+                    e.reactionUsed = false;
                     this.addLog(`${e.name} fully recovers from long rest.`, 'heal');
                 });
             },
@@ -8765,79 +8853,6 @@
                         this.setUIFont("-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
                     }
                 }
-            }
-            ,
-            importCharacterPDF: async function (file) {
-                if (!file) return;
-                try {
-                    const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
-                    const pdf = await loadingTask.promise;
-                    let fullText = '';
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const textContent = await page.getTextContent();
-                        const pageText = textContent.items.map(item => item.str).join(' ');
-                        fullText += pageText + '\n';
-                    }
-                    console.log('TEXT:', fullText);
-                    const characterData = this.parseDnDBeyondPDF(fullText);
-                    console.log('DATA:', characterData);
-                    const character = this.createEntity('player', characterData.name, 200, 200);
-                    Object.assign(character, characterData);
-                    this.entities.push(character);
-                    this.updateCharacterList();
-                    this.render();
-                    alert('Imported ' + characterData.name);
-                } catch (e) {
-                    alert('Import failed: ' + e.message);
-                }
-            },
-            parseDnDBeyondPDF: function (text) {
-                const data = { name: 'Unknown', class: 'Fighter', race: 'Human', level: 1, hp: 10, maxHp: 10, ac: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10, proficiencyBonus: 2, attacks: [], inventory: [], spells: [] };
-
-                // Level and Class - "Level 1 CLASS Fighter"
-                const levelClassMatch = text.match(/Level\s+(\d+)\s+CLASS\s+(\w+)/i);
-                if (levelClassMatch) {
-                    data.level = parseInt(levelClassMatch[1]);
-                    data.class = levelClassMatch[2];
-                }
-
-                // Character name - appears before "Level"
-                const nameMatch = text.match(/CHARACTER NAME\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+Level/i);
-                if (nameMatch) data.name = nameMatch[1].trim();
-
-                // HP - look for "10 / 10" pattern after "HIT POINTS"
-                const hpMatch = text.match(/(\d+)\s*\/\s*(\d+)[^A-Z]*Current/i);
-                if (hpMatch) {
-                    data.hp = parseInt(hpMatch[1]);
-                    data.maxHp = parseInt(hpMatch[2]);
-                }
-
-                // AC - number after "ARMOR CLASS"
-                const acMatch = text.match(/ARMOR CLASS[^\d]*(\d+)/i);
-                if (acMatch) data.ac = parseInt(acMatch[1]);
-
-                // Initiative
-                const initMatch = text.match(/INITIATIVE[^\d]*([+-]?\d+)/i);
-                if (initMatch) data.initiative = parseInt(initMatch[1]);
-
-                // Ability scores - look for the capitalized pattern
-                const strMatch = text.match(/STRENGTH\s+DEXTERITY\s+CONSTITUTION[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)/i);
-                if (strMatch) {
-                    data.str = parseInt(strMatch[1]);
-                    data.dex = parseInt(strMatch[2]);
-                    data.con = parseInt(strMatch[3]);
-                }
-
-                const mentalMatch = text.match(/INTELLIGENCE\s+WISDOM\s+CHARISMA[^\d]+(\d+)[^\d]+(\d+)[^\d]+(\d+)/i);
-                if (mentalMatch) {
-                    data.int = parseInt(mentalMatch[1]);
-                    data.wis = parseInt(mentalMatch[2]);
-                    data.cha = parseInt(mentalMatch[3]);
-                }
-
-                console.log('Successfully parsed:', data);
-                return data;
             }
             ,
 
