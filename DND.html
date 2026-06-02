@@ -6497,12 +6497,12 @@
                 } else if (action.toHit !== undefined) {
                     // It's an attack
                     this.performAttack(source, target, action);
+                } else if (['special', 'support', 'movement', 'defense', 'skill'].includes(action.type)) {
+                    // It's a base combat action — check before item so actions with an effect field route correctly
+                    this.performBaseAction(source, target, action);
                 } else if (action.healing || action.effect) {
                     // It's an item
                     this.useItem(source, action, target);
-                } else if (action.type === 'special') {
-                    // It's a base combat action
-                    this.performBaseAction(source, target, action);
                 }
               
                 this.cancelTargeting();
@@ -7154,13 +7154,13 @@
                         // Actions that need targeting
                         if (action.name === 'Unarmed Strike' || action.name === 'Shove' ||
                             action.name === 'Grapple' || action.name === 'Help') {
-                            html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
+                            html += `<button class="action-btn ${disabled}" title="${action.description || ''}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
                 ${this.getActionIcon(action.type)} ${action.name}
             </button>`;
                         }
                         // Actions that execute immediately without targeting
                         else {
-                            html += `<button class="action-btn ${disabled}" onclick="game.performBaseAction(game.getEntity(${entity.id}), game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
+                            html += `<button class="action-btn ${disabled}" title="${action.description || ''}" onclick="game.performBaseAction(game.getEntity(${entity.id}), game.getEntity(${entity.id}), game.getEntity(${entity.id}).baseActions[${index}])">
                 ${this.getActionIcon(action.type)} ${action.name}
             </button>`;
                         }
@@ -7174,7 +7174,8 @@
                     entity.attacks.forEach((attack, index) => {
                         const disabled = entity.actionUsed && !attack.bonusAction ? 'disabled' : '';
                         const range = attack.range || 5;
-                        html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).attacks[${index}])">
+                        const attackTooltip = attack.description || `${attack.name}: +${attack.toHit} to hit, deals ${attack.damage} ${attack.damageType || ''} damage (range ${range}ft)`;
+                        html += `<button class="action-btn ${disabled}" title="${attackTooltip}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).attacks[${index}])">
                             ⚔️ ${attack.name} (+${attack.toHit}, ${attack.damage}) [${range}ft]
                         </button>`;
                     });
@@ -7194,7 +7195,7 @@
                         const slotInfo = spell.level > 0 ?
                             `<span class="spell-slot-info">${entity.spellSlotsUsed[spell.level]}/${entity.spellSlots[spell.level]}</span>` : '';
                       
-                        html += `<button class="action-btn ${disabled}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).spells[${index}])">
+                        html += `<button class="action-btn ${disabled}" title="${spell.description || spell.name}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).spells[${index}])">
                             ✨ ${spell.name} (Lvl ${spell.level}) ${slotInfo}
                         </button>`;
                     });
@@ -7208,7 +7209,7 @@
                         html += '<div class="action-section"><div class="action-section-title">Items</div>';
                         usableItems.forEach((item, index) => {
                             const actualIndex = entity.inventory.indexOf(item);
-                            html += `<button class="action-btn" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).inventory[${actualIndex}])">
+                            html += `<button class="action-btn" title="${item.description || item.name}" onclick="game.startTargeting(game.getEntity(${entity.id}), game.getEntity(${entity.id}).inventory[${actualIndex}])">
                                 🧪 ${item.name}
                             </button>`;
                         });
