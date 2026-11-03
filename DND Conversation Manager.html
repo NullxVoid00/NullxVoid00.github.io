@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -823,6 +823,10 @@
             to { transform: rotate(360deg); }
         }
     </style>
+<style id="narrative-responsive-repair">.app-container>*{min-width:0}.header{gap:12px;flex-wrap:wrap;min-width:0;padding:10px 16px}.header-controls{flex-wrap:wrap;min-width:0}.app-container{grid-template-rows:auto 1fr}.modal{max-width:calc(100vw - 24px)}
+@media(max-width:1200px){.app-container{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(420px,1fr) 400px}}
+@media(max-width:768px){body{height:auto;overflow:auto}.app-container{height:auto;min-height:100dvh;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 60dvh auto auto}.header{align-items:flex-start;flex-direction:column}.header-controls{gap:6px}.sidebar,.inspector{overflow:visible}.main-canvas{min-height:380px}.section{padding:16px}.canvas-controls{max-width:calc(100% - 20px);flex-wrap:wrap}.notification{max-width:calc(100vw - 24px)}}
+</style>
 </head>
 <body>
     <!-- Application Container -->
@@ -832,9 +836,10 @@
             <div class="logo">
                 <span>🎲</span>
                 <span>Narrative Nexus</span>
-                <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">Professional Campaign Weaver</span>
+                <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">Local story &amp; encounter planner</span>
             </div>
             <div class="header-controls">
+                <button class="btn btn-small btn-secondary" onclick="window.location.href='DND NPC Conversation Manager.html'">🎭 Character Dialogue</button>
                 <button class="btn btn-small btn-info" onclick="window.location.href='DND.html'">
                     ⚔️ Back to Combat Manager
                 </button>
@@ -5420,8 +5425,7 @@
         // ==================== SAVE/LOAD SYSTEM ====================
 
         function quickSave() {
-            saveToLocalStorage();
-            showNotification('Campaign quick-saved!', 'success');
+            if (saveToLocalStorage()) showNotification('Campaign quick-saved!', 'success');
         }
 
         function autoSave() {
@@ -5441,7 +5445,12 @@
                     npcs: Array.from(narrativeState.npcs.entries()).map(([id, npc]) => [id, npc.serialize()]),
                     plotThreads: Array.from(narrativeState.plotThreads.entries()),
                     storyHistory: narrativeState.storyHistory,
-                    worldState: narrativeState.worldState,
+                    worldState: {
+                        ...narrativeState.worldState,
+                        locations: Array.from(narrativeState.worldState.locations.entries()),
+                        factions: Array.from(narrativeState.worldState.factions.entries()),
+                        resources: Array.from(narrativeState.worldState.resources.entries())
+                    },
                     narrativeContext: narrativeState.narrativeContext,
                     currentSession: narrativeState.currentSession,
                     layoutAlgorithm: layoutEngine.currentAlgorithm,
@@ -5471,14 +5480,20 @@
         }
 
         function importCampaignData(data) {
+            // Keep the current campaign intact when an imported file is invalid.
+            const previous = { ...narrativeState, npcs: new Map(narrativeState.npcs), plotThreads: new Map(narrativeState.plotThreads) };
+            const previousTransform = { ...canvasTransform };
+            const previousLayout = layoutEngine.currentAlgorithm;
             try {
+                if (!data || typeof data !== 'object' || Array.isArray(data) ||
+                    !('storyTree' in data || 'npcs' in data || 'plotThreads' in data)) {
+                    throw new Error('Choose a Narrative Nexus campaign JSON file.');
+                }
                 // Import basic info
                 narrativeState.campaignName = data.campaignName || 'Imported Campaign';
                 
                 // Import story tree
-                if (data.storyTree) {
-                    narrativeState.storyTree = StoryNode.deserialize(data.storyTree);
-                }
+                narrativeState.storyTree = data.storyTree ? StoryNode.deserialize(data.storyTree) : null;
                 
                 // Import NPCs - handle both array and Map formats
                 narrativeState.npcs.clear();
@@ -5582,6 +5597,9 @@
                 
                 return true;
             } catch (error) {
+                Object.assign(narrativeState, previous);
+                canvasTransform = previousTransform;
+                layoutEngine.currentAlgorithm = previousLayout;
                 console.error('Error importing campaign data:', error);
                 showNotification('Error importing campaign: ' + error.message, 'error');
                 return false;
@@ -5598,7 +5616,12 @@
                     npcs: Array.from(narrativeState.npcs.entries()).map(([id, npc]) => [id, npc.serialize()]),
                     plotThreads: Array.from(narrativeState.plotThreads.entries()),
                     storyHistory: narrativeState.storyHistory,
-                    worldState: narrativeState.worldState,
+                    worldState: {
+                        ...narrativeState.worldState,
+                        locations: Array.from(narrativeState.worldState.locations.entries()),
+                        factions: Array.from(narrativeState.worldState.factions.entries()),
+                        resources: Array.from(narrativeState.worldState.resources.entries())
+                    },
                     narrativeContext: narrativeState.narrativeContext,
                     currentSession: narrativeState.currentSession,
                     layoutAlgorithm: layoutEngine.currentAlgorithm

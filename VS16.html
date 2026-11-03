@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -703,7 +703,10 @@
             pointer-events: none;
             z-index: -1;
             opacity: 0.05;
-            background: url('Art Folder/night_owl_pattern.png') center/cover;
+            background:
+                radial-gradient(ellipse at 24% 24%, #00ffff 0%, transparent 45%),
+                radial-gradient(ellipse at 76% 68%, #ff0040 0%, transparent 48%),
+                repeating-linear-gradient(135deg, transparent 0 36px, #ffffff 37px 38px, transparent 39px 76px);
         }
         
         /* Audio Visualizer */
@@ -859,18 +862,19 @@
                 gap: 10px;
             }
         }
+        #console .section-title { overflow-wrap: anywhere; }
     </style>
-</head>
+<link rel="stylesheet" href="portfolio-repairs.css"></head>
 <body>
     <!-- Hidden Audio Elements -->
     <audio id="staticAudio" loop>
-        <source src="audio/static_loop.mp3" type="audio/mpeg">
+
     </audio>
     <audio id="whisperAudio">
-        <source src="audio/paula_whisper.mp3" type="audio/mpeg">
+
     </audio>
     <audio id="glitchAudio">
-        <source src="audio/glitch_sound.mp3" type="audio/mpeg">
+
     </audio>
     
     <!-- Login Screen -->
@@ -878,24 +882,7 @@
         <div class="login-container">
             <div class="logo-container">
                 <div class="paula-figure">
-                    <img src="Art Folder/paula_silhouette.png" alt="">
-                    <!-- Console Section -->
-        <div id="console" class="content-section">
-            <h1 class="section-title" style="color: #0f0;">SYSTEM_CONSOLE://RESTRICTED_ACCESS</h1>
-            <div class="console-container">
-                <div class="console-output" id="consoleOutput">
-                    <div class="console-line" style="color: #0f0;">VTalkR: Rebuilt - System Console v1.3.7</div>
-                    <div class="console-line" style="color: #0f0;">Build V04.12.23 - Server DEGRADED</div>
-                    <div class="console-line" style="color: #0f0;">Type 'help' for commands</div>
-                    <div class="console-line" style="color: #0f0;">===============================</div>
-                </div>
-                <div class="console-input-line">
-                    <span class="console-prompt" style="color: #0f0;">&gt; </span>
-                    <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false" style="color: #0f0;">
-                    <span class="console-cursor"></span>
-                </div>
-            </div>
-        </div>
+                    <img src="portfolio-media/site/signal-lost.svg" alt="">
     </div>
                 <div class="logo-main" data-text="VStalkR16">VStalkR16</div>
                 <div class="tagline">
@@ -923,16 +910,34 @@
                 <div class="build-version">BUILD V04.12.23 | QUEUE: <span id="queueCount">847</span>/50</div>
                 <nav>
                     <ul class="nav-menu">
-                        <li><a class="nav-item" data-section="incident">INCIDENT_LOG</a></li>
-                        <li><a class="nav-item" data-section="games">GAMES</a></li>
-                        <li><a class="nav-item" data-section="stalkers">STALKERS</a></li>
-                        <li><a class="nav-item" data-section="console" style="color: #0f0;">&gt;_</a></li>
-                        <li><a class="nav-item" data-section="paula" style="opacity: 0.3;">P̸A̵U̶L̷A̴</a></li>
+                        <li><a class="nav-item" href="#incident" data-section="incident">INCIDENT_LOG</a></li>
+                        <li><a class="nav-item" href="#games" data-section="games">GAMES</a></li>
+                        <li><a class="nav-item" href="#stalkers" data-section="stalkers">STALKERS</a></li>
+                        <li><a class="nav-item" href="#console" data-section="console" style="color: #0f0;">&gt;_</a></li>
+                        <li><a class="nav-item" href="#paula" data-section="paula" style="opacity: 0.3;">P̸A̵U̶L̷A̴</a></li>
                     </ul>
                 </nav>
             </div>
         </header>
         
+                    <!-- Console Section -->
+        <div id="console" class="content-section">
+            <h1 class="section-title" style="color: #0f0;">SYSTEM_CONSOLE://RESTRICTED_ACCESS</h1>
+            <div class="console-container">
+                <div class="console-output" id="consoleOutput">
+                    <div class="console-line" style="color: #0f0;">VTalkR: Rebuilt - System Console v1.3.7</div>
+                    <div class="console-line" style="color: #0f0;">Build V04.12.23 - Server DEGRADED</div>
+                    <div class="console-line" style="color: #0f0;">Type 'help' for commands</div>
+                    <div class="console-line" style="color: #0f0;">===============================</div>
+                </div>
+                <div class="console-input-line">
+                    <span class="console-prompt" style="color: #0f0;">&gt; </span>
+                    <input type="text" id="consoleInput" class="console-input" autocomplete="off" spellcheck="false" style="color: #0f0;">
+                    <span class="console-cursor"></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Incident Log Section -->
         <div id="incident" class="content-section active">
             <h1 class="section-title">INCIDENT_LOG://XoXo</h1>
@@ -1029,7 +1034,7 @@
             <div class="games-grid">
                 <div class="game-card" data-game="1">
                     <div class="game-thumbnail">
-                        <img src="Art Folder/game1_thumb.jpg" alt="FIND_ME">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="FIND_ME">
                         <div class="game-static"></div>
                         <div class="game-status">PHASE 1</div>
                     </div>
@@ -1043,7 +1048,7 @@
                 </div>
                 <div class="game-card" data-game="2">
                     <div class="game-thumbnail">
-                        <img src="Art Folder/game2_thumb.jpg" alt="REMEMBER">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="REMEMBER">
                         <div class="game-static"></div>
                         <div class="game-status">PHASE 2</div>
                     </div>
@@ -1057,7 +1062,7 @@
                 </div>
                 <div class="game-card" data-game="3">
                     <div class="game-thumbnail">
-                        <img src="Art Folder/game3_thumb.jpg" alt="VENGEANCE">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="VENGEANCE">
                         <div class="game-static"></div>
                         <div class="game-status">LOCKED</div>
                     </div>
@@ -1140,15 +1145,15 @@
                 <div class="paula-message">She was only 13</div>
                 <div class="memory-fragments">
                     <div class="fragment">
-                        <img src="Art Folder/paula_memory1.jpg" alt="">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="">
                         <div class="fragment-text">Before - "Can I try VR?"</div>
                     </div>
                     <div class="fragment">
-                        <img src="Art Folder/paula_memory2.jpg" alt="">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="">
                         <div class="fragment-text">During - Seizure at 14:32:13</div>
                     </div>
                     <div class="fragment">
-                        <img src="Art Folder/paula_memory3.jpg" alt="">
+                        <img src="portfolio-media/site/signal-lost.svg" alt="">
                         <div class="fragment-text">After - Room 313</div>
                     </div>
                 </div>
@@ -1527,7 +1532,7 @@
             const audio = document.getElementById('staticAudio');
             if (audio) {
                 audio.volume = 0.02;
-                audio.play().catch(() => {});
+                if (audio.querySelector('source[src]')) audio.play().catch(() => {});
             }
         }
         
@@ -1535,7 +1540,7 @@
             const audio = document.getElementById('whisperAudio');
             if (audio) {
                 audio.volume = 0.1;
-                audio.play().catch(() => {});
+                if (audio.querySelector('source[src]')) audio.play().catch(() => {});
             }
         }
         
@@ -1543,7 +1548,7 @@
             const audio = document.getElementById('glitchAudio');
             if (audio) {
                 audio.volume = 0.3;
-                audio.play().catch(() => {});
+                if (audio.querySelector('source[src]')) audio.play().catch(() => {});
             }
         }
         
@@ -1569,7 +1574,7 @@
                         left: ${Math.random() * window.innerWidth}px;
                         width: 60px;
                         height: 100px;
-                        background: url('Art Folder/paula_silhouette.png') center/contain no-repeat;
+                        background: url('portfolio-media/site/signal-lost.svg') center/contain no-repeat;
                         opacity: 0.3;
                         pointer-events: none;
                         z-index: 9999;
@@ -1581,32 +1586,6 @@
             }, 30000);
         }
         
-        // Console System - Initialize after page load
-        window.addEventListener('load', () => {
-            const consoleInput = document.getElementById('consoleInput');
-            const consoleOutput = document.getElementById('consoleOutput');
-            
-            if (consoleInput && consoleOutput) {
-                // Handle enter key for commands
-                consoleInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        const command = consoleInput.value.trim().toLowerCase();
-                        addConsoleLine(`> ${consoleInput.value}`, 'success');
-                        processCommand(command);
-                        consoleInput.value = '';
-                        consoleOutput.scrollTop = consoleOutput.scrollHeight;
-                    }
-                });
-                
-                // Auto-focus console when section is active
-                document.querySelector('[data-section="console"]').addEventListener('click', () => {
-                    setTimeout(() => {
-                        consoleInput.focus();
-                    }, 100);
-                });
-            }
-        });
-                
         // Remove old console.log override
         console.log('VStalkR16 System Active');
         
@@ -1761,5 +1740,5 @@
             }
         }, true);
     </script>
-</body>
+<a class="portfolio-home-link" href="index.html" aria-label="Return to Abyssal Light Games portfolio">← Portfolio</a><script src="portfolio-repairs.js"></script></body>
 </html>

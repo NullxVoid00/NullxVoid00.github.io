@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -593,6 +593,9 @@
         .notification.warning { border-color: var(--warning); }
         .notification.error { border-color: var(--danger); }
     </style>
+<style id="dialogue-responsive-repair">.header{gap:10px;z-index:30}.header-controls{flex-wrap:wrap;min-width:0}.setup-panel,.choices-panel,.history-panel{top:100px;bottom:240px;transform:none;max-height:none;overflow-y:auto;z-index:20;background:#100e1cf7}.choices-panel.visible{animation:none}.notification{max-width:calc(100vw - 24px);overflow-wrap:anywhere}
+@media(max-width:768px){.header{padding:10px 14px;flex-direction:column;align-items:flex-start}.header h1{font-size:1.1rem}.header-controls{gap:6px}.character-stage{top:175px;bottom:240px}.setup-panel,.choices-panel,.history-panel{top:180px;bottom:220px;transform:none;max-height:none;width:calc(100vw - 28px);left:14px;right:14px}.dialogue-interface{max-height:44dvh;overflow-y:auto}.dialogue-controls{flex-wrap:wrap}.character-portrait{max-width:90vw}.notification{left:12px;right:12px;transform:translateY(-150%)}.notification.show{transform:translateY(0)}}
+</style>
 </head>
 <body>
     <!-- Background Scene -->
@@ -602,6 +605,7 @@
     <header class="header">
         <h1>🎭 Character Interaction Studio</h1>
         <div class="header-controls">
+            <button class="btn btn-small" onclick="window.location.href='DND Conversation Manager.html'">🧵 Story Paths</button>
             <button class="btn btn-small" onclick="window.location.href='DND.html'">
                 ⚔️ Back to Combat Manager
             </button>
@@ -1123,6 +1127,7 @@
         // ==================== CHARACTER MANAGEMENT ====================
         
         function applyCharacterSettings() {
+            cancelPendingDialogue();
             const name = document.getElementById('npcName').value || 'Mysterious Character';
             const title = document.getElementById('npcTitle').value || 'Unknown';
             const icon = document.getElementById('npcIcon').value || '👤';
@@ -1142,6 +1147,7 @@
             const greeting = conversationEngine.generateResponse(currentCharacter, null, '');
             updateDialogue(greeting);
             addToHistory(currentCharacter.name, greeting);
+            hidePanel('setup');
         }
 
         function updateCharacterDisplay() {
@@ -1159,9 +1165,11 @@
         // ==================== CONVERSATION SYSTEM ====================
         
         function generateResponse() {
+            if (dialoguePending) return;
+            dialoguePending = true;
             showTypingIndicator();
             
-            setTimeout(() => {
+            dialogueResponseTimer = setTimeout(() => {
                 const response = conversationEngine.generateResponse(
                     currentCharacter, 
                     null, 
@@ -1177,6 +1185,8 @@
         }
 
         function selectChoice(choiceType) {
+            if (dialoguePending) return;
+            dialoguePending = true;
             const choiceTexts = {
                 respectful: "Greetings, wise one. We seek knowledge about the ancient ruins to the north.",
                 direct: "Cut to the chase. What do you know about the missing artifact?", 
@@ -1197,7 +1207,7 @@
             showTypingIndicator();
             hidePanel('choices');
             
-            setTimeout(() => {
+            dialogueResponseTimer = setTimeout(() => {
                 const response = conversationEngine.generateResponse(currentCharacter, choiceType, currentCharacter.getRecentContext());
                 updateDialogue(response);
                 currentCharacter.addToMemory(currentCharacter.name, response);
@@ -1212,7 +1222,20 @@
             }, 1500 + Math.random() * 2000);
         }
 
+        let dialoguePending = false;
+        let dialogueResponseTimer = null;
+        let dialogueTypeTimer = null;
+
+        function cancelPendingDialogue() {
+            clearTimeout(dialogueResponseTimer);
+            clearInterval(dialogueTypeTimer);
+            dialoguePending = false;
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
         function updateDialogue(text) {
+            clearInterval(dialogueTypeTimer);
+            dialoguePending = false;
             const dialogueEl = document.getElementById('dialogueText');
             
             // Clear current text
@@ -1220,12 +1243,12 @@
             
             // Typewriter effect
             let charIndex = 0;
-            const typeInterval = setInterval(() => {
+            dialogueTypeTimer = setInterval(() => {
                 if (charIndex < text.length) {
                     dialogueEl.textContent += text.charAt(charIndex);
                     charIndex++;
                 } else {
-                    clearInterval(typeInterval);
+                    clearInterval(dialogueTypeTimer);
                 }
             }, 30);
         }
@@ -1315,7 +1338,7 @@
             panel.classList.remove('visible');
             panelsVisible[panelName] = false;
             setTimeout(() => {
-                panel.style.display = 'none';
+                if (!panelsVisible[panelName]) panel.style.display = 'none';
             }, 300);
         }
 
@@ -1373,6 +1396,7 @@
 
         function resetConversation() {
             if (confirm('Reset the entire conversation? This cannot be undone.')) {
+                cancelPendingDialogue();
                 conversationHistory = [];
                 currentCharacter.conversationMemory = [];
                 currentCharacter.emotionalState = 0;
@@ -1417,7 +1441,7 @@
             // Click outside to close panels
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.setup-panel, .history-panel, .choices-panel') &&
-                    !e.target.closest('.header-controls')) {
+                    !e.target.closest('.header-controls, .dialogue-controls')) {
                     Object.keys(panelsVisible).forEach(hidePanel);
                 }
             });

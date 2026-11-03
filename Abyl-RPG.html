@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abyl RPG System - Turn-Based RPG for VRChat</title>
+    <meta name="description" content="Explore Abyl, a turn-based RPG framework for VRChat with a four-character party, quests, towns, and guided adventure-making tools. Current development information and real project previews.">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
@@ -343,10 +344,16 @@
             animation: blink 1s infinite;
         }
     </style>
+
+    <style id="abyl-usability-repairs">
+        html{scroll-padding-top:65px}a{color:#ffaaaa}.feature-grid>*{min-width:0}.table-scroll{overflow-x:auto}.preview-button{display:block;background:none;border:0;padding:0;color:inherit;width:100%;cursor:zoom-in}.preview-button img{display:block}figcaption{font-size:9px;line-height:2;padding:12px 4px 0;color:#ffaaaa}.screenshot-grid{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:4px}#sidebar-toggle{font-family:inherit}#previewDialog{position:fixed;inset:0;margin:auto;width:min(1250px,calc(100vw - 24px));max-height:90dvh;overflow:auto;background:#1a0000;color:#fff;border:3px solid #ff0000;padding:15px}#previewDialog::backdrop{background:#000d}#previewDialog img{display:block;max-width:100%;max-height:75dvh;object-fit:contain;margin:auto}#previewDialog p{font-size:9px;padding-top:12px}#closePreview{float:right;font-family:inherit;font-size:10px;padding:12px;color:white;background:#ff0000;border:2px solid white;margin-bottom:12px}.audio-controls{max-width:calc(100vw - 24px)}
+        @media(max-width:768px){.container{padding:70px 16px 110px}.section{padding:24px 18px;margin-bottom:30px}.feature-text{padding:0}.feature-grid{gap:20px}.hero{padding:34px 16px}.hero h1{font-size:22px;overflow-wrap:anywhere}.hero p{font-size:10px!important}.section h2{font-size:16px;overflow-wrap:anywhere}.section h3{font-size:12px}.section p,.section li{overflow-wrap:anywhere}.section ul{padding-left:0}.stats-table th,.stats-table td{font-size:9px;padding:8px}.download-btn{font-size:10px;padding:14px 16px}.audio-controls{right:12px;bottom:12px;padding:8px}.volume-container{flex-direction:row;gap:10px}.volume-slider{writing-mode:horizontal-tb;-webkit-appearance:auto;width:82px;height:24px}.screenshot:hover{transform:none}#sidebar.active~#sidebar-toggle{left:260px;max-width:110px}}
+        @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.blink{animation:none}*,*::before,*::after{transition:none!important}}
+    </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <nav id="sidebar">
+    <nav id="sidebar" aria-label="Abyl page sections">
         <div class="logo-container">
             <img src="Art Folder/AbylRPGLogo.png" alt="Abyl RPG System Logo">
         </div>
@@ -361,10 +368,11 @@
         <a href="#world" class="nav-item">World & NPCs</a>
         <a href="#targeting" class="nav-item">Targeting System</a>
         <a href="#status" class="nav-item">Status Effects</a>
-        <a href="#download" class="nav-item">Get The Framework</a>
+        <a href="#download" class="nav-item">Development Status</a>
+        <a href="index.html" class="nav-item">← Project Collection</a>
     </nav>
     
-    <button id="sidebar-toggle">☰ MENU</button>
+    <button id="sidebar-toggle" aria-controls="sidebar" aria-expanded="false">☰ MENU</button>
     
     <!-- Main Content -->
     <div class="container">
@@ -375,530 +383,148 @@
             <p>Transform VRChat into YOUR epic RPG adventure!</p>
             <p style="margin-top: 20px;">Remember the magic of your first RPG? The thrill of leveling up? The triumph of victory?</p>
             <p style="font-size: 14px; color: #ff6666;">NOW CREATE YOUR OWN - IN VR - WITH FRIENDS!</p>
-            <a href="#download" class="download-btn">🎮 GET READY TO PLAY 🎮</a>
+            <a href="#overview" class="download-btn">🎮 EXPLORE THE PROJECT 🎮</a>
+            <p style="margin-top:24px;font-size:10px;color:#ffaaaa">IN DEVELOPMENT · UPDATED NOVEMBER 2026</p>
         </section>
         
         <!-- Overview Section -->
         <section id="overview" class="section">
             <h2>SYSTEM OVERVIEW</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <p>Remember the first time you played your favorite RPG? That sense of adventure, the thrill of leveling up, the satisfaction of defeating a tough boss with your friends? The Abyl RPG System brings ALL of that into VRChat - and gives you the tools to create YOUR dream RPG!</p>
-                    
-                    <p>We've created the "RPG Maker of VRChat" - a complete framework that transforms any world into a living, breathing RPG adventure. Start with our battle-tested foundation and customize everything to match your vision. No more static avatars just standing around talking. Now you and your friends can embark on the exact adventures YOU design!</p>
-                    
-                    <h3>Why Abyl RPG Changes Everything:</h3>
-                    <ul>
-                        <li><strong>True Multiplayer Adventures</strong> - Form a party of up to 4 players and tackle challenges together. Watch your friend's back in battle, coordinate strategies, and celebrate victories as a team!</li>
-                        <li><strong>Your Game, Your Rules</strong> - Every system is customizable! Use our pre-built classes or create entirely new ones. Design unique abilities that fit YOUR world!</li>
-                        <li><strong>Meaningful Progression</strong> - Your character grows stronger with every battle. That level 1 newbie you start as? They'll become a legendary hero through YOUR choices and playstyle!</li>
-                        <li><strong>Strategic Combat That Matters</strong> - This isn't button mashing! Time your defends, choose targets wisely, and combine your party's abilities for devastating combos!</li>
-                        <li><strong>Build on a Solid Foundation</strong> - We've handled all the complex networking, UI, and VRChat integration. You focus on making it uniquely yours!</li>
-                        <li><strong>Endless Possibilities</strong> - From high fantasy to sci-fi, from serious to silly - the system adapts to any theme you can imagine!</li>
-                    </ul>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage1.png" alt="System Overview">
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-text"><p>Remember the magic of your first RPG? Exploring a little town, preparing for the next encounter, and watching your party grow? Abyl brings that kind of adventure into VRChat—and is being built to help you create your own.</p>
+<p>The project now includes a connected party, turn-based battles, an adventure journal, towns, an overworld, quests, and a growing set of guided Unity editors. It is a working development framework, with more testing and polish ahead.</p>
+<h3>For Players:</h3><ul><li>Explore towns and miniature landscapes, talk to residents, and follow quests.</li><li>Choose battle actions, manage equipment and abilities, and earn experience and gold.</li><li>Prepare at shops and inns before heading back into danger.</li></ul>
+<h3>For Creators:</h3><p>Begin with a clean adventure or the Creator Garden quest sample. Build maps, write conversations, connect rewards and gates, and arrange encounters through the guided tools.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Lantern Vale town from the current Unity development build"><img src="portfolio-media/abyl/lantern-vale.webp" alt="Lantern Vale town from the current Unity development build" loading="lazy"></button></div></div>
         </section>
         
         <!-- Screenshots Section -->
         <section id="screenshots" class="section">
             <h2>SEE IT IN ACTION</h2>
-            <p style="text-align: center; margin-bottom: 30px;">Words can't capture the excitement of your first critical hit or the tension of a boss battle at low HP. See for yourself!</p>
-            <div class="screenshot-grid">
-                <div class="screenshot">
-                    <img src="Art Folder/ARPGimage2.png" alt="Combat Screenshot">
-                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Epic battles with dynamic effects!</p>
-                </div>
-                <div class="screenshot">
-                    <img src="Art Folder/ARPGimage3.png" alt="Menu Screenshot">
-                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Intuitive VR-friendly interfaces!</p>
-                </div>
-                <div class="screenshot">
-                    <img src="Art Folder/ARPGimage4.png" alt="World Screenshot">
-                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Explore vibrant RPG worlds!</p>
-                </div>
-                <div class="screenshot">
-                    <img src="Art Folder/ARPGimage5.png" alt="Party Screenshot">
-                    <p style="text-align: center; margin-top: 10px; font-size: 9px;">Team up for multiplayer adventures!</p>
-                </div>
-            </div>
+            <p>Real captures from the current Unity project. These are development previews, not final headset screenshots. Select a preview to enlarge it.</p><div class="screenshot-grid"><figure class="screenshot"><button class="preview-button" type="button" aria-label="Enlarge Turn-based battle"><img src="portfolio-media/abyl/battle.webp" alt="Turn-based battle" loading="lazy"></button><figcaption><strong>Turn-based battle</strong><br>A dedicated arena with Attack, Defend, Flee, Skills and Items.</figcaption></figure><figure class="screenshot"><button class="preview-button" type="button" aria-label="Enlarge Adventure journal"><img src="portfolio-media/abyl/journal.webp" alt="Adventure journal" loading="lazy"></button><figcaption><strong>Adventure journal</strong><br>Character growth alongside Party, Inventory and Skills pages.</figcaption></figure><figure class="screenshot"><button class="preview-button" type="button" aria-label="Enlarge Miniature overworld"><img src="portfolio-media/abyl/overworld.webp" alt="Miniature overworld" loading="lazy"></button><figcaption><strong>Miniature overworld</strong><br>A development overview of Lantern Coast and the sample town.</figcaption></figure><figure class="screenshot"><button class="preview-button" type="button" aria-label="Enlarge Creator Garden"><img src="portfolio-media/abyl/creator-garden.webp" alt="Creator Garden" loading="lazy"></button><figcaption><strong>Creator Garden</strong><br>An editable small adventure with quests, a shop, an inn and a practice battle.</figcaption></figure></div>
         </section>
         
         <!-- Class System Section -->
         <section id="classes" class="section">
             <h2>CLASS SYSTEM</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <p>This isn't just picking a preset - it's choosing your starting point! Our four example classes showcase what's possible, but they're just the beginning. Every value, every skill, every stat progression can be tweaked to your vision!</p>
-                    
-                    <h3>Start With Our Battle-Tested Templates:</h3>
-                    
-                    <p><strong>🗡️ WARRIOR</strong> - Love being in the thick of battle? Warriors are your front-line heroes with massive HP pools and devastating physical attacks. Tank hits for your squishier friends and unleash powerful skills like Cleave to demolish groups of enemies! <em>Or reimagine them as Paladins, Berserkers, or Knights!</em></p>
-                    
-                    <p><strong>🔮 MAGE</strong> - Why hit things when you can obliterate them with magic? Mages trade defense for incredible INT-based damage. Rain down Meteors, freeze enemies with Ice Shards, or show off with spectacular spell effects that'll make everyone go "WHOA!" <em>Transform them into Elementalists, Necromancers, or Time Wizards!</em></p>
-                    
-                    <p><strong>🗡️ ROGUE</strong> - Speed kills, and you're the fastest! Rogues strike first, strike hard, and use cunning abilities like Poison Strike and Shadow Step. Perfect for players who love seeing big damage numbers and outmaneuvering enemies! <em>Evolve them into Assassins, Rangers, or Ninjas!</em></p>
-                    
-                    <p><strong>✨ CLERIC</strong> - The MVP of every party! Keep your friends alive with powerful heals, remove nasty status effects, and even bring the fallen back to life. Plus, you're no pushover - Holy Light packs a punch against evil! <em>Customize into Druids, Battle Priests, or Divine Scholars!</em></p>
-                    
-                    <table class="stats-table">
-                        <tr>
-                            <th>Class</th>
-                            <th>HP</th>
-                            <th>MP</th>
-                            <th>ATK</th>
-                            <th>DEF</th>
-                            <th>SPD</th>
-                            <th>INT</th>
-                        </tr>
-                        <tr>
-                            <td>WARRIOR</td>
-                            <td>120</td>
-                            <td>30</td>
-                            <td>12</td>
-                            <td>10</td>
-                            <td>6</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>MAGE</td>
-                            <td>80</td>
-                            <td>80</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>7</td>
-                            <td>14</td>
-                        </tr>
-                        <tr>
-                            <td>ROGUE</td>
-                            <td>90</td>
-                            <td>50</td>
-                            <td>10</td>
-                            <td>6</td>
-                            <td>12</td>
-                            <td>6</td>
-                        </tr>
-                        <tr>
-                            <td>CLERIC</td>
-                            <td>100</td>
-                            <td>70</td>
-                            <td>7</td>
-                            <td>8</td>
-                            <td>5</td>
-                            <td>10</td>
-                        </tr>
-                    </table>
-                    
-                    <p style="text-align: center; font-size: 9px; margin-top: 10px;"><em>These are just starting examples - customize every stat to create YOUR perfect classes!</em></p>
-                    
-                    <h3>Design Your Own Abilities:</h3>
-                    <p>Our example skills give you a complete game out of the box, but they're just templates! Every ability can be customized or replaced entirely:</p>
-                    <ul>
-                        <li><strong>Warriors</strong> start with basic Slash but eventually unleash Berserk mode - or whatever ultimate ability YOU create!</li>
-                        <li><strong>Mages</strong> begin throwing Fireballs but could graduate to summoning creatures, manipulating time, or wielding YOUR unique magic system!</li>
-                        <li><strong>Rogues</strong> evolve from simple Backstabs - maybe yours throw shurikens, set traps, or use gadgets you design!</li>
-                        <li><strong>Clerics</strong> progress from basic healing - but could channel nature magic, dark arts, or divine powers you imagine!</li>
-                    </ul>
-                    <p>The skill system is completely open! Change damage formulas, add new target types, create combo systems, or invent entirely new mechanics. Every parameter is exposed and documented. Your imagination is the only limit!</p>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage6.png" alt="Classes">
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-text"><p>Four example class roles provide a starting point for the party. Creators can change their names, starting stats, supplies, and abilities to suit the adventure.</p><h3>Build a Party With Different Strengths:</h3>
+<div class="table-scroll"><table class="stats-table"><thead><tr><th>Example</th><th>Role</th></tr></thead><tbody><tr><td>WARRIOR</td><td>Physical combat and resilience</td></tr><tr><td>MAGE</td><td>Magic and MP management</td></tr><tr><td>ROGUE</td><td>Speed and physical offense</td></tr><tr><td>CLERIC</td><td>Healing and support</td></tr></tbody></table></div>
+<h3>Make the Abilities Yours:</h3><p>The guided ability creator offers damage, healing, poison, and self-buff starting points. Set the cost, requirements, presentation, and supported effects, then choose those abilities for your characters and enemy templates.</p><p>These are editable examples, not a promise that every imaginable class mechanic is already implemented.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Skills menu development preview"><img src="portfolio-media/abyl/skills.webp" alt="Skills menu development preview" loading="lazy"></button></div></div>
         </section>
         
         <!-- Combat Mechanics Section -->
         <section id="combat" class="section">
             <h2>COMBAT MECHANICS</h2>
-            <div class="feature-grid">
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage7.png" alt="Combat">
-                </div>
-                <div class="feature-text">
-                    <h3>Combat That Keeps You Thinking:</h3>
-                    <p>Forget mindless button mashing! Every turn is a tactical decision that could mean victory or defeat. Do you go all-out attack? Play it safe with defend? Use that precious MP for a game-changing spell? The choice is yours!</p>
-                    
-                    <ul>
-                        <li><strong>Phase-Based Strategy</strong> - Players act together, then enemies retaliate. Coordinate with your party to focus fire on dangerous foes or spread damage strategically!</li>
-                        <li><strong>Speed Matters</strong> - Faster characters act first in each phase. Build a speedy Rogue to always get the jump on enemies, or accept the Warrior's slower speed for their incredible durability!</li>
-                        <li><strong>Risk vs Reward</strong> - Defending cuts damage in half but costs your turn. Time it right to survive devastating boss attacks!</li>
-                        <li><strong>Critical Hits</strong> - That satisfying moment when you land a critical strike! Boost your Luck stat to see those beautiful damage multipliers more often!</li>
-                        <li><strong>MP Management</strong> - Powerful abilities drain your MP. Spam them early and you'll be stuck with basic attacks when you need them most!</li>
-                    </ul>
-                    
-                    <h3>The Flow of Battle:</h3>
-                    <p>When danger strikes, you're instantly transported to the battle arena! No loading screens, no waiting - just pure adrenaline as you and your party face off against fearsome foes. The action menu appears right where you need it in VR, letting you make split-second decisions. Watch your attacks connect with satisfying visual effects, see damage numbers pop up, and feel the rush when "VICTORY!" flashes across your screen!</p>
-                    
-                    <p>Every battle ends with rewards - experience to grow stronger and gold to... well, that's for YOU to decide! Add shops, crafting, or any reward system you imagine! The real reward? The stories you'll tell about that time your custom Necromancer class saved everyone by summoning an undead army!</p>
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Battle commands and opponents in the current build"><img src="portfolio-media/abyl/battle.webp" alt="Battle commands and opponents in the current build" loading="lazy"></button></div><div class="feature-text"><h3>Every Turn Is a Decision:</h3><p>Attack, defend, spend MP on a skill, use an item, or try to flee. Pick the right target and decide when the party needs damage, protection, or recovery.</p>
+<ul><li><strong>Visible encounters:</strong> Enemies face the party in a dedicated battle arena.</li><li><strong>Abilities and effects:</strong> Mix damage, healing, and supported status effects.</li><li><strong>Battle rewards:</strong> Experience and gold carry the adventure forward.</li></ul>
+<h3>From Exploration to Battle:</h3><p>A frozen-view crack and shatter transition introduces encounters while keeping head movement free in VR. A comfort fade is available as an alternative. Area music gives way to the battle track and returns after the encounter.</p></div></div>
         </section>
         
         <!-- Character Progression Section -->
         <section id="progression" class="section">
             <h2>CHARACTER PROGRESSION</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <h3>Your Character, Your Build:</h3>
-                    <p>Every battle makes you stronger! Watch those experience points roll in as you defeat enemies, and feel the rush when you hear that magical level-up sound! But here's where it gets REALLY interesting...</p>
-                    
-                    <h3>Customize Your Hero:</h3>
-                    <p>Leveling up isn't just watching numbers go up - YOU decide how your character grows! Each level grants skill points to spend however you want:</p>
-                    
-                    <ul>
-                        <li><strong>Pump ATK</strong> to become a damage-dealing monster. Watch enemies' health bars melt!</li>
-                        <li><strong>Boost DEF</strong> to laugh off attacks that would flatten others. Become the immovable object!</li>
-                        <li><strong>Increase SPD</strong> to always act first. Strike before enemies even know what hit them!</li>
-                        <li><strong>Raise INT</strong> for devastating magical damage. Make your spells the stuff of legends!</li>
-                        <li><strong>Invest in LUCK</strong> for those clutch critical hits when you need them most!</li>
-                    </ul>
-                    
-                    <p>Want a glass cannon Mage with maxed INT but paper-thin defense? Do it! Prefer a speedy Warrior who breaks the mold? That's your choice! Create entirely new stats, add skill trees, or design unique progression systems. There's no "wrong" way to build - only YOUR way!</p>
-                    
-                    <h3>Persistent Progress:</h3>
-                    <p>Your character's growth carries over between sessions. Log out as a level 5 adventurer, log back in as a level 5 adventurer! Your stats, your skills, your journey - it's all saved and waiting for your next adventure. This isn't just another VRChat activity - it's YOUR ongoing saga!</p>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage8.png" alt="Progression">
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-text"><h3>Your Character, Your Build:</h3><p>The adventure journal gathers party details, character growth, inventory, and skills in one place. Gain experience, spend growth points, and prepare your equipment and supplies for the next encounter.</p>
+<ul><li><strong>Equipment:</strong> The item and equipment tools support nine equipment slots.</li><li><strong>Supplies:</strong> Consumables, starting items, and shop stock are editable by the creator.</li><li><strong>Shops and inns:</strong> Buy or sell eligible items and pay for rest when the adventure offers it.</li></ul>
+<h3>Current Checkpoint Support:</h3><p>Creators can opt into host checkpoints. These preserve shared adventure progress and the host's character, inventory, equipment, and reward claims. Resuming currently requires a fresh solo instance; other party members' characters are not saved by that host checkpoint.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Character growth in the adventure journal"><img src="portfolio-media/abyl/journal.webp" alt="Character growth in the adventure journal" loading="lazy"></button></div></div>
         </section>
         
         <!-- Multiplayer Features Section -->
         <section id="multiplayer" class="section">
             <h2>MULTIPLAYER FEATURES</h2>
-            <div class="feature-grid">
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage9.png" alt="Multiplayer">
-                </div>
-                <div class="feature-text">
-                    <h3>Adventures Are Better With Friends:</h3>
-                    <p>Sure, you COULD adventure alone... but why would you want to? The Abyl RPG System is built from the ground up for cooperative play! Grab up to 3 friends and form the ultimate party!</p>
-                    
-                    <h3>True Cooperative Gameplay:</h3>
-                    <ul>
-                        <li><strong>Real Teamwork</strong> - This isn't just fighting alongside each other - it's fighting TOGETHER! Coordinate attacks, cover each other's weaknesses, and create devastating combos!</li>
-                        <li><strong>Shared Triumphs</strong> - When the party wins, EVERYONE wins! Experience is shared fairly, ensuring no one gets left behind. Your success is the party's success!</li>
-                        <li><strong>Individual Identity</strong> - Even in a party, YOU control YOUR character. Your build, your choices, your moment to shine when you land that perfect critical hit!</li>
-                        <li><strong>Strategic Diversity</strong> - Mix and match classes for different strategies. All Warriors for maximum tanking? Four Mages for magical mayhem? The classic balanced party? Every combination tells a different story!</li>
-                        <li><strong>Social Bonds</strong> - Nothing brings VRChat friends together like surviving a tough battle by the skin of your teeth. These shared adventures create memories that last!</li>
-                    </ul>
-                    
-                    <h3>Built for VRChat, Optimized for Fun:</h3>
-                    <ul>
-                        <li><strong>Seamless Integration</strong> - Works perfectly with VRChat's systems. Your username appears in combat, your avatar is your hero!</li>
-                        <li><strong>VR-First Design</strong> - Every UI element is positioned for maximum comfort in VR. No neck strain, no awkward reaching - just smooth, intuitive gameplay!</li>
-                        <li><strong>Synchronized Action</strong> - What you do, everyone sees! Watch your friends' epic moves in real-time!</li>
-                        <li><strong>Station Combat</strong> - Teleport to battle positions that give everyone the best view of the action. Feel like heroes in a classic RPG battle scene!</li>
-                        <li><strong>Performance Optimized</strong> - Smooth gameplay even with full parties and intense battles. Because lag is the real enemy!</li>
-                    </ul>
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Party journal development preview"><img src="portfolio-media/abyl/party.webp" alt="Party journal development preview" loading="lazy"></button></div><div class="feature-text"><h3>Adventures Are Better With Friends:</h3><p>Abyl is designed around a party journey. The current starter provides four character stations, shared encounters, connected travel, and party information in the journal.</p>
+<h3>Shared Adventure, Clear Rewards:</h3><p>Creators can make an interaction repeatable, once for the party, or once for each participant. Quests, gates, and changes to the world are part of the shared adventure state.</p>
+<h3>Still in Development:</h3><p>Multiplayer support is implemented, but live VRChat testing is still needed for late joins, players leaving, host changes, and other edge cases. Desktop and headset controls, comfort, and Quest performance also need hands-on acceptance. This is not a finished-release guarantee.</p></div></div>
         </section>
         
         <!-- Customization Section -->
         <section id="customization" class="section">
             <h2>MAKE IT YOUR GAME</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <h3>Built to Be Modified:</h3>
-                    <p>The Abyl RPG System isn't a rigid game - it's a powerful framework waiting for YOUR creative vision! Every system is designed to be customized, expanded, and reimagined.</p>
-                    
-                    <h3>What You Can Customize:</h3>
-                    <ul>
-                        <li><strong>Create New Classes</strong> - Our four classes are just examples! Design space marines, pirates, vampires, or anything you imagine. Mix and match abilities to create unique playstyles!</li>
-                        <li><strong>Design Original Skills</strong> - Every skill parameter is exposed. Change damage formulas, create new effect types, add cooldowns, resource costs, or combo systems!</li>
-                        <li><strong>Build Enemy Variety</strong> - From cute slimes to terrifying dragons, create enemies that fit YOUR world. Set their AI patterns, special abilities, and rewards!</li>
-                        <li><strong>Tune the Balance</strong> - Every formula is accessible. Adjust experience curves, stat growth, damage calculations - make it as casual or hardcore as you want!</li>
-                        <li><strong>Theme Everything</strong> - Fantasy? Sci-fi? Modern? Silly? The system works with any theme. Just change the names, effects, and visuals!</li>
-                    </ul>
-                    
-                    <h3>Easy to Modify:</h3>
-                    <p>We've documented every parameter and made customization straightforward. No diving through complex code - just change values in the Unity inspector and see results immediately! The hard parts (networking, VRChat integration, combat flow) are handled. You focus on making it uniquely yours!</p>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage14.png" alt="Customization">
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-text"><h3>Start From a Working Example:</h3><p>The New Adventure workflow creates either a clean starter or a small quest sample. Creator Garden includes Rowan's parcel quest, a second sanctuary quest, a key chest, a gate, a shop and paid inn, a cutscene, a practice battle, and a checkpoint.</p>
+<h3>Guided Creator Tools:</h3><ul><li><strong>World building:</strong> Paint tiles and height, create rooms, roads, bridges and ramps, and import rectangular tilesheets.</li><li><strong>Characters:</strong> Import directional sprites and write portrait-based dialogue choices.</li><li><strong>Quests:</strong> Connect conditions, independent quest stages, items, gold, travel, rewards and scenery changes.</li><li><strong>Presentation:</strong> Set up music zones, sound cues, cutscenes and interface themes.</li></ul>
+<p>Validation tools help check a created adventure. More creator onboarding and release preparation remain ahead.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Creator Garden quest sample"><img src="portfolio-media/abyl/creator-garden.webp" alt="Creator Garden quest sample" loading="lazy"></button></div></div>
         </section>
         
         <!-- Enemies & AI Section -->
         <section id="enemies" class="section">
-            <h2>ENEMIES & AI</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <h3>Create Your Own Bestiary:</h3>
-                    <p>What's an RPG without monsters to fight? The Abyl RPG System includes example enemies to get you started, but they're just templates for your imagination! Every stat, behavior, and ability can be customized!</p>
-                    
-                    <h3>Enemy Framework Lets You Build Anything:</h3>
-                    <ul>
-                        <li><strong>Normal Enemies</strong> - Your bread-and-butter foes. Perfect for grinding experience and learning new strategies. Make them goblins, robots, spirits - whatever fits YOUR world!</li>
-                        <li><strong>Elite Enemies</strong> - Tougher, smarter, and way more rewarding! These mini-bosses will test your party's coordination. Design unique elites with special mechanics!</li>
-                        <li><strong>Boss Enemies</strong> - The ultimate test! Bosses hit harder, take more punishment, and use devastating special abilities. Create memorable boss fights with multiple phases!</li>
-                    </ul>
-                    
-                    <h3>AI That You Control:</h3>
-                    <p>Our smart AI system is fully configurable - enemies aren't just damage sponges!</p>
-                    <ul>
-                        <li><strong>Behavior Patterns</strong> - Set attack/defend/special percentages to create unique enemy personalities. Aggressive berserkers? Defensive turtles? Tricky spellcasters? You decide!</li>
-                        <li><strong>Custom Abilities</strong> - Every enemy can have unique skills. Give your dragons fire breath, your zombies life drain, or create completely original mechanics!</li>
-                        <li><strong>Group Dynamics</strong> - Design enemy formations that work together. Healers supporting tanks, damage dealers protected by defenders - create real challenges!</li>
-                        <li><strong>Scaling Systems</strong> - Our level scaling ensures balanced gameplay, but every formula is customizable. Make enemies that grow with players or create fixed challenges!</li>
-                    </ul>
-                    
-                    <h3>Encounter System You Control:</h3>
-                    <p>Random battles are exciting, but YOUR game needs YOUR pacing:</p>
-                    <ul>
-                        <li><strong>Adjustable Frequency</strong> - Set encounter rates from rare to frequent. Building a chill social RPG? Make battles rare. Want constant action? Crank it up!</li>
-                        <li><strong>Zone-Based Encounters</strong> - Different areas spawn different enemy groups. Create level-appropriate zones or throw in surprise challenges!</li>
-                        <li><strong>Scripted Battles</strong> - Boss encounters, story battles, or tutorial fights - trigger specific encounters exactly when YOU want them!</li>
-                        <li><strong>Custom Rewards</strong> - Set experience, gold, and item drops for every encounter. Create rare spawns with bonus rewards!</li>
-                    </ul>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage10.png" alt="Enemies">
-                </div>
-            </div>
+            <h2>ENEMIES &amp; AI</h2>
+            <div class="feature-grid"><div class="feature-text"><h3>Create Your Own Bestiary:</h3><p>Enemy templates define the opponents in your encounters. The creator tools let you arrange formations and select supported abilities, while the combat system handles their turns, targets, damage and effects.</p>
+<h3>Build Encounters With a Purpose:</h3><ul><li>Choose enemy combinations for a formation.</li><li>Use danger regions for exploration encounters and keep towns safe.</li><li>Connect a battle to an interaction, quest step, or story moment.</li><li>Adjust enemy stats and abilities to match the adventure's intended difficulty.</li></ul><p>The current sample demonstrates the foundation. A larger, polished bestiary and complete adventure content still depend on the worlds made with it.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Sample enemy formation in the battle arena"><img src="portfolio-media/abyl/battle.webp" alt="Sample enemy formation in the battle arena" loading="lazy"></button></div></div>
         </section>
         
         <!-- World & NPCs Section -->
         <section id="world" class="section">
-            <h2>WORLD & NPCS</h2>
-            <div class="feature-grid">
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage11.png" alt="World">
-                </div>
-                <div class="feature-text">
-                    <h3>A Living, Breathing World:</h3>
-                    <p>This isn't just a combat system dropped into VRChat - it's a complete RPG experience! The world feels alive with wandering NPCs, dynamic encounters, and endless possibilities!</p>
-                    
-                    <h3>NPCs That Feel Real:</h3>
-                    <ul>
-                        <li><strong>Natural Movement</strong> - NPCs don't just stand there like statues! They wander around using intelligent pathfinding, creating a living world!</li>
-                        <li><strong>Interactive Conversations</strong> - Approach an NPC and they'll turn to face you, ready to chat! The dialogue system lets you have meaningful interactions!</li>
-                        <li><strong>Context-Aware Behavior</strong> - NPCs react to players nearby with animations and behaviors. They might wave, talk to themselves, or show surprise!</li>
-                        <li><strong>Future Quest Givers</strong> - The dialogue system is ready for quest NPCs, merchants, trainers - whatever YOUR game needs! The foundation is built for endless expansion!</li>
-                        <li><strong>Personality Through Animation</strong> - Different talking animations and behaviors give each NPC their own personality!</li>
-                    </ul>
-                    
-                    <h3>Seamless World Design:</h3>
-                    <ul>
-                        <li><strong>Smooth Transitions</strong> - Walk around freely until WHAM - battle time! The transition to combat is instant and exciting!</li>
-                        <li><strong>Arena Teleportation</strong> - Combat happens in dedicated arenas, keeping battles epic while preserving the exploration world!</li>
-                        <li><strong>Environmental Atmosphere</strong> - Dynamic skyboxes and lighting set the mood. That boss arena feels appropriately intimidating!</li>
-                        <li><strong>Immersive Audio</strong> - Background music shifts between exploration and combat, pulling you deeper into the experience!</li>
-                        <li><strong>Zone-Based Design</strong> - Different areas can have different enemy types, difficulty levels, and atmospheric elements!</li>
-                    </ul>
-                    
-                    <p>The world isn't just a backdrop - it's part of the adventure! Every corner could hide a powerful enemy, every NPC might have valuable information, and every step forward is progress in your journey!</p>
-                </div>
-            </div>
+            <h2>WORLD &amp; NPCS</h2>
+            <div class="feature-grid"><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge The miniature overworld viewed from player scale"><img src="portfolio-media/abyl/overworld-scale.webp" alt="The miniature overworld viewed from player scale" loading="lazy"></button></div><div class="feature-text"><h3>Places With Something to Do:</h3><p>Lantern Vale is the current prototype town: open buildings, a fountain square, shops, an inn, residents, branching conversation, and a delivery quest. The miniature Lantern Coast links paths, forests, mountains, a bridge, ruins, and a cave.</p>
+<h3>Make the World React:</h3><ul><li>Write conversations with choices and portraits.</li><li>Run more than one quest at a time.</li><li>Open a gate, reveal scenery, give a reward, or start a cutscene from an interaction.</li><li>Connect destinations with linked travel points and music changes.</li></ul><p>The overworld's smaller scenery creates a classic RPG sense of scale; it does not resize the player's avatar.</p></div></div>
         </section>
         
         <!-- Targeting System Section -->
         <section id="targeting" class="section">
             <h2>TARGETING SYSTEM</h2>
-            <div class="feature-grid">
-                <div class="feature-text">
-                    <h3>Intuitive Targeting That Just Works:</h3>
-                    <p>In the heat of battle, the last thing you want is fumbling with confusing controls! Our targeting system is designed to be instantly understandable while offering deep tactical options!</p>
-                    
-                    <h3>Every Action Has Its Target:</h3>
-                    <ul>
-                        <li><strong>Single Enemy</strong> - Pick your victim! Perfect for focusing down the biggest threat or finishing off weakened foes!</li>
-                        <li><strong>All Enemies</strong> - Why choose? Unleash devastating AoE attacks that hit everything! Watch the entire enemy party's HP bars drop!</li>
-                        <li><strong>Single Ally</strong> - Be the hero your party needs! Target specific allies for healing, buffs, or revival!</li>
-                        <li><strong>All Allies</strong> - Spread the love! Party-wide heals and buffs can turn the tide of battle!</li>
-                        <li><strong>Self Target</strong> - Sometimes you need to help yourself first. Self-buffs and healing keep you in the fight!</li>
-                        <li><strong>Random Target</strong> - Let fate decide! Some abilities pick targets randomly for that extra bit of chaos!</li>
-                    </ul>
-                    
-                    <h3>Visual Clarity in VR:</h3>
-                    <p>We know VR can be disorienting, so we made targeting crystal clear:</p>
-                    <ul>
-                        <li><strong>Glowing Indicators</strong> - Valid targets light up with clear visual markers. No guessing who you can hit!</li>
-                        <li><strong>Color Coding</strong> - Different colors for different target types. Red for enemies, green for allies - simple and effective!</li>
-                        <li><strong>Preview Effects</strong> - See exactly what your AoE spell will hit BEFORE you cast it. No wasteful misses!</li>
-                        <li><strong>Audio Feedback</strong> - Satisfying sounds confirm your selection. You'll KNOW when you've locked onto your target!</li>
-                        <li><strong>Smart Auto-Targeting</strong> - For AoE and self-targeted abilities, the system handles targeting automatically. Just choose the skill and watch it work!</li>
-                    </ul>
-                    
-                    <p>The best interface is invisible - and that's what we've achieved! Targeting feels so natural, you'll forget it's even there. Just point, click, and unleash devastation!</p>
-                </div>
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage12.png" alt="Targeting">
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-text"><h3>Choose an Action, Then Its Target:</h3><p>Battle commands lead into target selection for the appropriate opponent, ally, or self. The goal is to keep the decision readable while you remain present in the arena.</p>
+<ul><li><strong>Offense:</strong> Direct damage and supported harmful effects toward enemies.</li><li><strong>Support:</strong> Choose an ally or yourself for healing and buffs.</li><li><strong>Information:</strong> Use the party and battle displays to decide what the next turn needs.</li></ul>
+<p>The recent build includes repairs to target controls and battle interface connections. Real controller and headset testing remains part of the ongoing work.</p></div><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Target selection begins from the battle command panel"><img src="portfolio-media/abyl/battle.webp" alt="Target selection begins from the battle command panel" loading="lazy"></button></div></div>
         </section>
         
         <!-- Status Effects Section -->
         <section id="status" class="section">
             <h2>STATUS EFFECTS</h2>
-            <div class="feature-grid">
-                <div class="feature-image">
-                    <img src="Art Folder/ARPGimage13.png" alt="Status Effects">
-                </div>
-                <div class="feature-text">
-                    <h3>Status Effects Add Strategic Depth:</h3>
-                    <p>Combat isn't just about damage numbers - it's about controlling the battlefield! Status effects transform simple battles into chess matches where every move matters!</p>
-                    
-                    <h3>Afflictions That Change Everything:</h3>
-                    <ul>
-                        <li><strong>💀 Poison</strong> - Watch enemies slowly wither away! That tough boss becomes manageable when it's losing HP every turn!</li>
-                        <li><strong>⚡ Stun</strong> - The ultimate shutdown! Stunned enemies skip their turn entirely. Time it right to prevent devastating attacks!</li>
-                        <li><strong>😴 Sleep</strong> - Peaceful but deadly! Sleeping foes skip turns until damaged. Perfect for divide-and-conquer strategies!</li>
-                        <li><strong>👁️ Blind</strong> - Can't hit what you can't see! Blinded enemies miss more often, neutralizing physical powerhouses!</li>
-                        <li><strong>🤐 Silence</strong> - Shut down those pesky spellcasters! No magic means no problems!</li>
-                        <li><strong>⚡ Paralysis</strong> - The gambler's curse! Paralyzed enemies MIGHT act, or might waste their turn. Keep them guessing!</li>
-                        <li><strong>⬆️ Stat Buffs</strong> - Temporary power boosts! Turn your Warrior into an unstoppable force or your Mage into a nuclear bomb!</li>
-                        <li><strong>⬇️ Stat Debuffs</strong> - Weaken foes before the killing blow! Lower their defense, then strike for massive damage!</li>
-                        <li><strong>🎨 Your Effects</strong> - Create custom status effects! Time stops, gravity reversal, charm, fear - if you can imagine it, you can build it!</li>
-                    </ul>
-                    
-                    <h3>Strategic Status Gameplay:</h3>
-                    <ul>
-                        <li><strong>Duration Management</strong> - Effects last multiple turns, so timing is crucial. Apply poison early for maximum damage over time!</li>
-                        <li><strong>Visual Indicators</strong> - Can't miss who's affected! Clear icons show active effects at a glance!</li>
-                        <li><strong>Stacking Strategies</strong> - Some effects stack for increased power! Multiple poisons mean multiple damage ticks!</li>
-                        <li><strong>Cleanse and Counter</strong> - Clerics can remove negative effects, making them invaluable against status-heavy enemies!</li>
-                        <li><strong>Resistance Systems</strong> - Higher stats provide natural resistance. That high-INT Mage might shrug off silence!</li>
-                    </ul>
-                    
-                    <p>Master the status effect system and you'll find battles have layers of strategy you never imagined. That impossible boss? Maybe it just needs a good stunning! Better yet - create your own unique status effects that change how YOUR game plays!</p>
-                </div>
-            </div>
+            <div class="feature-grid"><div class="feature-image"><button class="preview-button" type="button" aria-label="Enlarge Skills interface development preview"><img src="portfolio-media/abyl/skills.webp" alt="Skills interface development preview" loading="lazy"></button></div><div class="feature-text"><h3>More Than Damage Numbers:</h3><p>The combat system includes poison, turn-disrupting effects, accuracy and magic restrictions, and temporary stat changes. Their durations and effects give creators another way to shape encounters.</p>
+<ul><li><strong>Poison:</strong> Damage over time that rewards planning ahead.</li><li><strong>Stun, sleep and paralysis:</strong> Effects that can interrupt an opponent's actions.</li><li><strong>Blind and silence:</strong> Pressure on attacks and ability use.</li><li><strong>Buffs and debuffs:</strong> Temporary changes to combat strengths and weaknesses.</li></ul>
+<h3>Start With Supported Effects:</h3><p>The guided ability creator provides a small set of supported presets, including poison and a self-buff. More elaborate custom mechanics still need development and testing; they are not automatically created by the editor.</p></div></div>
         </section>
         
         <!-- Download Section -->
         <section id="download" class="section pixel-border">
-            <h2>GET THE COMPLETE FRAMEWORK</h2>
-            <div style="text-align: center; padding: 40px;">
-                <p>The Abyl RPG System is almost ready to help YOU create the RPG of your dreams in VRChat!</p>
-                <p>We're putting the finishing touches on the most comprehensive RPG framework ever created for social VR.</p>
-                
-                <h3 style="margin: 30px 0;">What You'll Get:</h3>
-                <ul style="list-style: none; margin: 20px 0;">
-                    <li>✅ Complete RPG framework ready to customize and drop into any VRChat world</li>
-                    <li>✅ All scripts, prefabs, and systems fully documented and modifiable</li>
-                    <li>✅ Example classes, enemies, and skills to use or build upon</li>
-                    <li>✅ Customization guides showing how to create YOUR unique RPG</li>
-                    <li>✅ Active community sharing custom content and ideas</li>
-                    <li>✅ Regular updates with new features and systems</li>
-                </ul>
-                
-                <a href="#" class="download-btn">🎮 DOWNLOAD COMING SOON 🎮</a>
-                
-                <p style="margin-top: 30px;">Want to be notified the moment it releases?</p>
-                <p>Join our Discord to get early access, connect with other creators, and share your RPG adventures!</p>
-                
-                <p style="margin-top: 40px; font-size: 10px;">
-                    <span class="blink">▶</span> Your unique RPG adventure starts with Abyl! <span class="blink">◀</span>
-                </p>
-            </div>
+            <h2>DEVELOPMENT &amp; RELEASE</h2>
+            <div style="text-align:center;padding:24px"><p>Abyl is still in development, with substantial work ahead before a public release. There is no download or public world link available here yet.</p>
+<h3 style="margin:30px 0">The Current Foundation:</h3><ul><li>Four-character party setup, turn-based combat, inventory, equipment and skills</li><li>Town and overworld samples, residents, quests, shops, inns and travel</li><li>Guided adventure creation, maps, tiles and sprites, dialogue and encounter tools</li><li>Music, cutscenes, transitions and opt-in host checkpoints</li></ul>
+<h3>What's Still Ahead:</h3><p>More live multiplayer testing, headset comfort and performance checks, content and presentation polish, creator onboarding, and the release package.</p><a class="download-btn" href="https://www.patreon.com/c/KalArts" target="_blank" rel="noopener noreferrer">FOLLOW PROJECT UPDATES</a>
+<p style="margin-top:30px">Looking for the separate tabletop helpers? Open the <a href="DND.html">browser combat board</a>, <a href="DND Conversation Manager.html">Narrative Nexus</a>, or <a href="DND NPC Conversation Manager.html">character dialogue tool</a>.</p><p style="margin-top:30px;font-size:9px">Created by NullxVoid · Kalen / KalArts<br>Project information updated November 2026</p><p style="margin-top:20px"><span class="blink">▶</span> Your unique RPG adventure starts with Abyl! <span class="blink">◀</span></p></div>
         </section>
     </div>
     
     <!-- Audio Controls -->
     <div class="audio-controls">
         <div class="volume-container">
-            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" orient="vertical">
-            <button class="mute-btn" id="muteBtn">♪</button>
+            <span style="font-size:8px">TOWN THEME</span>
+            <input aria-label="Music volume" type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" orient="vertical">
+            <button class="mute-btn" id="muteBtn" aria-label="Play Town theme" aria-pressed="false">▶</button>
         </div>
     </div>
     
     <!-- Background Music -->
-    <audio id="bgMusic" loop>
-        <source src="Art Folder/rpg-background-music.mp3" type="audio/mpeg">
-        <source src="Art Folder/rpg-background-music.ogg" type="audio/ogg">
+    <audio id="bgMusic" loop preload="none">
+        <source src="portfolio-media/abyl/lantern-vale.mp3" type="audio/mpeg">
     </audio>
     
+    <dialog id="previewDialog" aria-label="Development preview"><button id="closePreview" type="button">CLOSE ×</button><img id="previewImage" alt=""><p id="previewCaption"></p></dialog>
     <script>
-        // Sidebar Toggle
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
-        
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
+        function setSidebar(open) { sidebar.classList.toggle('active', open); sidebarToggle.setAttribute('aria-expanded', String(open)); }
+        sidebarToggle.addEventListener('click', () => setSidebar(!sidebar.classList.contains('active')));
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') setSidebar(false); });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', event => {
+            const id = anchor.getAttribute('href').slice(1), target = document.getElementById(id);
+            if (!target) return;
+            event.preventDefault();
+            if (innerWidth <= 768) setSidebar(false);
+            target.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth', block:'start'});
+        }));
+        const bgMusic = document.getElementById('bgMusic'), volumeSlider = document.getElementById('volumeSlider'), muteBtn = document.getElementById('muteBtn');
+        bgMusic.volume = .5;
+        volumeSlider.addEventListener('input', () => { bgMusic.volume = Number(volumeSlider.value)/100; });
+        muteBtn.addEventListener('click', async () => {
+            if (!bgMusic.paused) { bgMusic.pause(); return; }
+            try { await bgMusic.play(); } catch (_) { muteBtn.textContent='▶'; muteBtn.setAttribute('aria-label','Retry Town theme'); }
         });
-        
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close sidebar on mobile after clicking
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.remove('active');
-                    }
-                }
-            });
-        });
-        
-        // Audio Controls
-        const bgMusic = document.getElementById('bgMusic');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const muteBtn = document.getElementById('muteBtn');
-        
-        // Set initial volume
-        bgMusic.volume = 0.5;
-        
-        // Start playing music when page loads (with user interaction)
-        document.addEventListener('click', function initAudio() {
-            bgMusic.play().catch(e => console.log('Audio autoplay prevented'));
-            document.removeEventListener('click', initAudio);
-        }, { once: true });
-        
-        // Volume Control
-        volumeSlider.addEventListener('input', (e) => {
-            const volume = e.target.value / 100;
-            bgMusic.volume = volume;
-            
-            if (volume === 0) {
-                muteBtn.classList.add('muted');
-                muteBtn.textContent = '✖';
-            } else {
-                muteBtn.classList.remove('muted');
-                muteBtn.textContent = '♪';
-            }
-        });
-        
-        // Mute Button
-        muteBtn.addEventListener('click', () => {
-            if (bgMusic.muted) {
-                bgMusic.muted = false;
-                muteBtn.classList.remove('muted');
-                muteBtn.textContent = '♪';
-                volumeSlider.value = bgMusic.volume * 100;
-            } else {
-                bgMusic.muted = true;
-                muteBtn.classList.add('muted');
-                muteBtn.textContent = '✖';
-            }
-        });
-        
-        // Parallax Effect on Hero
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const hero = document.querySelector('.hero');
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        });
-        
-        // Add some retro loading effect
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+        function musicState(){const playing=!bgMusic.paused;muteBtn.textContent=playing?'Ⅱ':'▶';muteBtn.classList.toggle('muted',!playing);muteBtn.setAttribute('aria-pressed',String(playing));muteBtn.setAttribute('aria-label',playing?'Pause Town theme':'Play Town theme');}
+        bgMusic.addEventListener('play',musicState);bgMusic.addEventListener('pause',musicState);
+        document.addEventListener('visibilitychange',()=>{if(document.hidden)bgMusic.pause();});
+        const preview=document.getElementById('previewDialog');
+        document.querySelectorAll('.preview-button').forEach(button=>button.addEventListener('click',()=>{const img=button.querySelector('img');document.getElementById('previewImage').src=img.src;document.getElementById('previewImage').alt=img.alt;document.getElementById('previewCaption').textContent=img.alt+' · Unity development capture';preview.showModal();}));
+        document.getElementById('closePreview').addEventListener('click',()=>preview.close());
+        // Keep the original subtle entrance; avoid the old scroll transform covering later sections.
+        if(!matchMedia('(prefers-reduced-motion:reduce)').matches){document.body.style.opacity='0';requestAnimationFrame(()=>{document.body.style.transition='opacity .5s';document.body.style.opacity='1';});}
     </script>
 </body>
 </html>

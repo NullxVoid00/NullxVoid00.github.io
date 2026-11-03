@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonic Adventure VR - VRChat Remake</title>
+    <title>Sonic Adventure VRDX - VRChat Fan Project</title>
+    <meta name="description" content="Sonic Adventure VRDX: a fan-made VRChat adaptation. Explore the connected Sonic story, character development, trials and actual project screenshots.">
     <style>
         * {
             margin: 0;
@@ -800,15 +801,45 @@
                 max-width: 180px;
             }
         }
+
+        /* Responsive repairs and new content retain the original Adventure menu styling. */
+        .portfolio-link{position:absolute;top:12px;left:12px;z-index:1001;padding:9px 13px;border:2px solid #fff;border-radius:10px;background:linear-gradient(135deg,#4a90e2,#87ceeb);color:#fff;font-size:13px;font-weight:bold;text-decoration:none;box-shadow:0 4px 15px #0003}
+        .project-summary{max-width:660px;margin:14px auto 0;padding:0 18px;color:#003d82;font-size:15px;line-height:1.6}
+        .character-state{color:#0066cc;font-size:13px;font-weight:bold;margin-bottom:12px}
+        .development-gallery{max-width:1000px;margin:0 auto 30px;padding:30px;background:rgba(255,255,255,.9);border-radius:20px;box-shadow:0 8px 25px #0003}
+        .gallery-intro{color:#333;text-align:center;font-size:15px;line-height:1.6;margin:0 auto 20px;max-width:700px}
+        .development-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+        .development-grid img{width:100%;aspect-ratio:1.6;object-fit:cover;display:block;border-radius:10px;border:2px solid #4a90e2;transition:transform .2s}
+        .development-grid a:hover img{transform:scale(1.025)}
+        .development-grid figcaption{font-size:14px;color:#003d82;line-height:1.5;padding-top:9px;text-align:center}
+        .development-note{font-size:12px;color:#465c78;text-align:center;line-height:1.5;margin-top:20px}
+        .footer a{color:inherit}.footer .credits{max-width:780px;margin:10px auto 0;font-size:12px;line-height:1.6;padding:0 15px}
+        .modal-body p+p{margin-top:15px}.modal-body ul{padding-left:22px;margin:12px 0}.modal-body li{margin:7px 0}
+        .modal-body img{width:100%;height:auto;border-radius:10px}.modal-close:focus-visible,.character-orb:focus-visible,.menu-button:focus-visible,.press-start:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ff9900;outline-offset:4px}
+        .character-wheel:focus-within,.character-wheel:hover,.character-wheel:focus-within .orb-text,.character-wheel:hover .orb-text{animation-play-state:paused}
+        .main-container:not(.active){visibility:hidden}.enter-screen.hidden{visibility:hidden}
+        @media(max-width:768px){
+            .audio-controls{position:relative;top:auto;right:auto;align-self:center;margin:55px auto 12px;display:flex;gap:12px;align-items:center;padding:10px 14px;max-width:calc(100% - 24px)}
+            .audio-controls h4,.volume-control{margin:0}.volume-control{gap:6px}.volume-control input[type=range]{width:60px}.volume-control label{min-width:0}
+            .character-wheel-container{width:280px;height:280px}.character-orb{width:56px;height:56px;font-size:10px}.character-center-image img{width:85px;height:85px}
+            .character-info{width:calc(100% - 28px);padding:24px 18px}.character-name{font-size:28px}.character-subtitle{font-size:15px}.character-description{font-size:15px}
+            .menu-section{width:100%;max-width:640px}.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-button{min-width:0;font-size:16px;padding:20px 12px}
+            .development-gallery{margin:0 15px 25px;padding:25px 18px}.development-grid{grid-template-columns:1fr;gap:23px}
+            .features-grid{grid-template-columns:1fr}.modal-header h2{font-size:21px}.modal-content{max-height:85dvh}.modal-header{gap:10px}.modal-close{flex-shrink:0}
+            .logo-container{text-align:center;width:100%}.main-logo{max-width:320px;width:85%}.project-summary{font-size:14px}
+        }
+        @media(max-width:380px){.character-wheel-container{width:250px;height:250px}.character-orb{width:50px;height:50px;font-size:9px}.menu-grid{gap:12px}.audio-controls{gap:9px;padding:9px}.audio-controls h4{font-size:12px}.volume-control input[type=range]{width:50px}.features-section{margin:20px 12px;padding:23px 16px}.features-title{font-size:23px}}
+        @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation:none!important;transition:none!important}}
     </style>
 </head>
 <body>
+    <a class="portfolio-link" href="index.html">← Back to Portfolio</a>
     <!-- Enter Screen -->
     <div class="enter-screen" id="enterScreen">
         <div class="logo-container">
             <img src="Art Folder/SAMlogo.png" alt="Sonic Adventure VR Logo" class="main-logo">
         </div>
-        <div class="press-start" id="pressStartButton">
+        <div class="press-start" id="pressStartButton" role="button" tabindex="0">
             PRESS START
         </div>
     </div>
@@ -819,28 +850,29 @@
         <div class="audio-controls" id="audioControls">
             <h4>🎵 Audio</h4>
             <div class="volume-control">
-                <label>Music:</label>
+                <label for="musicVolume">Music:</label>
                 <input type="range" id="musicVolume" min="0" max="100" value="50">
             </div>
             <div class="volume-control">
-                <label>SFX:</label>
+                <label for="sfxVolume">SFX:</label>
                 <input type="range" id="sfxVolume" min="0" max="100" value="70">
             </div>
         </div>
 
         <!-- Audio Elements -->
-        <audio id="backgroundMusic" loop>
+        <audio id="backgroundMusic" loop preload="none">
             <source src="audio/background_musicSA.mp3" type="audio/mpeg">
-            <source src="audio/background_musicSA.ogg" type="audio/ogg">
+
         </audio>
         <audio id="clickSound" preload="auto">
             <source src="audio/SAclick.mp3" type="audio/mpeg">
-            <source src="audio/SAclick.ogg" type="audio/ogg">
+
         </audio>
 
         <div class="header content-section">
             <img src="Art Folder/SAMtop.png" alt="Sonic Adventure VR" class="title-logo">
-            <p class="subtitle">VRChat Remake Project</p>
+            <p class="subtitle">VRChat Fan Remake · In Development</p>
+            <p class="project-summary">Explore Sonic’s connected adventure across familiar hubs, action stages and boss encounters. Desktop and VR are supported; Sonic is the current campaign focus, with the other characters still in development.</p>
         </div>
 
         <!-- Character Selection Wheel -->
@@ -857,11 +889,9 @@
         <div class="character-info content-section" id="characterInfo">
             <div class="character-name" id="characterName">SONIC</div>
             <div class="character-subtitle" id="characterSubtitle">THE HEDGEHOG</div>
-            <video class="character-preview" id="characterPreview" autoplay loop muted playsinline>
-                <source src="Art Folder/CharacterPreview1.mp4" type="video/mp4">
-            </video>
+            <p class="character-state" id="characterState">Main campaign focus · Still in development</p>
             <div class="character-description" id="characterDescription">
-                Experience the classic Sonic Adventure in virtual reality! Run through Station Square, explore the Mystic Ruins, and collect Chaos Emeralds in this faithful VRChat remake.
+                Sonic’s story route connects Adventure Field travel, action stages, boss encounters and the ending. Stage-specific sequences and movement are being refined for VRChat; a complete hands-on playthrough is still part of testing.
             </div>
         </div>
 
@@ -878,7 +908,7 @@
                 </div>
                 <div class="menu-button" data-section="mission">
                     <span class="icon">🎯</span>
-                    MISSION
+                    UPDATES
                 </div>
                 <div class="menu-button" data-section="features">
                     <span class="icon">⚙️</span>
@@ -900,59 +930,72 @@
             <h2 class="features-title">🌟 VRChat Remake Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-title">🏃‍♂️ Rebuilt Physics</div>
+                    <div class="feature-title">🏃‍♂️ Adventure Movement</div>
                     <div class="feature-description">
-                        All systems and mechanics rebuilt from the ground up for VRChat. Authentic Sonic movement with acceleration, momentum, and speed mechanics recreated in UdonSharp.
+                        Speed, momentum, spin dashes and character movement adapted for VRChat. Loops, kart sections and stage-specific traversal continue to receive playability and tuning passes.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">👥 6 Playable Characters</div>
+                    <div class="feature-title">👥 Six Familiar Characters</div>
                     <div class="feature-description">
-                        Choose from Sonic, Tails, Knuckles, Amy, Big, and E-102 γ - each with unique abilities and character-themed cutscene rooms with custom colors and environments.
+                        Sonic, Tails, Knuckles, Amy, Big and Gamma each have a character foundation. Sonic has the most developed story route; the other campaigns are not yet complete.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">🎬 Custom Cutscene Rooms</div>
+                    <div class="feature-title">🎬 A Connected Sonic Story</div>
                     <div class="feature-description">
-                        Each character has their own themed cutscene room matching their personality and colors, creating immersive story experiences tailored for VRChat.
+                        Adventure Fields, cutscenes, action stages and boss encounters now join into Sonic’s development route through the finale and credits. Short cards stand in for some unfinished story transitions.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">📍 VRChat Enhancements</div>
+                    <div class="feature-title">🗺️ Adventure Fields</div>
                     <div class="feature-description">
-                        New VRChat-specific features including location tracker for other players, goal tracking, and multiplayer-enhanced gameplay mechanics.
+                        Travel through Station Square, Mystic Ruins and the Egg Carrier between the action. Hub connections, arrivals and transport routes are part of the connected journey.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">🎮 Demo & Full Game</div>
+                    <div class="feature-title">🎮 Desktop & VR</div>
                     <div class="feature-description">
-                        Currently a DEMO containing all of Sonic's story. Eventually will expand to include the complete game with all characters and storylines.
+                        Explore with desktop controls or a headset. The adaptation preserves familiar characters and scenery while its interaction and movement systems are tuned for VRChat.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">🏁 Versus Racing Mode</div>
+                    <div class="feature-title">⏱️ Return to the Action</div>
                     <div class="feature-description">
-                        New competitive mode exclusive to the VRChat version! Challenge friends to see who can get through stages faster with real-time racing.
+                        Trial stages let you revisit action stages without advancing the story. Practice a section, explore another route or return to a favorite setting.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">🔍 Hidden Secrets</div>
+                    <div class="feature-title">🛠️ In Development</div>
                     <div class="feature-description">
-                        Discover new secrets and Easter eggs not found in the original game, specially created for the VRChat community.
+                        Other campaigns, exact boss choreography, transport animations and special-stage polish remain in progress. The published world may be behind the development version described here.
                     </div>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-title">🎵 Original Audio</div>
+                    <div class="feature-title">🎵 Familiar Sounds</div>
                     <div class="feature-description">
-                        Classic Sonic Adventure soundtrack and sound effects integrated into the VRChat experience with full audio control.
+                        Sonic Adventure music and sound effects accompany the project. The page’s original music and sound sliders remain available after pressing Start.
                     </div>
                 </div>
             </div>
         </div>
 
+        <section class="development-gallery" id="developmentGallery" aria-labelledby="galleryTitle">
+            <h2 class="features-title" id="galleryTitle">📸 A Look at the Adventure</h2>
+            <p class="gallery-intro">Actual development captures from the VRChat project. Select a picture to take a closer look.</p>
+            <div class="development-grid">
+                <figure><a href="portfolio-media/sonic/coast.webp" data-gallery="Emerald Coast — opening coastline"><img loading="lazy" src="portfolio-media/sonic/coast.webp" width="1600" height="1000" alt="Emerald Coast’s palm-lined island paths and blue water"></a><figcaption>Emerald Coast<br>The opening coastline.</figcaption></figure>
+                <figure><a href="portfolio-media/sonic/piers.webp" data-gallery="Emerald Coast — along the waterfront"><img loading="lazy" src="portfolio-media/sonic/piers.webp" width="1600" height="1000" alt="Emerald Coast piers and rock formations over the ocean"></a><figcaption>Along the Waterfront<br>Routes through familiar scenery.</figcaption></figure>
+                <figure><a href="portfolio-media/sonic/chaos.webp" data-gallery="Chaos 0 — City Hall"><img loading="lazy" src="portfolio-media/sonic/chaos.webp" width="1600" height="1000" alt="Chaos 0 standing in front of City Hall"></a><figcaption>A Familiar Encounter<br>Chaos 0 at City Hall.</figcaption></figure>
+            </div>
+            <p class="development-note">October 2026 development captures. Presentation is still evolving; these images are not headset performance demonstrations.</p>
+        </section>
+
         <div class="footer">
             <p>Sonic Adventure VR - A VRChat Fan Project</p>
-            <p>Made with ❤️ for the Sonic community</p>
+            <p>Created by NullxVoid · Made with ❤️ for the Sonic community</p>
+            <p class="credits">Updated November 3, 2026. Unofficial fan project. Sonic the Hedgehog, Sonic Adventure and original game material belong to SEGA and their respective creators. Not affiliated with or endorsed by SEGA.</p>
+            <p class="credits"><a href="index.html">← Back to the project hub</a></p>
         </div>
     </div>
 
@@ -963,43 +1006,43 @@
                 name: "SONIC",
                 subtitle: "THE HEDGEHOG",
                 image: "Art Folder/SonicM.png",
-                preview: "Art Folder/CharacterPreview1.mp4",
-                description: "The fastest hedgehog alive! Experience completely rebuilt physics and movement systems designed from the ground up for VRChat. Run at supersonic speeds through loops, corkscrews, and vertical walls with authentic momentum-based gameplay."
+                status: "Main campaign focus · Still in development",
+                description: "The fastest hedgehog alive! Sonic’s story route connects Adventure Fields, action stages, boss encounters and the ending. Movement, special sequences and presentation continue to be refined for VRChat."
             },
             tails: {
                 name: "TAILS",
                 subtitle: "MILES PROWER",
                 image: "Art Folder/TailsM.png",
-                preview: "Art Folder/CharacterPreview2.mp4",
-                description: "Sonic's loyal sidekick with the power of flight! Use your twin tails to reach high platforms and discover hidden areas. Features a custom cutscene room themed around Tails' workshop with warm orange colors and mechanical details."
+                status: "Character foundation · Campaign in development",
+                description: "Sonic’s loyal sidekick brings flight-focused movement to the character roster. Tails’ movement foundation is present, while his complete story campaign is still in development."
             },
             knuckles: {
                 name: "KNUCKLES",
                 subtitle: "THE ECHIDNA",
                 image: "Art Folder/KnucklesM.png",
-                preview: "Art Folder/CharacterPreview3.mp4",
-                description: "The guardian of Angel Island! Glide through the air and climb walls to find hidden Master Emerald shards. Includes VRChat-exclusive treasure hunting features with location tracking for other players and hidden secrets not found in the original game."
+                status: "Character foundation · Campaign in development",
+                description: "The guardian of Angel Island brings gliding and climbing to the adventure. His character foundation is implemented; his full campaign and stage coverage remain in progress."
             },
             amy: {
                 name: "AMY",
                 subtitle: "ROSE",
                 image: "Art Folder/AmyM.png",
-                preview: "Art Folder/CharacterPreview4.mp4",
-                description: "Armed with her trusty Piko Piko Hammer! Smash through obstacles and enemies while chasing after Sonic. Features a pink-themed cutscene room matching her bubbly personality and new VRChat-specific interactions."
+                status: "Character foundation · Campaign in development",
+                description: "Amy and her Piko Piko Hammer are part of the character roster. Her character foundation is present, while her full story and encounter flow are still being built out."
             },
             big: {
                 name: "BIG",
                 subtitle: "THE CAT",
                 image: "Art Folder/BigM.png",
-                preview: "Art Folder/CharacterPreview5.mp4",
-                description: "Take a relaxing break with enhanced fishing gameplay! Cast your line in various locations with improved VRChat mechanics. Includes a tranquil blue-green themed cutscene room perfect for Big's peaceful nature."
+                status: "Character foundation · Campaign in development",
+                description: "A slower change of pace with Big the Cat. His character foundation is part of the project; a complete fishing adventure is not yet a finished campaign."
             },
             gamma: {
                 name: "E-102 γ",
                 subtitle: "GAMMA",
                 image: "Art Folder/GammaM.png",
-                preview: "Art Folder/CharacterPreview6.mp4",
-                description: "Dr. Eggman's robot with a mission! Features rebuilt targeting and combat systems optimized for VRChat. Experience a high-tech cutscene room with metallic themes reflecting Gamma's robotic nature."
+                status: "Character foundation · Campaign in development",
+                description: "E-102 Gamma brings a different perspective to the cast. His character foundation is present, with full campaign progression and stage-specific tuning still in development."
             }
         };
 
@@ -1007,20 +1050,16 @@
 
         function createCharacterWheel() {
             const wheel = document.getElementById('characterWheel');
-            const radius = 130; // Adjusted for smaller wheel
-            const centerX = 175; // Half of container width (350/2)
-            const centerY = 175; // Half of container height (350/2)
+            wheel.replaceChildren();
 
             characterOrder.forEach((character, index) => {
-                const angle = (index * 60) * (Math.PI / 180); // 60 degrees between each character
-                const x = centerX + radius * Math.cos(angle) - 35; // -35 to center the orb (70/2)
-                const y = centerY + radius * Math.sin(angle) - 35; // -35 to center the orb (70/2)
-
                 const orb = document.createElement('div');
                 orb.className = 'character-orb' + (character === 'sonic' ? ' selected' : '');
                 orb.setAttribute('data-character', character);
-                orb.style.left = x + 'px';
-                orb.style.top = y + 'px';
+                orb.setAttribute('role', 'button');
+                orb.tabIndex = 0;
+                orb.setAttribute('aria-label', characters[character].name);
+                orb.setAttribute('aria-pressed', String(character === 'sonic'));
 
                 const text = document.createElement('div');
                 text.className = 'orb-text';
@@ -1034,6 +1073,8 @@
                     selectCharacter(character, orb);
                 });
                 
+                orb.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); selectCharacter(character, orb); } });
+
                 // Add touch support for mobile
                 orb.addEventListener('touchstart', function(e) {
                     e.preventDefault(); // Prevent scroll on touch
@@ -1044,13 +1085,28 @@
                     selectCharacter(character, orb);
                 });
             });
+            positionCharacterOrbs();
         }
+
+        function positionCharacterOrbs() {
+            const wheel = document.getElementById('characterWheel');
+            const width = wheel.clientWidth, height = wheel.clientHeight;
+            wheel.querySelectorAll('.character-orb').forEach((orb, index) => {
+                const size = orb.offsetWidth;
+                const radius = Math.min(width, height) / 2 - size / 2 - 10;
+                const angle = index * Math.PI / 3;
+                orb.style.left = (width / 2 + radius * Math.cos(angle) - size / 2) + 'px';
+                orb.style.top = (height / 2 + radius * Math.sin(angle) - size / 2) + 'px';
+            });
+        }
+        window.addEventListener('resize', positionCharacterOrbs);
 
         function selectCharacter(character, orbElement) {
             // Remove selected class from all orbs
-            document.querySelectorAll('.character-orb').forEach(o => o.classList.remove('selected'));
+            document.querySelectorAll('.character-orb').forEach(o => { o.classList.remove('selected'); o.setAttribute('aria-pressed', 'false'); });
             // Add selected class to clicked orb
             orbElement.classList.add('selected');
+            orbElement.setAttribute('aria-pressed', 'true');
             
             // Update center image
             const centerImage = document.getElementById('centerPortrait');
@@ -1079,23 +1135,23 @@
             if (character) {
                 document.getElementById('characterName').textContent = character.name;
                 document.getElementById('characterSubtitle').textContent = character.subtitle;
-                document.getElementById('characterPreview').querySelector('source').src = character.preview;
-                document.getElementById('characterPreview').load(); // Reload video to apply new source
+                document.getElementById('characterState').textContent = character.status;
                 document.getElementById('characterDescription').textContent = character.description;
             }
         }
 
+        let siteEntered = false;
         function enterSite() {
+            if (siteEntered) return;
+            siteEntered = true;
             playClickSound();
+            startBackgroundMusic();
             document.getElementById('enterScreen').classList.add('hidden');
             setTimeout(() => {
                 document.getElementById('mainContainer').classList.add('active');
                 document.getElementById('audioControls').classList.add('active');
                 
-                // Start background music
-                setTimeout(() => {
-                    startBackgroundMusic();
-                }, 500);
+                positionCharacterOrbs();
             }, 500);
         }
 
@@ -1139,41 +1195,45 @@
         }
 
         function handleSectionContent(section) {
-            // Handle different sections
             switch(section) {
                 case 'adventure':
-                    showModal('Adventure Mode', 'Experience the full Sonic Adventure story rebuilt from the ground up for VRChat!<br><br><strong>Current Demo Features:</strong><br>• Complete Sonic\'s story campaign<br>• Authentic physics and movement systems<br>• Character-specific themed cutscene rooms<br>• VRChat-enhanced multiplayer experience<br><br><strong>Coming Soon:</strong><br>• All character stories<br>• Hidden secrets not in the original game<br>• Enhanced VR interactions');
+                    showModal("Adventure Mode", "<p>Follow Sonic\u2019s adventure through Station Square, Mystic Ruins and the Egg Carrier, linking familiar action stages with hub travel and boss encounters.</p><p><strong>Current development:</strong> Sonic\u2019s route is connected through the finale and credits. Some short story beats use explicit transition cards while presentation is completed.</p><p><strong>Still ahead:</strong> the other five campaigns, exact encounter choreography, transport animations and a full hands-on desktop/headset playthrough.</p>");
                     break;
                 case 'trial':
-                    showModal('Trial Mode', 'Time attack races and speedrun challenges rebuilt for VRChat!<br><br><strong>Features:</strong><br>• Speed Highway Time Trials<br>• Ring Collection Challenges<br>• Boss Rush Mode<br>• New Versus Racing Mode - challenge friends!<br>• Leaderboards and Best Times<br>• Location tracking for competitive play');
+                    showModal("Trial Mode", "<p>Revisit the action without advancing your story. Trial acts are connected in the development build so you can return to familiar stages, explore their routes and practice.</p><p>Stage-specific movement and special sequences are still being refined. Competitive leaderboards, a finished boss rush and a complete mission campaign are not being advertised as finished features.</p>");
                     break;
                 case 'mission':
-                    showModal('Mission Mode', 'Complete objectives with VRChat-exclusive features!<br><br><strong>Mission Types:</strong><br>• Find all Chao locations<br>• Collect Chaos Emeralds<br>• Character-specific challenges<br>• Hidden emblem hunting<br>• Achievement unlocks<br><br><strong>VRChat Exclusive:</strong><br>• Player location tracking for goals<br>• Cooperative mission completion<br>• New secrets and Easter eggs');
-                    break;
-                case 'features':
-                    document.getElementById('featuresSection').scrollIntoView({ behavior: 'smooth' });
+                    showModal("Latest Development", "<p><strong>October 28, 2026 \u2014 Stage playability:</strong> Twinkle Park\u2019s kart loops and steering received a pass. Speed Highway gained surface guidance and enemy behavior repairs.</p><p><strong>October 27, 2026 \u2014 Sonic story continuity:</strong> hub travel, story transitions, boss encounters, finale and credits are joined in the development version.</p><p><strong>Next:</strong> more campaign content, special-stage fidelity, boss choreography and hands-on playtesting. The public upload may be behind these changes.</p>");
                     break;
                 case 'download':
-                    showModal('Play the Demo Now!', 'Ready to experience Sonic Adventure in VR?<br><br><strong>VRChat World:</strong> Sonic Adventure VRDX<br><br><strong>Current Status:</strong> DEMO<br>Contains Sonic\'s complete story<br><br><strong>Requirements:</strong><br>• VRChat (Free on Steam)<br>• VR Headset or Desktop<br>• Good internet connection<br><br><strong>What\'s Included:</strong><br>• All of Sonic\'s levels and story<br>• Rebuilt mechanics for VRChat<br>• Character-themed cutscene rooms<br>• Versus racing mode<br><br>Click below to join the world in VRChat!', true);
+                    showModal("Visit Sonic Adventure VRDX", "<p>The project has a VRChat world page. Use the link below to find its published version.</p><p><strong>Development status:</strong> Sonic\u2019s connected route is the current focus; the other campaigns and overall polish remain in progress.</p><p>The public upload may be older than the development screenshots and updates on this page. Desktop and VR controls are part of the project; this is not a finished-release announcement.</p>", true);
                     break;
                 case 'about':
-                    showModal('About the Project', 'Sonic Adventure VR is a fan-made remake built entirely in VRChat using UdonSharp.<br><br><strong>Rebuilt Systems:</strong><br>• All physics and mechanics recreated from scratch<br>• Custom cutscene rooms for each character<br>• Enhanced for VRChat\'s multiplayer environment<br><br><strong>VRChat Exclusive Features:</strong><br>• Player location tracking<br>• Versus racing mode<br>• New secrets not in original game<br>• Character-themed environments<br><br><strong>Current Status:</strong><br>DEMO with full Sonic story<br>Full game coming soon!<br><br><strong>Development Team:</strong><br>Solo Dev: NullxVoid, built with passion and love');
+                    showModal("About the Project", "<p><strong>Created by NullxVoid.</strong> A fan-made Sonic Adventure adaptation built for VRChat, preserving the familiar characters, scenery and music while rebuilding gameplay for desktop and VR.</p><p>Sonic is currently the most developed campaign. Six character foundations are present, but that does not mean all six stories are complete.</p><p>This is an unofficial fan project, not affiliated with or endorsed by SEGA. Original Sonic Adventure material belongs to its respective creators.</p>");
+                    break;
+                case 'features':
+                    document.getElementById('featuresSection').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
                     break;
             }
         }
 
+        let modalReturnFocus = null;
         function showModal(title, content, showPlayNowButton = false) {
+            modalReturnFocus = document.activeElement;
             // Create modal if it doesn't exist
             let modal = document.getElementById('gameModal');
             if (!modal) {
                 modal = document.createElement('div');
                 modal.id = 'gameModal';
+                modal.setAttribute('role', 'dialog');
+                modal.setAttribute('aria-modal', 'true');
+                modal.setAttribute('aria-labelledby', 'modalTitle');
                 modal.innerHTML = `
                     <div class="modal-overlay">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h2 id="modalTitle"></h2>
-                                <button class="modal-close">×</button>
+                                <button class="modal-close" aria-label="Close">×</button>
                             </div>
                             <div class="modal-body" id="modalBody"></div>
                         </div>
@@ -1199,9 +1259,10 @@
             // Add Play Now button for download section if requested
             if (showPlayNowButton) {
                 const playNowButton = document.createElement('a');
-                playNowButton.href = "https://vrchat.com/home/launch?worldId=wrld_8b6e89bd-e408-4e16-92c2-e1dd02f4e3df&instanceId=91887~hidden(usr_3ee6153f-12f9-4bcf-bb27-80f7c2d50be6)~region(us)~nonce(d69c479d-32e0-464f-838e-3e7646346e22)";
+                playNowButton.href = "https://vrchat.com/home/world/wrld_8b6e89bd-e408-4e16-92c2-e1dd02f4e3df";
                 playNowButton.className = 'modal-play-now-button';
-                playNowButton.textContent = 'PLAY NOW';
+                playNowButton.textContent = 'VIEW ON VRCHAT';
+                playNowButton.rel = 'noopener noreferrer';
                 playNowButton.target = '_blank'; // Open in new tab
                 playNowButton.addEventListener('click', playClickSound); // Play click sound
                 modalBody.appendChild(playNowButton);
@@ -1209,12 +1270,16 @@
 
             document.getElementById('modalTitle').textContent = title;
             modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            modal.querySelector('.modal-close').focus();
         }
 
         function closeModal() {
             const modal = document.getElementById('gameModal');
             if (modal) {
                 modal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (modalReturnFocus && modalReturnFocus.isConnected) modalReturnFocus.focus();
                 // Ensure buttons are re-enabled
                 document.querySelectorAll('.menu-button').forEach(button => {
                     button.style.pointerEvents = 'auto';
@@ -1276,8 +1341,14 @@
                 
                 // Make buttons focusable
                 button.setAttribute('tabindex', '0');
+                button.setAttribute('role', 'button');
             });
             
+            document.querySelectorAll('[data-gallery]').forEach(link => link.addEventListener('click', event => {
+                event.preventDefault();
+                showModal(link.dataset.gallery, '<img src="' + link.getAttribute('href') + '" alt="' + link.querySelector('img').alt + '"><p>Actual development capture · October 2026.</p>');
+            }));
+
             // Enable audio on first user interaction
             document.addEventListener('click', function enableAudio() {
                 const bgMusic = document.getElementById('backgroundMusic');
@@ -1289,20 +1360,19 @@
             }, { once: true });
         });
 
-        // Keyboard controls
+        // Enter starts the page; normal control keys keep their native behavior afterward.
         document.addEventListener('keydown', function(event) {
-            if (event.code === 'Space' || event.code === 'Enter') {
-                event.preventDefault();
-                const enterScreen = document.getElementById('enterScreen');
-                if (enterScreen && !enterScreen.classList.contains('hidden')) {
-                    enterSite();
-                } else {
-                    // Close modal if open
-                    closeModal();
-                }
-            } else if (event.code === 'Escape') {
-                event.preventDefault();
-                closeModal();
+            if (!siteEntered && (event.code === 'Space' || event.code === 'Enter')) {
+                event.preventDefault(); enterSite(); return;
+            }
+            const modal = document.getElementById('gameModal');
+            if (!modal || !modal.classList.contains('active')) return;
+            if (event.key === 'Escape') { event.preventDefault(); closeModal(); }
+            if (event.key === 'Tab') {
+                const items = modal.querySelectorAll('button, a[href], input, [tabindex="0"]');
+                const first = items[0], last = items[items.length - 1];
+                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
             }
         });
     </script>

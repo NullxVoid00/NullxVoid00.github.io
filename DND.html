@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -2095,6 +2095,10 @@
             margin-top: 5px;
         }
     </style>
+<style id="dnd-responsive-repair">
+.tab-container{overflow-x:auto;min-width:0;scrollbar-width:thin}.tab{flex:0 0 auto;white-space:nowrap}.game-board{min-width:0}.mobile-tools-toggle{display:none}.modal-overlay{padding:12px}.creation-modal{max-width:100%;max-height:90dvh;overflow:auto}
+@media(max-width:800px){.mobile-tools-toggle{display:block;order:-1;position:sticky;left:0;z-index:2;background:#202137}.tab-container{padding:0 8px}.tab{padding:12px 16px}.combat-container>.sidebar{display:none;position:absolute;top:50px;bottom:0;left:0;width:min(320px,100vw);z-index:90}.mobile-tools-open .combat-container>.sidebar{display:block}.expandable-library-sidebar{max-width:94vw}.details-panel{max-width:94vw}.action-display{max-width:calc(100vw - 24px)}.tab-content:not(#combat-tab){overflow:auto}}
+</style>
 </head>
 <body>
     <!-- Tab Navigation -->
@@ -2106,15 +2110,18 @@
         <button class="tab" onclick="switchTab(event, 'import-export')">📁 Import/Export</button>
         <button class="tab" onclick="switchTab(event, 'customization')">🎨 Customization</button>
         <button class="tab" onclick="openConversationManager()">💬 Conversation Manager</button>
+        <button class="tab" onclick="window.open('DND NPC Conversation Manager.html', '_blank', 'noopener')">🎭 Character Dialogue</button>
+        <button class="tab mobile-tools-toggle" onclick="document.body.classList.toggle('mobile-tools-open'); this.setAttribute('aria-expanded', String(document.body.classList.contains('mobile-tools-open')));" aria-expanded="false" aria-controls="combatTools">⚙️ Board Tools</button>
     </div>
   
     <!-- Combat Board Tab -->
     <div id="combat-tab" class="tab-content active">
         <div class="combat-container">
             <!-- Sidebar -->
-            <div class="sidebar">
+            <div class="sidebar" id="combatTools">
                 <h2><img src="" id="combatHeaderLogo" style="max-width: 400px; max-height: 160px; display: none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span id="combatHeaderText" style="display: block;">⚔️ Combat Control</span></h2>
 
+                <p style="font-size:12px;color:#aaaabd;line-height:1.5;margin:10px 0 16px">A local browser tabletop tool. Save Game keeps this board in this browser; Import/Export backs up your reusable library. This does not control a VRChat world.</p>
                 <!-- Quick Add Section -->
                 <div class="section">
                     <div class="section-title">Quick Add</div>
@@ -3353,11 +3360,24 @@
                     setTimeout(() => this.setHeaderLogo(savedLogo), 100);
                 }
             },
+            readStoredJSON(key, fallback) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return fallback;
+                    const value = JSON.parse(raw);
+                    if (Array.isArray(fallback)) return Array.isArray(value) ? value : fallback;
+                    return value && typeof value === 'object' && !Array.isArray(value) ? value : fallback;
+                } catch (_) {
+                    console.warn('Could not read saved preference: ' + key + '. Existing data was kept.');
+                    return fallback;
+                }
+            },
+
             // Quick Slots Management
             loadQuickSlots() {
                 const saved = localStorage.getItem('dndQuickSlots');
                 if (saved) {
-                    this.quickSlots = JSON.parse(saved);
+                    this.quickSlots = this.readStoredJSON('dndQuickSlots', []);
                 } else {
                     // Default quick slots
                     this.quickSlots = [
@@ -3548,6 +3568,7 @@
                         display.parentNode.removeChild(display);
                     }
                 }, 4000);
+            },
 
             // Turn-management variant of showActionDisplay.
             // Waits for any active combat notification to expire before showing,
@@ -3561,8 +3582,6 @@
                     this.showActionDisplay(type, title, description, details);
                 }
             },
-
-            },
           
             // Enhanced Add NPC function (renamed from addNPCToken)
             addNPC() {
@@ -3572,6 +3591,7 @@
                 // Create modal for class and race selection
                 const modal = document.createElement('div');
                 modal.className = 'modal-overlay';
+                modal.dataset.entityName = name;
                 modal.innerHTML = `
                     <div class="creation-modal">
                         <h2>🤖 Create NPC</h2>
@@ -3638,7 +3658,7 @@
                       
                         <div class="modal-buttons">
                             <button class="btn btn-danger" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-                            <button class="btn btn-success" onclick="game.createNPCFromModal('${name}')">Create NPC</button>
+                            <button class="btn btn-success" onclick="game.createNPCFromModal(this.closest('.modal-overlay').dataset.entityName)">Create NPC</button>
                         </div>
                     </div>
                 `;
@@ -5662,7 +5682,7 @@
             loadSounds() {
                 const saved = localStorage.getItem('dndSounds');
                 if (saved) {
-                    this.sounds = JSON.parse(saved);
+                    this.sounds = this.readStoredJSON('dndSounds', this.sounds);
                     Object.keys(this.sounds).forEach(type => {
                         const element = document.getElementById(`sound${type.charAt(0).toUpperCase() + type.slice(1)}`);
                         if (element) {
@@ -7507,6 +7527,7 @@
                 // Create modal for class and race selection
                 const modal = document.createElement('div');
                 modal.className = 'modal-overlay';
+                modal.dataset.entityName = name;
                 modal.innerHTML = `
                     <div class="creation-modal">
                         <h2>🛡️ Create Player Character</h2>
@@ -7585,7 +7606,7 @@
                       
                         <div class="modal-buttons">
                             <button class="btn btn-danger" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-                            <button class="btn btn-success" onclick="game.createPlayerFromModal('${name}')">Create Character</button>
+                            <button class="btn btn-success" onclick="game.createPlayerFromModal(this.closest('.modal-overlay').dataset.entityName)">Create Character</button>
                         </div>
                     </div>
                 `;
@@ -7887,7 +7908,7 @@
             loadSavedBackgrounds() {
                 const saved = localStorage.getItem('dndBackgrounds');
                 if (saved) {
-                    this.savedBackgrounds = JSON.parse(saved);
+                    this.savedBackgrounds = this.readStoredJSON('dndBackgrounds', []);
                     this.updateBackgroundList();
                 }
             },
@@ -8010,6 +8031,7 @@
                 if (saved) {
                     try {
                         const state = JSON.parse(saved);
+                        if (!state || !Array.isArray(state.entities)) throw new Error('Saved board has no entity list');
                         this.entities = state.entities || [];
                         this.currentTurn = state.currentTurn || 0;
                         this.turnOrder = state.turnOrder || [];
@@ -8072,11 +8094,12 @@
                     if (!importField) return;
                   
                     const data = JSON.parse(importField.value);
+                    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Expected a library object');
                   
                     // Merge libraries with backward compatibility
                     ['monsters', 'spells', 'items', 'equipment', 'players', 'sfx'].forEach(key => {
                         if (data[key] && Array.isArray(data[key])) {
-                            data[key].forEach(newItem => {
+                            data[key].filter(item => item && typeof item === 'object' && typeof item.name === 'string' && item.name.trim()).forEach(newItem => {
                                 // Add missing fields
                                 if (key === 'monsters' || key === 'players') {
                                     newItem.baseActions = newItem.baseActions || [...this.baseCombatActions];
@@ -8115,8 +8138,8 @@
                         const data = JSON.parse(saved);
                         // Merge with existing library
                         Object.keys(data).forEach(key => {
-                            if (Array.isArray(data[key])) {
-                                data[key].forEach(item => {
+                            if (Array.isArray(data[key]) && Array.isArray(this.library[key])) {
+                                data[key].filter(item => item && typeof item === 'object' && typeof item.name === 'string' && item.name.trim()).forEach(item => {
                                     if (!this.library[key].some(existing => existing.name === item.name)) {
                                         this.library[key].push(item);
                                     }
@@ -8742,7 +8765,7 @@
             loadCustomFonts() {
                 const savedFonts = localStorage.getItem('dndCustomFonts');
                 if (savedFonts) {
-                    const fonts = JSON.parse(savedFonts);
+                    const fonts = this.readStoredJSON('dndCustomFonts', []);
                     fonts.forEach(font => {
                         const style = document.createElement('style');
                         style.textContent = `@font-face { font-family: '${font.name}'; src: url('${font.url}') format('opentype'); }`;
@@ -8756,7 +8779,7 @@
                 const container = document.getElementById('fontDropdownContainer');
                 if (!container) return;
 
-                const savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                const savedFonts = this.readStoredJSON('dndCustomFonts', []);
                 const currentFont = localStorage.getItem('dndUIFont') || "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
                 let html = `
@@ -8881,7 +8904,7 @@
                             style.textContent = `@font-face { font-family: '${name}'; src: url('${fontUrl}') format('opentype'); }`;
                             document.head.appendChild(style);
                             this.setUIFont(`'${name}', sans-serif`);
-                            let savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                            let savedFonts = this.readStoredJSON('dndCustomFonts', []);
                             savedFonts.push({ name, url: fontUrl });
                             localStorage.setItem('dndCustomFonts', JSON.stringify(savedFonts));
                             this.buildFontDropdown();
@@ -8892,7 +8915,7 @@
             },
 
             removeCustomFont(index) {
-                let savedFonts = JSON.parse(localStorage.getItem('dndCustomFonts') || '[]');
+                let savedFonts = this.readStoredJSON('dndCustomFonts', []);
                 const fontName = savedFonts[index].name;
                 if (confirm(`Remove ${fontName}?`)) {
                     savedFonts.splice(index, 1);
@@ -9037,7 +9060,7 @@
             if (tabName === 'media') game.updateMediaLists();
         }
         function openConversationManager() {
-            window.open("DND Conversation Manager.html", "_blank");
+            window.open("DND Conversation Manager.html", "_blank", "noopener");
         }
       
         // Initialize the game when DOM is loaded

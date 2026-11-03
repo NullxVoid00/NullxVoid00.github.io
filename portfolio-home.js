@@ -1,0 +1,4 @@
+(()=>{'use strict';
+document.querySelectorAll('.nav-section').forEach(card=>{card.tabIndex=0;card.setAttribute('role','button');card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();card.click()}})});
+document.querySelectorAll('#gamesSection .section-header,#vrchatSection .section-header,#otherSection .section-header').forEach(header=>{const p=document.createElement('p');p.className='estimate-note';p.textContent='Percentages estimate overall project scope, not release readiness. Updated projects reviewed November 2026.';header.append(p)});
+})();

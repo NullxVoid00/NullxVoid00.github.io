@@ -1,0 +1,1 @@
+(()=>{'use strict';document.querySelectorAll('audio').forEach(audio=>{if(!audio.getAttribute('src')&&!audio.querySelector('source[src]')){audio.removeAttribute('autoplay');audio.removeAttribute('controls');audio.hidden=true}});document.querySelectorAll('a[target="_blank"]').forEach(a=>a.rel='noopener noreferrer');})();

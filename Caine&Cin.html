@@ -496,7 +496,7 @@
             }
         }
     </style>
-</head>
+<link rel="stylesheet" href="portfolio-repairs.css"></head>
 <body>
     <!-- Progress Bar -->
     <div class="progress-bar">
@@ -504,20 +504,20 @@
     </div>
 
     <!-- Volume Control -->
-    <div class="volume-control">
+    <div class="volume-control" hidden>
         <button class="volume-btn" id="muteBtn">🔊</button>
         <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="30">
     </div>
 
     <!-- Audio Elements -->
     <audio id="hellMusic" loop preload="auto">
-        <source src="hell-theme.mp3" type="audio/mpeg">
+
     </audio>
     <audio id="purgatoryMusic" loop preload="auto">
-        <source src="purgatory-theme.mp3" type="audio/mpeg">
+
     </audio>
     <audio id="heavenMusic" loop preload="auto">
-        <source src="heaven-theme.mp3" type="audio/mpeg">
+
     </audio>
 
     <!-- Title Section -->
@@ -934,7 +934,7 @@
 
         function fadeIn(audio) {
             audio.volume = 0;
-            audio.play().catch(e => console.log('Audio play failed:', e));
+            if (audio.querySelector('source[src]')) audio.play().catch(() => {});
             const targetVolume = volumeSlider.value / 100;
             const fadeInterval = setInterval(() => {
                 if (audio.volume < (targetVolume - 0.05)) {
@@ -1036,5 +1036,5 @@
             }
         });
     </script>
-</body>
+<a class="portfolio-home-link" href="index.html" aria-label="Return to Abyssal Light Games portfolio">← Portfolio</a><script src="portfolio-repairs.js"></script></body>
 </html>

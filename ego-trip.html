@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="EGO/TRIP by NullxVoid: explore its characters, evolving weapons, Remnants, domains and Mender’s Haven. Current player information and development updates."><link rel="canonical" href="https://nullxvoid00.github.io/ego-trip.html">
     <title>EGO/TRIP - Journey Through the Red Shard</title>
     <style>
         * {
@@ -1117,16 +1117,16 @@
             }
         }
     </style>
-</head>
+<link rel="stylesheet" href="ego-trip.css"><script src="ego-trip.js" defer></script></head>
 <body>
     <!-- Background Audio -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="none">
         <source src="audio/ego-trip-bgm.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <!-- Music Visualizer Orb -->
-    <div class="music-visualizer" id="musicVisualizer">
+    <div class="music-visualizer muted" id="musicVisualizer" role="button" tabindex="0" aria-label="Toggle music; drag to adjust volume">
         <canvas id="visualizerCanvas"></canvas>
         <span class="music-icon">🔇</span>
         <div class="volume-ring">
@@ -1149,10 +1149,10 @@
         <ul>
             <li><button onclick="showSection('home')" class="active">HOME</button></li>
             <li><button onclick="showSection('characters')">FRAGMENTS</button></li>
-            <li><button onclick="showSection('bosses')">BOSSES</button></li>
+            <li><button onclick="showSection('bosses')">DOMAINS</button></li>
             <li><button onclick="showSection('mechanics')">MECHANICS</button></li>
             <li><button onclick="showSection('notes')">NOTES</button></li>
-            <li><button onclick="showSection('spoilers')">SECRETS</button></li>
+            <li><button onclick="showSection('haven')">HAVEN</button></li><li><button onclick="showSection('updates')">UPDATES</button></li>
         </ul>
     </nav>
 
@@ -1162,569 +1162,30 @@
             <img src="Art Folder/EgoTrip.png" alt="EGO/TRIP Logo" class="hero-logo" onerror="this.style.display='none'">
             <h1 style="display: none;">EGO/TRIP</h1>
             <p class="subtitle">VRChat Roguelite Journey Through the Red Shard</p>
-            <div class="floating-crystal" id="floatingCrystal"></div>
-            <div class="video-player" id="videoPlayer">
-                <video id="crystalVideo" playsinline>
+            <div class="floating-crystal" id="floatingCrystal" role="button" tabindex="0" aria-label="Play the Ego/Trip opening"></div><p class="crystal-hint">Touch the crystal to watch the opening.</p>
+
+            <p style="font-size: 1.2rem; opacity: 0.9; max-width: 800px; line-height: 1.6;">
+                Within the crimson crystal lies a space between consciousness and dream. As Null awakens alongside shadowy echo-fragments, 
+                they must venture through an endless labyrinth where lost souls have built their own twisted domains. 
+                Face the corrupted, collect Remnants and discover what waits beyond Mender’s Haven.
+            </p>
+        </div>
+        
+<div class="section-content"><h2 class="section-title">WHAT IS EGO/TRIP?</h2><div class="info-card"><h3>One more room. One more chance.</h3><p>Choose an echo, explore a shifting labyrinth and build around the Remnants you find. Venture alone or with up to three friends. Each run brings new encounters, discoveries and a choice about when to bring your finds back to Mender’s Haven.</p></div><div class="features-grid"><div class="feature-item"><div class="feature-icon" aria-hidden="true">🎮</div><div><strong>Desktop & VR</strong><p>Solo or up to four players in VRChat. PC and standalone Quest builds are in development, with controls tailored to each platform.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🌀</div><div><strong>A changing labyrinth</strong><p>Combat, shops, rests, memories and optional activities break up the journey. Character-specific side paths reward curiosity without blocking the main route.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">⚔️</div><div><strong>Find your fighting style</strong><p>Knives, impact punches, a shotgun bat or a grappling scythe. Guard, parry, move and build around what feels right to you.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">📈</div><div><strong>Ten evolving levels</strong><p>Weapons gain new capabilities as you earn EXP. Damage can cost EXP and levels, so staying strong means staying sharp.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">💎</div><div><strong>Build with Remnants</strong><p>Equip discoveries that change how your actions work. Mix effects, store finds in the Haven and share physical loot with your party.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🍺</div><div><strong>A Haven worth returning to</strong><p>Furnish Mender’s bar, meet its patrons, collect library entries, take on arena cups and unlock new rooms.</p></div></div></div><div class="info-card update-callout"><strong>PLAYABLE ALPHA · ~70% OVERALL PROGRESS</strong><p>The final encounter, endings, balancing and release polish remain in development. Quest performance and live co-op are ongoing playtest priorities.</p><button class="trip-button" onclick="showSection('updates')">See the latest updates →</button></div></div></div><div id="characters" class="content-section"><div class="section-content"><h2 class="section-title">FRAGMENTS & ECHOES</h2><p class="section-intro">Four ways through the same labyrinth. Flip a card to meet your echo.</p><div class="character-grid"><div class="character-card null" role="button" tabindex="0" aria-label="Flip Null's character card" aria-pressed="false" onclick="flipCard(this)"><div class="character-card-inner"><div class="character-card-front"><h4>Null</h4><p><strong>Trench knives</strong></p><p class="character-skill">Feverdream</p><p class="character-description">Throw, recall and climb with your blades. Swap reverse and forward grips; Feverdream extends them into blood-red swords. Higher levels add embedded damage and a link between planted knives.</p><p class="flip-hint">Tap to reveal the echo ↻</p></div><div class="character-card-back"><img class="character-image" src="Art Folder/null-image.jpg" alt="Null original character artwork" loading="lazy"><p>Tap to flip back ↻</p></div></div></div><div class="character-card d-echo" role="button" tabindex="0" aria-label="Flip D_'s character card" aria-pressed="false" onclick="flipCard(this)"><div class="character-card-inner"><div class="character-card-front"><h4>D_</h4><p><strong>Impact punches</strong></p><p class="character-skill">Dissonance</p><p class="character-description">Stand your ground with a protective bubble and the party’s double jump. As you level, the shield develops healing and damaging pulses. Keep allies close when the pressure rises.</p><p class="flip-hint">Tap to reveal the echo ↻</p></div><div class="character-card-back"><img class="character-image" src="Art Folder/d-image.jpg" alt="D_ original character artwork" loading="lazy"><p>Tap to flip back ↻</p></div></div></div><div class="character-card m-echo" role="button" tabindex="0" aria-label="Flip M_'s character card" aria-pressed="false" onclick="flipCard(this)"><div class="character-card-inner"><div class="character-card-front"><h4>M_</h4><p><strong>Shotgun bat</strong></p><p class="character-skill">Midas Touch</p><p class="character-description">Move between heavy bat strikes and scattershot. Fire while airborne to boost in the opposite direction, with limited boosts before landing. Levels expand the shotgun and your attack combinations.</p><p class="flip-hint">Tap to reveal the echo ↻</p></div><div class="character-card-back"><img class="character-image" src="Art Folder/m-image.jpg" alt="M_ original character artwork" loading="lazy"><p>Tap to flip back ↻</p></div></div></div><div class="character-card l-echo" role="button" tabindex="0" aria-label="Flip L_'s character card" aria-pressed="false" onclick="flipCard(this)"><div class="character-card-inner"><div class="character-card-front"><h4>L_</h4><p><strong>Scythe & grapple</strong></p><p class="character-skill">Lovesick</p><p class="character-description">Hook scenery or enemies, move with an anchor and jump toward a nearby ledge. The scythe controls space; higher levels make grabbing enemies more dangerous for them.</p><p class="flip-hint">Tap to reveal the echo ↻</p></div><div class="character-card-back"><img class="character-image" src="Art Folder/l-image.jpg" alt="L_ original character artwork" loading="lazy"><p>Tap to flip back ↻</p></div></div></div></div><div class="info-card"><h3>Different inputs. The same adventure.</h3><p>Desktop uses authored strikes, aiming and movement assists; VR uses physical handling and deliberate swings. The in-world instructions panel shows the controls for your platform. Use VR grip calibration to fit your hands.</p></div><div class="info-card"><h3>MENDER</h3><p>Your bartender, shopkeeper and guide. Bring back discoveries, prepare for the next run and make room for the other souls who may eventually call the Haven home.</p></div></div></div><div id="bosses" class="content-section"><div class="section-content"><h2 class="section-title">DOMAINS & ENCOUNTERS</h2><p class="section-intro">Encounter previews, original artwork and real development captures. Each domain has its own atmosphere and challenges.</p><div class="boss-grid"><article class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/serpent.webp" class="boss-image" alt="THE SERPENT development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge THE SERPENT image">Enlarge ↗</button></div><div class="boss-content"><h3>THE SERPENT</h3><p><strong>Ink, accusation & dangerous heights</strong></p><p>Dusty archives and broken text give way to an ascent along a colossal spine. Break the knots, reach the head, then prepare for a more dangerous climb. Read the obstacles instead of rushing every opening.</p></div></article><article class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/garden.webp" class="boss-image" alt="THE QUEEN development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge THE QUEEN image">Enlarge ↗</button><button class="trip-button art-toggle" data-capture="portfolio-media/ego-trip/garden.webp" data-art="Art Folder/ETboss2.png" aria-pressed="false">View original art</button></div><div class="boss-content"><h3>THE QUEEN</h3><p><strong>A garden with a crown of thorns</strong></p><p>Courtyards, banquet spaces and towers lead to a giant whose arms become your route upward. Strike the attached head first; later, the detached head becomes a threat while the heart becomes your goal.</p></div></article><article class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/charade.webp" class="boss-image" alt="THE CHARADE development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge THE CHARADE image">Enlarge ↗</button><button class="trip-button art-toggle" data-capture="portfolio-media/ego-trip/charade.webp" data-art="Art Folder/ETboss3.gif" aria-pressed="false">View original art</button></div><div class="boss-content"><h3>THE CHARADE</h3><p><strong>Behind the performance</strong></p><p>Theater-like rooms and shifting moods lead into an immense hall. Follow the retreating figure, respond to the current mask and use the routes created by the encounter. Anger, sadness and happiness ask different things of you.</p></div></article><article class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/ocean.webp" class="boss-image" alt="THE MOON development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge THE MOON image">Enlarge ↗</button><button class="trip-button art-toggle" data-capture="portfolio-media/ego-trip/ocean.webp" data-art="Art Folder/ETboss4.jpg" aria-pressed="false">View original art</button></div><div class="boss-content"><h3>THE MOON</h3><p><strong>A beautiful, lonely night</strong></p><p>Wistful playrooms open onto an endless ocean. Stand on the water, watch its surface and read the hands, waves and sweeping light. When an opening appears, the arena is still dangerous.</p></div></article><article class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/self.webp" class="boss-image" alt="THE RED DEPTHS development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge THE RED DEPTHS image">Enlarge ↗</button></div><div class="boss-content"><h3>THE RED DEPTHS</h3><p><strong>The last stretch of the labyrinth</strong></p><p>Crimson geometry, black obelisks and signs of a desperate climb. Tougher enemy combinations, traps and vertical routes ask you to use everything you have learned. The final boss is still in development.</p></div></article></div></div></div><div id="mechanics" class="content-section"><div class="section-content"><h2 class="section-title">GAMEPLAY SYSTEMS</h2><div class="features-grid"><div class="feature-item"><div class="feature-icon" aria-hidden="true">⚔️</div><div><strong>Guard. Parry. Commit.</strong><p>Guard to soften a hit; time a parry to create an opening. Enemy support roles and elite variants make target choice matter.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">📊</div><div><strong>Level 1 → 10</strong><p>Earn EXP through combat. Higher levels require more EXP and expand your base weapon, while taking damage can bring you back down.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🎒</div><div><strong>Bring it home</strong><p>Satchel space is limited. Trade physical finds with friends, decide what to carry and bank them in the Haven.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">💎</div><div><strong>Four slots to start</strong><p>Each character starts with four Remnant compartments. Four main boss rewards expand that loadout; a final postgame modifier slot is planned.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🗺️</div><div><strong>Follow the party</strong><p>The leader chooses the next room. The map tracks explored rooms and party locations; loading transitions show your progress toward the next encounter.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">✦</div><div><strong>Bring a friend back</strong><p>A fallen teammate leaves a colored revive light. Reviving takes time and some of the rescuer’s health. Dead players can watch the party.</p></div></div></div><h3 class="subheading">TRY A FEW REMNANTS</h3><p class="section-intro">A small website loadout preview. Tap a Remnant to place or remove it and see what it changes. These are examples from the current game, not a save editor.</p><div class="remnant-workbench"><div id="remnantSlots" class="remnant-slots" aria-label="Example loadout"></div><div id="remnantChoices" class="remnant-choices"></div><div id="remnantDescription" class="info-card" aria-live="polite">Choose a Remnant to inspect it.</div><button id="expandSlots" class="trip-button" aria-pressed="false">Preview the four boss-earned slots</button></div><div class="info-card"><h3>Rest before you leave</h3><p>Rest checkpoints let you return to an in-progress run. Use the proper Haven door to bank discoveries; abandoning a run can lose unbanked items. The host owns the shared Haven save.</p></div></div></div><div id="notes" class="content-section"><div class="section-content"><h2 class="section-title">FRAGMENTS OF MEMORY</h2><p class="section-intro">Found notes, encountered enemies and discovered Remnants become part of your library. The in-world book presents them with pop-up scenes and miniature models.</p><div class="library-preview"><button id="openBook" class="book-cover" aria-expanded="false"><span>THE HAVEN ARCHIVE</span><span class="book-emblem">✦</span><small>Open the book</small></button><div class="open-book" id="openBookPages" hidden><div class="book-tabs" role="group" aria-label="Library preview section"><button class="trip-button active" data-book="notes" aria-pressed="true">Notes</button><button class="trip-button" data-book="enemies" aria-pressed="false">Bestiary</button><button class="trip-button" data-book="remnants" aria-pressed="false">Remnants</button></div><div class="book-spread"><div class="book-art"><img id="bookImage" src="portfolio-media/ego-trip/library.webp" alt="Library book development preview"></div><div class="book-copy" aria-live="polite"><small>LIBRARY PREVIEW</small><h3 id="bookTitle">Fragments of memory</h3><p id="bookText">Notes are discovered in rooms that resemble impressions of their stories. Entries you have not found remain unknown in the game. Discover their voices as you play.</p></div></div><button id="closeBook" class="trip-button">Close the book</button></div></div><div class="info-card"><h3>Stories worth finding</h3><p>The notes explore identity, grief, recognition, regret and the things people leave behind. The library replaces the old Haven notes board, keeping discoveries together without putting the whole story on this page.</p></div><div class="info-card"><h3>Part of something larger</h3><p>EGO/TRIP is its own VRChat roguelite and a prelude to Ego/Dive. You do not need to know that story to play. <a href="ego-dive.html">Discover Ego/Dive →</a></p></div></div></div><div id="haven" class="content-section"><div class="section-content"><h2 class="section-title">MENDER’S HAVEN</h2><div class="info-card"><h3>Make room for yourself</h3><p>Choose an echo, organize your Remnants and turn the bar into a place you want to return to. Furniture fits floors, walls, ceilings and tabletops; paint finishes become reusable after banking.</p></div><div class="features-grid"><div class="feature-item"><div class="feature-icon" aria-hidden="true">🛍️</div><div><strong>Discover → bank → buy</strong><p>Bring furnishings back from the labyrinth to add them to Mender’s stock. Ordinary pieces can be purchased repeatedly. Room doors are one-time unlocks.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🍺</div><div><strong>Attract new company</strong><p>Seating and specific decorations attract patrons. NPCs choose places around your furniture; some have stories or quests. Defeated bosses can join after you collect their notes.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">📖</div><div><strong>Build a collection</strong><p>Place a library door to browse found notes, enemy details and Remnants. The book is part of a room you can visit, not a wall of tiny text.</p></div></div><div class="feature-item"><div class="feature-icon" aria-hidden="true">🏆</div><div><strong>Take another challenge</strong><p>Arena cups offer themed gauntlets and exclusive rewards. An achievement room celebrates meaningful milestones, with more to unlock as you progress.</p></div></div></div><div class="boss-card"><div class="domain-media"><img src="portfolio-media/ego-trip/arena.webp" class="boss-image" alt="Arena development capture" loading="lazy" decoding="async"><button class="trip-button enlarge-domain" aria-label="Enlarge arena image">Enlarge ↗</button></div><div class="boss-content"><h3>THE ARENA</h3><p>Choose a cup, face its encounters and earn its unique reward. The crowd reacts to the fight. New cups and achievement-gated challenges give strong builds another place to shine.</p></div></div><div class="info-card"><h3>Something different between fights</h3><p>Optional Event Rooms include fishing, timed races, a Break Room full of things to smash and miniboss encounters. In co-op, some activities add friendly competition.</p></div></div></div><div id="updates" class="content-section"><div class="section-content"><h2 class="section-title">LATEST FROM THE SHARD</h2><div class="info-card"><h3>NOVEMBER 2026 · THE RED DEPTHS</h3><p>Twelve room families, eight enemy roles and eight modeled Remnants expand the final domain. Its red-and-black spaces use jagged routes, traps and coordinated enemy pressure. No final boss encounter yet.</p></div><div class="info-card"><h3>RECENT ADDITIONS</h3><p>More cinematic story rooms, Event Rooms, arena cups, achievements and Mender’s furniture shop give discoveries a life beyond the run. The Haven library now collects notes, enemies and Remnants.</p></div><div class="info-card"><h3>CURRENT PLAYTEST FOCUS</h3><p>Guest combat, shared loot and weapon visibility, reliable travel, VR grip comfort, balance and Quest performance remain active testing priorities. Implemented systems still need real player sessions to prove reliable.</p></div><div class="info-card progress-note"><h3>~70% · PLAYABLE ALPHA</h3><progress value="70" max="100" aria-label="Estimated overall project progress">70%</progress><p>A rough estimate of the complete project. The final encounter, endings and release polish remain. This is not a release date or a claim that every multiplayer or platform edge case is finished.</p></div><div class="info-card"><h3>PLAYING & FOLLOWING DEVELOPMENT</h3><p>A public world link will be added when ready to share. The game is being built for desktop and VR, including standalone Quest. The current in-world instructions remain the source for controls.</p><p>Created by NullxVoid. <a href="https://www.patreon.com/c/KalArts" target="_blank" rel="noopener noreferrer">Follow development on Patreon ↗</a></p></div></div></div>            <div class="video-player" id="videoPlayer">
+                <video id="crystalVideo" playsinline preload="none">
                     <source src="Art Folder/crystal-video.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
                 <button class="skip-video-btn" id="skipVideoBtn">Skip Video</button>
-            </div>
-            <p style="font-size: 1.2rem; opacity: 0.9; max-width: 800px; line-height: 1.6;">
-                Within the crimson crystal lies a space between consciousness and dream. As Null awakens alongside shadowy echo-fragments, 
-                they must venture through an endless labyrinth where lost souls have built their own twisted domains. 
-                Face the corrupted, collect remnants of emotion, and discover the truth hidden in Mender's Haven.
-            </p>
-        </div>
-        
-        <div class="section-content">
-            <h2 class="section-title">WHAT IS EGO/TRIP?</h2>
-            
-            <div class="info-card">
-                <h3 style="color: var(--neon-pink); margin-bottom: 1rem;">A VRChat Roguelite Experience</h3>
-                <p>After trauma shatters a psyche, fragments of the self find refuge in the Red Shard - a crystalline space between consciousness and dream. As Null, the hollow core, you awaken alongside three echo-fragments in this mysterious realm where lost souls have built twisted domains from their pain and obsessions.</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🎮</div>
-                    <div>
-                        <strong>VR Multiplayer</strong>
-                        <p>Up to 4 players in VRChat, each controlling unique fragments with distinct abilities and playstyles</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🌀</div>
-                    <div>
-                        <strong>Endless Labyrinth</strong>
-                        <p>Randomized rooms with combat, puzzles, story discoveries, and boss encounters</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⚔️</div>
-                    <div>
-                        <strong>Fast VR Combat</strong>
-                        <p>Strategic battles with character-specific weapons, abilities, and movement mechanics</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📈</div>
-                    <div>
-                        <strong>Risk/Reward Leveling</strong>
-                        <p>Gain levels during runs but lose them when damaged - max level 5 with powerful upgrades</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">💎</div>
-                    <div>
-                        <strong>Remnant System</strong>
-                        <p>Collect emotional fragments to permanently upgrade abilities across runs</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🍺</div>
-                    <div>
-                        <strong>Mender's Haven</strong>
-                        <p>Social hub bar with mysterious bartender, quests, storage, and defeated bosses as NPCs</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔄</div>
-                    <div>
-                        <strong>Multiple Endings</strong>
-                        <p>Seven different conclusions based on party composition and story notes collected</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📜</div>
-                    <div>
-                        <strong>Deep Lore</strong>
-                        <p>Discover the tragic backstories of bosses through scattered notes and environmental storytelling</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Characters Section -->
-    <div id="characters" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">FRAGMENTS & ECHOES</h2>
-            
-            <h3 style="text-align: center; margin-bottom: 2rem; color: var(--neon-blue);">Playable Characters</h3>
-            <div class="character-grid">
-                <div class="character-card null" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>NULL</h4>
-                            <p><strong>The Hollow Core</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Trench Knives</p>
-                            <p style="font-size: 0.9rem;">Ability: Feverdream (Rage Mode)</p>
-                            <p style="font-size: 0.8rem; margin-top: 1rem;">Empty vessel with no memories, can store fragments and enter berserker state</p>
-                        </div>
-                        <div class="character-card-back">
-                            <img class="character-image" src="Art Folder/null-image.jpg" alt="Null" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card d-echo" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_D</h4>
-                            <p><strong>Echo of Dolor</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Hand Bubbles</p>
-                            <p style="font-size: 0.9rem;">Ability: Dissonance (Healing Shield)</p>
-                            <p style="font-size: 0.8rem; margin-top: 1rem;">Timid blue-hooded figure equipped for defensive support and healing</p>
-                        </div>
-                        <div class="character-card-back">
-                            <img class="character-image" src="Art Folder/d-image.jpg" alt="_D Echo" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card m-echo" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_M</h4>
-                            <p><strong>Echo of Midas</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Shotgun Bat</p>
-                            <p style="font-size: 0.9rem;">Ability: Midas Touch (More Money)</p>
-                            <p style="font-size: 0.8rem; margin-top: 1rem;">Confident green-hooded figure equipped for offense and resource gathering</p>
-                        </div>
-                        <div class="character-card-back">
-                            <img class="character-image" src="Art Folder/m-image.jpg" alt="_M Echo" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card l-echo" onclick="flipCard(this)">
-                    <div class="character-card-inner">
-                        <div class="character-card-front">
-                            <h4>_L</h4>
-                            <p><strong>Echo of Limerence</strong></p>
-                            <p style="font-size: 0.9rem;">Weapon: Halberd-Scythe</p>
-                            <p style="font-size: 0.9rem;">Ability: Lovesick (Damage Immunity)</p>
-                            <p style="font-size: 0.8rem; margin-top: 1rem;">Lively pink-hooded figure with wide smile, built for offensive support</p>
-                        </div>
-                        <div class="character-card-back">
-                            <img class="character-image" src="Art Folder/l-image.jpg" alt="_L Echo" onerror="this.style.display='none'">
-                            <p>Click to flip back</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="text-align: center; margin: 3rem 0 2rem; color: var(--neon-yellow);">Hub Character</h3>
-            <div class="info-card">
-                <h4 style="color: var(--neon-yellow); font-size: 1.5rem;">MENDER</h4>
-                <p>The mysterious bartender of Mender's Haven, serving as guide and father figure to lost souls. Charismatic yet enigmatic, Mender offers refuge, quests, and gentle pushing toward confronting deeper truths. His very name suggests healing, though his methods sometimes involve forcing difficult realizations.</p>
-                <p style="margin-top: 1rem;">As fragments venture deeper into the labyrinth's distractions, Mender grows concerned they may lose themselves entirely rather than face what lies beneath. Under certain conditions, this caring bartender becomes an optional boss fight - testing whether his charges are ready for the truth.</p>
-            </div>
-
-            <h3 style="text-align: center; margin: 3rem 0 2rem; color: var(--neon-green);">Unlockable Echoes</h3>
-            <div class="info-card">
-                <h4 style="color: var(--neon-green); font-size: 1.5rem;">MENDER'S BAR ECHOES</h4>
-                <p>As you progress through the labyrinth and defeat bosses, various Echo NPCs will begin appearing at Mender's Bar. These freed souls bring life and personality to the hub, each with their own stories, quests, and interactions.</p>
-                <p style="margin-top: 1rem;">The bar transforms from a quiet refuge into a lively social space filled with miniaturized versions of defeated bosses, their minds restored after being freed from corruption. You can customize the bar's appearance, unlock new areas, and watch as the space becomes increasingly vibrant with each successful run.</p>
-                <p style="margin-top: 1rem;">Special Echoes may offer unique quests, trade rare remnants, or provide insights into the labyrinth's deeper mysteries. The more you play, the more alive Mender's Haven becomes - a testament to the souls you've saved from the corruption's grasp.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bosses Section -->
-    <div id="bosses" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">LOST SOULS & BOSSES</h2>
-            <p style="text-align: center; margin-bottom: 3rem; opacity: 0.9; font-size: 1.1rem;">
-                Powerful entities who entered the labyrinth and lost themselves to its corruption, 
-                each building their own twisted domain from their pain and obsessions.
-            </p>
-
-            <div class="boss-grid">
-                <div class="boss-card">
-                    <img class="boss-image" src="Art Folder/ETboss1.jpg" alt="The Serpent" onerror="this.src='Art Folder/ETboss1.png'; this.onerror=function(){this.src='Art Folder/ETboss1.gif'; this.onerror=function(){this.style.display='none'}}">
-                    <div class="boss-content">
-                        <h3>THE SERPENT</h3>
-                        <p><strong>The Fallen Artist</strong></p>
-                        <p style="margin-top: 1rem;">A giant snake coiled in crimson skies, its back serving as a treacherous pathway to its head. Once a young artist whose Ouroboros series brought fame, until false plagiarism accusations destroyed their reputation and broke their heart - literally.</p>
-                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Players traverse the serpent's spine while destroying weak points and avoiding flying enemies. As health drops, spikes and rotating obstacles make the climb increasingly dangerous. The red, swirling sky pulses with intense music as the battle reaches its climax.</p>
-                        <p style="margin-top: 1rem; font-style: italic;">"I just wanted to create something beautiful... Why did they have to take that away from me?"</p>
-                    </div>
-                </div>
-
-                <div class="boss-card">
-                    <img class="boss-image" src="Art Folder/ETboss2.jpg" alt="The Queen" onerror="this.src='Art Folder/ETboss2.png'; this.onerror=function(){this.src='Art Folder/ETboss2.gif'; this.onerror=function(){this.style.display='none'}}">
-                    <div class="boss-content">
-                        <h3>THE QUEEN</h3>
-                        <p><strong>The Reluctant Ruler</strong></p>
-                        <p style="margin-top: 1rem;">A headless Victorian woman with multiple rotating arms serving as platforms, her decapitated head flying around attacking players. Born to rule but yearning for freedom, her attempts at benevolent leadership led only to her citizens' revolt and execution by guillotine.</p>
-                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Scale the rotating hands safely to reach the flying head's weak points. As health drops, hands move faster and become trapped. The battle requires precise timing and platforming skills while avoiding the head's aerial assaults.</p>
-                        <p style="margin-top: 1rem; font-style: italic;">"I never wanted the crown... I just wanted to see the flowers bloom in peace."</p>
-                    </div>
-                </div>
-
-                <div class="boss-card">
-                    <img class="boss-image" src="Art Folder/ETboss3.jpg" alt="The Charade" onerror="this.src='Art Folder/ETboss3.png'; this.onerror=function(){this.src='Art Folder/ETboss3.gif'; this.onerror=function(){this.style.display='none'}}">
-                    <div class="boss-content">
-                        <h3>THE CHARADE</h3>
-                        <p><strong>The Emotional Executive</strong></p>
-                        <p style="margin-top: 1rem;">A massive business-suited entity with three giant floating masks covering its face. Once an ambitious businessman whose emotional instability cost him job after job, until expressing anger at the wrong person in a sleazy casino led to his death.</p>
-                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Attack patterns change based on which mask is worn. Anger turns floors to lava, Sadness creates bullet-platform patterns, Happiness fires beam attacks. Must be destroyed in order: Sadness → Anger → Happiness, or the masks reform.</p>
-                        <p style="margin-top: 1rem; font-style: italic;">"Why is feeling things so wrong? I just wanted to make Ma and Pa proud..."</p>
-                    </div>
-                </div>
-
-                <div class="boss-card">
-                    <img class="boss-image" src="Art Folder/ETboss4.jpg" alt="The Moon" onerror="this.src='Art Folder/ETboss4.png'; this.onerror=function(){this.src='Art Folder/ETboss4.gif'; this.onerror=function(){this.style.display='none'}}">
-                    <div class="boss-content">
-                        <h3>THE MOON</h3>
-                        <p><strong>The Lost Child</strong></p>
-                        <p style="margin-top: 1rem;">A giant moon hanging above an endless ocean, shifting phases while controlling watery hands and obstacles below. Once a young girl who, after losing her mother and facing abuse, tried to swim to the moon's reflection to reunite with her mother's soul.</p>
-                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> The Moon attacks with different patterns based on its phases while controlling the ocean below. Eventually lowers itself and grasps its own body with giant water hands - the only opportunity to attack while avoiding its defenses.</p>
-                        <p style="margin-top: 1rem; font-style: italic;">"Mama said souls go to the Moon when they die... Why couldn't I reach you, Mama?"</p>
-                    </div>
-                </div>
-
-                <div class="boss-card">
-                    <img class="boss-image" src="Art Folder/ETboss5.jpg" alt="Mender" onerror="this.src='Art Folder/ETboss5.png'; this.onerror=function(){this.src='Art Folder/ETboss5.gif'; this.onerror=function(){this.style.display='none'}}">
-                    <div class="boss-content">
-                        <h3>MENDER (Optional/Secret)</h3>
-                        <p><strong>The Concerned Caretaker</strong></p>
-                        <p style="margin-top: 1rem;">The beloved bartender himself becomes a formidable opponent when certain conditions are met. Quick and agile with high health, he uses area attacks, bullet patterns, and can separate players for one-on-one confrontations.</p>
-                        <p style="margin-top: 1rem;"><strong>Fight Mechanics:</strong> Straightforward direct combat, but with massive health and immunity to most status effects. Can incapacitate separated players. This battle tests if the fragments are truly ready to face deeper truths or if they're still running from reality.</p>
-                        <p style="margin-top: 1rem; font-style: italic;">"Sometimes the kindest thing I can do is show you that you're stronger than you think."</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-card" style="margin-top: 3rem;">
-                <h3 style="color: var(--neon-green);">The Corruption Effect</h3>
-                <p>The labyrinth's mysterious influence twists powerful beings who venture too deep, making them act irrationally and aggressively. This corruption emanates from the very bottom of the maze, where a rejected fragment's growing instability affects all who enter.</p>
-                <p style="margin-top: 1rem;">After defeat, many bosses appear in Mender's Bar as miniaturized versions with their minds mostly restored, having been freed from the corruption that consumed them. There, they can finally find the peace that eluded them in their twisted domains.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mechanics Section -->
-    <div id="mechanics" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">GAMEPLAY SYSTEMS</h2>
-
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🎯</div>
-                    <div>
-                        <strong>VR Combat System</strong>
-                        <p>Fast-paced battles with character-specific weapons summoned at will. Each fragment has unique movement abilities like wall jumps, grappling, and double jumps.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📊</div>
-                    <div>
-                        <strong>Risk/Reward Leveling</strong>
-                        <p>Gain levels (max 5) during runs by defeating enemies, but lose levels when taking damage. Higher levels dramatically enhance abilities and stats.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🏠</div>
-                    <div>
-                        <strong>Mender's Haven Hub</strong>
-                        <p>Central bar area for character selection, item storage (30 slots), quest receiving, and social interaction with NPCs and other players.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🎒</div>
-                    <div>
-                        <strong>Limited Inventory</strong>
-                        <p>Carry 4-8 items during runs, forcing strategic decisions about what to keep. Permanent storage available in the hub between runs.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔮</div>
-                    <div>
-                        <strong>Remnant Upgrades</strong>
-                        <p>Collect emotional fragments in Low, Mid, and High grades. Equip up to 4 per character for permanent ability enhancements across runs.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🗺️</div>
-                    <div>
-                        <strong>Randomized Rooms</strong>
-                        <p>Red (combat), Green (story), Blue (rest), Yellow (shop), Purple (boss), White (return to hub). Length increases with progression: 20→40→60→80→100 rooms.</p>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="color: var(--neon-blue); margin: 3rem 0 2rem;">Character Abilities</h3>
-            <div class="info-card">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-                    <div>
-                        <h4 style="color: var(--primary-white);">Null</h4>
-                        <ul style="margin-top: 0.5rem;">
-                            <li>Trench knives held backwards for slashing</li>
-                            <li>Feverdream: Rage mode extends knives to swords</li>
-                            <li>Increased speed and agility while raging</li>
-                            <li>Can store other fragments internally</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 style="color: var(--neon-blue);">_D (Dolor Echo)</h4>
-                        <ul style="margin-top: 0.5rem;">
-                            <li>Hand bubbles for punching combat</li>
-                            <li>Dissonance: Healing bubble shield</li>
-                            <li>Protects allies from incoming attacks</li>
-                            <li>Defensive support specialist</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 style="color: var(--neon-green);">_M (Midas Echo)</h4>
-                        <ul style="margin-top: 0.5rem;">
-                            <li>Shotgun bat: Melee and ranged weapon</li>
-                            <li>Midas Touch: Enhanced money collection</li>
-                            <li>Confident offensive playstyle</li>
-                            <li>Resource gathering bonuses</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 style="color: var(--neon-pink);">_L (Limerence Echo)</h4>
-                        <ul style="margin-top: 0.5rem;">
-                            <li>Halberd-scythe with long reach</li>
-                            <li>Lovesick: Temporary damage immunity</li>
-                            <li>High damage offensive support</li>
-                            <li>Most attuned to original personality</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="color: var(--neon-purple); margin: 3rem 0 2rem;">Remnant System</h3>
-            <div class="info-card">
-                <p style="margin-bottom: 1rem;">Emotional remnants represent fragments of memories and feelings, providing permanent upgrades:</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                    <div>
-                        <strong style="color: var(--neon-yellow);">Low-Grade Examples:</strong>
-                        <p>"Aggression" - Reduces enemy invincibility frames</p>
-                        <p>"Focus" - Damage boost vs staggered enemies</p>
-                        <p>"Fleeting Thought" - Small movement speed increase</p>
-                    </div>
-                    <div>
-                        <strong style="color: var(--neon-orange);">Mid-Grade Examples:</strong>
-                        <p>"Ego Shield" - One-hit barrier on activation</p>
-                        <p>"Thought Leap" - Additional mid-air jump</p>
-                        <p>"Chain Reaction" - Enemies explode on death</p>
-                    </div>
-                    <div>
-                        <strong style="color: var(--neon-red);">High-Grade Examples:</strong>
-                        <p>"Identity Crisis" - Creates aggro-drawing duplicate</p>
-                        <p>"Fever Dream" - Massive damage at low health</p>
-                        <p>"Collective Unconscious" - Enhanced team effects</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notes Section -->
-    <div id="notes" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">FRAGMENTS OF MEMORY</h2>
-            <p style="text-align: center; margin-bottom: 3rem; opacity: 0.9;">
-                Scattered throughout the labyrinth are notes - emotional imprints left by powerful entities 
-                as they lose themselves to corruption. These reveal the tragic backstories of the bosses 
-                and provide crucial insight for achieving different endings.
-            </p>
-
-            <div class="notes-container">
-                <div class="note-character">
-                    <h3>THE QUEEN'S NOTES</h3>
-                    <div class="note-item">
-                        <strong>Note 1:</strong> "Alyssa... That was my name, I can't forget it. I need some part of myself to stay intact... What a fool I was..."
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 2:</strong> "A kingdom is nothing without a ruler... My father believed in me, wanted me to grow into someone who could make him proud... Why did you place that trust in me?"
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 3:</strong> "How many years? Wasted as their 'Queen'. Ha! I was never their Queen. I was just a child, adorned in royal robes..."
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 6:</strong> "This is my kingdom, bestowed upon me by the labyrinth... I will be The Queen of a world made for Me. Of a people who bask in my delights and my grace."
-                    </div>
-                </div>
-
-                <div class="note-character">
-                    <h3>THE CHARADE'S NOTES</h3>
-                    <div class="note-item">
-                        <strong>Note 1:</strong> "Walking, Walking, Walking... But nobody to talk to! I thought I'd find something interesting in here, but all I find are these uppity creatures and emotional garbage..."
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 3:</strong> "'Charles-- Sometimes it seems like your moods change quickly... We can't have that at our business!' What? They think I like this?! I FEEL THINGS? WHAT'S SO WRONG WITH THAT?!"
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 5:</strong> "This guy ain't nobody's punching bag no more! THE WORLD'S MY OYSTER BABY, LET'S CRACK IT OPEN!!"
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 6:</strong> "I got my crew, I got my business, and baby, business is BOOMIN'! All along, I knew if I waited... Opportunity would be coming my way."
-                    </div>
-                </div>
-
-                <div class="note-character">
-                    <h3>THE MOON'S NOTES</h3>
-                    <div class="note-item">
-                        <strong>Note 1:</strong> "Mama... Where are you? This has to be the way to heaven you told me so much about... I just want to see you again... Please, wait for me!"
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 2:</strong> "Everything here is so scary... When I was with Papa, I felt scared like this all the time... I can barely remember your smile, Mama."
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 5:</strong> "I can't keep going, Mama. I'm too big now... Why'd you have to go so far away, Mama? Why couldn't you stay here with me?"
-                    </div>
-                    <div class="note-item">
-                        <strong>Note 6:</strong> "I'm so big now, but... I still don't see you, Mama... If I become The Moon... Will you come to me?"
-                    </div>
-                </div>
-            </div>
-
-            <div class="spoiler-content" id="spoilerNotes">
-                <div class="notes-container">
-                    <div class="note-character">
-                        <h3 style="color: var(--neon-red);">THE SELF'S NOTES</h3>
-                        <div class="note-item">
-                            <strong>Note 1:</strong> "I woke up, and I was here: A deep dark hole, in what seems like one big maze... I'll get out of here, and I'll apologize... I'm not useless like they think I am... Null... I'm coming!"
-                        </div>
-                        <div class="note-item">
-                            <strong>Note 3:</strong> "I feel myself slipping... I hope nobody runs into them how they are right now. They just seem so lost. So scared... So sad... So angry... I understand..."
-                        </div>
-                        <div class="note-item">
-                            <strong>Note 5:</strong> "This place is a prison. My own little hell, made just for me... Did you do this on purpose? Did you really just want to see me suffer?"
-                        </div>
-                        <div class="note-item">
-                            <strong>Note 6:</strong> "I feel them... They're finally Awake... You... for what you did... A thousand times... One Day Soon... *I'll kill you*..."
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spoilers Section -->
-    <div id="spoilers" class="content-section">
-        <div class="section-content">
-            <h2 class="section-title">HIDDEN TRUTHS</h2>
-            
-            <div class="spoiler-lock" onclick="showSpoilerModal()">
-                <h3 style="color: var(--neon-red); margin-bottom: 1rem;">🔒 LOCKED SECRETS</h3>
-                <p>This section contains major spoilers including the true nature of the Red Shard, N_'s complete story, and all seven possible endings.</p>
-                <p style="margin-top: 1rem; opacity: 0.8;">Click to enter password</p>
-            </div>
-
-            <div class="spoiler-content" id="spoilerContent">
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">Hidden Fragment</h3>
-                <div class="character-grid">
-                    <div class="character-card n-echo" onclick="flipCard(this)">
-                        <div class="character-card-inner">
-                            <div class="character-card-front">
-                                <h4>N_ / THE SELF</h4>
-                                <p><strong>The Rejected Fragment</strong></p>
-                                <p style="font-size: 0.9rem;">Weapon: Axe</p>
-                                <p style="font-size: 0.9rem;">Companion: The Shadow</p>
-                                <p style="font-size: 0.8rem; margin-top: 1rem;">White-hooded figure with fully formed personality, imprisoned at labyrinth's bottom</p>
-                            </div>
-                            <div class="character-card-back">
-                                <img class="character-image" src="Art Folder/n-image.jpg" alt="N_ The Self" onerror="this.style.display='none'">
-                                <p>Click to flip back</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h4 style="color: var(--neon-red);">The Truth of N_</h4>
-                    <p>An echo of the discarded fragment Null wished to reject, N_ represents the trauma and responsibilities the host couldn't bear. The labyrinth was built as their prison, designed to keep them buried at the very bottom where their memories could never surface.</p>
-                    <p style="margin-top: 1rem;">Unlike the other echoes, N_ retained a fully formed personality and clear memories. Their sadness and rage at being abandoned gave birth to The Shadow - a hulking mass of darkness that protects them. After countless failed escape attempts, N_ now waits for Null's arrival, seeking either escape or revenge.</p>
-                    <p style="margin-top: 1rem;">The final boss battle involves both N_ and The Shadow, with players needing to attack the red shard in The Shadow's chest while N_ fights alongside it using various remnant abilities. The outcome determines which of seven possible endings the party achieves.</p>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Red Shard's True Purpose</h3>
-                <div class="info-card">
-                    <h4>A Prison of Trauma</h4>
-                    <p>The Red Shard exists as a crystalline space between consciousness and dream, but its true purpose is far darker. It serves as a prison designed to contain N_ - the echo of Null's rejected fragment, Neuro. The labyrinth within was built specifically to keep N_ buried at the very bottom, ensuring their traumatic memories could never surface.</p>
-                    <p style="margin-top: 1rem;">Unlike the other echo-fragments who are mere impressions, N_ retained full personality and clear memories of what Null tried to bury. Their growing instability and rage at abandonment created The Shadow - a hulking mass of darkness that protects them and serves as the source of the labyrinth's corrupting influence.</p>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Seven Endings</h3>
-                <div class="ending-grid">
-                    <div class="ending-card">
-                        <h4>HUSK ENDING (Null Solo)</h4>
-                        <p>Null defeats The Self alone but, after glimpsing traumatic imagery in the Red Shard, loses all interest in it. They return to Mender's to repeat the labyrinth indefinitely, becoming an empty shell going through motions.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>OBSESSION ENDING (Null + _L)</h4>
-                        <p>Null and _L defeat The Self together, but Limerence convinces Null to stay and repeat the labyrinth in pursuit of meaning they'll never find. The search becomes more important than any destination.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>NARCISSIST ENDING (Null + _M)</h4>
-                        <p>Null and _M confront the Red Shard, but Midas shows Null all the treasures and remnants they've collected, convincing them to stay and gather riches until the end of time. Material accumulation becomes the only goal.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>COWARD ENDING (Null + _D)</h4>
-                        <p>Null and _D defeat The Self, but Dolor freezes in absolute terror at what lies ahead and begs Null to stay. They return to Mender's, never to leave again, paralyzed by fear of growth.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>DROWNING ENDING (Not All Notes Collected)</h4>
-                        <p>Without sufficient understanding from collected notes, the echo fragments turn on Null upon reaching the shard, grabbing them and forcing their body into the crystal. Null drowns in the red liquid, leading to a restart.</p>
-                    </div>
-
-                    <div class="ending-card">
-                        <h4>TRUE ENDING (All Fragments + All Notes)</h4>
-                        <p>With complete knowledge, sense of self, and resilience built over the journey, the echoes celebrate and reintegrate with Null. Together they shatter the Red Shard and dive into the red pool created, ready to begin their true journey in Ego/Dive.</p>
-                    </div>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Connection to Ego/Dive</h3>
-                <div class="info-card">
-                    <h4>A Necessary Prelude</h4>
-                    <p>Ego/Trip serves as both power fantasy and preliminary journey - a consequence-free space for processing trauma in abstract, game-like manner. The Red Shard acts as a waiting room between consciousness and deeper unconsciousness, where Null can build strength before facing the weightier emotional confrontations awaiting in Absentia.</p>
-                    <p style="margin-top: 1rem;">Only by achieving the True Ending - gathering complete understanding through notes and working with all aspects of themselves - can Null break free from this crystalline refuge and dive into the layered world of Ego/Dive, where their real journey of healing or destruction begins.</p>
-                    <p style="margin-top: 1rem;">The echo-fragments serve as practice versions of the full personalities Null will encounter in Absentia. Mender's gentle guidance prepares them for the harsher tests ahead, while the corrupted bosses offer glimpses of what happens when trauma consumes completely.</p>
-                </div>
-
-                <h3 style="color: var(--neon-red); margin: 3rem 0 2rem;">The Labyrinth's Origin</h3>
-                <div class="info-card">
-                    <h4>A Prison Built from Denial</h4>
-                    <p>The endless, hostile labyrinth was constructed by Null's own psyche as a way to ensure N_ could never escape and bring their traumatic memories to the surface. Every creature, trap, and shifting room serves as another barrier designed to send N_ back to their starting point at the maze's bottom.</p>
-                    <p style="margin-top: 1rem;">The corruption affecting powerful beings who venture too deep emanates directly from N_'s Shadow and their building instability. As N_ grew more desperate and angry over countless failed escape attempts, their influence began twisting other lost souls into the bosses players encounter.</p>
-                    <p style="margin-top: 1rem;">When Null and the echo-fragments finally arrive, N_ senses their presence and waits - no longer trying to escape, but preparing for confrontation. Whether this leads to revenge, understanding, or integration depends entirely on the choices made throughout the journey.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spoiler Password Modal -->
-    <div class="modal" id="spoilerModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeSpoilerModal()">×</button>
-            <h3 style="margin-bottom: 1rem; color: var(--neon-pink);">Enter Password</h3>
-            <p style="opacity: 0.8; margin-bottom: 2rem;">This section contains major spoilers</p>
-            <input type="password" id="spoilerPassword" class="password-input" style="margin-bottom: 1rem;" placeholder="Password">
-            <button onclick="checkSpoilerPassword()" style="padding: 0.8rem 2rem; background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue)); border: none; color: white; cursor: pointer; border-radius: 10px; font-weight: bold;">UNLOCK</button>
-            <p id="spoilerError" style="color: var(--neon-red); margin-top: 1rem; opacity: 0;">Incorrect Password</p>
-        </div>
-    </div>
-
-    <script>
+            </div><footer class="trip-footer"><a href="index.html">← BACK TO ABYSSAL LIGHT GAMES</a><span>Created by NullxVoid · Updated November 2026</span></footer><dialog id="imageViewer"><button class="trip-button" id="closeImage">Close ×</button><img id="viewerImage" alt=""><p id="viewerCaption"></p></dialog>    <script>
         // Audio and Visualizer Variables
         let audioContext;
         let analyser;
         let dataArray;
         let animationId;
         let isPlaying = false;
+        let musicAction = 0;
+        let crystalPlaying = false;
         let isDragging = false;
         let dragStartX = 0;
         let dragStartVolume = 0.5;
@@ -1832,14 +1293,19 @@
 
         // Toggle Music
         function toggleMusic() {
+            const action = ++musicAction;
             if (!isPlaying) {
+                isPlaying = true;
                 initAudioContext();
+                if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
                 bgMusic.play().then(() => {
+                    if (action !== musicAction) return;
+                    if (animationId) cancelAnimationFrame(animationId);
                     isPlaying = true;
                     musicVisualizer.classList.remove('muted');
                     drawVisualizer();
                 }).catch(err => {
-                    console.log('Audio play failed:', err);
+                    if (action === musicAction) { isPlaying = false; musicVisualizer.classList.add('muted'); }
                 });
             } else {
                 bgMusic.pause();
@@ -1904,7 +1370,8 @@
         }
 
         // Auto-play music on first user interaction
-        document.addEventListener('click', function initMusic() {
+        document.addEventListener('click', function initMusic(e) {
+            if (e.target.closest('.floating-crystal, .video-player, .music-visualizer')) { document.removeEventListener('click', initMusic); return; }
             if (!isPlaying && bgMusic.paused) {
                 toggleMusic();
             }
@@ -1955,7 +1422,8 @@
             buttons.forEach(button => button.classList.remove('active'));
             
             document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
+            document.querySelectorAll('nav button').forEach(button => { const active = button.getAttribute('onclick').includes("'" + sectionId + "'"); button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)); });
+            history.replaceState(null, '', '#' + sectionId);
             
             window.scrollTo(0, 0);
         }
@@ -1963,38 +1431,14 @@
         // Character Card Flip
         function flipCard(card) {
             card.classList.toggle('flipped');
-        }
-
-        // Spoiler System
-        function showSpoilerModal() {
-            document.getElementById('spoilerModal').classList.add('active');
-            document.getElementById('spoilerPassword').focus();
-        }
-
-        function closeSpoilerModal() {
-            document.getElementById('spoilerModal').classList.remove('active');
-            document.getElementById('spoilerPassword').value = '';
-            document.getElementById('spoilerError').style.opacity = '0';
-        }
-
-        function checkSpoilerPassword() {
-            const password = document.getElementById('spoilerPassword').value;
-            if (password === 'Reverie') {
-                document.getElementById('spoilerContent').classList.add('unlocked');
-                document.getElementById('spoilerNotes').classList.add('unlocked');
-                document.querySelector('.spoiler-lock').style.display = 'none';
-                closeSpoilerModal();
-            } else {
-                document.getElementById('spoilerError').style.opacity = '1';
-                document.getElementById('spoilerPassword').value = '';
-                setTimeout(() => {
-                    document.getElementById('spoilerError').style.opacity = '0';
-                }, 2000);
-            }
+            card.setAttribute('aria-pressed', String(card.classList.contains('flipped')));
         }
 
         // Video Playback for Floating Crystal
         function playCrystalVideo() {
+            if (crystalPlaying) return;
+            crystalPlaying = true;
+            let ended = false;
             const crystal = document.getElementById('floatingCrystal');
             const videoPlayer = document.getElementById('videoPlayer');
             const video = document.getElementById('crystalVideo');
@@ -2019,15 +1463,18 @@
             // Wait for fade-out to complete, then show and play video
             setTimeout(() => {
                 videoPlayer.classList.add('active');
-                video.play();
+                video.play().catch(() => { endVideo(); });
             }, 500); // Match the transition duration in CSS
 
             // Function to end video and reset
             function endVideo() {
+                if (ended) return;
+                ended = true;
                 video.pause();
                 video.currentTime = 0; // Reset video to start
                 videoPlayer.classList.remove('active');
                 setTimeout(() => {
+                    crystalPlaying = false;
                     crystal.classList.remove('hidden');
                     
                     // Show music visualizer again
@@ -2035,7 +1482,7 @@
                     
                     // Resume music if it was playing before
                     if (wasPlayingBeforeVideo) {
-                        bgMusic.play();
+                        bgMusic.play().catch(() => {});
                         drawVisualizer();
                     }
                 }, 500); // Match the transition duration in CSS
@@ -2052,13 +1499,6 @@
         window.onload = function() {
             createLavaLamp();
             
-            // Enter key for spoiler password
-            document.getElementById('spoilerPassword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkSpoilerPassword();
-                }
-            });
-
             // Add click event to floating crystal
             document.getElementById('floatingCrystal').addEventListener('click', playCrystalVideo);
 

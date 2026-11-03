@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -948,7 +948,8 @@
             }
         }
     </style>
-</head>
+<link rel="stylesheet" href="portfolio-home.css"><script src="portfolio-home.js" defer></script><style id="gallery-interaction-repairs">#galleryViewport{flex:1;min-height:0;height:auto;touch-action:none;user-select:none}#galleryCanvas{transform-origin:0 0;transition:none}.gallery-tools{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);width:max-content;padding:8px 12px;border:1px solid #ffffff30;border-radius:8px;background:#0a0a0aeb;z-index:200;color:var(--primary-white);font:12px/1.4 'Share Tech Mono',monospace}.gallery-tools span{font-size:10px;opacity:.7}.gallery-tools button{padding:7px 10px;border:1px solid #ffffff40;border-radius:4px;background:#ffffff08;color:inherit;cursor:pointer;font:inherit;min-height:32px}.gallery-tools button:hover{border-color:var(--accent-red)}.gallery-tools [hidden]{display:none}.gallery-image:focus-visible,.gallery-tools button:focus-visible{outline:2px solid var(--accent-red);outline-offset:4px}.gallery-image-info{white-space:normal;width:max-content;max-width:260px;top:calc(100% + 10px);bottom:auto}.gallery-image.centered .gallery-image-info{max-height:110px;overflow-y:auto;pointer-events:auto;overscroll-behavior:contain}.gallery-image-title{overflow-wrap:anywhere}#galleryViewport .gallery-image{touch-action:none}@media(max-width:768px){.gallery-tools{gap:5px;padding:6px 8px}.gallery-tools span{display:none}.gallery-image-info{max-width:200px}.gallery-tools button{min-height:36px}}
+</style></head>
 <body>
     <div class="password-screen" id="passwordScreen">
         <div class="password-container">
@@ -984,8 +985,8 @@
                     <p>Gaming Experiences and Concepts of all different kinds</p>
                 </div>
                 <div class="nav-section" onclick="showSection('vrchat')">
-                    <h2>VRCHAT WORLDS</h2>
-                    <p>Worlds and Games Made Exclusively for VRChat</p>
+                    <h2>VRCHAT PROJECTS</h2>
+                    <p>Games, worlds, consoles and creator tools for VRChat</p>
                 </div>
                 <div class="nav-section" onclick="showSection('gallery')">
                     <h2>ART GALLERY</h2>
@@ -996,7 +997,7 @@
                     <p>Turn-based RPG framework for VRChat</p>
                 </div>
                 <div class="nav-section" onclick="showSection('other')">
-                    <h2>OTHER PROJECTS</h2>
+                    <h2>OTHER PROJECTS / TOOLS</h2>
                     <p>Other Projects and Experiments from Across Different Mediums</p>
                 </div>
                 <div class="nav-section" onclick="showAbout()">
@@ -1037,22 +1038,22 @@
             <p>Gaming Experiences and Concepts of all different kinds</p>
         </div>
         <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('games', -1)">‹</button>
+            <button aria-label="Previous project" class="carousel-nav prev" onclick="moveCarousel('games', -1)">‹</button>
             <div class="carousel" id="gamesCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('games', 1)">›</button>
+            <button aria-label="Next project" class="carousel-nav next" onclick="moveCarousel('games', 1)">›</button>
         </div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
 
     <div class="section-view" id="vrchatSection">
         <div class="section-header">
-            <h2>VRCHAT WORLDS</h2>
-            <p>Worlds and Games Made Exclusively for VRChat</p>
+            <h2>VRCHAT PROJECTS</h2>
+            <p>Games, worlds, consoles and creator tools for VRChat</p>
         </div>
         <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('vrchat', -1)">‹</button>
+            <button aria-label="Previous project" class="carousel-nav prev" onclick="moveCarousel('vrchat', -1)">‹</button>
             <div class="carousel" id="vrchatCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('vrchat', 1)">›</button>
+            <button aria-label="Next project" class="carousel-nav next" onclick="moveCarousel('vrchat', 1)">›</button>
         </div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
@@ -1064,6 +1065,7 @@
         </div>
         <div class="gallery-viewport" id="galleryViewport">
             <div class="gallery-canvas" id="galleryCanvas"></div>
+            <div class="gallery-tools" aria-label="Gallery controls"><span>DRAG TO EXPLORE</span><button id="galleryZoomOut" aria-label="Zoom out">−</button><output id="galleryZoomLabel" aria-live="off">100%</output><button id="galleryZoomIn" aria-label="Zoom in">+</button><button id="galleryReset">Reset view</button><button id="galleryCloseArt" hidden>Close art</button></div>
             <div class="gallery-arrow top" id="arrowTop">▲</div>
             <div class="gallery-arrow bottom" id="arrowBottom">▲</div>
             <div class="gallery-arrow left" id="arrowLeft">▲</div>
@@ -1074,13 +1076,13 @@
 
     <div class="section-view" id="otherSection">
         <div class="section-header">
-            <h2>OTHER PROJECTS</h2>
+            <h2>OTHER PROJECTS / TOOLS</h2>
             <p>Other Projects and Experiments from Across Different Mediums</p>
         </div>
         <div class="carousel-container">
-            <button class="carousel-nav prev" onclick="moveCarousel('other', -1)">‹</button>
+            <button aria-label="Previous project" class="carousel-nav prev" onclick="moveCarousel('other', -1)">‹</button>
             <div class="carousel" id="otherCarousel"></div>
-            <button class="carousel-nav next" onclick="moveCarousel('other', 1)">›</button>
+            <button aria-label="Next project" class="carousel-nav next" onclick="moveCarousel('other', 1)">›</button>
         </div>
         <button class="back-button" onclick="closeSection()">← BACK TO HUB</button>
     </div>
@@ -1092,7 +1094,7 @@
         <source src="audio/hub-bg.mp3" type="audio/mpeg">
     </audio>
     <audio id="clickAudio">
-        <source src="audio/Click.mp3" type="audio/mpeg">
+        <source src="audio/SAclick.mp3" type="audio/mpeg">
     </audio>
 
     <div class="volume-control">
@@ -1100,6 +1102,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
     </div>
 
+    <script src="portfolio-data.js"></script>
     <script>
         // Audio functionality
         const passwordAudio = document.getElementById('passwordAudio');
@@ -1176,7 +1179,7 @@ function checkPassword() {
                 section.classList.remove('keyboard-selected');
             });
             hubAudio.volume = 0;
-            hubAudio.play();
+            hubAudio.play().catch(() => {});
             let fadeIn = setInterval(() => {
                 if (hubAudio.volume < volumeSlider.value) {
                     hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
@@ -1198,406 +1201,7 @@ function checkPassword() {
             checkPassword();
         }
 
-        const projectData = {
-            games: [
-                {
-                    title: "Caine & Cin: God Killers",
-                    description: "Indie RPG following Caine, a boy cursed into a demon, and Cin, a fallen angel, as they descend into The Afterlife to confront the God who damned them.",
-                    image: "Art Folder/GameProject2.jpg",
-                    link: "Caine&Cin.html",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Ego/Dive",
-                    description: "Indie RPG where fragmented personalities of a comatose person unite in the surreal world of Absentia to mend their fractured mind.",
-                    image: "Art Folder/GameProject1.jpg",
-                    link: "ego-dive.html",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Axiom of Infinity",
-                    description: "JRPG-Fighting Game hybrid where Cliff, Amber, and dimension-hopping allies battle to halt a universe-threatening Calamity.",
-                    image: "Art Folder/GameProject4.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Phantom Echoes",
-                    description: "Horror Platformer where Alex, a red fox, traverses a nightmarish dreamscape to find the source of the mysterious lullaby that trapped his entire town in eternal sleep",
-                    image: "Art Folder/GameProject5.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Milo",
-                    description: "Platformer following Milo, a boy escaping his monstrous father to deliver flowers to his mother",
-                    image: "Art Folder/GameProject6.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Enclave 447",
-                    description: "Adventure Game where Will and friends reunite after a tragedy in a strange town to witness a rare astrological event.",
-                    image: "Art Folder/GameProject7.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Go! Ko! Go! Kart Racer DX",
-                    description: "Kart Racing Visual Novel Horror where demon girl Ko competes in the Grand Prix while investigating a killer targeting racers.",
-                    image: "Art Folder/GameProject3.jpg",
-                    link: "GO-KO-GO.html",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Vex: Arcadian Entropy",
-                    description: "FPS JRPG hybrid, Where 2 people from differnt worlds journey together with their allies to stop an insidious plot to strip humanity of it",
-                    image: "Art Folder/GameProject8.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                }
-            ],
-            vrchat: [
-                {
-                    title: "Club Flipside",
-                    description: "VRChat Experience where players dance in a zero-gravity club with optional physics, creating a surreal social space.",
-                    image: "Art Folder/VRCProject2.jpg",
-                    link: "Club-Flipside.html",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Omni-Cube",
-                    description: "Multi-sided gravity cube, with 6 different themes for each side and switchable skyboxes and video player.",
-                    image: "Art Folder/VRCProject12.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_58b431d7-e804-44dc-975d-d0cbf0593e77",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Pickup Park",
-                    description: "Park hangout environment, players can climb and ride on each other and customize environment.",
-                    image: "Art Folder/VRCProject13.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_8a5ee9df-7dc3-47b9-a3b2-1b19a771cd89",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Void Island Redux",
-                    description: "Island hangout world, customizable settings, house hangout and secrets.",
-                    image: "Art Folder/VRCProject14.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_dec9ed04-5621-406a-a09c-a7e663357c6b",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Abyssal: Club and Arcade",
-                    description: "Immensely Customizable Bar and Arcade with many hangout areas including a bar and theater.",
-                    image: "Art Folder/VRCProject15.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_d02a5236-9024-49bd-ba3e-f6384a48872f",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "SpriteSheet Extractor and Animator",
-                    description: "Webpage for extracting Sprites and Animating them with Ease",
-                    image: "Art Folder/VRCProject22.jpg",
-                    link: "Sprite Sheet Extractor.html",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "360 Video Room",
-                    description: "360 video world with customization and customization options, group games.",
-                    image: "Art Folder/VRCProject16.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_6c65be07-8720-48d6-81a5-f3cb16e4fc58",
-                    progress: "Completed",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Vapor Waves",
-                    description: "Vaporwave themed beaches with multiple hangout areas and persistent customization.",
-                    image: "Art Folder/VRCProject17.jpg",
-                    link: "https://vrchat.com/home/launch?worldId=wrld_58f36abc-bcc4-419b-bc56-71d2dd288cf2",
-                    progress: { status: "Unfinished", percentage: 80 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Super Mario 64 Warfare",
-                    description: "VRChat Experience where chaos unfolds in a colliding Mushroom Kingdom, blending nostalgia with mayhem.",
-                    image: "Art Folder/VRCProject3.jpg",
-                    link: "SM64W.html",
-                    progress: { status: "Unfinished", percentage: 50 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Drifter's Passing",
-                    description: "World based off a Role-play Campaign, Noir Digital Cabaret diner/bar with option gameplay elements and record player with savable custom records.",
-                    image: "Art Folder/VRCProject18.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 40 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Joyride",
-                    description: "Vehicle Hangout world allowing you to chill in an automated drive in different select environments and vehicles.",
-                    image: "Art Folder/VRCProject19.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 40 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Sonic Adventure VR",
-                    description: "VRChat Remake of Sonic Adventure with rebuilt physics and multiplayer, reimagining the classic for VR.",
-                    image: "Art Folder/SAMCover.png",
-                    link: "SAVR.html",
-                    progress: { status: "Unfinished", percentage: 24 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "2000's TV Room",
-                    description: "A Nostalgic room to watch TV as though it were on actual cable television",
-                    image: "Art Folder/VRCProject20.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 20 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Deltapunk",
-                    description: "A Crossover Fan Game meant to continue the plot of Edgerunners Season 1 and combine the themes of both universes into an Shooter Action-RPG.",
-                    image: "Art Folder/Deltapunk.png",
-                    link: "",
-                    progress: { status: "Unfinished", percentage: 15 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Dear Mario",
-                    description: "VRChat Horror where Mario, distorted as ",
-                    image: "Art Folder/VRCProject5.jpg",
-                    link: "Dear-Mario.html",
-                    progress: { status: "Unfinished", percentage: 10 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "EGO/TRIP",
-                    description: "VRChat Experience guiding players through a surreal labyrinth of the mind, serving as a prelude to deeper narratives.",
-                    image: "Art Folder/VRCProject0.jpg",
-                    link: "ego-trip.html",
-                    progress: { status: "Unfinished", percentage: 10 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "The Static Speaks My Name Remake",
-                    description: "Remake of the Indie horror game of the same name, inside the mind and apartment of a tortured mind.",
-                    image: "Art Folder/VRCProject21.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 10 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Dreams of the Lost God",
-                    description: "A VRChat Open-World Action-RPG based on Internet Asthetics,  where players help the greek god Momus restore his world, Amygdala, and protect it from an ancient evil.",
-                    image: "Art Folder/content.png",
-                    link: "",
-                    progress: { status: "Unfinished", percentage: 10 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "End with You",
-                    description: "VRChat Experience where players have 30 minutes before an apocalypse to interact with NPCs, fulfill requests, or offer comfort, with a journal tracking routines.",
-                    image: "Art Folder/VRCProject1.jpg",
-                    link: "end-with-you.html",
-                    progress: { status: "Unfinished", percentage: 5 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Super Mario 64 Warfare: Zombies",
-                    description: "Zombies mode version of Super Mario 64 Warfare, based around co-op and wave survival, similar to Call of Duty Zombies.",
-                    image: "Art Folder/VRCProject22.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 5 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Escape Unit",
-                    description: "Asymmetric VRChat Horror where players navigate haunted locations against unique monsters, guided by control room allies.",
-                    image: "Art Folder/VRCProject6.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Tales of VRtallis",
-                    description: "VR JRPG where four warriors, hosting gods, battle corruption through turn-based combat and exploration.",
-                    image: "Art Folder/VRCProject7.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Maverick Force X",
-                    description: "Mega Man X-style VRChat game where players battle viral androids, gain boss abilities, and uncover a shadowy conspiracy.",
-                    image: "Art Folder/VRCProject8.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "The AIEOS Phenomenon",
-                    description: "VR Horror RPG where survivors hunt a mysterious signal in a dystopian world, wielding AI-powered nano-tech.",
-                    image: "Art Folder/VRCProject9.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Tsukiō Koromashi (Moon King: Roll it Up!)",
-                    description: "VR Katamari-inspired game where players roll clutter to form planets for the Moon King",
-                    image: "Art Folder/VRCProject10.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "FNAF Prophunt",
-                    description: "Prophunt based in Freddy Fazbear",
-                    image: "Art Folder/VRCProject23.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Out of Hell",
-                    description: "A VRChat Competitive Climbing Horror Game, where players compete to reach a mountain top while outclimbing a pursuing monster.",
-                    image: "Art Folder/VRCProject24.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                }
-            ],
-            other: [
-                {
-                    title: "Wraith Blade VRChat Project",
-                    description: "Arcade Machine Project made for VRChat, inspired by Vampire Survivors.",
-                    image: "Art Folder/OtherProject12.jpg",
-                    link: "#",
-                    progress: { status: "Unfinished", percentage: 20 },
-                    isAvailable: "O"
-                },
-                {
-                    title: "Red Threads",
-                    description: "Book/Audio Play where a detective hunts a serial killer stitching victims into grotesque displays, unraveling a chilling mystery.",
-                    image: "Art Folder/OtherProject2.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Oracle",
-                    description: "Book following a therapist haunted by a patient",
-                    image: "Art Folder/OtherProject3.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "M.E.G Notes 0017| Maggie",
-                    description: "Backrooms Story where a young girl and a Party-Pooper entity form a bond to survive the Backrooms",
-                    image: "Art Folder/OtherProject4.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Think Tank",
-                    description: "Book Idea where soldiers and a sentient hand, trapped in a Vietnam War tank, descend into madness.",
-                    image: "Art Folder/OtherProject5.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "The Place Unknown",
-                    description: "Short Story where immortals confront an abyss, one paralyzed by fear, exploring existential dread.",
-                    image: "Art Folder/OtherProject6.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "VStalkR16",
-                    description: "VR Horror Series where players hunt a hacker in a decaying virtual world after a fatal incident.",
-                    image: "Art Folder/OtherProject1.jpg",
-                    link: "VS16.html",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Abyl DND System",
-                    description: "A Table Top System made for Dungeons and Dragons to make Combat and general gameplay simple and intuitive",
-                    image: "Art Folder/OtherProjectDND.jpg",
-                    link: "DND.html",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Apex",
-                    description: "Action Horror Film where an assassin battles a supernatural killer to save his daughter in a gritty showdown.",
-                    image: "Art Folder/OtherProject7.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Let's Hate Each Other",
-                    description: "Dark Comedy Horror where two girls escalate a rivalry through heinous acts, blending humor and horror.",
-                    image: "Art Folder/OtherProject8.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Reincarnate The Apex",
-                    description: "Isekai where a fish reincarnates as monster Gyo, bonding with mage Ekverdt in a fantastical world.",
-                    image: "Art Folder/OtherProject9.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "Charlotte & Ben",
-                    description: "Romance War Story of a man and woman longing for reunion amidst a devastating war",
-                    image: "Art Folder/OtherProject10.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "LimeLight",
-                    description: "Crime Thriller where a lawyer, blackmailed by a client, navigates a dangerous murder case conspiracy.",
-                    image: "Art Folder/OtherProject11.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                },
-                {
-                    title: "REPO Board Game",
-                    description: "A board game based on the game mechanics of REPO, the Roguelite Horror Party Game.",
-                    image: "Art Folder/OtherProject13.jpg",
-                    link: "#",
-                    progress: "Concept",
-                    isAvailable: "O"
-                }
-            ]
-        };
+        const projectData = window.portfolioProjects;
 
         let carouselStates = {
             games: { currentIndex: 0 },
@@ -1698,7 +1302,9 @@ function checkPassword() {
                 
                 if (!isUnavailable) {
                     // Progress bar HTML
-                    if (project.progress === "Completed") {
+                    if (project.progressLabel) {
+                        progressHTML = `<div class="portfolio-stage">${project.progressLabel}</div>`;
+                    } else if (project.progress === "Completed") {
                         progressHTML = `
                             <div class="progress-bar">
                                 <div class="progress-bar-fill" style="width: 100%;"></div>
@@ -1717,7 +1323,7 @@ function checkPassword() {
                             <div class="progress-bar">
                                 <div class="progress-bar-fill" style="width: ${project.progress.percentage}%;"></div>
                             </div>
-                            <div class="progress-bar-label">Progress: Unfinished (${project.progress.percentage}%)</div>
+                            <div class="progress-bar-label">Estimated progress: ~${project.progress.percentage}%</div>
                         `;
                     }
                     
@@ -1734,11 +1340,13 @@ function checkPassword() {
                 }
 
                 card.innerHTML = `
-                    <img src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                    <img loading="lazy" decoding="async" src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
                     <div class="project-card-content">
                         <h3>${project.title}</h3>
                         <p>${project.description}</p>
                         ${progressHTML}
+                        ${project.phase ? `<div class="portfolio-stage">${project.phase}</div>` : ''}
+                        ${project.kind ? `<div class="portfolio-kind">${project.kind}</div>` : ''}
                         ${linkStatusHTML}
                     </div>
                 `;
@@ -1778,15 +1386,16 @@ function checkPassword() {
                 if (index === currentIndex) {
                     const content = card.querySelector('.project-card-content');
                     const img = card.querySelector('img');
-                    const contentHeight = content.offsetHeight;
-                    const imgHeight = isMobile ? 180 : 200;
-                    cardHeight = contentHeight + imgHeight + 4; // Include border
+                    const imgHeight = img.offsetHeight || (isMobile ? 180 : 200);
+                    const availableHeight = Math.max(220, carousel.parentElement.clientHeight - 80);
+                    content.style.maxHeight = `${Math.max(80, availableHeight - imgHeight - 4)}px`;
+                    cardHeight = Math.min(availableHeight, content.offsetHeight + imgHeight + 4);
                 }
                 
                 card.style.height = `${cardHeight}px`;
                 
                 if (isMobile) {
-                    const cardWidth = 280;
+                    const cardWidth = card.offsetWidth;
                     const translateX = offset * (cardWidth + 20);
                     const scale = absOffset === 0 ? 1 : 0.85;
                     const opacity = absOffset === 0 ? 1 : 0.3;
@@ -1847,7 +1456,9 @@ function checkPassword() {
             touchStartPos: { x: 0, y: 0 },
             lastTouchPos: { x: 0, y: 0 },
             isTouching: false,
-            isPanning: false
+            isPanning: false,
+            scale: 1, pointers: new Map(), gesture: null, pinchDistance: 0,
+            panToken: 0, panFrame: null, lastFrame: 0
         };
 
         const galleryImages = [
@@ -1855,7 +1466,7 @@ function checkPassword() {
             'GalleryProject5(Kalen the Demon Early).jpg', 'GalleryProject6(Kirby on a Cloud).jpg', 'GalleryProject7(You Make Me Smile).jpg', 'GalleryProject8(EgoDive Conflicting Interests).jpg', 
             'GalleryProject9(The Stranger).jpg', 'GalleryProject10(Tarot in Absentia).jpg', 'GalleryProject11(Fracture).jpg', 'GalleryProject12(Self Portrait).jpg', 
             'GalleryProject13(Ko Overview).jpg', 'GalleryProject14(Usurper KUA)[The fusion of my Ego/Dive characters "Midas" and "Neuro". Was for a TLT Music Video lol].jpg', 'GalleryProject15(C.U,A,C Poster)[Poster for my friends Homebrew DND Campaign, located in my "Drifters Passing" world].jpg', 'GalleryProject16(CodeMonkeys Poster).jpg', 
-            'GalleryProject17(Drifters Poster)[Poster for my friends Homebrew DND Campaign, located in my "Drifters Passing" world-- This is my Characters faction/group lol].jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art)[Art of the character that would become my first VRChat Avatar!].jpg', 'GalleryProject20(The Lighthouse).jpg', 
+            'GalleryProject17(Drifters Poster)[Poster for my friends Homebrew DND Campaign, located in my "Drifters Passing" world-- This is my Characters faction/group lol].jpg', 'GalleryProject18(Bio Chip Instructional Poster).jpg', 'GalleryProject19(Gilly Art)[Art of the character that would become my first VRChat Avatar!].jpg', 'GalleryProject20(The Lightouse).jpg',
             'GalleryProject21(Lizzie).jpg', 'GalleryProject22(Roxie)[Like her design a lot lol].jpg', 'GalleryProject23(Madam Mazz).jpg', 'GalleryProject24(The Blue-Horned Demon).jpg', 
             'GalleryProject25(Grown-Up Steven Concept Art).jpg', 'GalleryProject26(Meadow).jpg', 'GalleryProject27.jpg', 'GalleryProject28(Snip).jpg', 
             'GalleryProject29(VeeVee).jpg', 'GalleryProject30(It\'s Still You).jpg', 'GalleryProject31(Nugz).jpg', 'GalleryProject32(Izzy Pumpkin).jpg', 
@@ -1863,7 +1474,7 @@ function checkPassword() {
             'GalleryProject37(Limmerance).jpg', 'GalleryProject38(Ego Crew (Old)).jpg', 'GalleryProject39(Ego Posse).jpg', 'GalleryProject40(Lmmerence).jpg', 
             'GalleryProject41(FNF  Vs.  Null)[Concept art for a potential FNF fan week vs. the Ego/Dive Chracters.].jpg', 'GalleryProject42(EgoDive Cover Art).jpg', 'GalleryProject43(Accord).jpg', 'GalleryProject44(Null & Neuro).jpg', 
             'GalleryProject45(Neuro).jpg', 'GalleryProject46(Ugly is Beautiful Oliver Tree Fan Art).jpg', 'GalleryProject47(Self Portrait).jpg', 'GalleryProject48(From the Shadows).jpg', 
-            'GalleryProject49(Dolor Art).jpg', 'GalleryProject50(Duality Shattered\\).jpg', 'GalleryProject51(Abstract).jpg', 'GalleryProject52(DHMIS Kill Your TV).jpg', 
+            'GalleryProject49(Dolor Art).jpg', 'GalleryProject50.jpg', 'GalleryProject51(Abstract).jpg', 'GalleryProject52(DHMIS Kill Your TV).jpg',
             'GalleryProject53.jpg', 'GalleryProject54.jpg', 'GalleryProject55(Possessed Amy).jpg', 'GalleryProject56(Grimm).jpg', 
             'GalleryProject57(Drink at the Bar).jpg', 'GalleryProject58(Kimmy).jpg', 'GalleryProject59(Gorillaz Fan Art).jpg', 'GalleryProject60(Jester).jpg', 
             'GalleryProject61(Hollowed).jpg', 'GalleryProject62(Kalen).jpg', 'GalleryProject63(Wisp)[Fan art of an OC by a creator I like].jpg', 'GalleryProject64(Old Null and Void Art).jpg', 
@@ -1905,460 +1516,203 @@ function checkPassword() {
 
         function initializeGallery() {
             const viewport = document.getElementById('galleryViewport');
-            const canvas = document.getElementById('galleryCanvas');
-            
-            if (!viewport || !canvas || galleryState.images.length > 0) return;
-            
-            const minSpacing = 350;
-            const maxAttempts = 100;
-            const imageSize = 300;
-            
-            const viewportRect = viewport.getBoundingClientRect();
-            const imagesPerViewport = 2;
-            const viewportArea = viewportRect.width * viewportRect.height;
-            const imageArea = imageSize * imageSize;
-            const totalImages = Math.max(galleryImages.length, Math.ceil((viewportArea / imageArea) * imagesPerViewport));
-            
-            const imagesToUse = galleryImages.slice(0, totalImages);
-            if (totalImages > galleryImages.length) {
-                for (let i = galleryImages.length; i < totalImages; i++) {
-                    imagesToUse.push(galleryImages[i % galleryImages.length]);
-                }
-            }
-            
-            imagesToUse.forEach((image, index) => {
-                let position;
-                let attempts = 0;
-                
+            if (!viewport || galleryState.images.length) return;
+            const middleX = galleryState.worldSize.width / 2, middleY = galleryState.worldSize.height / 2;
+            galleryImages.forEach((image, index) => {
+                let position, attempts = 0;
                 do {
-                    position = {
-                        x: Math.random() * (galleryState.worldSize.width - imageSize),
-                        y: Math.random() * (galleryState.worldSize.height - imageSize),
-                        image: image,
-                        id: `gallery-img-${index}`,
-                        velocityX: 0,
-                        velocityY: 0
-                    };
+                    position = { x: Math.random() * (galleryState.worldSize.width - 300), y: Math.random() * (galleryState.worldSize.height - 300), image, id:`gallery-img-${index}`, velocityX:0, velocityY:0 };
                     attempts++;
-                } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
-                
+                } while (isOverlapping(position, galleryState.images, 350) && attempts < 100);
+                // Guarantee an actual visible starting artwork, rather than counting the offscreen buffer.
+                if (index === 0) { position.x = middleX - 100; position.y = middleY - 100; }
+                if (index === 1) { position.x = middleX + 320; position.y = middleY - 80; }
+                if (index === 2) { position.x = middleX - 480; position.y = middleY - 80; }
                 galleryState.images.push(position);
             });
-            
-            viewport.addEventListener('mousemove', handleGalleryMouseMove);
-            viewport.addEventListener('mouseleave', handleGalleryMouseLeave);
-            
-            // Touch events for mobile
-            viewport.addEventListener('touchstart', handleGalleryTouchStart, { passive: false });
-            viewport.addEventListener('touchmove', handleGalleryTouchMove, { passive: false });
-            viewport.addEventListener('touchend', handleGalleryTouchEnd, { passive: false });
-            
-            galleryState.canvasOffset.x = -galleryState.worldSize.width / 2 + viewportRect.width / 2;
-            galleryState.canvasOffset.y = -galleryState.worldSize.height / 2 + viewportRect.height / 2;
-            
-            loadAllVisibleImages();
+            viewport.addEventListener('pointerdown', beginGalleryPointer);
+            viewport.addEventListener('pointermove', moveGalleryPointer);
+            viewport.addEventListener('pointerup', endGalleryPointer);
+            viewport.addEventListener('pointercancel', cancelGalleryPointer);
+            viewport.addEventListener('lostpointercapture', cancelGalleryPointer);
+            viewport.addEventListener('pointerleave', () => { if (!galleryState.pointers.size) galleryState.mousePos={x:.5,y:.5}; });
+            viewport.addEventListener('wheel', event => {
+                if (event.target.closest('.gallery-tools,.gallery-image-info')) return;
+                event.preventDefault();
+                const rect=viewport.getBoundingClientRect();
+                zoomGallery(galleryState.scale * Math.exp(-event.deltaY*.0015),event.clientX-rect.left,event.clientY-rect.top);
+            },{passive:false});
+            viewport.addEventListener('dragstart', event=>event.preventDefault());
+            document.getElementById('galleryZoomOut').addEventListener('click',()=>zoomGallery(galleryState.scale/1.2));
+            document.getElementById('galleryZoomIn').addEventListener('click',()=>zoomGallery(galleryState.scale*1.2));
+            document.getElementById('galleryReset').addEventListener('click',resetGalleryView);
+            document.getElementById('galleryCloseArt').addEventListener('click',closeCenteredImage);
+            resetGalleryView();
         }
-
-        function handleGalleryTouchStart(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            galleryState.touchStartPos.x = touch.clientX;
-            galleryState.touchStartPos.y = touch.clientY;
-            galleryState.lastTouchPos.x = touch.clientX;
-            galleryState.lastTouchPos.y = touch.clientY;
-            galleryState.isTouching = true;
-        }
-
-        function handleGalleryTouchMove(e) {
-            e.preventDefault();
-            if (!galleryState.isTouching) return;
-            
-            const touch = e.touches[0];
-            const deltaX = touch.clientX - galleryState.lastTouchPos.x;
-            const deltaY = touch.clientY - galleryState.lastTouchPos.y;
-            
-            galleryState.canvasOffset.x += deltaX;
-            galleryState.canvasOffset.y += deltaY;
-            
-            galleryState.lastTouchPos.x = touch.clientX;
-            galleryState.lastTouchPos.y = touch.clientY;
-            
-            const canvas = document.getElementById('galleryCanvas');
-            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-            
-            updateVisibleImages();
-        }
-
-        function handleGalleryTouchEnd(e) {
-            e.preventDefault();
-            galleryState.isTouching = false;
-        }
-
         function isOverlapping(newPos, existingImages, minSpacing) {
-            return existingImages.some(img => {
-                const dx = newPos.x - img.x;
-                const dy = newPos.y - img.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                return distance < minSpacing;
-            });
+            return existingImages.some(img=>Math.hypot(newPos.x-img.x,newPos.y-img.y)<minSpacing);
         }
-
-        function handleGalleryMouseMove(e) {
-            if (galleryState.isTouching) return;
-            
-            const viewport = e.currentTarget;
-            const rect = viewport.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            galleryState.mousePos.x = x / rect.width;
-            galleryState.mousePos.y = y / rect.height;
+        function applyGalleryTransform() {
+            const canvas=document.getElementById('galleryCanvas');
+            if(canvas)canvas.style.transform=`translate(${galleryState.canvasOffset.x}px,${galleryState.canvasOffset.y}px) scale(${galleryState.scale})`;
+            const label=document.getElementById('galleryZoomLabel');
+            if(label)label.textContent=Math.round(galleryState.scale*100)+'%';
         }
-
-        function handleGalleryMouseLeave() {
-            if (galleryState.isTouching) return;
-            
-            galleryState.mousePos.x = 0.5;
-            galleryState.mousePos.y = 0.5;
+        function resetGalleryView() {
+            closeCenteredImage(); clearGalleryPointers();
+            const rect=document.getElementById('galleryViewport').getBoundingClientRect();
+            const first=galleryState.images[0];
+            galleryState.scale=1;
+            const maxSize=innerWidth<=768?200:300;
+            galleryState.canvasOffset={x:rect.width/2-first.x-maxSize/2,y:rect.height/2-first.y-maxSize/2};
+            galleryState.velocity={x:0,y:0};galleryState.mousePos={x:.5,y:.5};
+            applyGalleryTransform();updateVisibleImages();
         }
-
-        function updateGalleryView() {
-            if (!galleryState.isGalleryActive) {
+        function zoomGallery(nextScale, x, y) {
+            closeCenteredImage();
+            const rect=document.getElementById('galleryViewport').getBoundingClientRect();
+            x=x??rect.width/2;y=y??rect.height/2;
+            const old=galleryState.scale,next=Math.max(.5,Math.min(2.5,nextScale));
+            const worldX=(x-galleryState.canvasOffset.x)/old,worldY=(y-galleryState.canvasOffset.y)/old;
+            galleryState.scale=next;galleryState.canvasOffset={x:x-worldX*next,y:y-worldY*next};
+            galleryState.velocity={x:0,y:0};galleryState.mousePos={x:.5,y:.5};
+            applyGalleryTransform();updateVisibleImages();
+        }
+        function beginGalleryPointer(event) {
+            if(event.target.closest('.gallery-tools')||event.button>0)return;
+            event.preventDefault();
+            const viewport=event.currentTarget;
+            viewport.setPointerCapture(event.pointerId);
+            galleryState.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+            galleryState.isTouching=true;galleryState.velocity={x:0,y:0};galleryState.mousePos={x:.5,y:.5};
+            if(galleryState.pointers.size===1){
+                galleryState.gesture={x:event.clientX,y:event.clientY,lastX:event.clientX,lastY:event.clientY,moved:false,cancelTap:false,target:event.target.closest('.gallery-image'),scrollTarget:event.target.closest('.gallery-image-info')};
+                if(galleryState.gesture.scrollTarget)galleryState.gesture.cancelTap=true;
+            }else{
+                galleryState.gesture.cancelTap=true;
+                const points=[...galleryState.pointers.values()];
+                galleryState.pinchDistance=Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y);
+                closeCenteredImage();
+            }
+        }
+        function moveGalleryPointer(event) {
+            const viewport=event.currentTarget,rect=viewport.getBoundingClientRect();
+            if(!galleryState.pointers.has(event.pointerId)){
+                if(event.pointerType==='mouse'&&!galleryState.focusedImage&&!galleryState.isPanning&&!event.target.closest('.gallery-tools'))galleryState.mousePos={x:(event.clientX-rect.left)/rect.width,y:(event.clientY-rect.top)/rect.height};
                 return;
             }
-            
-            const canvas = document.getElementById('galleryCanvas');
-            if (!canvas) return;
-            
-            // Only apply movement if not touching or panning
-            if (!galleryState.isTouching && !galleryState.isPanning) {
-                const maxSpeed = 15;
-                const deadZone = 0.2;
-                
-                const distX = galleryState.mousePos.x - 0.5;
-                const distY = galleryState.mousePos.y - 0.5;
-                
-                const effectiveDistX = Math.abs(distX) < deadZone ? 0 : distX - (deadZone * Math.sign(distX));
-                const effectiveDistY = Math.abs(distY) < deadZone ? 0 : distY - (deadZone * Math.sign(distY));
-                
-                const targetVelX = effectiveDistX * maxSpeed * 2;
-                const targetVelY = effectiveDistY * maxSpeed * 2;
-                
-                const smoothing = 0.1;
-                galleryState.velocity.x += (targetVelX - galleryState.velocity.x) * smoothing;
-                galleryState.velocity.y += (targetVelY - galleryState.velocity.y) * smoothing;
-                
-                galleryState.canvasOffset.x -= galleryState.velocity.x;
-                galleryState.canvasOffset.y -= galleryState.velocity.y;
-                
-                const arrowThreshold = 1;
-                document.getElementById('arrowLeft').classList.toggle('active', galleryState.velocity.x < -arrowThreshold);
-                document.getElementById('arrowRight').classList.toggle('active', galleryState.velocity.x > arrowThreshold);
-                document.getElementById('arrowTop').classList.toggle('active', galleryState.velocity.y < -arrowThreshold);
-                document.getElementById('arrowBottom').classList.toggle('active', galleryState.velocity.y > arrowThreshold);
-            } else {
-                // Clear arrow indicators when touching or panning
-                document.getElementById('arrowLeft').classList.remove('active');
-                document.getElementById('arrowRight').classList.remove('active');
-                document.getElementById('arrowTop').classList.remove('active');
-                document.getElementById('arrowBottom').classList.remove('active');
+            event.preventDefault();galleryState.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+            const gesture=galleryState.gesture;if(!gesture)return;
+            if(gesture.scrollTarget){gesture.scrollTarget.scrollTop-=(event.clientY-gesture.lastY)/galleryState.scale;gesture.lastY=event.clientY;return;}
+            if(galleryState.pointers.size>1){
+                const points=[...galleryState.pointers.values()],distance=Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y);
+                if(galleryState.pinchDistance>0)zoomGallery(galleryState.scale*distance/galleryState.pinchDistance,(points[0].x+points[1].x)/2-rect.left,(points[0].y+points[1].y)/2-rect.top);
+                galleryState.pinchDistance=distance;gesture.cancelTap=true;return;
             }
-            
-            // Always apply physics to images
-            const repulsionStrength = 0.5;
-            const repulsionDistance = 350;
-            const damping = 0.9;
-            
-            galleryState.images.forEach((img1, i) => {
-                let forceX = 0;
-                let forceY = 0;
-                
-                galleryState.images.forEach((img2, j) => {
-                    if (i !== j) {
-                        const dx = img1.x - img2.x;
-                        const dy = img1.y - img2.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < repulsionDistance && distance > 0) {
-                            const force = (repulsionDistance - distance) * repulsionStrength / distance;
-                            forceX += dx * force;
-                            forceY += dy * force;
-                        }
-                    }
-                });
-                
-                img1.velocityX = (img1.velocityX + forceX) * damping;
-                img1.velocityY = (img1.velocityY + forceY) * damping;
-                
-                img1.x += img1.velocityX;
-                img1.y += img1.velocityY;
-                
-                img1.x = Math.max(0, Math.min(img1.x, galleryState.worldSize.width));
-                img1.y = Math.max(0, Math.min(img1.y, galleryState.worldSize.height));
-                
-                const imgElement = galleryState.loadedImages.get(img1.id);
-                if (imgElement) {
-                    imgElement.style.left = img1.x + 'px';
-                    imgElement.style.top = img1.y + 'px';
-                }
+            if(!gesture.moved&&Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)>8){gesture.moved=true;closeCenteredImage();}
+            if(gesture.moved){
+                galleryState.canvasOffset.x+=event.clientX-gesture.lastX;galleryState.canvasOffset.y+=event.clientY-gesture.lastY;
+                applyGalleryTransform();updateVisibleImages();
+            }
+            gesture.lastX=event.clientX;gesture.lastY=event.clientY;
+        }
+        function finishGalleryPointer(event,cancelled) {
+            if(!galleryState.pointers.has(event.pointerId))return;
+            event.preventDefault();galleryState.pointers.delete(event.pointerId);
+            const gesture=galleryState.gesture;
+            if(galleryState.pointers.size){
+                const remaining=[...galleryState.pointers.values()][0];
+                if(gesture){gesture.cancelTap=true;gesture.lastX=remaining.x;gesture.lastY=remaining.y;gesture.x=remaining.x;gesture.y=remaining.y;}
+                return;
+            }
+            galleryState.gesture=null;galleryState.pinchDistance=0;galleryState.isTouching=false;
+            galleryState.mousePos={x:.5,y:.5};galleryState.velocity={x:0,y:0};
+            if(!cancelled&&gesture&&!gesture.moved&&!gesture.cancelTap){
+                if(gesture.target?.isConnected){centerImage(gesture.target);playClickSound();}else closeCenteredImage();
+            }
+        }
+        function endGalleryPointer(event){finishGalleryPointer(event,false);}
+        function cancelGalleryPointer(event){finishGalleryPointer(event,true);}
+        function clearGalleryPointers(){galleryState.pointers.clear();galleryState.gesture=null;galleryState.pinchDistance=0;galleryState.isTouching=false;galleryState.mousePos={x:.5,y:.5};galleryState.velocity={x:0,y:0};}
+        function updateGalleryView(time) {
+            if(!galleryState.isGalleryActive){galleryState.animationId=null;return;}
+            const step=Math.min(2,(time-(galleryState.lastFrame||time))/16.67)||1;galleryState.lastFrame=time;
+            if(!galleryState.isTouching&&!galleryState.isPanning&&!galleryState.focusedImage){
+                const dx=galleryState.mousePos.x-.5,dy=galleryState.mousePos.y-.5;
+                const targetX=(Math.abs(dx)<.2?0:dx-.2*Math.sign(dx))*30,targetY=(Math.abs(dy)<.2?0:dy-.2*Math.sign(dy))*30;
+                galleryState.velocity.x+=(targetX-galleryState.velocity.x)*.1;galleryState.velocity.y+=(targetY-galleryState.velocity.y)*.1;
+                galleryState.canvasOffset.x-=galleryState.velocity.x*step;galleryState.canvasOffset.y-=galleryState.velocity.y*step;
+            }else galleryState.velocity={x:0,y:0};
+            document.getElementById('arrowLeft').classList.toggle('active',galleryState.velocity.x<-1);
+            document.getElementById('arrowRight').classList.toggle('active',galleryState.velocity.x>1);
+            document.getElementById('arrowTop').classList.toggle('active',galleryState.velocity.y<-1);
+            document.getElementById('arrowBottom').classList.toggle('active',galleryState.velocity.y>1);
+            // Retain the floating collage motion, but freeze the artwork being inspected.
+            galleryState.images.forEach((a,i)=>{
+                if(a.id===galleryState.focusedImage?.id)return;
+                let fx=0,fy=0;
+                galleryState.images.forEach((other,j)=>{if(i===j)return;const dx=a.x-other.x,dy=a.y-other.y,d=Math.hypot(dx,dy);if(d>0&&d<350){const force=(350-d)*.5/d;fx+=dx*force;fy+=dy*force;}});
+                a.velocityX=(a.velocityX+fx)*.9;a.velocityY=(a.velocityY+fy)*.9;
+                a.x=Math.max(0,Math.min(a.x+a.velocityX*step,galleryState.worldSize.width-300));a.y=Math.max(0,Math.min(a.y+a.velocityY*step,galleryState.worldSize.height-300));
+                const el=galleryState.loadedImages.get(a.id);if(el){el.style.left=a.x+'px';el.style.top=a.y+'px';}
             });
-            
-            // Handle world wrapping
-            const wrapBuffer = 1000;
-            if (galleryState.canvasOffset.x > wrapBuffer) {
-                galleryState.canvasOffset.x -= galleryState.worldSize.width;
-                repositionImages();
-            } else if (galleryState.canvasOffset.x < -galleryState.worldSize.width - wrapBuffer) {
-                galleryState.canvasOffset.x += galleryState.worldSize.width;
-                repositionImages();
+            if(!galleryState.focusedImage&&!galleryState.isPanning){
+                const width=galleryState.worldSize.width*galleryState.scale,height=galleryState.worldSize.height*galleryState.scale;
+                if(galleryState.canvasOffset.x>1000)galleryState.canvasOffset.x-=width;
+                else if(galleryState.canvasOffset.x<-width-1000)galleryState.canvasOffset.x+=width;
+                if(galleryState.canvasOffset.y>1000)galleryState.canvasOffset.y-=height;
+                else if(galleryState.canvasOffset.y<-height-1000)galleryState.canvasOffset.y+=height;
             }
-            
-            if (galleryState.canvasOffset.y > wrapBuffer) {
-                galleryState.canvasOffset.y -= galleryState.worldSize.height;
-                repositionImages();
-            } else if (galleryState.canvasOffset.y < -galleryState.worldSize.height - wrapBuffer) {
-                galleryState.canvasOffset.y += galleryState.worldSize.height;
-                repositionImages();
-            }
-            
-            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-            
-            updateVisibleImages();
-            
-            // Continue animation loop
-            galleryState.animationId = requestAnimationFrame(updateGalleryView);
+            applyGalleryTransform();updateVisibleImages();galleryState.animationId=requestAnimationFrame(updateGalleryView);
         }
-
-        function loadAllVisibleImages() {
-            updateVisibleImages();
-        }
-
+        function loadAllVisibleImages(){updateVisibleImages();}
         function updateVisibleImages() {
-            const viewport = document.getElementById('galleryViewport');
-            if (!viewport) return;
-            
-            const viewportRect = viewport.getBoundingClientRect();
-            const buffer = 400;
-            const minVisibleImages = 2;
-            
-            let visibleCount = 0;
-            const visibleImages = [];
-            
-            galleryState.images.forEach(imgData => {
-                const worldX = imgData.x + galleryState.canvasOffset.x;
-                const worldY = imgData.y + galleryState.canvasOffset.y;
-                
-                const isVisible = (
-                    worldX > -buffer && 
-                    worldX < viewportRect.width + buffer &&
-                    worldY > -buffer && 
-                    worldY < viewportRect.height + buffer
-                );
-                
-                if (isVisible) {
-                    visibleCount++;
-                    visibleImages.push(imgData);
-                }
-                
-                if (isVisible && !galleryState.loadedImages.has(imgData.id)) {
-                    const imgElement = createGalleryImage(imgData);
-                    document.getElementById('galleryCanvas').appendChild(imgElement);
-                    galleryState.loadedImages.set(imgData.id, imgElement);
-                } else if (!isVisible && galleryState.loadedImages.has(imgData.id)) {
-                    const farBuffer = 800;
-                    if (worldX < -farBuffer || worldX > viewportRect.width + farBuffer ||
-                        worldY < -farBuffer || worldY > viewportRect.height + farBuffer) {
-                        const imgElement = galleryState.loadedImages.get(imgData.id);
-                        imgElement.remove();
-                        galleryState.loadedImages.delete(imgData.id);
-                    }
-                }
-            });
-            
-            if (visibleCount < minVisibleImages) {
-                const imagesToAdd = minVisibleImages - visibleCount;
-                const imageSize = 300;
-                const minSpacing = 350;
-                const maxAttempts = 50;
-                
-                for (let i = 0; i < imagesToAdd; i++) {
-                    let position;
-                    let attempts = 0;
-                    
-                    do {
-                        const viewportX = Math.random() * viewportRect.width;
-                        const viewportY = Math.random() * viewportRect.height;
-                        position = {
-                            x: viewportX - galleryState.canvasOffset.x,
-                            y: viewportY - galleryState.canvasOffset.y,
-                            image: galleryImages[Math.floor(Math.random() * galleryImages.length)],
-                            id: `gallery-img-${galleryState.images.length + i}`,
-                            velocityX: 0,
-                            velocityY: 0
-                        };
-                        attempts++;
-                    } while (isOverlapping(position, galleryState.images, minSpacing) && attempts < maxAttempts);
-                    
-                    if (attempts < maxAttempts) {
-                        galleryState.images.push(position);
-                        const imgElement = createGalleryImage(position);
-                        document.getElementById('galleryCanvas').appendChild(imgElement);
-                        galleryState.loadedImages.set(position.id, imgElement);
-                    }
-                }
-            }
-        }
-
-        function repositionImages() {
-            galleryState.loadedImages.forEach((imgElement, id) => {
-                const imgData = galleryState.images.find(img => img.id === id);
-                if (imgData) {
-                    imgElement.style.left = imgData.x + 'px';
-                    imgElement.style.top = imgData.y + 'px';
-                }
+            const viewport=document.getElementById('galleryViewport');if(!viewport)return;
+            const rect=viewport.getBoundingClientRect(),scale=galleryState.scale;
+            galleryState.images.forEach(data=>{
+                const x=data.x*scale+galleryState.canvasOffset.x,y=data.y*scale+galleryState.canvasOffset.y;
+                const visible=x+300*scale>-400&&x<rect.width+400&&y+300*scale>-400&&y<rect.height+400;
+                if(visible&&!galleryState.loadedImages.has(data.id)){const el=createGalleryImage(data);document.getElementById('galleryCanvas').append(el);galleryState.loadedImages.set(data.id,el);}
+                else if(!visible&&galleryState.loadedImages.has(data.id)&&data.id!==galleryState.focusedImage?.id){const el=galleryState.loadedImages.get(data.id);el.remove();galleryState.loadedImages.delete(data.id);}
             });
         }
-
-        function createGalleryImage(imgData) {
-            const container = document.createElement('div');
-            container.className = 'gallery-image';
-            container.style.left = imgData.x + 'px';
-            container.style.top = imgData.y + 'px';
-            container.id = imgData.id;
-            
-            const imageData = parseImageData(imgData.image);
-            
-            const img = document.createElement('img');
-            img.src = `Art Gallery/${imageData.cleanFilename}`;
-            img.alt = imageData.title;
-            
-            img.onerror = function() { 
-                console.log('Failed to load:', imageData.cleanFilename);
-                this.src = 'Art Folder/placeholder.jpg'; 
-            };
-            
-            const info = document.createElement('div');
-            info.className = 'gallery-image-info';
-            
-            const title = document.createElement('div');
-            title.className = 'gallery-image-title';
-            title.textContent = `"${imageData.title}"`;
-            info.appendChild(title);
-            
-            if (imageData.description) {
-                const desc = document.createElement('div');
-                desc.className = 'gallery-image-description';
-                desc.textContent = imageData.description;
-                info.appendChild(desc);
-            }
-            
-            container.appendChild(img);
-            container.appendChild(info);
-            
-            const isMobile = window.innerWidth <= 768;
-            
-            // Function to handle the click/tap
-            const handleImageClick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                centerImage(container);
-                playClickSound();
-            };
-            
-            // Add both click and touch listeners for mobile compatibility
-            container.addEventListener('click', handleImageClick);
-            
-            if (isMobile) {
-                container.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    centerImage(container);
-                    playClickSound();
-                });
-            }
-            
-            setTimeout(() => container.classList.add('loaded'), 50);
-            
-            return container;
+        function repositionImages(){galleryState.loadedImages.forEach((el,id)=>{const d=galleryState.images.find(x=>x.id===id);if(d){el.style.left=d.x+'px';el.style.top=d.y+'px';}});}
+        function createGalleryImage(data) {
+            const container=document.createElement('div');container.className='gallery-image';container.id=data.id;container.style.left=data.x+'px';container.style.top=data.y+'px';container.tabIndex=0;container.setAttribute('role','button');
+            const parsed=parseImageData(data.image);container.setAttribute('aria-label','View '+parsed.title);container.setAttribute('aria-expanded','false');
+            const img=document.createElement('img');img.src='Art Gallery/'+parsed.cleanFilename;img.alt=parsed.title;img.draggable=false;
+            img.onerror=function(){this.onerror=null;this.src='Art Folder/placeholder.jpg';};
+            const info=document.createElement('div');info.className='gallery-image-info';const title=document.createElement('div');title.className='gallery-image-title';title.textContent='"'+parsed.title+'"';info.append(title);
+            if(parsed.description){const desc=document.createElement('div');desc.className='gallery-image-description';desc.textContent=parsed.description;info.append(desc);}
+            container.append(img,info);
+            container.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(event.detail===0){centerImage(container);playClickSound();}});
+            container.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();centerImage(container);playClickSound();}});
+            requestAnimationFrame(()=>container.classList.add('loaded'));return container;
         }
-
         function centerImage(container) {
-            if (galleryState.focusedImage && galleryState.focusedImage !== container) {
-                galleryState.focusedImage.classList.remove('centered');
-                galleryState.focusedImage.classList.remove('show-description');
-            }
-            
-            // Toggle centered state
-            if (container.classList.contains('centered')) {
-                container.classList.remove('centered');
-                container.classList.remove('show-description');
-                galleryState.focusedImage = null;
-                return;
-            }
-            
-            // Get the image's current position relative to viewport
-            const imgData = galleryState.images.find(img => img.id === container.id);
-            if (!imgData) return;
-            
-            const viewport = document.getElementById('galleryViewport');
-            const viewportRect = viewport.getBoundingClientRect();
-            
-            // Calculate target offset to center this image
-            const targetOffsetX = viewportRect.width / 2 - imgData.x - 150;
-            const targetOffsetY = viewportRect.height / 2 - imgData.y - 150;
-            
-            // Stop any ongoing animation and set panning state
-            galleryState.isPanning = true;
-            
-            // Animate the pan
-            const startOffsetX = galleryState.canvasOffset.x;
-            const startOffsetY = galleryState.canvasOffset.y;
-            const startTime = performance.now();
-            const duration = 600; // milliseconds
-            
-            function animatePan(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function (ease-in-out)
-                const easeProgress = progress < 0.5 
-                    ? 2 * progress * progress 
-                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-                
-                // Update canvas position
-                galleryState.canvasOffset.x = startOffsetX + (targetOffsetX - startOffsetX) * easeProgress;
-                galleryState.canvasOffset.y = startOffsetY + (targetOffsetY - startOffsetY) * easeProgress;
-                
-                const canvas = document.getElementById('galleryCanvas');
-                canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
-                
-                // Update visible images during pan
-                updateVisibleImages();
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animatePan);
-                } else {
-                    // After pan completes, scale the image
-                    galleryState.isPanning = false;
-                    
-                    container.classList.add('centered');
-                    container.classList.add('show-description');
-                    
-                    galleryState.focusedImage = container;
-                }
-            }
-            
-            requestAnimationFrame(animatePan);
+            if(!galleryState.isGalleryActive||!container.isConnected)return;
+            if(galleryState.focusedImage===container){closeCenteredImage();return;}
+            closeCenteredImage();
+            const data=galleryState.images.find(x=>x.id===container.id);if(!data)return;
+            const rect=document.getElementById('galleryViewport').getBoundingClientRect(),img=container.querySelector('img');
+            const width=img.offsetWidth||200,height=img.offsetHeight||200,focusScale=innerWidth<=768?1.2:1.3;
+            const captionHeight=container.querySelector('.gallery-image-description')?110:35;
+            const nextScale=Math.max(.5,Math.min(1.6,(rect.width-40)/(width*focusScale),(rect.height-160)/((height+captionHeight+12)*focusScale)));
+            const start={...galleryState.canvasOffset},startScale=galleryState.scale,target={x:rect.width/2-(data.x+width/2)*nextScale,y:(rect.height-(captionHeight+12)*focusScale*nextScale)/2-(data.y+height/2)*nextScale};
+            galleryState.focusedImage=container;galleryState.isPanning=true;galleryState.velocity={x:0,y:0};galleryState.mousePos={x:.5,y:.5};
+            container.classList.add('centered','show-description');container.setAttribute('aria-expanded','true');document.getElementById('galleryCloseArt').hidden=false;
+            const token=++galleryState.panToken,startTime=performance.now(),duration=matchMedia('(prefers-reduced-motion:reduce)').matches?0:420;
+            function frame(now){if(token!==galleryState.panToken||!galleryState.isGalleryActive)return;const progress=duration?Math.min((now-startTime)/duration,1):1,ease=1-Math.pow(1-progress,3);galleryState.scale=startScale+(nextScale-startScale)*ease;galleryState.canvasOffset={x:start.x+(target.x-start.x)*ease,y:start.y+(target.y-start.y)*ease};applyGalleryTransform();updateVisibleImages();if(progress<1)galleryState.panFrame=requestAnimationFrame(frame);else{galleryState.isPanning=false;galleryState.panFrame=null;}}
+            galleryState.panFrame=requestAnimationFrame(frame);
         }
-
         function closeCenteredImage() {
-            if (galleryState.focusedImage) {
-                galleryState.focusedImage.classList.remove('centered');
-                galleryState.focusedImage.classList.remove('show-description');
-                galleryState.focusedImage.classList.remove('show-title');
-                galleryState.focusedImage = null;
-            }
+            galleryState.panToken++;if(galleryState.panFrame)cancelAnimationFrame(galleryState.panFrame);galleryState.panFrame=null;galleryState.isPanning=false;
+            const focused=galleryState.focusedImage;if(focused){focused.classList.remove('centered','show-description','show-title');focused.setAttribute('aria-expanded','false');}
+            galleryState.focusedImage=null;galleryState.velocity={x:0,y:0};galleryState.mousePos={x:.5,y:.5};const button=document.getElementById('galleryCloseArt');if(button)button.hidden=true;
         }
+        document.addEventListener('keydown',event=>{if(event.key==='Escape'&&galleryState.isGalleryActive){event.preventDefault();event.stopImmediatePropagation();if(galleryState.focusedImage)closeCenteredImage();else closeSection();}},true);
+        window.addEventListener('resize',()=>{if(!galleryState.isGalleryActive)return;clearGalleryPointers();if(galleryState.focusedImage){const focused=galleryState.focusedImage;closeCenteredImage();centerImage(focused);}else resetGalleryView();});
+        document.addEventListener('visibilitychange',()=>{if(document.hidden){clearGalleryPointers();if(galleryState.animationId)cancelAnimationFrame(galleryState.animationId);galleryState.animationId=null;closeCenteredImage();}else if(galleryState.isGalleryActive&&!galleryState.animationId){galleryState.lastFrame=0;updateGalleryView(performance.now());}});
 
         function showSection(sectionType) {
             document.getElementById('mainHub').style.display = 'none';
@@ -2371,8 +1725,10 @@ function checkPassword() {
                 if (galleryState.images.length === 0) {
                     initializeGallery();
                 }
+                clearGalleryPointers();
                 if (!galleryState.animationId) {
-                    updateGalleryView();
+                    galleryState.lastFrame=0;
+                    updateGalleryView(performance.now());
                 }
             } else {
                 updateCarouselPositions(sectionType);
@@ -2394,6 +1750,8 @@ function checkPassword() {
                     arrow.classList.remove('active');
                 });
                 closeCenteredImage();
+                clearGalleryPointers();
+                galleryState.lastFrame=0;
             }
             
             document.getElementById('mainHub').style.display = 'block';
@@ -2436,7 +1794,7 @@ window.onload = function() {
         mainHub.classList.add('active');
         initKeyboardNav();
         hubAudio.volume = 0;
-        hubAudio.play();
+        hubAudio.play().catch(() => {});
         let fadeIn = setInterval(() => {
             if (hubAudio.volume < volumeSlider.value) {
                 hubAudio.volume = Math.min(hubAudio.volume + 0.01, volumeSlider.value);
@@ -2450,7 +1808,7 @@ window.onload = function() {
         passwordAudio.play().catch(error => {
             console.log('Autoplay prevented:', error);
             document.addEventListener('click', function playAudioOnce() {
-                passwordAudio.play();
+                passwordAudio.play().catch(() => {});
                 document.removeEventListener('click', playAudioOnce);
             });
         });
@@ -2543,7 +1901,7 @@ window.onload = function() {
         // Keyboard navigation for carousels and gallery
 document.addEventListener('keydown', function(e) {
     // Don't handle keyboard navigation if user is typing in an input
-    if (document.activeElement.tagName === 'INPUT') return;
+    if (e.target.closest('input, textarea, select, button, a, summary, [contenteditable], .portfolio-directory')) return;
     
     // Log keypress for debugging
     console.log('Key pressed:', e.key);
@@ -2614,8 +1972,8 @@ document.addEventListener('keydown', function(e) {
         }
         
         if (moved) {
-            const canvas = document.getElementById('galleryCanvas');
-            canvas.style.transform = `translate(${galleryState.canvasOffset.x}px, ${galleryState.canvasOffset.y}px)`;
+            closeCenteredImage();
+            applyGalleryTransform();
             updateVisibleImages();
         }
         return; // Stop here to avoid other controls

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -483,8 +483,21 @@
             border-radius: 6px;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
+        .tabs { flex-wrap: wrap; }
+        .tab { font: inherit; }
+        .pickable-sprite { width: 100%; color: inherit; }
+        .remove-frame { min-width: 28px; min-height: 28px; }
+        button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+        #gifStatus { margin: 12px 0; color: #ce93d8; }
+        @media (max-width: 600px) {
+            .container { padding: 12px; }
+            .header h1 { font-size: 24px; }
+            .controls, .animation-controls { align-items: stretch; }
+            .control-group, input[type="file"] { min-width: 0; max-width: 100%; }
+            .animation-controls input[type="text"] { max-width: 100%; }
+        }
     </style>
-</head>
+<link rel="stylesheet" href="portfolio-repairs.css"></head>
 <body>
     <div class="container">
         <div class="header">
@@ -493,8 +506,8 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('extractor')">🖼️ Sprite Extractor</div>
-            <div class="tab" onclick="switchTab('animator')" id="animatorTab">🎬 GIF Animator</div>
+            <button type="button" class="tab active" onclick="switchTab('extractor')" aria-pressed="true">🖼️ Sprite Extractor</button>
+            <button type="button" class="tab" onclick="switchTab('animator')" id="animatorTab" aria-pressed="false">🎬 GIF Animator</button>
         </div>
 
         <div id="extractorContent" class="tab-content active">
@@ -513,7 +526,7 @@
                 </div>
             </div>
 
-            <div id="status" class="status">👋 Upload a sprite sheet to get started!</div>
+            <div id="status" class="status" role="status" aria-live="polite">👋 Upload a sprite sheet to get started!</div>
 
             <div id="previewSection" class="preview-section">
                 <div class="preview-header">
@@ -553,6 +566,7 @@
                 </div>
             </div>
 
+            <p id="gifStatus" role="status" aria-live="polite"></p>
             <div class="frame-timeline">
                 <h4>Frame Timeline (Click sprites below to add frames)</h4>
                 <div class="frames-container" id="framesContainer">
@@ -629,23 +643,25 @@
             }
 
             availableSprites.innerHTML = extractedSprites.map(sprite => `
-                            <div class="pickable-sprite" onclick="addFrame(${sprite.id})">
+                            <button type="button" class="pickable-sprite" onclick="addFrame(${sprite.id})" aria-label="Add sprite ${sprite.id} to animation">
                                 <img src="${sprite.dataUrl}" alt="Sprite ${sprite.id}">
                                 <div class="sprite-num">#${sprite.id}</div>
-                            </div>
+                            </button>
                         `).join('');
         }
 
         // ===== TAB SWITCHING =====
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
             if (tabName === 'extractor') {
                 document.querySelector('.tab:first-child').classList.add('active');
+                document.querySelector('.tab:first-child').setAttribute('aria-pressed', 'true');
                 document.getElementById('extractorContent').classList.add('active');
             } else {
                 document.getElementById('animatorTab').classList.add('active');
+                document.getElementById('animatorTab').setAttribute('aria-pressed', 'true');
                 document.getElementById('animatorContent').classList.add('active');
                 updateAvailableSprites();
             }
@@ -686,61 +702,74 @@
 
         downloadAllBtn.addEventListener('click', async () => {
             if (extractedSprites.length === 0) return;
-
+            const sprites = extractedSprites.slice();
+            if (typeof window.showDirectoryPicker !== 'function') {
+                sprites.forEach((sprite, idx) => setTimeout(() => downloadSprite(sprite, idx), idx * 150));
+                statusDiv.textContent = 'Downloads started. Your browser may ask to allow multiple files.';
+                return;
+            }
             try {
                 const dirHandle = await window.showDirectoryPicker();
                 downloadAllBtn.disabled = true;
                 downloadAllBtn.textContent = '⏳ Saving to folder...';
-
-                for (let i = 0; i < extractedSprites.length; i++) {
-                    const sprite = extractedSprites[i];
+                for (let i = 0; i < sprites.length; i++) {
                     const fileHandle = await dirHandle.getFileHandle(`sprite_${String(i).padStart(3, '0')}.png`, { create: true });
                     const writable = await fileHandle.createWritable();
-                    const response = await fetch(sprite.dataUrl);
-                    const blob = await response.blob();
-                    await writable.write(blob);
+                    const binary = atob(sprites[i].dataUrl.split(',')[1]);
+                    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+                    await writable.write(new Blob([bytes], { type: 'image/png' }));
                     await writable.close();
                 }
-
-                downloadAllBtn.textContent = '✅ Saved to folder!';
-                setTimeout(() => {
-                    downloadAllBtn.textContent = '⬇️ Download All';
-                    downloadAllBtn.disabled = false;
-                }, 2000);
+                statusDiv.textContent = `✅ Saved ${sprites.length} sprites to your folder.`;
             } catch (err) {
-                console.error('Folder save failed:', err);
-                if (err.name !== 'AbortError') {
-                    alert('Folder save not supported or failed. Falling back to individual downloads.');
+                if (err.name === 'AbortError') {
+                    statusDiv.textContent = 'Folder save cancelled. No downloads started.';
+                } else {
+                    statusDiv.textContent = 'Could not save to that folder. Use the individual Download buttons or try another folder.';
                 }
-                // Fallback to individual downloads
-                extractedSprites.forEach((sprite, idx) => {
-                    setTimeout(() => downloadSprite(sprite, idx), idx * 100);
-                });
+            } finally {
+                downloadAllBtn.textContent = '⬇️ Download All';
+                downloadAllBtn.disabled = extractedSprites.length === 0;
             }
         });
 
+        let imageLoadVersion = 0;
         function loadImage(file) {
-            statusDiv.innerHTML = '<div class="status">📸 Loading image...</div>';
+            const version = ++imageLoadVersion;
+            statusDiv.textContent = '📸 Loading image...';
+            extractBtn.disabled = true;
             const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
             img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                if (version !== imageLoadVersion) return;
+                stopAnimation();
                 currentImage = img;
-                workCanvas.width = img.width;
-                workCanvas.height = img.height;
+                workCanvas.width = previewCanvas.width = img.width;
+                workCanvas.height = previewCanvas.height = img.height;
                 workCtx.drawImage(img, 0, 0);
-
-                previewCanvas.width = img.width;
-                previewCanvas.height = img.height;
                 previewCtx.drawImage(img, 0, 0);
-
+                extractedSprites = [];
+                animationFrames = [];
+                displaySprites();
+                updateFrameTimeline();
+                animCtx.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
+                exportGifBtn.disabled = downloadAllBtn.disabled = true;
                 previewSection.classList.add('visible');
                 previewCanvas.classList.add('picking');
                 isPicking = true;
                 pickedColors = [];
                 updateColorsDisplay();
                 updatePickerStatus();
-                statusDiv.innerHTML = '<div class="status">✅ Image loaded! Click on 2 background colors in the preview.</div>';
+                statusDiv.textContent = '✅ Image loaded! Click on 2 background colors in the preview.';
             };
-            img.src = URL.createObjectURL(file);
+            img.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                if (version !== imageLoadVersion) return;
+                statusDiv.textContent = 'Could not open that image. Choose a valid PNG, JPEG, GIF or WebP file.';
+                extractBtn.disabled = !currentImage || pickedColors.length !== 2;
+            };
+            img.src = objectUrl;
         }
 
         function updateZoom(e) {
@@ -784,6 +813,8 @@
             let x = Math.floor((e.clientX - rect.left) * scaleX);
             let y = Math.floor((e.clientY - rect.top) * scaleY);
 
+            x = Math.max(0, Math.min(workCanvas.width - 1, x));
+            y = Math.max(0, Math.min(workCanvas.height - 1, y));
             const imageData = workCtx.getImageData(x, y, 1, 1);
             const [r, g, b] = imageData.data;
 
@@ -841,6 +872,7 @@
         }
 
         function extractSprites() {
+            if (!currentImage || pickedColors.length !== 2) return;
             statusDiv.innerHTML = '<div class="status">🔄 Extracting sprites...</div>';
             spritesGrid.innerHTML = '';
             extractedSprites = [];
@@ -864,7 +896,7 @@
                     const g = data[pixelIdx + 1];
                     const b = data[pixelIdx + 2];
 
-                    if (isBackground(r, g, b, tolerance)) continue;
+                    if (data[pixelIdx + 3] === 0 || isBackground(r, g, b, tolerance)) { visited[idx] = 1; continue; }
 
                     const island = floodFill(x, y, data, width, height, visited, tolerance);
                     if (island && island.pixels > 20) {
@@ -880,7 +912,7 @@
 
             displaySprites();
             statusDiv.innerHTML = `<div class="status">✅ Found ${islands.length} sprites!</div>`;
-            downloadAllBtn.disabled = false;
+            downloadAllBtn.disabled = extractedSprites.length === 0;
         }
 
         function floodFill(startX, startY, data, width, height, visited, tolerance) {
@@ -900,7 +932,7 @@
                 const g = data[pixelIdx + 1];
                 const b = data[pixelIdx + 2];
 
-                if (isBackground(r, g, b, tolerance)) continue;
+                if (data[pixelIdx + 3] === 0 || isBackground(r, g, b, tolerance)) { visited[idx] = 1; continue; }
 
                 visited[idx] = 1;
                 pixels++;
@@ -990,7 +1022,10 @@
         window.addFrame = addFrame;
 
         function removeFrame(index) {
+            stopAnimation();
             animationFrames.splice(index, 1);
+            currentFrameIndex = 0;
+            if (!animationFrames.length) animCtx.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
             updateFrameTimeline();
             exportGifBtn.disabled = animationFrames.length === 0;
         }
@@ -1004,10 +1039,17 @@
 
             framesContainer.innerHTML = animationFrames.map((frame, idx) => `
                             <div class="frame-item">
-                                <button class="remove-frame" onclick="removeFrame(${idx})">×</button>
-                                <img src="${frame.dataUrl}" alt="Frame ${idx}">
+                                <button type="button" class="remove-frame" onclick="removeFrame(${idx})" aria-label="Remove frame ${idx + 1}">×</button>
+                                <img src="${frame.dataUrl}" alt="Frame ${idx + 1}">
                             </div>
                         `).join('');
+        }
+
+        function getAnimationFps() {
+            const value = Number(animFpsInput.value);
+            const fps = Number.isFinite(value) && value > 0 ? Math.max(1, Math.min(60, Math.round(value))) : 10;
+            animFpsInput.value = fps;
+            return fps;
         }
 
         function playAnimation() {
@@ -1015,7 +1057,7 @@
 
             stopAnimation();
 
-            const fps = parseInt(animFpsInput.value) || 10;
+            const fps = getAnimationFps();
             const delay = 1000 / fps;
 
             // Set canvas size to largest frame
@@ -1027,6 +1069,8 @@
             currentFrameIndex = 0;
 
             const drawFrame = () => {
+                if (!animationFrames.length) { stopAnimation(); return; }
+                currentFrameIndex %= animationFrames.length;
                 const frame = animationFrames[currentFrameIndex];
                 const img = new Image();
                 img.onload = () => {
@@ -1053,78 +1097,54 @@
 
         async function exportGif() {
             if (animationFrames.length === 0) return;
-
-            if (typeof GIFEncoder === 'undefined') {
-                alert('GIF library not loaded. Please refresh the page.');
+            const feedback = document.getElementById('gifStatus');
+            if (typeof GIFEncoder !== 'function') {
+                feedback.textContent = 'The GIF encoder is still loading. Check your connection and try again.';
                 return;
             }
-
+            const frames = animationFrames.slice();
             exportGifBtn.disabled = true;
             exportGifBtn.textContent = '⏳ Generating GIF...';
-
-            const fps = parseInt(animFpsInput.value) || 10;
-            const delay = Math.round(100 / fps); // centiseconds for GIF
-
-            const maxWidth = Math.max(...animationFrames.map(f => f.width));
-            const maxHeight = Math.max(...animationFrames.map(f => f.height));
-
-            const gif = GIFEncoder();
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = maxWidth;
-            tempCanvas.height = maxHeight;
-            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
-
-            const format = 'rgba4444'; // Supports alpha
-
-            let loadedFrames = 0;
-
-            const processFrame = (frame) => {
-                return new Promise((resolve) => {
+            feedback.textContent = 'Generating your animation…';
+            try {
+                const delay = Math.round(1000 / getAnimationFps()); // gifenc takes milliseconds.
+                const maxWidth = Math.max(...frames.map(f => f.width));
+                const maxHeight = Math.max(...frames.map(f => f.height));
+                const gif = GIFEncoder();
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = maxWidth;
+                tempCanvas.height = maxHeight;
+                const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+                const format = 'rgba4444';
+                for (const frame of frames) {
                     const img = new Image();
-                    img.onload = () => {
-                        tempCtx.clearRect(0, 0, maxWidth, maxHeight);
-                        const x = (maxWidth - frame.width) / 2;
-                        const y = (maxHeight - frame.height) / 2;
-                        tempCtx.drawImage(img, x, y);
-
-                        const data = tempCtx.getImageData(0, 0, maxWidth, maxHeight).data;
-                        const palette = quantize(data, 256, {
-                            format,
-                            oneBitAlpha: true,
-                            clearAlpha: true,
-                            clearAlphaThreshold: 0,
-                            clearAlphaColor: 0x00
-                        });
-                        const index = applyPalette(data, palette, format);
-                        gif.writeFrame(index, maxWidth, maxHeight, {
-                            palette,
-                            delay,
-                            transparent: true,
-                            transparentIndex: 0
-                        });
-
-                        loadedFrames++;
-                        if (loadedFrames === animationFrames.length) {
-                            gif.finish();
-                            const buffer = gif.bytesView();
-                            const blob = new Blob([buffer], { type: 'image/gif' });
-                            const url = URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.download = `${animNameInput.value || 'animation'}.gif`;
-                            link.href = url;
-                            link.click();
-                            URL.revokeObjectURL(url);
-                            exportGifBtn.disabled = false;
-                            exportGifBtn.textContent = '💾 Export as GIF';
-                        }
-                        resolve();
-                    };
                     img.src = frame.dataUrl;
-                });
-            };
-
-            for (const frame of animationFrames) {
-                await processFrame(frame);
+                    await img.decode();
+                    tempCtx.clearRect(0, 0, maxWidth, maxHeight);
+                    tempCtx.drawImage(img, Math.floor((maxWidth - frame.width) / 2), Math.floor((maxHeight - frame.height) / 2));
+                    const data = tempCtx.getImageData(0, 0, maxWidth, maxHeight).data;
+                    const palette = quantize(data, 256, { format, oneBitAlpha: true, clearAlpha: true });
+                    const index = applyPalette(data, palette, format);
+                    const transparentIndex = palette.findIndex(color => color[3] === 0);
+                    gif.writeFrame(index, maxWidth, maxHeight, {
+                        palette, delay, dispose: 2,
+                        transparent: transparentIndex >= 0,
+                        transparentIndex: Math.max(0, transparentIndex)
+                    });
+                }
+                gif.finish();
+                const url = URL.createObjectURL(new Blob([gif.bytesView()], { type: 'image/gif' }));
+                const link = document.createElement('a');
+                link.download = `${animNameInput.value.trim() || 'animation'}.gif`;
+                link.href = url;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                feedback.textContent = `✅ Exported ${frames.length} frames at ${getAnimationFps()} FPS.`;
+            } catch (err) {
+                feedback.textContent = 'Could not export this animation. Try fewer or smaller frames, then retry.';
+            } finally {
+                exportGifBtn.disabled = animationFrames.length === 0;
+                exportGifBtn.textContent = '💾 Export as GIF';
             }
         }
 
@@ -1143,5 +1163,5 @@
             exportGifBtn.disabled = true;
         });
     </script>
-</body>
+<a class="portfolio-home-link" href="index.html" aria-label="Return to Abyssal Light Games portfolio">← Portfolio</a><script src="portfolio-repairs.js"></script></body>
 </html>

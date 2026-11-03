@@ -1,0 +1,15 @@
+ABYL ORIGINAL ADVENTURE MUSIC
+Created for this project, 2026-10-31.
+
+Workshop - 96 BPM, D major, 16 bars, 40.000 seconds.
+Town (Lantern Vale) - 112 BPM, G major, 16 bars, 34.286 seconds.
+Overworld (Lantern Coast) - 124 BPM, E Dorian, 16 bars, 30.968 seconds.
+Battle - 144 BPM, A minor, 16 bars, 26.667 seconds.
+
+These four original compositions were synthesized from authored melodies, diatonic chord progressions, bass parts, arpeggios and percussion. No third-party audio, samples, soundfonts, recordings or transcribed melodies were used. The rendering engine is preserved in outputs/music-source/AbylComposer.cs. Each track is a complete 16-bar phrase. Release tails and stereo delays wrap across the end into the beginning for continuous playback. Files are stereo PCM16 at 22050 Hz; Unity imports them as streaming Vorbis for a smaller world build.
+
+REUSE LICENSE
+These original music files are dedicated to the public domain under CC0 1.0 Universal. You may use, modify and redistribute them in your adventures, including commercial projects, without attribution. Full legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Optional credit: Abyl Adventure Kit - original project soundtrack.
+
+This license covers only Workshop.wav, Town.wav, Overworld.wav and Battle.wav in this folder. It does not change the licenses of other music already present elsewhere in the project.
