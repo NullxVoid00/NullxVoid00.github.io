@@ -1,5 +1,16 @@
 
 (()=>{'use strict';
+const spoilerModal=document.getElementById('spoilerModal'),spoilerInput=document.getElementById('spoilerPassword');
+document.querySelector('.spoiler-lock').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showSpoilerModal()}});
+spoilerInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();checkSpoilerPassword()}});
+spoilerModal.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){e.preventDefault();closeSpoilerModal()}
+ if(e.key==='Tab'){
+  const controls=[...spoilerModal.querySelectorAll('button,input')],first=controls[0],last=controls[controls.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+ }
+});
 const viewer=document.getElementById('imageViewer'),large=document.getElementById('viewerImage');let imageTrigger;
 document.querySelectorAll('.enlarge-domain').forEach(b=>b.addEventListener('click',()=>{imageTrigger=b;const i=b.parentElement.querySelector('img');large.src=i.src;large.alt=i.alt;document.getElementById('viewerCaption').textContent=i.alt;viewer.showModal()}));document.getElementById('closeImage').addEventListener('click',()=>viewer.close());viewer.addEventListener('close',()=>imageTrigger?.focus({preventScroll:true}));
 document.querySelectorAll('.art-toggle').forEach(b=>b.addEventListener('click',()=>{const on=b.getAttribute('aria-pressed')==='true';const i=b.parentElement.querySelector('img');i.src=on?b.dataset.capture:b.dataset.art;i.alt=b.closest('.boss-card').querySelector('h3').textContent+(on?' development capture':' original artwork');b.setAttribute('aria-pressed',String(!on));b.textContent=on?'View original art':'View in-world capture'}));
