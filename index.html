@@ -948,7 +948,7 @@
             }
         }
     </style>
-<link rel="stylesheet" href="portfolio-home.css"><script src="portfolio-home.js" defer></script><style id="gallery-interaction-repairs">#galleryViewport{flex:1;min-height:0;height:auto;touch-action:none;user-select:none}#galleryCanvas{transform-origin:0 0;transition:none}.gallery-tools{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);width:max-content;padding:8px 12px;border:1px solid #ffffff30;border-radius:8px;background:#0a0a0aeb;z-index:200;color:var(--primary-white);font:12px/1.4 'Share Tech Mono',monospace}.gallery-tools span{font-size:10px;opacity:.7}.gallery-tools button{padding:7px 10px;border:1px solid #ffffff40;border-radius:4px;background:#ffffff08;color:inherit;cursor:pointer;font:inherit;min-height:32px}.gallery-tools button:hover{border-color:var(--accent-red)}.gallery-tools [hidden]{display:none}.gallery-image:focus-visible,.gallery-tools button:focus-visible{outline:2px solid var(--accent-red);outline-offset:4px}.gallery-image-info{white-space:normal;width:max-content;max-width:260px;top:calc(100% + 10px);bottom:auto}.gallery-image.centered .gallery-image-info{max-height:110px;overflow-y:auto;pointer-events:auto;overscroll-behavior:contain}.gallery-image-title{overflow-wrap:anywhere}#galleryViewport .gallery-image{touch-action:none}@media(max-width:768px){.gallery-tools{gap:5px;padding:6px 8px}.gallery-tools span{display:none}.gallery-image-info{max-width:200px}.gallery-tools button{min-height:36px}}
+<link rel="stylesheet" href="portfolio-home.css?v=20261103-carousel2"><script src="portfolio-home.js" defer></script><style id="gallery-interaction-repairs">#galleryViewport{flex:1;min-height:0;height:auto;touch-action:none;user-select:none}#galleryCanvas{transform-origin:0 0;transition:none}.gallery-tools{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);width:max-content;padding:8px 12px;border:1px solid #ffffff30;border-radius:8px;background:#0a0a0aeb;z-index:200;color:var(--primary-white);font:12px/1.4 'Share Tech Mono',monospace}.gallery-tools span{font-size:10px;opacity:.7}.gallery-tools button{padding:7px 10px;border:1px solid #ffffff40;border-radius:4px;background:#ffffff08;color:inherit;cursor:pointer;font:inherit;min-height:32px}.gallery-tools button:hover{border-color:var(--accent-red)}.gallery-tools [hidden]{display:none}.gallery-image:focus-visible,.gallery-tools button:focus-visible{outline:2px solid var(--accent-red);outline-offset:4px}.gallery-image-info{white-space:normal;width:max-content;max-width:260px;top:calc(100% + 10px);bottom:auto}.gallery-image.centered .gallery-image-info{max-height:110px;overflow-y:auto;pointer-events:auto;overscroll-behavior:contain}.gallery-image-title{overflow-wrap:anywhere}#galleryViewport .gallery-image{touch-action:none}@media(max-width:768px){.gallery-tools{gap:5px;padding:6px 8px}.gallery-tools span{display:none}.gallery-image-info{max-width:200px}.gallery-tools button{min-height:36px}}
 </style></head>
 <body>
     <div class="password-screen" id="passwordScreen">
@@ -1093,42 +1093,25 @@
     <audio id="hubAudio" loop>
         <source src="audio/hub-bg.mp3" type="audio/mpeg">
     </audio>
-    <audio id="clickAudio">
-        <source src="audio/SAclick.mp3" type="audio/mpeg">
-    </audio>
 
     <div class="volume-control">
         <label for="volumeSlider">Volume</label>
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <script src="portfolio-data.js"></script>
+    <script src="portfolio-data.js?v=20261103-art2"></script>
     <script>
         // Audio functionality
         const passwordAudio = document.getElementById('passwordAudio');
         const hubAudio = document.getElementById('hubAudio');
-        const clickAudio = document.getElementById('clickAudio');
         const volumeSlider = document.getElementById('volumeSlider');
 
         passwordAudio.volume = volumeSlider.value;
         hubAudio.volume = volumeSlider.value;
-        clickAudio.volume = volumeSlider.value;
 
         volumeSlider.addEventListener('input', function() {
             passwordAudio.volume = this.value;
             hubAudio.volume = this.value;
-            clickAudio.volume = this.value;
-        });
-
-        function playClickSound() {
-            clickAudio.currentTime = 0;
-            clickAudio.play().catch(e => console.log('Click sound error:', e));
-        }
-
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('.nav-section, .project-card, .gallery-image, button, .social-link, .carousel-nav')) {
-                playClickSound();
-            }
         });
 
         const passwordInput = document.getElementById('passwordInput');
@@ -1372,6 +1355,12 @@ function checkPassword() {
             const cards = carousel.querySelectorAll('.project-card');
             const { currentIndex } = carouselStates[type];
             const isMobile = window.innerWidth <= 768;
+            const cardWidth = cards[0]?.offsetWidth || 300;
+            const availableHeight = Math.max(220, carousel.parentElement.clientHeight - 80);
+            if (!isMobile) {
+                // Give artwork room to grow, while leaving space for text on short displays.
+                carousel.style.setProperty('--project-image-height', `${Math.round(Math.min(cardWidth * .6, availableHeight * .4))}px`);
+            }
             
             cards.forEach((card, index) => {
                 const offset = index - currentIndex;
@@ -1382,12 +1371,11 @@ function checkPassword() {
                 card.style.height = 'auto';
                 
                 // Calculate content height for focused card
-                let cardHeight = isMobile ? 380 : 450; // Default heights
+                let cardHeight = isMobile ? 380 : Math.min(availableHeight, Math.round(cardWidth * 1.45));
                 if (index === currentIndex) {
                     const content = card.querySelector('.project-card-content');
                     const img = card.querySelector('img');
                     const imgHeight = img.offsetHeight || (isMobile ? 180 : 200);
-                    const availableHeight = Math.max(220, carousel.parentElement.clientHeight - 80);
                     content.style.maxHeight = `${Math.max(80, availableHeight - imgHeight - 4)}px`;
                     cardHeight = Math.min(availableHeight, content.offsetHeight + imgHeight + 4);
                 }
@@ -1408,14 +1396,14 @@ function checkPassword() {
                     card.style.zIndex = absOffset === 0 ? 10 : 1;
                     card.style.transition = 'all 0.4s ease-out';
                 } else {
-                    const spacing = 320;
+                    const spacing = cardWidth * 1.08;
                     const translateX = offset * spacing;
                     const translateZ = -absOffset * 100;
                     const rotateY = sign * Math.min(absOffset * 15, 45);
                     const scale = 1 - Math.min(absOffset * 0.2, 0.6);
                     const opacity = 1 - Math.min(absOffset * 0.3, 0.7);
                     
-                    card.style.marginLeft = '-150px';
+                    card.style.marginLeft = `-${cardWidth / 2}px`;
                     card.style.marginTop = `-${cardHeight / 2}px`;
                     
                     card.style.transform = `
@@ -1628,7 +1616,7 @@ function checkPassword() {
             galleryState.gesture=null;galleryState.pinchDistance=0;galleryState.isTouching=false;
             galleryState.mousePos={x:.5,y:.5};galleryState.velocity={x:0,y:0};
             if(!cancelled&&gesture&&!gesture.moved&&!gesture.cancelTap){
-                if(gesture.target?.isConnected){centerImage(gesture.target);playClickSound();}else closeCenteredImage();
+                if(gesture.target?.isConnected){centerImage(gesture.target);}else closeCenteredImage();
             }
         }
         function endGalleryPointer(event){finishGalleryPointer(event,false);}
@@ -1685,8 +1673,8 @@ function checkPassword() {
             const info=document.createElement('div');info.className='gallery-image-info';const title=document.createElement('div');title.className='gallery-image-title';title.textContent='"'+parsed.title+'"';info.append(title);
             if(parsed.description){const desc=document.createElement('div');desc.className='gallery-image-description';desc.textContent=parsed.description;info.append(desc);}
             container.append(img,info);
-            container.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(event.detail===0){centerImage(container);playClickSound();}});
-            container.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();centerImage(container);playClickSound();}});
+            container.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(event.detail===0){centerImage(container);}});
+            container.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();centerImage(container);}});
             requestAnimationFrame(()=>container.classList.add('loaded'));return container;
         }
         function centerImage(container) {
@@ -1926,12 +1914,10 @@ document.addEventListener('keydown', function(e) {
         // If in about section
         if (!document.getElementById('aboutSection').classList.contains('hidden')) {
             showHub();
-            playClickSound();
         }
         // If in any other section
         else if (document.querySelector('.section-view.active')) {
             closeSection();
-            playClickSound();
         }
         return;
     }
@@ -1994,11 +1980,9 @@ document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
             e.preventDefault();
             moveCarousel(activeSection, -1);
-            playClickSound();
         } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
             e.preventDefault();
             moveCarousel(activeSection, 1);
-            playClickSound();
         } else if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             console.log('Enter/Space pressed in carousel:', activeSection, 'index:', carouselStates[activeSection].currentIndex);
@@ -2010,7 +1994,6 @@ document.addEventListener('keydown', function(e) {
                 if (!selectedCard.classList.contains('unavailable')) {
                     console.log('Triggering click on card:', selectedCard.querySelector('h3').textContent);
                     selectedCard.click();
-                    playClickSound();
                 } else {
                     console.log('Card is unavailable, click not triggered');
                 }
@@ -2034,7 +2017,6 @@ document.addEventListener('keydown', function(e) {
             const selectedSection = keyboardNav.hubSections[keyboardNav.currentIndex];
             if (selectedSection) {
                 selectedSection.click();
-                playClickSound();
                 // Reset keyboard navigation
                 keyboardNav.enabled = false;
                 keyboardNav.currentIndex = -1;

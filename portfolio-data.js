@@ -162,7 +162,7 @@ window.portfolioProjects = {
     {
       "title": "Sonic Adventure VR",
       "description": "A fan remake with a connected Sonic story route, adventure fields, action stages, bosses and trials. Other campaigns remain in development.",
-      "image": "portfolio-media/sonic/coast.webp",
+      "image": "Art Folder/SAMCover.png",
       "link": "SAVR.html",
       "progress": {
         "status": "Unfinished",
@@ -209,7 +209,7 @@ window.portfolioProjects = {
     {
       "title": "EGO/TRIP",
       "description": "A solo or four-player roguelite: evolving weapons, build-changing Remnants and strange domains, with a Haven to make your own.",
-      "image": "portfolio-media/ego-trip/ocean.webp",
+      "image": "Art Folder/VRCProject0.jpg",
       "link": "ego-trip.html",
       "progress": {
         "status": "Unfinished",
@@ -299,7 +299,7 @@ window.portfolioProjects = {
     {
       "title": "Tsukiō Koromashi (Moon King: Roll it Up!)",
       "description": "Roll, grow and gather ingredients across nine themed contracts, solo or with a friend. Substantial balancing, refinement and testing remain.",
-      "image": "portfolio-media/tsukio/blossom.webp",
+      "image": "Art Folder/VRCProject10.jpg",
       "link": "tsukio-koromashi.html",
       "progress": {
         "status": "Unfinished",
