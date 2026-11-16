@@ -330,7 +330,7 @@ window.portfolioProjects = {
       "title": "Earthbound Remake",
       "description": "A VRChat fan remake of EarthBound’s opening through Onett and Twoson, with turn-based battles, rolling HP and saved progress.",
       "link": "earthbound-remake.html",
-      "image": "portfolio-media/earthbound/onett.webp",
+      "image": "portfolio-media/earthbound/earthbound-vrc-title.jpg",
       "kind": "Fan remake",
       "phase": "Opening chapters",
       "progress": {
@@ -338,7 +338,8 @@ window.portfolioProjects = {
         "percentage": 20
       },
       "reviewed": "2026-11-03",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "imageFit": "contain"
     },
     {
       "title": "Abyssal Box",
@@ -432,10 +433,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/MegaMan-Legends-VR.svg",
       "link": "https://github.com/NullxVoid00/MegaMan-Legends-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 70
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "Haunting Ground VR",
@@ -443,10 +447,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/Haunting-Ground-VR.svg",
       "link": "https://github.com/NullxVoid00/Haunting-Ground-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 65
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "In Sound Mind VR",
@@ -454,10 +461,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/In-Sound-Mind-VR.svg",
       "link": "https://github.com/NullxVoid00/In-Sound-Mind-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 35
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "Shadow the Hedgehog VR",
@@ -465,10 +475,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/Shadow-the-Hedgehog-VR.svg",
       "link": "https://github.com/NullxVoid00/Shadow-the-Hedgehog-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 55
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "Kingdom Hearts VR",
@@ -476,10 +489,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/Kingdom-Hearts-VR.svg",
       "link": "https://github.com/NullxVoid00/Kingdom-Hearts-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 25
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "Collection-wide estimate · No public release yet"
     },
     {
       "title": "Shadow of the Colossus VR",
@@ -487,10 +503,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/Shadow-of-the-Colossus-VR.svg",
       "link": "https://github.com/NullxVoid00/Shadow-of-the-Colossus-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 45
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "Metal Gear Rising: Revengeance VR",
@@ -498,10 +517,13 @@ window.portfolioProjects = {
       "image": "portfolio-media/vr-mods/Metal-Gear-Rising-VR.svg",
       "link": "https://github.com/NullxVoid00/Metal-Gear-Rising-VR",
       "kind": "PC VR mod · GitHub project",
-      "progress": "In development",
-      "progressLabel": "In development · No public release yet",
+      "progress": {
+        "status": "Unfinished",
+        "percentage": 15
+      },
       "reviewed": "2026-11-16",
-      "isAvailable": "O"
+      "isAvailable": "O",
+      "phase": "In development · No public release yet"
     },
     {
       "title": "Red Threads",

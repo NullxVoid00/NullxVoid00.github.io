@@ -1099,7 +1099,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <script src="portfolio-data.js?v=20261116-vr-hubs"></script>
+    <script src="portfolio-data.js?v=20261116-progress-art"></script>
     <script>
         // Audio functionality
         const passwordAudio = document.getElementById('passwordAudio');
@@ -1326,7 +1326,7 @@ function checkPassword() {
                 }
 
                 card.innerHTML = `
-                    <img loading="lazy" decoding="async" src="${project.image}" alt="${project.title}" onerror="this.src='Art Folder/placeholder.jpg'">
+                    <img loading="lazy" decoding="async" src="${project.image}" alt="${project.title}"${project.imageFit === 'contain' ? ' style="object-fit:contain;background:#16002f"' : ''} onerror="this.src='Art Folder/placeholder.jpg'">
                     <div class="project-card-content">
                         <h3>${project.title}</h3>
                         <p>${project.description}</p>
