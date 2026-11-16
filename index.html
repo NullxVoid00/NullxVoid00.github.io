@@ -1099,7 +1099,7 @@
         <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <script src="portfolio-data.js?v=20261103-art2"></script>
+    <script src="portfolio-data.js?v=20261116-vr-hubs"></script>
     <script>
         // Audio functionality
         const passwordAudio = document.getElementById('passwordAudio');
@@ -1249,6 +1249,7 @@ function checkPassword() {
                 // Sort by completion status
                 const getCompletionOrder = (project) => {
                     if (project.progress === "Completed") return 0;
+                    if (project.progress === "In development") return 1;
                     if (project.progress && project.progress.status === "Unfinished") return 1;
                     return 2; // Concept
                 };
@@ -1312,7 +1313,9 @@ function checkPassword() {
                     
                     // Link status HTML
                     if (project.link && project.link !== '#') {
-                        if (project.link.includes('vrchat')) {
+                        if (project.link.startsWith('https://github.com/')) {
+                            linkStatusHTML = '<div class="link-status has-website">View GitHub Project →</div>';
+                        } else if (project.link.includes('vrchat')) {
                             linkStatusHTML = '<div class="link-status has-vrchat">Visit VRChat Link!</div>';
                         } else {
                             linkStatusHTML = '<div class="link-status has-website">Visit Website!</div>';

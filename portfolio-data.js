@@ -427,6 +427,83 @@ window.portfolioProjects = {
   ],
   "other": [
     {
+      "title": "Mega Man Legends VR",
+      "description": "A PC VR adaptation of Mega Man Legends through MegaMan64Recompiled, with tracked aiming, native weapons and first-person exploration. In development.",
+      "image": "portfolio-media/vr-mods/MegaMan-Legends-VR.svg",
+      "link": "https://github.com/NullxVoid00/MegaMan-Legends-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "Haunting Ground VR",
+      "description": "An OpenHuey-based PC VR project with tracked first-person exploration, physical doors, held items and a touch-driven journal. In development.",
+      "image": "portfolio-media/vr-mods/Haunting-Ground-VR.svg",
+      "link": "https://github.com/NullxVoid00/Haunting-Ground-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "In Sound Mind VR",
+      "description": "An experimental PC VR conversion focused on tracked equipment, physical reloads, body interaction and the game's mirror mechanics. Rendering validation is ongoing.",
+      "image": "portfolio-media/vr-mods/In-Sound-Mind-VR.svg",
+      "link": "https://github.com/NullxVoid00/In-Sound-Mind-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "Shadow the Hedgehog VR",
+      "description": "An experimental Shadow Recompiled VR adaptation with tracked weapons, physical interactions, comfort controls and stereo cutscenes. In development.",
+      "image": "portfolio-media/vr-mods/Shadow-the-Hedgehog-VR.svg",
+      "link": "https://github.com/NullxVoid00/Shadow-the-Hedgehog-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "Kingdom Hearts VR",
+      "description": "A Kingdom Hearts collection VR project, beginning with KH1 Final Mix: tracked Keyblade combat, immersive interaction and a native collection launcher. In development.",
+      "image": "portfolio-media/vr-mods/Kingdom-Hearts-VR.svg",
+      "link": "https://github.com/NullxVoid00/Kingdom-Hearts-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "Shadow of the Colossus VR",
+      "description": "A PCSX2-based VR adaptation with tracked first-person views, climbing experiments, physical bow controls and a wrist HUD. In development.",
+      "image": "portfolio-media/vr-mods/Shadow-of-the-Colossus-VR.svg",
+      "link": "https://github.com/NullxVoid00/Shadow-of-the-Colossus-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
+      "title": "Metal Gear Rising: Revengeance VR",
+      "description": "Early Rising VR research: a live campaign screen with Touch controls and a separate tracked-sword/core-grab arena. Full campaign stereo and motion combat are future work.",
+      "image": "portfolio-media/vr-mods/Metal-Gear-Rising-VR.svg",
+      "link": "https://github.com/NullxVoid00/Metal-Gear-Rising-VR",
+      "kind": "PC VR mod · GitHub project",
+      "progress": "In development",
+      "progressLabel": "In development · No public release yet",
+      "reviewed": "2026-11-16",
+      "isAvailable": "O"
+    },
+    {
       "title": "Red Threads",
       "description": "Book/Audio Play where a detective hunts a serial killer stitching victims into grotesque displays, unraveling a chilling mystery.",
       "image": "Art Folder/placeholder.jpg",

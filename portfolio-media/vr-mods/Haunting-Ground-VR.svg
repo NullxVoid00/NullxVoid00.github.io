@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">Haunting Ground VR</title><desc id="desc">Project title card. In development; no public release yet.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#111821"/><stop offset="1" stop-color="#05070c"/></linearGradient></defs>
+<rect width="1280" height="720" fill="url(#bg)"/><path d="M850 0L1280 430M930 0L1280 350M770 0L1280 510" stroke="#d6b475" stroke-opacity=".13" stroke-width="2"/>
+<rect x="80" y="82" width="64" height="5" rx="2" fill="#d6b475"/>
+<text x="80" y="142" fill="#d6b475" font-family="Arial,sans-serif" font-size="23" letter-spacing="6">ABYSSAL LIGHT GAMES / PC VR</text>
+<text fill="#f4f5fa" font-family="Arial,sans-serif" font-size="69" font-weight="700" letter-spacing="-1"><tspan x="80" y="320">HAUNTING GROUND</tspan></text>
+<text x="1085" y="409" text-anchor="middle" fill="#d6b475" font-family="Arial,sans-serif" font-size="94" font-weight="700">VR</text>
+<path d="M80 548H1200" stroke="#ffffff" stroke-opacity=".14"/>
+<text x="80" y="609" fill="#b6becb" font-family="Arial,sans-serif" font-size="23" letter-spacing="3">IN DEVELOPMENT</text>
+<text x="1200" y="609" text-anchor="end" fill="#d6b475" font-family="Arial,sans-serif" font-size="23">PROJECT &amp; FUTURE RELEASES ↗</text>
+</svg>
